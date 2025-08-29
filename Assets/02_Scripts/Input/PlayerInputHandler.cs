@@ -68,7 +68,7 @@ public class PlayerInputHandler : MonoBehaviour
 
     private const string PLAYER_STANDING_MAP = "Player - Standing";
     private const string PLAYER_SITTING_MAP = "Player - Sitting";
-    private const string MENU_MAP = "Menu";
+    //private const string MENU_MAP = "Menu";
 
     private static readonly string MOVE_ACTION = EDirectionalAction.Move.ToString();
     private static readonly string NAVIGATE_ACTION = EDirectionalAction.Navigate.ToString();
@@ -80,10 +80,9 @@ public class PlayerInputHandler : MonoBehaviour
     private static readonly string PAUSE_ACTION = EAction.Pause.ToString();
 
     private PlayerInput _playerInput;
-    [SerializeField] private EInputScope _scopeType;
-
     private HoldAction _actionHoldState;
 
+    public EInputScope ScopeType { get; private set; }
     public bool IsHoldingAction => _actionHoldState.IsHolding;
 
     public Action<EAction> ActionEvent;
@@ -93,27 +92,28 @@ public class PlayerInputHandler : MonoBehaviour
     private void Awake()
     {
         _playerInput = GetComponent<PlayerInput>();
-        foreach (var actionMap in _playerInput.actions.actionMaps)
-        {
-            actionMap.Disable();
-        }
+
+        // DO NOT iterate over all action maps, because we want to keep some enabled, eg UI
+        _playerInput.actions.FindActionMap(PLAYER_STANDING_MAP).Disable();
+        _playerInput.actions.FindActionMap(PLAYER_SITTING_MAP).Disable();
+        //_playerInput.actions.FindActionMap(MENU_MAP).Disable();
 
         Debug.Log("Current control scheme: " + _playerInput.currentControlScheme);
     }
 
     private void OnEnable()
     {
-        if (_scopeType != EInputScope.Undefined)
+        if (ScopeType != EInputScope.Undefined)
         {
-            SubscribeActions(_scopeType);
+            SubscribeActions(ScopeType);
         }
     }
 
     private void OnDisable()
     {
-        if (_scopeType != EInputScope.Undefined)
+        if (ScopeType != EInputScope.Undefined)
         {
-            UnsubscribeActions(_scopeType);
+            UnsubscribeActions(ScopeType);
         }
     }
 
@@ -128,8 +128,8 @@ public class PlayerInputHandler : MonoBehaviour
 
     public void SetScope(EInputScope scopeType)
     {
-        UnsubscribeActions(_scopeType);
-        _scopeType = scopeType;
+        UnsubscribeActions(ScopeType);
+        ScopeType = scopeType;
         SubscribeActions(scopeType);
     }
 
@@ -335,22 +335,22 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void SubscribeMenuActions()
     {
-        _playerInput.actions.FindActionMap(MENU_MAP).Enable();
+        //_playerInput.actions.FindActionMap(MENU_MAP).Enable();
 
-        var actions = _playerInput.actions;
-        actions[NAVIGATE_ACTION].performed += OnNavigate;
-        actions[NAVIGATE_ACTION].canceled += OnNavigate;
+        //var actions = _playerInput.actions;
+        //actions[NAVIGATE_ACTION].performed += OnNavigate;
+        //actions[NAVIGATE_ACTION].canceled += OnNavigate;
 
         // TODO
     }
 
     private void UnsubscribeMenuActions()
     {
-        _playerInput.actions.FindActionMap(MENU_MAP).Disable();
+        //_playerInput.actions.FindActionMap(MENU_MAP).Disable();
 
-        var actions = _playerInput.actions;
-        actions[NAVIGATE_ACTION].performed -= OnNavigate;
-        actions[NAVIGATE_ACTION].canceled -= OnNavigate;
+        //var actions = _playerInput.actions;
+        //actions[NAVIGATE_ACTION].performed -= OnNavigate;
+        //actions[NAVIGATE_ACTION].canceled -= OnNavigate;
 
         // TODO
     }
