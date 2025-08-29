@@ -1,3 +1,6 @@
+#define LOG_ACTIONS
+
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -7,6 +10,22 @@ public enum EInputScope
     Menu,
     PlayerStanding,
     PlayerSitting,
+}
+
+public enum EDirectionalAction
+{
+    Move,
+    Navigate,
+}
+
+public enum EAction
+{
+    Action,
+    Interact,
+    Dash,
+    Utility,
+    Cancel,
+    Pause,
 }
 
 public class PlayerInputHandler : MonoBehaviour
@@ -51,19 +70,25 @@ public class PlayerInputHandler : MonoBehaviour
     private const string PLAYER_SITTING_MAP = "Player - Sitting";
     private const string MENU_MAP = "Menu";
 
-    private const string MOVE_ACTION = "Move";
-    private const string NAVIGATE_ACTION = "Navigate";
-    private const string ACTION_ACTION = "Action";
-    private const string INTERACT_ACTION = "Interact";
-    private const string DASH_ACTION = "Dash";
-    private const string UTILITY_ACTION = "Utility";
-    private const string CANCEL_ACTION = "Cancel";
-    private const string PAUSE_ACTION = "Pause";
+    private static readonly string MOVE_ACTION = EDirectionalAction.Move.ToString();
+    private static readonly string NAVIGATE_ACTION = EDirectionalAction.Navigate.ToString();
+    private static readonly string ACTION_ACTION = EAction.Action.ToString();
+    private static readonly string INTERACT_ACTION = EAction.Interact.ToString();
+    private static readonly string DASH_ACTION = EAction.Dash.ToString();
+    private static readonly string UTILITY_ACTION = EAction.Utility.ToString();
+    private static readonly string CANCEL_ACTION = EAction.Cancel.ToString();
+    private static readonly string PAUSE_ACTION = EAction.Pause.ToString();
 
     private PlayerInput _playerInput;
     [SerializeField] private EInputScope _scopeType;
 
     private HoldAction _actionHoldState;
+
+    public bool IsHoldingAction => _actionHoldState.IsHolding;
+
+    public Action<EAction> ActionEvent;
+    public Action<EAction, bool> HoldActionEvent;
+    public Action<EDirectionalAction, Vector2> DirectionalActionEvent;
 
     private void Awake()
     {
@@ -97,33 +122,40 @@ public class PlayerInputHandler : MonoBehaviour
         _actionHoldState.OnUpdate(out bool beginHold);
         if (beginHold)
         {
-            Debug.Log("Action hold begin");
+            RequestHoldAction(EAction.Action, true);
         }
+    }
+
+    public void SetScope(EInputScope scopeType)
+    {
+        UnsubscribeActions(_scopeType);
+        _scopeType = scopeType;
+        SubscribeActions(scopeType);
     }
 
     private void OnMove(InputAction.CallbackContext context)
     {
-        Vector2 input = context.ReadValue<Vector2>();
         if (context.performed)
         {
-            Debug.Log("Move requested with input: " + input);
+            Vector2 input = context.ReadValue<Vector2>();
+            RequestDirectionalAction(EDirectionalAction.Move, input);
         }
         else if (context.canceled)
         {
-            Debug.Log("Move canceled");
+            RequestDirectionalAction(EDirectionalAction.Move, Vector2.zero);
         }
     }
 
     private void OnNavigate(InputAction.CallbackContext context)
     {
-        Vector2 input = context.ReadValue<Vector2>();
         if (context.performed)
         {
-            Debug.Log("Navigate requested with input: " + input);
+            Vector2 input = context.ReadValue<Vector2>();
+            RequestDirectionalAction(EDirectionalAction.Navigate, input);
         }
         else if (context.canceled)
         {
-            Debug.Log("Navigate canceled");
+            RequestDirectionalAction(EDirectionalAction.Navigate, Vector2.zero);
         }
     }
 
@@ -138,48 +170,72 @@ public class PlayerInputHandler : MonoBehaviour
             _actionHoldState.OnCanceled(out bool wasHolding);
             if (wasHolding)
             {
-                Debug.Log("Action hold canceled");
+                RequestHoldAction(EAction.Action, false);
             }
             else
             {
-                Debug.Log("Action requested");
+                RequestAction(EAction.Action);
             }
         }
     }
 
     private void OnInteract(InputAction.CallbackContext context)
     {
-        Debug.Log("Interact requested");
+        RequestAction(EAction.Interact);
     }
 
     private void OnDash(InputAction.CallbackContext context)
     {
-        Debug.Log("Dash requested");
+        RequestAction(EAction.Dash);
     }
 
     private void OnUtility(InputAction.CallbackContext context)
     {
-        Debug.Log("Utility requested");
+        RequestAction(EAction.Utility);
     }
 
     private void OnCancel(InputAction.CallbackContext context)
     {
-        Debug.Log("Cancel requested");
+        RequestAction(EAction.Cancel);
     }
 
     private void OnPause(InputAction.CallbackContext context)
     {
-        Debug.Log("Pause requested");
+        RequestAction(EAction.Pause);
+    }
+
+    private void RequestDirectionalAction(EDirectionalAction actionType, Vector2 input)
+    {
+        DirectionalActionEvent?.Invoke(actionType, input);
+#if LOG_ACTIONS
+        Debug.Log($"{actionType} requested with input: {input}");
+#endif
+    }
+
+    private void RequestHoldAction(EAction actionType, bool isHolding)
+    {
+        HoldActionEvent?.Invoke(actionType, isHolding);
+#if LOG_ACTIONS
+        if (isHolding)
+        {
+            Debug.Log($"{actionType} hold begin");
+        }
+        else
+        {
+            Debug.Log($"{actionType} hold end");
+        }
+#endif
+    }
+
+    private void RequestAction(EAction actionType)
+    {
+        ActionEvent?.Invoke(actionType);
+#if LOG_ACTIONS
+        Debug.Log($"{actionType} requested");
+#endif
     }
 
     #region SCOPE
-
-    public void SetScope(EInputScope scopeType)
-    {
-        UnsubscribeActions(_scopeType);
-        _scopeType = scopeType;
-        SubscribeActions(scopeType);
-    }
 
     private void UnsubscribeActions(EInputScope scopeType)
     {
