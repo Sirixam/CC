@@ -10,12 +10,14 @@ public enum EInputScope
     Menu,
     PlayerStanding,
     PlayerSitting,
+    PlayerAiming,
 }
 
 public enum EDirectionalAction
 {
     Move,
     Navigate,
+    Aim
 }
 
 public enum EAction
@@ -68,8 +70,10 @@ public class PlayerInputHandler : MonoBehaviour
 
     private const string PLAYER_STANDING_MAP = "Player - Standing";
     private const string PLAYER_SITTING_MAP = "Player - Sitting";
+    private const string PLAYER_AIMING_MAP = "Player - Aiming";
     //private const string MENU_MAP = "Menu";
 
+    private static readonly string AIM_ACTION = EDirectionalAction.Aim.ToString();
     private static readonly string MOVE_ACTION = EDirectionalAction.Move.ToString();
     private static readonly string NAVIGATE_ACTION = EDirectionalAction.Navigate.ToString();
     private static readonly string ACTION_ACTION = EAction.Action.ToString();
@@ -96,6 +100,7 @@ public class PlayerInputHandler : MonoBehaviour
         // DO NOT iterate over all action maps, because we want to keep some enabled, eg UI
         _playerInput.actions.FindActionMap(PLAYER_STANDING_MAP).Disable();
         _playerInput.actions.FindActionMap(PLAYER_SITTING_MAP).Disable();
+        _playerInput.actions.FindActionMap(PLAYER_AIMING_MAP).Disable();
         //_playerInput.actions.FindActionMap(MENU_MAP).Disable();
 
         Debug.Log("Current control scheme: " + _playerInput.currentControlScheme);
@@ -156,6 +161,19 @@ public class PlayerInputHandler : MonoBehaviour
         else if (context.canceled)
         {
             RequestDirectionalAction(EDirectionalAction.Navigate, Vector2.zero);
+        }
+    }
+
+    private void OnAim(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            Vector2 input = context.ReadValue<Vector2>();
+            RequestDirectionalAction(EDirectionalAction.Aim, input);
+        }
+        else if (context.canceled)
+        {
+            RequestDirectionalAction(EDirectionalAction.Aim, Vector2.zero);
         }
     }
 
@@ -244,6 +262,7 @@ public class PlayerInputHandler : MonoBehaviour
             case EInputScope.Menu: UnsubscribeMenuActions(); break;
             case EInputScope.PlayerStanding: UnsubscribePlayerStandingActions(); break;
             case EInputScope.PlayerSitting: UnsubscribePlayerSittingActions(); break;
+            case EInputScope.PlayerAiming: UnsubscribePlayerAimingActions(); break;
             case EInputScope.Undefined: break;
             default:
                 Debug.LogError("Scope is not being handled: " + scopeType);
@@ -258,6 +277,7 @@ public class PlayerInputHandler : MonoBehaviour
             case EInputScope.Menu: SubscribeMenuActions(); break;
             case EInputScope.PlayerStanding: SubscribePlayerStandingActions(); break;
             case EInputScope.PlayerSitting: SubscribePlayerSittingActions(); break;
+            case EInputScope.PlayerAiming: SubscribePlayerAimingActions(); break;
             default:
                 Debug.LogError("Scope is not being handled: " + scopeType);
                 break;
@@ -329,6 +349,36 @@ public class PlayerInputHandler : MonoBehaviour
 
         actions[INTERACT_ACTION].performed -= OnInteract;
         actions[UTILITY_ACTION].performed -= OnUtility;
+        actions[CANCEL_ACTION].performed -= OnCancel;
+        actions[PAUSE_ACTION].performed -= OnPause;
+    }
+
+    private void SubscribePlayerAimingActions()
+    {
+        _playerInput.actions.FindActionMap(PLAYER_AIMING_MAP).Enable();
+
+        var actions = _playerInput.actions;
+        actions[AIM_ACTION].performed += OnAim;
+        actions[AIM_ACTION].canceled += OnAim;
+
+        actions[ACTION_ACTION].started += OnAction;
+        actions[ACTION_ACTION].canceled += OnAction;
+
+        actions[CANCEL_ACTION].performed += OnCancel;
+        actions[PAUSE_ACTION].performed += OnPause;
+    }
+
+    private void UnsubscribePlayerAimingActions()
+    {
+        _playerInput.actions.FindActionMap(PLAYER_AIMING_MAP).Disable();
+
+        var actions = _playerInput.actions;
+        actions[AIM_ACTION].performed -= OnAim;
+        actions[AIM_ACTION].canceled -= OnAim;
+
+        actions[ACTION_ACTION].started -= OnAction;
+        actions[ACTION_ACTION].canceled -= OnAction;
+
         actions[CANCEL_ACTION].performed -= OnCancel;
         actions[PAUSE_ACTION].performed -= OnPause;
     }
