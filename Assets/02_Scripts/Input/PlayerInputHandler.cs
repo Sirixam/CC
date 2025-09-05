@@ -83,9 +83,9 @@ public class PlayerInputHandler : MonoBehaviour
     private static readonly string CANCEL_ACTION = EAction.Cancel.ToString();
     private static readonly string PAUSE_ACTION = EAction.Pause.ToString();
 
-    private PlayerInput _playerInput;
     private HoldAction _actionHoldState;
 
+    public PlayerInput PlayerInput { get; private set; }
     public EInputScope ScopeType { get; private set; }
     public bool IsHoldingAction => _actionHoldState.IsHolding;
 
@@ -93,17 +93,17 @@ public class PlayerInputHandler : MonoBehaviour
     public Action<EAction, bool> HoldActionEvent;
     public Action<EDirectionalAction, Vector2> DirectionalActionEvent;
 
-    private void Awake()
+    public void Initialize()
     {
-        _playerInput = GetComponent<PlayerInput>();
+        PlayerInput = GetComponent<PlayerInput>();
 
         // DO NOT iterate over all action maps, because we want to keep some enabled, eg UI
-        _playerInput.actions.FindActionMap(PLAYER_STANDING_MAP).Disable();
-        _playerInput.actions.FindActionMap(PLAYER_SITTING_MAP).Disable();
-        _playerInput.actions.FindActionMap(PLAYER_AIMING_MAP).Disable();
+        PlayerInput.actions.FindActionMap(PLAYER_STANDING_MAP).Disable();
+        PlayerInput.actions.FindActionMap(PLAYER_SITTING_MAP).Disable();
+        PlayerInput.actions.FindActionMap(PLAYER_AIMING_MAP).Disable();
         //_playerInput.actions.FindActionMap(MENU_MAP).Disable();
 
-        Debug.Log("Current control scheme: " + _playerInput.currentControlScheme);
+        Debug.Log("Current control scheme: " + PlayerInput.currentControlScheme);
     }
 
     private void OnEnable()
@@ -286,9 +286,9 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void SubscribePlayerStandingActions()
     {
-        _playerInput.actions.FindActionMap(PLAYER_STANDING_MAP).Enable();
+        PlayerInput.actions.FindActionMap(PLAYER_STANDING_MAP).Enable();
 
-        var actions = _playerInput.actions;
+        var actions = PlayerInput.actions;
         actions[MOVE_ACTION].started += OnMove;
         actions[MOVE_ACTION].performed += OnMove;
         actions[MOVE_ACTION].canceled += OnMove;
@@ -304,9 +304,9 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void UnsubscribePlayerStandingActions()
     {
-        _playerInput.actions.FindActionMap(PLAYER_STANDING_MAP).Disable();
+        PlayerInput.actions.FindActionMap(PLAYER_STANDING_MAP).Disable();
 
-        var actions = _playerInput.actions;
+        var actions = PlayerInput.actions;
         actions[MOVE_ACTION].started -= OnMove;
         actions[MOVE_ACTION].performed -= OnMove;
         actions[MOVE_ACTION].canceled -= OnMove;
@@ -321,9 +321,9 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void SubscribePlayerSittingActions()
     {
-        _playerInput.actions.FindActionMap(PLAYER_SITTING_MAP).Enable();
+        PlayerInput.actions.FindActionMap(PLAYER_SITTING_MAP).Enable();
 
-        var actions = _playerInput.actions;
+        var actions = PlayerInput.actions;
         actions[NAVIGATE_ACTION].performed += OnNavigate;
         actions[NAVIGATE_ACTION].canceled += OnNavigate;
 
@@ -338,9 +338,9 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void UnsubscribePlayerSittingActions()
     {
-        _playerInput.actions.FindActionMap(PLAYER_SITTING_MAP).Disable();
+        PlayerInput.actions.FindActionMap(PLAYER_SITTING_MAP).Disable();
 
-        var actions = _playerInput.actions;
+        var actions = PlayerInput.actions;
         actions[NAVIGATE_ACTION].performed -= OnNavigate;
         actions[NAVIGATE_ACTION].canceled -= OnNavigate;
 
@@ -355,9 +355,9 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void SubscribePlayerAimingActions()
     {
-        _playerInput.actions.FindActionMap(PLAYER_AIMING_MAP).Enable();
+        PlayerInput.actions.FindActionMap(PLAYER_AIMING_MAP).Enable();
 
-        var actions = _playerInput.actions;
+        var actions = PlayerInput.actions;
         actions[AIM_ACTION].performed += OnAim;
         actions[AIM_ACTION].canceled += OnAim;
 
@@ -370,9 +370,9 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void UnsubscribePlayerAimingActions()
     {
-        _playerInput.actions.FindActionMap(PLAYER_AIMING_MAP).Disable();
+        PlayerInput.actions.FindActionMap(PLAYER_AIMING_MAP).Disable();
 
-        var actions = _playerInput.actions;
+        var actions = PlayerInput.actions;
         actions[AIM_ACTION].performed -= OnAim;
         actions[AIM_ACTION].canceled -= OnAim;
 

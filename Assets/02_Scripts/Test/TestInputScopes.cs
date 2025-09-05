@@ -1,5 +1,8 @@
 using System;
+using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.UI;
 using UnityEngine.UI;
 
 public class TestInputScopes : MonoBehaviour
@@ -11,31 +14,67 @@ public class TestInputScopes : MonoBehaviour
         public Toggle Toggle;
     }
 
-    [SerializeField] private PlayerInputHandler _inputHandler;
-    [SerializeField] private InputScopeData[] _inputScopeData;
+    [Serializable]
+    public class PlayerData
+    {
+        public GameObject Container;
+        public TMP_Text ControlScheme;
+        public TMP_Text Feedback;
+        public InputScopeData[] InputScopeData;
+
+        public PlayerInputHandler InputHandler { get; set; }
+    }
+
+    [SerializeField] private int _playersCount;
+    [SerializeField] private PlayerData[] _playersInputData;
+    [SerializeField] private InputSystemUIInputModule _uiInputModule;
+    [SerializeField] private Camera _camera;
     [SerializeField] private EInputScope _initialScopeType;
 
     private void Awake()
     {
-        foreach (var inputScopeData in _inputScopeData)
+        foreach (var playerInputData in _playersInputData)
         {
-            inputScopeData.Toggle.isOn = _inputHandler.ScopeType == inputScopeData.ScopeType;
+            playerInputData.Container.SetActive(false);
+        }
+    }
+
+    public void PlayerJoined(PlayerInput playerInput)
+    {
+        PlayerData playerData = _playersInputData[_playersCount++];
+        playerInput.uiInputModule = _uiInputModule;
+        playerInput.camera = _camera;
+
+        // Initialize Input Handler
+        PlayerInputHandler inputHandler = playerInput.GetComponent<PlayerInputHandler>();
+        inputHandler.Initialize();
+        inputHandler.ActionEvent += actionType => playerData.Feedback.text = $"{actionType} requested";
+        inputHandler.DirectionalActionEvent += (actionType, input) => playerData.Feedback.text = $"{actionType} requested with input: {input}";
+        inputHandler.HoldActionEvent += (actionType, isHolding) => playerData.Feedback.text = playerData.Feedback.text = isHolding ? $"{actionType} hold begin" : $"{actionType} hold end";
+        playerData.InputHandler = inputHandler;
+
+        // Initialize Input Scope Data
+        foreach (var inputScopeData in playerData.InputScopeData)
+        {
+            inputScopeData.Toggle.isOn = playerData.InputHandler.ScopeType == inputScopeData.ScopeType;
             inputScopeData.Toggle.onValueChanged.AddListener((isOn) =>
             {
                 if (isOn)
                 {
-                    _inputHandler.SetScope(inputScopeData.ScopeType);
+                    playerData.InputHandler.SetScope(inputScopeData.ScopeType);
                 }
             });
         }
-    }
 
-    private void Start()
-    {
-        InputScopeData initialInputScopeData = Array.Find(_inputScopeData, x => x.ScopeType == _initialScopeType);
+        // Set initial scope type
+        InputScopeData initialInputScopeData = Array.Find(playerData.InputScopeData, x => x.ScopeType == _initialScopeType);
         if (initialInputScopeData != null)
         {
             initialInputScopeData.Toggle.isOn = true;
         }
+
+        // Show initial feedback
+        playerData.ControlScheme.text = $"Control scheme: {playerInput.currentControlScheme}";
+        playerData.Container.SetActive(true);
     }
 }
