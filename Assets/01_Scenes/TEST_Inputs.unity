@@ -983,6 +983,7 @@ MonoBehaviour:
       Toggle: {fileID: 1596304172}
     - ScopeType: 4
       Toggle: {fileID: 1971265380}
+    Color: {r: 0, g: 0.29411766, b: 1, a: 1}
   - Container: {fileID: 2135321059}
     ControlScheme: {fileID: 671132589}
     Feedback: {fileID: 1683100451}
@@ -995,6 +996,7 @@ MonoBehaviour:
       Toggle: {fileID: 1907898199}
     - ScopeType: 4
       Toggle: {fileID: 920350846}
+    Color: {r: 0, g: 1, b: 0.29411766, a: 1}
   _uiInputModule: {fileID: 1989086996}
   _camera: {fileID: 541495725}
   _initialScopeType: 2
@@ -1213,8 +1215,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4294920960
+  m_fontColor: {r: 0, g: 0.29411766, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -2261,8 +2263,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4283170560
+  m_fontColor: {r: 0, g: 1, b: 0.29411766, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:

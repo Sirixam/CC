@@ -21,6 +21,7 @@ public class TestInputScopes : MonoBehaviour
         public TMP_Text ControlScheme;
         public TMP_Text Feedback;
         public InputScopeData[] InputScopeData;
+        public Color Color;
 
         public PlayerInputHandler InputHandler { get; set; }
     }
@@ -76,5 +77,9 @@ public class TestInputScopes : MonoBehaviour
         // Show initial feedback
         playerData.ControlScheme.text = $"Control scheme: {playerInput.currentControlScheme}";
         playerData.Container.SetActive(true);
+
+        // Initialize Color (Optional)
+        var colorCompoonent = playerInput.GetComponentInChildren<ColorComponent>();
+        colorCompoonent?.SetColor(playerData.Color);
     }
 }
