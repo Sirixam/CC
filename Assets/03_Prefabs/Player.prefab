@@ -50,9 +50,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _inputHandler: {fileID: 6359063393089842935}
-  _rigidbody: {fileID: 165944274530947382}
-  _moveSpeed: 5
+  _playerPhysics:
+    _rigidbody: {fileID: 165944274530947382}
+    _moveSpeed: 5
+    _dashSpeed: 15
+    _dashDuration: 0.3
   _lookSpeed: 1080
+  _dashCooldown: 0.5
 --- !u!114 &6359063393089842935
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -92,7 +96,7 @@ MonoBehaviour:
   m_ActionEvents: []
   m_NeverAutoSwitchControlSchemes: 1
   m_DefaultControlScheme: Keyboard&Mouse
-  m_DefaultActionMap: Player - Sitting
+  m_DefaultActionMap: 
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
 --- !u!54 &165944274530947382

@@ -3,39 +3,65 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private PlayerInputHandler _inputHandler;
-    [SerializeField] private Rigidbody _rigidbody;
+    [SerializeField] private PlayerPhysics _playerPhysics;
 
     [Header("Configurations")]
-    [SerializeField] private float _moveSpeed = 5f; // Meters per second
-    [SerializeField] private float _lookSpeed = 720f; // Degrees per second
+    [SerializeField] private float _lookSpeed = 1080f; // Degrees per second
+    [SerializeField] private float _dashCooldown = 0.2f; // Seconds
 
-    private Vector3 _movementInput;
-    private Vector3 _lookInput;
+    // Look
+    private Vector3 _lookDirection;
+    // Cooldowns
+    private float _dashCooldownTimer;
 
     private void Awake()
+    {
+        _playerPhysics.Initialize();
+        _lookDirection = transform.forward;
+    }
+
+    private void OnEnable()
     {
         _inputHandler.ActionEvent += OnActionRequested;
         _inputHandler.DirectionalActionEvent += OnDirectionalActionRequested;
         _inputHandler.HoldActionEvent += OnHoldActionRequested;
+    }
 
-        _rigidbody.constraints = RigidbodyConstraints.FreezeRotation; // Prevent tipping over
+    private void OnDisable()
+    {
+        _inputHandler.ActionEvent -= OnActionRequested;
+        _inputHandler.DirectionalActionEvent -= OnDirectionalActionRequested;
+        _inputHandler.HoldActionEvent -= OnHoldActionRequested;
     }
 
     private void OnActionRequested(EAction actionType)
     {
-
+        if (actionType == EAction.Dash)
+        {
+            if (_dashCooldownTimer <= 0)
+            {
+                _playerPhysics.StartDashing(_lookDirection);
+                _dashCooldownTimer = _dashCooldown;
+            }
+        }
     }
 
     private void OnDirectionalActionRequested(EDirectionalAction actionType, Vector2 input)
     {
         if (actionType == EDirectionalAction.Move)
         {
-            _lookInput = new Vector3(input.x, 0, input.y);
-            _movementInput = _lookInput;
+            _playerPhysics.SetMoveDirection(new Vector3(input.x, 0, input.y));
+            if (input != Vector2.zero)
+            {
+                _lookDirection = new Vector3(input.x, 0, input.y);
+            }
         }
         else if (actionType == EDirectionalAction.Aim)
         {
-            _lookInput = new Vector3(input.x, 0, input.y);
+            if (input != Vector2.zero)
+            {
+                _lookDirection = new Vector3(input.x, 0, input.y);
+            }
         }
     }
 
@@ -46,15 +72,17 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (_lookInput != Vector3.zero)
+        if (_lookDirection != Vector3.zero)
         {
-            Quaternion targetRotation = Quaternion.LookRotation(_lookInput, Vector3.up);
+            Quaternion targetRotation = Quaternion.LookRotation(_lookDirection, Vector3.up);
             transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, _lookSpeed * Time.deltaTime);
         }
+
+        _dashCooldownTimer -= Time.deltaTime;
     }
 
     private void FixedUpdate()
     {
-        _rigidbody.velocity = _movementInput * _moveSpeed;
+        _playerPhysics.OnFixedUpdate(Time.fixedDeltaTime);
     }
 }

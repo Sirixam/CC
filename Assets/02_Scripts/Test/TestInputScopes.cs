@@ -34,9 +34,21 @@ public class TestInputScopes : MonoBehaviour
 
     private void Awake()
     {
-        foreach (var playerInputData in _playersInputData)
+        foreach (var playerData in _playersInputData)
         {
-            playerInputData.Container.SetActive(false);
+            foreach (var inputScopeData in playerData.InputScopeData)
+            {
+                inputScopeData.Toggle.isOn = false;
+                inputScopeData.Toggle.onValueChanged.AddListener((isOn) =>
+                {
+                    if (isOn)
+                    {
+                        playerData.InputHandler.SetScope(inputScopeData.ScopeType);
+                    }
+                });
+            }
+
+            playerData.Container.SetActive(false);
         }
     }
 
@@ -53,19 +65,6 @@ public class TestInputScopes : MonoBehaviour
         inputHandler.DirectionalActionEvent += (actionType, input) => playerData.Feedback.text = $"{actionType} requested with input: {input}";
         inputHandler.HoldActionEvent += (actionType, isHolding) => playerData.Feedback.text = playerData.Feedback.text = isHolding ? $"{actionType} hold begin" : $"{actionType} hold end";
         playerData.InputHandler = inputHandler;
-
-        // Initialize Input Scope Data
-        foreach (var inputScopeData in playerData.InputScopeData)
-        {
-            inputScopeData.Toggle.isOn = playerData.InputHandler.ScopeType == inputScopeData.ScopeType;
-            inputScopeData.Toggle.onValueChanged.AddListener((isOn) =>
-            {
-                if (isOn)
-                {
-                    playerData.InputHandler.SetScope(inputScopeData.ScopeType);
-                }
-            });
-        }
 
         // Set initial scope type
         InputScopeData initialInputScopeData = Array.Find(playerData.InputScopeData, x => x.ScopeType == _initialScopeType);
