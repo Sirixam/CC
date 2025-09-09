@@ -71,6 +71,9 @@ public class PlayerPhysics
         // Handle sliding
         foreach (var normal in _collisionNormals)
         {
+            float alignment = Vector3.Dot(velocity, -normal);
+            if (alignment <= 0) continue;
+
             velocity = Vector3.ProjectOnPlane(velocity, normal);
         }
         _collisionNormals.Clear();
