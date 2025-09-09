@@ -85,4 +85,22 @@ public class PlayerController : MonoBehaviour
     {
         _playerPhysics.OnFixedUpdate(Time.fixedDeltaTime);
     }
+
+    private void OnCollisionStay(Collision collision)
+    {
+        foreach (var contact in collision.contacts)
+        {
+            if (_playerPhysics.IsFrontalCollision(contact.normal))
+            {
+                _playerPhysics.ClearCollisionNormals();
+                if (_playerPhysics.TryStopDashing())
+                {
+                    Debug.LogError("Stop Dashing");
+                }
+                return;
+            }
+
+            _playerPhysics.AddCollisionNormal(contact.normal);
+        }
+    }
 }

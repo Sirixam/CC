@@ -55,6 +55,7 @@ MonoBehaviour:
     _moveSpeed: 5
     _dashSpeed: 15
     _dashDuration: 0.3
+    _frontalCollisionAngle: 30
   _lookSpeed: 1080
   _dashCooldown: 0.5
 --- !u!114 &6359063393089842935
@@ -391,7 +392,7 @@ Transform:
   m_GameObject: {fileID: 4698140251479237507}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -531,7 +532,7 @@ Transform:
   m_GameObject: {fileID: 9215208916044551610}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 0.6, y: 1, z: 0.4}
   m_ConstrainProportionsScale: 0
   m_Children: []
