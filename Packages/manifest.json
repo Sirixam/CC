@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.kyrylokuzyk.primetween": "file:../Assets/Plugins/PrimeTween/internal/com.kyrylokuzyk.primetween.tgz",
     "com.unity.animation.rigging": "1.2.1",
     "com.unity.cinemachine": "2.10.4",
     "com.unity.formats.fbx": "4.2.1",
