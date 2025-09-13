@@ -2,17 +2,22 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    [SerializeField] private PlayerView _view;
     [SerializeField] private PlayerInputHandler _inputHandler;
     [SerializeField] private PlayerPhysics _playerPhysics;
 
     [Header("Configurations")]
     [SerializeField] private float _lookSpeed = 1080f; // Degrees per second
     [SerializeField] private float _dashCooldown = 0.2f; // Seconds
+    [SerializeField] private float _stunDuration = 1f;
 
     // Look
     private Vector3 _lookDirection;
-    // Cooldowns
+    // Timers
     private float _dashCooldownTimer;
+    private float _stunTimer;
+    // States
+    private bool _isStunned;
 
     private void Awake()
     {
@@ -72,18 +77,24 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        _dashCooldownTimer -= Time.deltaTime;
+
+        if (_isStunned)
+        {
+            UpdateStun();
+            return;
+        }
+
         if (_lookDirection != Vector3.zero)
         {
             Quaternion targetRotation = Quaternion.LookRotation(_lookDirection, Vector3.up);
             transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, _lookSpeed * Time.deltaTime);
         }
-
-        _dashCooldownTimer -= Time.deltaTime;
     }
 
     private void FixedUpdate()
     {
-        _playerPhysics.OnFixedUpdate(Time.fixedDeltaTime);
+        _playerPhysics.OnFixedUpdate(Time.fixedDeltaTime, canMove: !_isStunned);
     }
 
     private void OnCollisionStay(Collision collision)
@@ -95,12 +106,29 @@ public class PlayerController : MonoBehaviour
                 _playerPhysics.ClearCollisionNormals();
                 if (_playerPhysics.TryStopDashing())
                 {
-                    Debug.LogError("Stop Dashing");
+                    StartStun();
                 }
                 return;
             }
 
             _playerPhysics.AddCollisionNormal(contact.normal);
+        }
+    }
+
+    private void StartStun()
+    {
+        _stunTimer = _stunDuration;
+        _isStunned = true;
+        _view.OnStartStun();
+    }
+
+    private void UpdateStun()
+    {
+        _stunTimer -= Time.deltaTime;
+        if (_stunTimer <= 0)
+        {
+            _isStunned = false;
+            _view.OnStopStun();
         }
     }
 }

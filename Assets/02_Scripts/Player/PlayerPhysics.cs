@@ -50,8 +50,15 @@ public class PlayerPhysics
         return true;
     }
 
-    public void OnFixedUpdate(float deltaTime)
+    public void OnFixedUpdate(float deltaTime, bool canMove)
     {
+        if (!canMove)
+        {
+            _collisionNormals.Clear();
+            _rigidbody.velocity = Vector3.zero;
+            return;
+        }
+
         Vector3 velocity;
         if (IsDashing)
         {

@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 365723418938546978}
   - component: {fileID: 8799704102317268165}
+  - component: {fileID: 1863892939415744151}
   - component: {fileID: 6359063393089842935}
   - component: {fileID: 5061849212568918116}
   - component: {fileID: 165944274530947382}
@@ -50,6 +51,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b03ad5b13126f7846ae91e29a9258a75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _view: {fileID: 1863892939415744151}
   _inputHandler: {fileID: 6359063393089842935}
   _playerPhysics:
     _rigidbody: {fileID: 165944274530947382}
@@ -59,6 +61,20 @@ MonoBehaviour:
     _frontalCollisionAngle: 30
   _lookSpeed: 1080
   _dashCooldown: 0.5
+  _stunDuration: 2
+--- !u!114 &1863892939415744151
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2028980368172026476}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75e9d4e291c2b78449ba776a4476d6e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _stunVFX: {fileID: 8779866896397922528}
 --- !u!114 &6359063393089842935
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -142,16 +158,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _renderersData:
   - Renderer: {fileID: 3679817608329246945}
-    ColorPropertyName: _Color
+    ColorPropertyName: _BaseColor
     Ignore: 0
   - Renderer: {fileID: 5475743524496541957}
-    ColorPropertyName: _Color
+    ColorPropertyName: _BaseColor
     Ignore: 0
   - Renderer: {fileID: 2473443489765185995}
-    ColorPropertyName: _Color
+    ColorPropertyName: _BaseColor
     Ignore: 1
   - Renderer: {fileID: 4093075331706076542}
-    ColorPropertyName: _Color
+    ColorPropertyName: _BaseColor
     Ignore: 1
   EDITOR_RenderesParent: {fileID: 9123122298512519571}
   EDITOR_IncludeInactive: 1
@@ -603,6 +619,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b3db7d4d711f94d4796743baa5ba7a38, type: 3}
+--- !u!198 &8779866896397922528 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 5659291355382750469, guid: b3db7d4d711f94d4796743baa5ba7a38, type: 3}
+  m_PrefabInstance: {fileID: 3986123191176490469}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8779866896397922558 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5659291355382750491, guid: b3db7d4d711f94d4796743baa5ba7a38, type: 3}
