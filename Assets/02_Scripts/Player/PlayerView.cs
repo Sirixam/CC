@@ -14,6 +14,8 @@ public class PlayerView : MonoBehaviour
     private MeshRenderer[] _meshRenderes;
     private float _initialBoundsExtentsZ;
     private bool _isSoftStunned;
+    private Tween _scaleTweenZ;
+    private Tween _positionTween;
 
     private void Awake()
     {
@@ -31,7 +33,8 @@ public class PlayerView : MonoBehaviour
         _stunVFX.Play(withChildren: true);
         if (!isSoftStun)
         {
-            Tween.ScaleZ(_rendererContainer, _startStunTweenSettings).OnUpdate(_rendererContainer, OnUpdateScaleZ);
+            _scaleTweenZ.Stop();
+            _scaleTweenZ = Tween.ScaleZ(_rendererContainer, _startStunTweenSettings).OnUpdate(_rendererContainer, OnUpdateScaleZ);
         }
     }
 
@@ -40,7 +43,8 @@ public class PlayerView : MonoBehaviour
         _stunVFX.Stop(withChildren: true, ParticleSystemStopBehavior.StopEmitting);
         if (!_isSoftStunned)
         {
-            Tween.ScaleZ(_rendererContainer, _stopStunTweenSettings).OnUpdate(_rendererContainer, OnUpdateScaleZ);
+            _scaleTweenZ.Stop();
+            _scaleTweenZ = Tween.ScaleZ(_rendererContainer, _stopStunTweenSettings).OnUpdate(_rendererContainer, OnUpdateScaleZ);
         }
     }
 
@@ -63,12 +67,14 @@ public class PlayerView : MonoBehaviour
     public void OnPickUp(Transform item)
     {
         item.SetParent(_itemContainer, worldPositionStays: true);
-        Tween.LocalPosition(item, _pickUpTweenSettings);
+        _positionTween.Stop();
+        _positionTween = Tween.LocalPosition(item, _pickUpTweenSettings);
     }
 
     public void OnDrop(Transform item)
     {
         item.SetParent(null, worldPositionStays: true);
-        Tween.Position(item, new Vector3(item.position.x, 0, item.position.z), _dropTweenSettings);
+        _positionTween.Stop();
+        _positionTween = Tween.Position(item, new Vector3(item.position.x, 0, item.position.z), _dropTweenSettings);
     }
 }

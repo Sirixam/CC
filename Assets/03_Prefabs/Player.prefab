@@ -144,8 +144,8 @@ MonoBehaviour:
       _useFixedUpdate: 0
       _updateType: 0
   _dropTweenSettings:
-    duration: 1
-    ease: 0
+    duration: 0.8
+    ease: 30
     customEase:
       serializedVersion: 2
       m_Curve: []
