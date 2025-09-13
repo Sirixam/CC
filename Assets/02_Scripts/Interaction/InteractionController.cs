@@ -2,19 +2,25 @@ using PrimeTween;
 using System;
 using UnityEngine;
 
+public enum EInteraction
+{
+    Undefined,
+    PickUp,
+}
+
 public class InteractionController : MonoBehaviour
 {
+    [SerializeField] private EInteraction _type;
     [SerializeField] private GameObject _trigger;
     [SerializeField] private Rigidbody _rigidbody;
     [SerializeField] private Transform _bestInteractionTweenTarget;
     [SerializeField] private TweenSettings<Vector3> _startBestInteractionTween;
     [SerializeField] private TweenSettings<Vector3> _stopBestInteractionTween;
-    [SerializeField] private bool _canPickUp;
 
     private int _bestInteractionCount;
     private Tween _tween;
 
-    public bool CanPickUp => _canPickUp;
+    public EInteraction Type => _type;
 
     public event Action<InteractionController> OnDisableEvent;
 
@@ -42,13 +48,27 @@ public class InteractionController : MonoBehaviour
         }
     }
 
-    public void OnRequest()
+    public void OnStartInteraction()
     {
-        if (_canPickUp)
+        if (_type == EInteraction.PickUp)
         {
             _rigidbody.isKinematic = true;
             Disable();
         }
+    }
+
+    public void OnStopInteraction()
+    {
+        if (_type == EInteraction.PickUp)
+        {
+            _rigidbody.isKinematic = false;
+            Enable();
+        }
+    }
+
+    private void Enable()
+    {
+        _trigger.SetActive(true);
     }
 
     private void Disable()

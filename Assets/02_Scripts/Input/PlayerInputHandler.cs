@@ -84,10 +84,12 @@ public class PlayerInputHandler : MonoBehaviour
     private static readonly string PAUSE_ACTION = EAction.Pause.ToString();
 
     private HoldAction _actionHoldState;
+    private HoldAction _interactHoldState;
 
     public PlayerInput PlayerInput { get; private set; }
     public EInputScope ScopeType { get; private set; }
     public bool IsHoldingAction => _actionHoldState.IsHolding;
+    public bool IsHoldingInteract => _interactHoldState.IsHolding;
 
     public Action<EAction> ActionEvent;
     public Action<EAction, bool> HoldActionEvent;
@@ -124,10 +126,16 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void Update()
     {
-        _actionHoldState.OnUpdate(out bool beginHold);
-        if (beginHold)
+        _actionHoldState.OnUpdate(out bool beginHoldAction);
+        if (beginHoldAction)
         {
             RequestHoldAction(EAction.Action, true);
+        }
+
+        _interactHoldState.OnUpdate(out bool beginHoldInteract);
+        if (beginHoldInteract)
+        {
+            RequestHoldAction(EAction.Interact, true);
         }
     }
 
@@ -199,7 +207,22 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void OnInteract(InputAction.CallbackContext context)
     {
-        RequestAction(EAction.Interact);
+        if (context.started)
+        {
+            _interactHoldState.OnStarted();
+        }
+        else if (context.canceled)
+        {
+            _interactHoldState.OnCanceled(out bool wasHolding);
+            if (wasHolding)
+            {
+                RequestHoldAction(EAction.Interact, false);
+            }
+            else
+            {
+                RequestAction(EAction.Interact);
+            }
+        }
     }
 
     private void OnDash(InputAction.CallbackContext context)
@@ -297,7 +320,10 @@ public class PlayerInputHandler : MonoBehaviour
         actions[ACTION_ACTION].performed += OnAction;
         actions[ACTION_ACTION].canceled += OnAction;
 
+        actions[INTERACT_ACTION].started += OnInteract;
         actions[INTERACT_ACTION].performed += OnInteract;
+        actions[INTERACT_ACTION].canceled += OnInteract;
+
         actions[DASH_ACTION].performed += OnDash;
         actions[PAUSE_ACTION].performed += OnPause;
     }
@@ -312,9 +338,13 @@ public class PlayerInputHandler : MonoBehaviour
         actions[MOVE_ACTION].canceled -= OnMove;
 
         actions[ACTION_ACTION].started -= OnAction;
+        actions[ACTION_ACTION].performed -= OnAction;
         actions[ACTION_ACTION].canceled -= OnAction;
 
+        actions[INTERACT_ACTION].started -= OnInteract;
         actions[INTERACT_ACTION].performed -= OnInteract;
+        actions[INTERACT_ACTION].canceled -= OnInteract;
+
         actions[DASH_ACTION].performed -= OnDash;
         actions[PAUSE_ACTION].performed -= OnPause;
     }
@@ -328,6 +358,7 @@ public class PlayerInputHandler : MonoBehaviour
         actions[NAVIGATE_ACTION].canceled += OnNavigate;
 
         actions[ACTION_ACTION].started += OnAction;
+        actions[ACTION_ACTION].performed += OnAction;
         actions[ACTION_ACTION].canceled += OnAction;
 
         actions[INTERACT_ACTION].performed += OnInteract;
@@ -345,6 +376,7 @@ public class PlayerInputHandler : MonoBehaviour
         actions[NAVIGATE_ACTION].canceled -= OnNavigate;
 
         actions[ACTION_ACTION].started -= OnAction;
+        actions[ACTION_ACTION].performed -= OnAction;
         actions[ACTION_ACTION].canceled -= OnAction;
 
         actions[INTERACT_ACTION].performed -= OnInteract;

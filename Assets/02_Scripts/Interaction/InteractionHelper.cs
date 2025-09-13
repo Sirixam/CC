@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using System.Transactions;
-using UnityEngine;
 
 public class InteractionHelper
 {
@@ -25,7 +23,16 @@ public class InteractionHelper
 
     public void UpdateBestInteraction()
     {
-        InteractionController bestInteraction = _interactions.Count > 0 ? _interactions[0] : null; // TODO
+        bool canPickUp = !_activeInteractions.Exists(x => x.Type == EInteraction.PickUp);
+
+        InteractionController bestInteraction = null;
+        foreach (InteractionController interaction in _interactions)
+        {
+            if (!canPickUp && interaction.Type == EInteraction.PickUp) continue;
+
+            bestInteraction = interaction; // TODO: Logic
+        }
+
         if (BestInteraction != bestInteraction)
         {
             BestInteraction?.DecreaseBestInteractionCount();
@@ -34,16 +41,29 @@ public class InteractionHelper
         }
     }
 
-    public bool TryInteract(out InteractionController interactionController)
+    public bool TryGetPickedUpInteraction(out InteractionController interaction)
     {
-        interactionController = BestInteraction;
-        if (interactionController == null)
+        interaction = _activeInteractions.Find(x => x.Type == EInteraction.PickUp);
+        return interaction != null;
+    }
+
+    public bool TryStartInteraction(out InteractionController startedInteraction)
+    {
+        startedInteraction = BestInteraction;
+        if (startedInteraction == null)
         {
             return false;
         }
 
-        _activeInteractions.Add(interactionController);
-        interactionController.OnRequest();
+        _activeInteractions.Add(startedInteraction);
+        startedInteraction.OnStartInteraction();
+        return true;
+    }
+
+    public bool TryStopInteraction(InteractionController stoppedInteraction)
+    {
+        if (!_activeInteractions.Remove(stoppedInteraction)) return false;
+        stoppedInteraction.OnStopInteraction();
         return true;
     }
 }

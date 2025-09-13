@@ -9,6 +9,7 @@ public class PlayerView : MonoBehaviour
     [SerializeField] private TweenSettings<float> _startStunTweenSettings = new();
     [SerializeField] private TweenSettings<float> _stopStunTweenSettings = new();
     [SerializeField] private TweenSettings<Vector3> _pickUpTweenSettings = new();
+    [SerializeField] private TweenSettings _dropTweenSettings = new();
 
     private MeshRenderer[] _meshRenderes;
     private float _initialBoundsExtentsZ;
@@ -63,5 +64,11 @@ public class PlayerView : MonoBehaviour
     {
         item.SetParent(_itemContainer, worldPositionStays: true);
         Tween.LocalPosition(item, _pickUpTweenSettings);
+    }
+
+    public void OnDrop(Transform item)
+    {
+        item.SetParent(null, worldPositionStays: true);
+        Tween.Position(item, new Vector3(item.position.x, 0, item.position.z), _dropTweenSettings);
     }
 }

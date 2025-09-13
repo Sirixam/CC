@@ -59,7 +59,7 @@ public class PlayerController : MonoBehaviour
         }
         else if (actionType == EAction.Interact)
         {
-            if (_interactionHelper.TryInteract(out InteractionController interaction) && interaction.CanPickUp)
+            if (_interactionHelper.TryStartInteraction(out InteractionController interaction) && interaction.Type == EInteraction.PickUp)
             {
                 _view.OnPickUp(interaction.transform);
             }
@@ -87,7 +87,14 @@ public class PlayerController : MonoBehaviour
 
     private void OnHoldActionRequested(EAction actionType, bool isHolding)
     {
-
+        if (actionType == EAction.Interact)
+        {
+            if (_interactionHelper.TryGetPickedUpInteraction(out InteractionController stoppedInteraction))
+            {
+                _interactionHelper.TryStopInteraction(stoppedInteraction);
+                _view.OnDrop(stoppedInteraction.transform);
+            }
+        }
     }
 
     private void Update()
