@@ -9,7 +9,8 @@ public class PlayerController : MonoBehaviour
     [Header("Configurations")]
     [SerializeField] private float _lookSpeed = 1080f; // Degrees per second
     [SerializeField] private float _dashCooldown = 0.2f; // Seconds
-    [SerializeField] private float _stunDuration = 1f;
+    [SerializeField] private float _hardStunDuration = 1f;
+    [SerializeField] private float _softStunDuration = 0.5f;
 
     // Look
     private Vector3 _lookDirection;
@@ -106,7 +107,8 @@ public class PlayerController : MonoBehaviour
                 _playerPhysics.ClearCollisionNormals();
                 if (_playerPhysics.TryStopDashing())
                 {
-                    StartStun();
+                    bool isSoftStun = !collision.transform.CompareTag("Environment");
+                    StartStun(isSoftStun);
                 }
                 return;
             }
@@ -115,11 +117,11 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void StartStun()
+    private void StartStun(bool isSoftStun)
     {
-        _stunTimer = _stunDuration;
+        _stunTimer = isSoftStun ? _softStunDuration : _hardStunDuration;
         _isStunned = true;
-        _view.OnStartStun();
+        _view.OnStartStun(isSoftStun);
     }
 
     private void UpdateStun()
