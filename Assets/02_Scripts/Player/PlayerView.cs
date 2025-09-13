@@ -4,9 +4,11 @@ using PrimeTween;
 public class PlayerView : MonoBehaviour
 {
     [SerializeField] private Transform _rendererContainer;
+    [SerializeField] private Transform _itemContainer;
     [SerializeField] private ParticleSystem _stunVFX;
     [SerializeField] private TweenSettings<float> _startStunTweenSettings = new();
     [SerializeField] private TweenSettings<float> _stopStunTweenSettings = new();
+    [SerializeField] private TweenSettings<Vector3> _pickUpTweenSettings = new();
 
     private MeshRenderer[] _meshRenderes;
     private float _initialBoundsExtentsZ;
@@ -16,6 +18,7 @@ public class PlayerView : MonoBehaviour
     {
         _startStunTweenSettings.startFromCurrent = true;
         _stopStunTweenSettings.startFromCurrent = true;
+        _pickUpTweenSettings.startFromCurrent = true;
         _stunVFX.Stop(withChildren: true, ParticleSystemStopBehavior.StopEmittingAndClear);
         _meshRenderes = _rendererContainer.GetComponentsInChildren<MeshRenderer>();
         _initialBoundsExtentsZ = GetBounds().extents.z;
@@ -54,5 +57,11 @@ public class PlayerView : MonoBehaviour
             bounds.Encapsulate(meshRenderer.bounds);
         }
         return bounds;
+    }
+
+    public void OnPickUp(Transform item)
+    {
+        item.SetParent(_itemContainer, worldPositionStays: true);
+        Tween.LocalPosition(item, _pickUpTweenSettings);
     }
 }

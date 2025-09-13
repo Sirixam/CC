@@ -4,13 +4,17 @@ using UnityEngine;
 
 public class InteractionController : MonoBehaviour
 {
+    [SerializeField] private GameObject _trigger;
+    [SerializeField] private Rigidbody _rigidbody;
     [SerializeField] private Transform _bestInteractionTweenTarget;
     [SerializeField] private TweenSettings<Vector3> _startBestInteractionTween;
     [SerializeField] private TweenSettings<Vector3> _stopBestInteractionTween;
-    [SerializeField] private bool _disableOnRequest;
+    [SerializeField] private bool _canPickUp;
 
     private int _bestInteractionCount;
     private Tween _tween;
+
+    public bool CanPickUp => _canPickUp;
 
     public event Action<InteractionController> OnDisableEvent;
 
@@ -40,13 +44,16 @@ public class InteractionController : MonoBehaviour
 
     public void OnRequest()
     {
-        if (!_disableOnRequest) return;
-        Disable();
+        if (_canPickUp)
+        {
+            _rigidbody.isKinematic = true;
+            Disable();
+        }
     }
 
     private void Disable()
     {
-        gameObject.SetActive(false);
+        _trigger.SetActive(false);
         TriggerBestInteractionTween(isBestInteraction: false);
         OnDisableEvent?.Invoke(this);
     }

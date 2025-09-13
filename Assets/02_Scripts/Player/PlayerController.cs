@@ -59,7 +59,10 @@ public class PlayerController : MonoBehaviour
         }
         else if (actionType == EAction.Interact)
         {
-            _interactionHelper.TryInteract();
+            if (_interactionHelper.TryInteract(out InteractionController interaction) && interaction.CanPickUp)
+            {
+                _view.OnPickUp(interaction.transform);
+            }
         }
     }
 
@@ -132,7 +135,7 @@ public class PlayerController : MonoBehaviour
     {
         if (HasAnyTag(other.transform, _interactionTags))
         {
-            var interaction = other.GetComponentInChildren<InteractionController>();
+            var interaction = other.GetComponentInParent<InteractionController>();
             if (interaction == null)
             {
                 Debug.LogError("Interaction controller was not found in object tagged as interaction: " + other.transform.name);
@@ -146,7 +149,7 @@ public class PlayerController : MonoBehaviour
     {
         if (HasAnyTag(other.transform, _interactionTags))
         {
-            var interaction = other.GetComponentInChildren<InteractionController>();
+            var interaction = other.GetComponentInParent<InteractionController>();
             if (interaction == null)
             {
                 Debug.LogError("Interaction controller was not found in object tagged as interaction: " + other.transform.name);

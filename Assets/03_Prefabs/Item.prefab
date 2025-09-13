@@ -296,10 +296,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4654900802881356922}
-  - component: {fileID: 6283382702624202541}
   - component: {fileID: 7914634927686884921}
   m_Layer: 0
-  m_Name: Interaction
+  m_Name: Trigger
   m_TagString: Interaction
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -320,60 +319,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 3316289737042317936}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6283382702624202541
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3862271349901356063}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac2614fbe84c86b49be133608bedbdb7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _bestInteractionTweenTarget: {fileID: 2196624216615191630}
-  _startBestInteractionTween:
-    startFromCurrent: 0
-    startValue: {x: 1, y: 1, z: 1}
-    endValue: {x: 1.15, y: 1.15, z: 1.15}
-    settings:
-      duration: 0.5
-      ease: 7
-      customEase:
-        serializedVersion: 2
-        m_Curve: []
-        m_PreInfinity: 2
-        m_PostInfinity: 2
-        m_RotationOrder: 4
-      cycles: -1
-      cycleMode: 1
-      startDelay: 0
-      endDelay: 0
-      useUnscaledTime: 0
-      _useFixedUpdate: 0
-      _updateType: 0
-  _stopBestInteractionTween:
-    startFromCurrent: 0
-    startValue: {x: 0, y: 0, z: 0}
-    endValue: {x: 1, y: 1, z: 1}
-    settings:
-      duration: 0.5
-      ease: 0
-      customEase:
-        serializedVersion: 2
-        m_Curve: []
-        m_PreInfinity: 2
-        m_PostInfinity: 2
-        m_RotationOrder: 4
-      cycles: 1
-      cycleMode: 0
-      startDelay: 0
-      endDelay: 0
-      useUnscaledTime: 0
-      _useFixedUpdate: 0
-      _updateType: 0
-  _disableOnRequest: 1
 --- !u!135 &7914634927686884921
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -457,6 +402,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3316289737042317936}
+  - component: {fileID: 3311442955737208034}
   - component: {fileID: 4323039434840745593}
   m_Layer: 0
   m_Name: Item
@@ -483,6 +429,62 @@ Transform:
   - {fileID: 4654900802881356922}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3311442955737208034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5219355494168577670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac2614fbe84c86b49be133608bedbdb7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _trigger: {fileID: 3862271349901356063}
+  _rigidbody: {fileID: 4323039434840745593}
+  _bestInteractionTweenTarget: {fileID: 2196624216615191630}
+  _startBestInteractionTween:
+    startFromCurrent: 0
+    startValue: {x: 1, y: 1, z: 1}
+    endValue: {x: 1.15, y: 1.15, z: 1.15}
+    settings:
+      duration: 0.5
+      ease: 7
+      customEase:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      cycles: -1
+      cycleMode: 1
+      startDelay: 0
+      endDelay: 0
+      useUnscaledTime: 0
+      _useFixedUpdate: 0
+      _updateType: 0
+  _stopBestInteractionTween:
+    startFromCurrent: 0
+    startValue: {x: 0, y: 0, z: 0}
+    endValue: {x: 1, y: 1, z: 1}
+    settings:
+      duration: 0.5
+      ease: 0
+      customEase:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      cycles: 1
+      cycleMode: 0
+      startDelay: 0
+      endDelay: 0
+      useUnscaledTime: 0
+      _useFixedUpdate: 0
+      _updateType: 0
+  _canPickUp: 1
 --- !u!54 &4323039434840745593
 Rigidbody:
   m_ObjectHideFlags: 0

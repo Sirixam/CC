@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Transactions;
+using UnityEngine;
 
 public class InteractionHelper
 {
@@ -32,12 +34,16 @@ public class InteractionHelper
         }
     }
 
-    public bool TryInteract()
+    public bool TryInteract(out InteractionController interactionController)
     {
-        if (BestInteraction == null) return false;
+        interactionController = BestInteraction;
+        if (interactionController == null)
+        {
+            return false;
+        }
 
-        _activeInteractions.Add(BestInteraction);
-        BestInteraction.OnRequest();
+        _activeInteractions.Add(interactionController);
+        interactionController.OnRequest();
         return true;
     }
 }
