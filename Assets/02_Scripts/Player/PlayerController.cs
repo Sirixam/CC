@@ -11,6 +11,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _dashCooldown = 0.2f; // Seconds
     [SerializeField] private float _hardStunDuration = 1f;
     [SerializeField] private float _softStunDuration = 0.5f;
+    [Header("Tags")]
+    [Tag]
+    [SerializeField] private string[] _hardCollisionTags;
+    [Tag]
+    [SerializeField] private string[] _interactionTags;
 
     // Look
     private Vector3 _lookDirection;
@@ -19,6 +24,8 @@ public class PlayerController : MonoBehaviour
     private float _stunTimer;
     // States
     private bool _isStunned;
+    // Helpers
+    private InteractionHelper _interactionHelper = new();
 
     private void Awake()
     {
@@ -107,13 +114,29 @@ public class PlayerController : MonoBehaviour
                 _playerPhysics.ClearCollisionNormals();
                 if (_playerPhysics.TryStopDashing())
                 {
-                    bool isSoftStun = !collision.transform.CompareTag("Environment");
+                    bool isSoftStun = !HasAnyTag(collision.transform, _hardCollisionTags);
                     StartStun(isSoftStun);
                 }
                 return;
             }
 
             _playerPhysics.AddCollisionNormal(contact.normal);
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (HasAnyTag(other.transform, _interactionTags))
+        {
+            other.GetComponent<InteractionController>().OnPlayerEnter(_interactionHelper);
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (HasAnyTag(other.transform, _interactionTags))
+        {
+            other.GetComponent<InteractionController>().OnPlayerExit(_interactionHelper);
         }
     }
 
@@ -132,5 +155,14 @@ public class PlayerController : MonoBehaviour
             _isStunned = false;
             _view.OnStopStun();
         }
+    }
+
+    private bool HasAnyTag(Transform target, string[] tags)
+    {
+        foreach (var tag in tags)
+        {
+            if (target.CompareTag(tag)) return true;
+        }
+        return false;
     }
 }

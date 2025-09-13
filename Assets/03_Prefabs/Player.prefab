@@ -64,6 +64,10 @@ MonoBehaviour:
   _dashCooldown: 0.5
   _hardStunDuration: 1
   _softStunDuration: 0.5
+  _hardCollisionTags:
+  - Environment
+  _interactionTags:
+  - Interaction
 --- !u!114 &1863892939415744151
 MonoBehaviour:
   m_ObjectHideFlags: 0
