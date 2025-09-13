@@ -1,6 +1,5 @@
 using PrimeTween;
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public class InteractionController : MonoBehaviour
@@ -8,10 +7,12 @@ public class InteractionController : MonoBehaviour
     [SerializeField] private Transform _bestInteractionTweenTarget;
     [SerializeField] private TweenSettings<Vector3> _startBestInteractionTween;
     [SerializeField] private TweenSettings<Vector3> _stopBestInteractionTween;
+    [SerializeField] private bool _disableOnRequest;
 
-    private bool _isBestInteraction;
-    private List<InteractionHelper> _interactionHelpers = new();
+    private int _bestInteractionCount;
     private Tween _tween;
+
+    public event Action<InteractionController> OnDisableEvent;
 
     private void Awake()
     {
@@ -19,13 +20,40 @@ public class InteractionController : MonoBehaviour
         _stopBestInteractionTween.startFromCurrent = true;
     }
 
-    private void Update()
+    public void IncreaseBestInteractionCount()
     {
-        bool isBestInteraction = _interactionHelpers.Exists(x => x.BestInteraction == this);
-        if (isBestInteraction == _isBestInteraction) return;
+        _bestInteractionCount++;
+        if (_bestInteractionCount == 1)
+        {
+            TriggerBestInteractionTween(isBestInteraction: true);
+        }
+    }
 
+    public void DecreaseBestInteractionCount()
+    {
+        _bestInteractionCount--;
+        if (_bestInteractionCount == 0)
+        {
+            TriggerBestInteractionTween(isBestInteraction: false);
+        }
+    }
+
+    public void OnRequest()
+    {
+        if (!_disableOnRequest) return;
+        Disable();
+    }
+
+    private void Disable()
+    {
+        gameObject.SetActive(false);
+        TriggerBestInteractionTween(isBestInteraction: false);
+        OnDisableEvent?.Invoke(this);
+    }
+
+    private void TriggerBestInteractionTween(bool isBestInteraction)
+    {
         _tween.Stop();
-        _isBestInteraction = isBestInteraction;
         if (isBestInteraction)
         {
             _tween = Tween.Scale(_bestInteractionTweenTarget, _startBestInteractionTween);
@@ -34,17 +62,5 @@ public class InteractionController : MonoBehaviour
         {
             _tween = Tween.Scale(_bestInteractionTweenTarget, _stopBestInteractionTween);
         }
-    }
-
-    public void OnPlayerEnter(InteractionHelper interactionHelper)
-    {
-        _interactionHelpers.Add(interactionHelper);
-        interactionHelper.AddInteraction(this);
-    }
-
-    public void OnPlayerExit(InteractionHelper interactionHelper)
-    {
-        _interactionHelpers.Remove(interactionHelper);
-        interactionHelper.RemoveInteraction(this);
     }
 }

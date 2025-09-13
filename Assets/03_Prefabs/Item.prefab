@@ -373,6 +373,7 @@ MonoBehaviour:
       useUnscaledTime: 0
       _useFixedUpdate: 0
       _updateType: 0
+  _disableOnRequest: 1
 --- !u!135 &7914634927686884921
 SphereCollider:
   m_ObjectHideFlags: 0

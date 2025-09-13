@@ -3,23 +3,41 @@ using System.Collections.Generic;
 public class InteractionHelper
 {
     private List<InteractionController> _interactions = new();
+    private List<InteractionController> _activeInteractions = new();
 
     public InteractionController BestInteraction { get; private set; }
 
-    public void AddInteraction(InteractionController interactionController)
+    public void AddInteraction(InteractionController interaction)
     {
-        _interactions.Add(interactionController);
+        interaction.OnDisableEvent += RemoveInteraction;
+        _interactions.Add(interaction);
         UpdateBestInteraction();
     }
 
-    public void RemoveInteraction(InteractionController interactionController)
+    public void RemoveInteraction(InteractionController interaction)
     {
-        _interactions.Remove(interactionController);
+        interaction.OnDisableEvent -= RemoveInteraction;
+        _interactions.Remove(interaction);
         UpdateBestInteraction();
     }
 
     public void UpdateBestInteraction()
     {
-        BestInteraction = _interactions.Count > 0 ? _interactions[0] : null; // TODO
+        InteractionController bestInteraction = _interactions.Count > 0 ? _interactions[0] : null; // TODO
+        if (BestInteraction != bestInteraction)
+        {
+            BestInteraction?.DecreaseBestInteractionCount();
+            BestInteraction = bestInteraction;
+            bestInteraction?.IncreaseBestInteractionCount();
+        }
+    }
+
+    public bool TryInteract()
+    {
+        if (BestInteraction == null) return false;
+
+        _activeInteractions.Add(BestInteraction);
+        BestInteraction.OnRequest();
+        return true;
     }
 }

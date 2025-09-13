@@ -57,6 +57,10 @@ public class PlayerController : MonoBehaviour
                 _dashCooldownTimer = _dashCooldown;
             }
         }
+        else if (actionType == EAction.Interact)
+        {
+            _interactionHelper.TryInteract();
+        }
     }
 
     private void OnDirectionalActionRequested(EDirectionalAction actionType, Vector2 input)
@@ -128,7 +132,13 @@ public class PlayerController : MonoBehaviour
     {
         if (HasAnyTag(other.transform, _interactionTags))
         {
-            other.GetComponent<InteractionController>().OnPlayerEnter(_interactionHelper);
+            var interaction = other.GetComponentInChildren<InteractionController>();
+            if (interaction == null)
+            {
+                Debug.LogError("Interaction controller was not found in object tagged as interaction: " + other.transform.name);
+                return;
+            }
+            _interactionHelper.AddInteraction(interaction);
         }
     }
 
@@ -136,7 +146,13 @@ public class PlayerController : MonoBehaviour
     {
         if (HasAnyTag(other.transform, _interactionTags))
         {
-            other.GetComponent<InteractionController>().OnPlayerExit(_interactionHelper);
+            var interaction = other.GetComponentInChildren<InteractionController>();
+            if (interaction == null)
+            {
+                Debug.LogError("Interaction controller was not found in object tagged as interaction: " + other.transform.name);
+                return;
+            }
+            _interactionHelper.RemoveInteraction(interaction);
         }
     }
 
