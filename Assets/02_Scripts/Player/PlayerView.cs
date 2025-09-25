@@ -6,6 +6,7 @@ public class PlayerView : MonoBehaviour
     [SerializeField] private Transform _rendererContainer;
     [SerializeField] private Transform _itemContainer;
     [SerializeField] private ParticleSystem _stunVFX;
+    [SerializeField] private TrailRenderer[] _dashTrails;
     [SerializeField] private TweenSettings<float> _startStunTweenSettings = new();
     [SerializeField] private TweenSettings<float> _stopStunTweenSettings = new();
     [SerializeField] private TweenSettings<Vector3> _pickUpTweenSettings = new();
@@ -25,6 +26,11 @@ public class PlayerView : MonoBehaviour
         _stunVFX.Stop(withChildren: true, ParticleSystemStopBehavior.StopEmittingAndClear);
         _meshRenderes = _rendererContainer.GetComponentsInChildren<MeshRenderer>();
         _initialBoundsExtentsZ = GetBounds().extents.z;
+
+        foreach (var trailRenderer in _dashTrails)
+        {
+            trailRenderer.emitting = false;
+        }
     }
 
     public void OnStartStun(bool isSoftStun)
@@ -76,5 +82,21 @@ public class PlayerView : MonoBehaviour
         item.SetParent(null, worldPositionStays: true);
         _positionTween.Stop();
         _positionTween = Tween.Position(item, new Vector3(item.position.x, 0, item.position.z), _dropTweenSettings);
+    }
+
+    public void OnStartDash()
+    {
+        foreach (var trailRenderer in _dashTrails)
+        {
+            trailRenderer.emitting = true;
+        }
+    }
+
+    public void OnStopDash()
+    {
+        foreach (var trailRenderer in _dashTrails)
+        {
+            trailRenderer.emitting = false;
+        }
     }
 }

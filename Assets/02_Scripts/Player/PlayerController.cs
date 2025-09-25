@@ -53,6 +53,7 @@ public class PlayerController : MonoBehaviour
         {
             if (_dashCooldownTimer <= 0)
             {
+                _view.OnStartDash();
                 _playerPhysics.StartDashing(_lookDirection);
                 _dashCooldownTimer = _dashCooldown;
             }
@@ -116,7 +117,11 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        _playerPhysics.OnFixedUpdate(Time.fixedDeltaTime, canMove: !_isStunned);
+        _playerPhysics.OnFixedUpdate(Time.fixedDeltaTime, canMove: !_isStunned, out bool stoppedDashing);
+        if (stoppedDashing)
+        {
+            _view.OnStopDash();
+        }
     }
 
     private void OnCollisionStay(Collision collision)
@@ -128,6 +133,7 @@ public class PlayerController : MonoBehaviour
                 _playerPhysics.ClearCollisionNormals();
                 if (_playerPhysics.TryStopDashing())
                 {
+                    _view.OnStopDash();
                     bool isSoftStun = !HasAnyTag(collision.transform, _hardCollisionTags);
                     StartStun(isSoftStun);
                 }

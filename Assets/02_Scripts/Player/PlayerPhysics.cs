@@ -50,8 +50,9 @@ public class PlayerPhysics
         return true;
     }
 
-    public void OnFixedUpdate(float deltaTime, bool canMove)
+    public void OnFixedUpdate(float deltaTime, bool canMove, out bool stoppedDashing)
     {
+        stoppedDashing = false;
         if (!canMove)
         {
             _collisionNormals.Clear();
@@ -68,6 +69,7 @@ public class PlayerPhysics
             if (_dashTimer < 0)
             {
                 IsDashing = false;
+                stoppedDashing = true;
             }
         }
         else
