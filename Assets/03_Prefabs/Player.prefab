@@ -61,6 +61,14 @@ MonoBehaviour:
     _dashSpeed: 15
     _dashDuration: 0.3
     _frontalCollisionAngle: 30
+  _interactionData:
+    FacingScores:
+    - MaxAngle: 60
+      Score: 40
+    - MaxAngle: 90
+      Score: 15
+    BaseDistanceScore: 30
+    DistanceScoreMultiplier: 40
   _lookSpeed: 1080
   _dashCooldown: 0.5
   _hardStunDuration: 1
@@ -163,8 +171,6 @@ MonoBehaviour:
     useUnscaledTime: 0
     _useFixedUpdate: 0
     _updateType: 0
-  _timeTweenDuration: 0.3
-  _minDashTrailTime: 0.2
 --- !u!114 &6359063393089842935
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -322,7 +328,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 838ffcff6786f99489e5a0ec5de2fe73, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -405,7 +411,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 838ffcff6786f99489e5a0ec5de2fe73, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -490,7 +496,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 838ffcff6786f99489e5a0ec5de2fe73, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -693,7 +699,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 838ffcff6786f99489e5a0ec5de2fe73, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

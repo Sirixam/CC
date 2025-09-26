@@ -11,7 +11,10 @@ public enum EInteraction
 public class InteractionController : MonoBehaviour
 {
     [SerializeField] private EInteraction _type;
-    [SerializeField] private GameObject _trigger;
+    [SerializeField] private int _baseScore;
+    [SerializeField] private int _emptyHandsExtraScore;
+    [SerializeField] private int _carryingExtraScore;
+    [SerializeField] private SphereCollider _trigger;
     [SerializeField] private Rigidbody _rigidbody;
     [SerializeField] private Transform _bestInteractionTweenTarget;
     [SerializeField] private TweenSettings<Vector3> _startBestInteractionTween;
@@ -21,6 +24,10 @@ public class InteractionController : MonoBehaviour
     private Tween _tween;
 
     public EInteraction Type => _type;
+    public int BaseScore => _baseScore;
+    public int EmptyHandsExtraScore => _emptyHandsExtraScore;
+    public int CarryingExtraScore => _carryingExtraScore;
+    public Vector3 Position => transform.position;
 
     public event Action<InteractionController> OnDisableEvent;
 
@@ -68,12 +75,12 @@ public class InteractionController : MonoBehaviour
 
     private void Enable()
     {
-        _trigger.SetActive(true);
+        _trigger.enabled = true;
     }
 
     private void Disable()
     {
-        _trigger.SetActive(false);
+        _trigger.enabled = false;
         TriggerBestInteractionTween(isBestInteraction: false);
         OnDisableEvent?.Invoke(this);
     }

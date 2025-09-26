@@ -1,12 +1,13 @@
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IInteractionActor
 {
     [SerializeField] private PlayerView _view;
     [SerializeField] private PlayerInputHandler _inputHandler;
     [SerializeField] private PlayerPhysics _playerPhysics;
 
     [Header("Configurations")]
+    [SerializeField] private InteractionHelper.Data _interactionData;
     [SerializeField] private float _lookSpeed = 1080f; // Degrees per second
     [SerializeField] private float _dashCooldown = 0.2f; // Seconds
     [SerializeField] private float _hardStunDuration = 1f;
@@ -25,12 +26,16 @@ public class PlayerController : MonoBehaviour
     // States
     private bool _isStunned;
     // Helpers
-    private InteractionHelper _interactionHelper = new();
+    private InteractionHelper _interactionHelper;
+    // IInteractionActor
+    Vector3 IInteractionActor.Position => transform.position;
+    Vector3 IInteractionActor.Forward => transform.forward;
 
     private void Awake()
     {
         _playerPhysics.Initialize();
         _lookDirection = transform.forward;
+        _interactionHelper = new InteractionHelper(this, _interactionData);
     }
 
     private void OnEnable()
@@ -113,6 +118,8 @@ public class PlayerController : MonoBehaviour
             Quaternion targetRotation = Quaternion.LookRotation(_lookDirection, Vector3.up);
             transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, _lookSpeed * Time.deltaTime);
         }
+
+        _interactionHelper.UpdateBestInteraction();
     }
 
     private void FixedUpdate()

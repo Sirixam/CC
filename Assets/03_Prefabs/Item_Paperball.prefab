@@ -405,7 +405,7 @@ GameObject:
   - component: {fileID: 3311442955737208034}
   - component: {fileID: 4323039434840745593}
   m_Layer: 0
-  m_Name: Item
+  m_Name: Item_Paperball
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -442,7 +442,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _type: 1
-  _trigger: {fileID: 3862271349901356063}
+  _baseScore: 20
+  _emptyHandsExtraScore: 30
+  _carryingExtraScore: -30
+  _trigger: {fileID: 7914634927686884921}
   _rigidbody: {fileID: 4323039434840745593}
   _bestInteractionTweenTarget: {fileID: 2196624216615191630}
   _startBestInteractionTween:
