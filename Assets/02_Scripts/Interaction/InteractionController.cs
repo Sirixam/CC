@@ -23,6 +23,10 @@ public class InteractionController : MonoBehaviour
     [Serializable]
     public class BestInteractionViewData
     {
+        [Header("Outline")]
+        public bool UseOutline;
+        public Outline Outline;
+        [Header("Tween")]
         public bool UseScaleTween;
         public Transform TweenTarget;
         public TweenSettings<Vector3> StartTweenSettings;
@@ -47,6 +51,10 @@ public class InteractionController : MonoBehaviour
 
     private void Awake()
     {
+        if (_bestInteractionViewData.UseOutline)
+        {
+            _bestInteractionViewData.Outline.enabled = false;
+        }
         if (_bestInteractionViewData.UseScaleTween)
         {
             _bestInteractionViewData.StartTweenSettings.startFromCurrent = true;
@@ -104,6 +112,10 @@ public class InteractionController : MonoBehaviour
 
     private void TriggerBestInteractionTween(bool isBestInteraction)
     {
+        if (_bestInteractionViewData.UseOutline)
+        {
+            _bestInteractionViewData.Outline.enabled = isBestInteraction;
+        }
         if (_bestInteractionViewData.UseScaleTween)
         {
             _scaleTween.Stop();

@@ -10,7 +10,6 @@ public class PlayerView : MonoBehaviour
     [SerializeField] private TweenSettings<float> _startStunTweenSettings = new();
     [SerializeField] private TweenSettings<float> _stopStunTweenSettings = new();
     [SerializeField] private TweenSettings<Vector3> _pickUpTweenSettings = new();
-    [SerializeField] private TweenSettings _dropTweenSettings = new();
 
     private MeshRenderer[] _meshRenderes;
     private float _initialBoundsExtentsZ;
