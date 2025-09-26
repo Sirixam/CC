@@ -6,17 +6,14 @@ public class PlayerController : MonoBehaviour, IInteractionActor
     [SerializeField] private PlayerInputHandler _inputHandler;
     [SerializeField] private PlayerPhysics _playerPhysics;
 
-    [Header("Configurations")]
+    [Header("Data")]
     [SerializeField] private InteractionHelper.Data _interactionData;
     [SerializeField] private float _lookSpeed = 1080f; // Degrees per second
     [SerializeField] private float _dashCooldown = 0.2f; // Seconds
     [SerializeField] private float _hardStunDuration = 1f;
     [SerializeField] private float _softStunDuration = 0.5f;
-    [Header("Tags")]
     [Tag]
     [SerializeField] private string[] _hardCollisionTags;
-    [Tag]
-    [SerializeField] private string[] _interactionTags;
 
     // Look
     private Vector3 _lookDirection;
@@ -153,7 +150,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor
 
     private void OnTriggerEnter(Collider other)
     {
-        if (HasAnyTag(other.transform, _interactionTags))
+        if (HasAnyTag(other.transform, _interactionData.InteractionTags))
         {
             var interaction = other.GetComponentInParent<InteractionController>();
             if (interaction == null)
@@ -167,7 +164,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor
 
     private void OnTriggerExit(Collider other)
     {
-        if (HasAnyTag(other.transform, _interactionTags))
+        if (HasAnyTag(other.transform, _interactionData.InteractionTags))
         {
             var interaction = other.GetComponentInParent<InteractionController>();
             if (interaction == null)

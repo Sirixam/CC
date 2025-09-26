@@ -69,14 +69,16 @@ MonoBehaviour:
       Score: 15
     BaseDistanceScore: 30
     DistanceScoreMultiplier: 40
+    InterpolateFacingScore: 0
+    InteractionTags:
+    - Interaction
+    ScoreLogType: 0
   _lookSpeed: 1080
   _dashCooldown: 0.5
   _hardStunDuration: 1
   _softStunDuration: 0.5
   _hardCollisionTags:
   - Environment
-  _interactionTags:
-  - Interaction
 --- !u!114 &1863892939415744151
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -29,6 +29,8 @@ public class InteractionHelper
         public float BaseDistanceScore = 30f; // Score at distance 0
         public float DistanceScoreMultiplier = 40f;
         public bool InterpolateFacingScore = false;
+        [Tag]
+        public string[] InteractionTags;
         public ELog ScoreLogType = ELog.None;
     }
 
