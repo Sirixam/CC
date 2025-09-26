@@ -11,31 +11,47 @@ public enum EInteraction
 
 public class InteractionController : MonoBehaviour
 {
-    [SerializeField] private EInteraction _type;
-    [SerializeField] private int _baseScore;
-    [SerializeField] private int _emptyHandsExtraScore;
-    [SerializeField] private int _carryingExtraScore;
+    [Serializable]
+    public class Data
+    {
+        public EInteraction Type = EInteraction.Undefined;
+        public int BaseScore = 100;
+        public int EmptyHandsExtraScore = 50;
+        public int CarryingExtraScore = -25;
+    }
+
+    [Serializable]
+    public class BestInteractionViewData
+    {
+        public bool UseScaleTween;
+        public Transform TweenTarget;
+        public TweenSettings<Vector3> StartTweenSettings;
+        public TweenSettings<Vector3> StopTweenSettings;
+    }
+
     [SerializeField] private SphereCollider _trigger;
     [SerializeField] private Rigidbody _rigidbody;
-    [SerializeField] private Transform _bestInteractionTweenTarget;
-    [SerializeField] private TweenSettings<Vector3> _startBestInteractionTween;
-    [SerializeField] private TweenSettings<Vector3> _stopBestInteractionTween;
+    [SerializeField] private Data _data;
+    [SerializeField] private BestInteractionViewData _bestInteractionViewData;
 
     private int _bestInteractionCount;
-    private Tween _tween;
+    private Tween _scaleTween;
 
-    public EInteraction Type => _type;
-    public int BaseScore => _baseScore;
-    public int EmptyHandsExtraScore => _emptyHandsExtraScore;
-    public int CarryingExtraScore => _carryingExtraScore;
+    public EInteraction Type => _data.Type;
+    public int BaseScore => _data.BaseScore;
+    public int EmptyHandsExtraScore => _data.EmptyHandsExtraScore;
+    public int CarryingExtraScore => _data.CarryingExtraScore;
     public Vector3 Position => transform.position;
 
     public event Action<InteractionController> OnDisableEvent;
 
     private void Awake()
     {
-        _startBestInteractionTween.startFromCurrent = true;
-        _stopBestInteractionTween.startFromCurrent = true;
+        if (_bestInteractionViewData.UseScaleTween)
+        {
+            _bestInteractionViewData.StartTweenSettings.startFromCurrent = true;
+            _bestInteractionViewData.StopTweenSettings.startFromCurrent = true;
+        }
     }
 
     public void IncreaseBestInteractionCount()
@@ -58,7 +74,7 @@ public class InteractionController : MonoBehaviour
 
     public void OnStartInteraction()
     {
-        if (_type == EInteraction.PickUp)
+        if (_data.Type == EInteraction.PickUp)
         {
             _rigidbody.isKinematic = true;
             Disable();
@@ -67,7 +83,7 @@ public class InteractionController : MonoBehaviour
 
     public void OnStopInteraction()
     {
-        if (_type == EInteraction.PickUp)
+        if (_data.Type == EInteraction.PickUp)
         {
             _rigidbody.isKinematic = false;
             Enable();
@@ -88,14 +104,17 @@ public class InteractionController : MonoBehaviour
 
     private void TriggerBestInteractionTween(bool isBestInteraction)
     {
-        _tween.Stop();
-        if (isBestInteraction)
+        if (_bestInteractionViewData.UseScaleTween)
         {
-            _tween = Tween.Scale(_bestInteractionTweenTarget, _startBestInteractionTween);
-        }
-        else
-        {
-            _tween = Tween.Scale(_bestInteractionTweenTarget, _stopBestInteractionTween);
+            _scaleTween.Stop();
+            if (isBestInteraction)
+            {
+                _scaleTween = Tween.Scale(_bestInteractionViewData.TweenTarget, _bestInteractionViewData.StartTweenSettings);
+            }
+            else if (_bestInteractionViewData.TweenTarget.localScale != _bestInteractionViewData.StopTweenSettings.endValue)
+            {
+                _scaleTween = Tween.Scale(_bestInteractionViewData.TweenTarget, _bestInteractionViewData.StopTweenSettings);
+            }
         }
     }
 }

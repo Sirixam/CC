@@ -81,7 +81,6 @@ public class PlayerView : MonoBehaviour
     {
         item.SetParent(null, worldPositionStays: true);
         _positionTween.Stop();
-        _positionTween = Tween.Position(item, new Vector3(item.position.x, 0, item.position.z), _dropTweenSettings);
     }
 
     public void OnThrow(Transform item)
