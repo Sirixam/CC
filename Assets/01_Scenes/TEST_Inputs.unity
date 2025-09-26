@@ -726,7 +726,7 @@ GameObject:
   - component: {fileID: 193323299}
   - component: {fileID: 193323298}
   - component: {fileID: 193323301}
-  m_Layer: 3
+  m_Layer: 8
   m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -805,7 +805,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 193323296}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: f202f6529c592b1488226f01f6e87dda, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0

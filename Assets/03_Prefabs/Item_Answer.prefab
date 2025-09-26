@@ -379,7 +379,7 @@ SphereCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4582913023674087484}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 5dc497d1229cbf54fb8ee1b55a57a70d, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -403,6 +403,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3316289737042317936}
   - component: {fileID: 3311442955737208034}
+  - component: {fileID: 3884154065179673130}
   - component: {fileID: 4323039434840745593}
   m_Layer: 0
   m_Name: Item_Answer
@@ -488,6 +489,23 @@ MonoBehaviour:
       useUnscaledTime: 0
       _useFixedUpdate: 0
       _updateType: 0
+--- !u!114 &3884154065179673130
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5219355494168577670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9911216d80c2e6c4dbabd72e1bc2081c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _groundFriction: 10
+  _groundLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  _raycastMaxDistance: 0.3
 --- !u!54 &4323039434840745593
 Rigidbody:
   m_ObjectHideFlags: 0
