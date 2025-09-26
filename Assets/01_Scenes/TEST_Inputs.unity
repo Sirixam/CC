@@ -725,36 +725,14 @@ GameObject:
   - component: {fileID: 193323300}
   - component: {fileID: 193323299}
   - component: {fileID: 193323298}
-  - component: {fileID: 193323297}
-  m_Layer: 0
+  - component: {fileID: 193323301}
+  m_Layer: 3
   m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!64 &193323297
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 193323296}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!23 &193323298
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -820,6 +798,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 950472511}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &193323301
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 193323296}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 10, y: 2.220446e-16, z: 10}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &236913543
 GameObject:
   m_ObjectHideFlags: 0
@@ -1571,7 +1570,7 @@ GameObject:
   - component: {fileID: 472942095}
   - component: {fileID: 472942094}
   - component: {fileID: 472942093}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Wall - Left
   m_TagString: Environment
   m_Icon: {fileID: 0}
@@ -3336,7 +3335,7 @@ GameObject:
   - component: {fileID: 1276791678}
   - component: {fileID: 1276791677}
   - component: {fileID: 1276791676}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Wall - Right
   m_TagString: Environment
   m_Icon: {fileID: 0}
@@ -3814,7 +3813,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3316289737042317936, guid: 1a918e96e086428419e3a9e7e1c16e9d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 3316289737042317936, guid: 1a918e96e086428419e3a9e7e1c16e9d, type: 3}
       propertyPath: m_LocalPosition.z
@@ -5139,7 +5138,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3316289737042317936, guid: 0e2fd31554e12e34c85e6608faae33a4, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 3316289737042317936, guid: 0e2fd31554e12e34c85e6608faae33a4, type: 3}
       propertyPath: m_LocalPosition.z
@@ -5456,7 +5455,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3316289737042317936, guid: 0e2fd31554e12e34c85e6608faae33a4, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 3316289737042317936, guid: 0e2fd31554e12e34c85e6608faae33a4, type: 3}
       propertyPath: m_LocalPosition.z

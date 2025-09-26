@@ -77,8 +77,10 @@ MonoBehaviour:
   _dashCooldown: 0.5
   _hardStunDuration: 1
   _softStunDuration: 0.5
+  _throwSpeed: 10
   _hardCollisionTags:
   - Environment
+  _dropByHoldingInteract: 0
 --- !u!114 &1863892939415744151
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -530,7 +532,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9035815860624316063}
   - component: {fileID: 8172077511286663205}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -12,6 +12,8 @@ public class PlayerController : MonoBehaviour, IInteractionActor
     [SerializeField] private float _dashCooldown = 0.2f; // Seconds
     [SerializeField] private float _hardStunDuration = 1f;
     [SerializeField] private float _softStunDuration = 0.5f;
+    [SerializeField] private float _throwSpeed = 10f; // Meters per second
+    [SerializeField] private float _throwPitchAngle = 15f; // Degrees
     [Tag]
     [SerializeField] private string[] _hardCollisionTags;
     [Header("TO BE REMOVED")]
@@ -102,6 +104,18 @@ public class PlayerController : MonoBehaviour, IInteractionActor
         if (actionType == EAction.Interact && _dropByHoldingInteract)
         {
             TryDropItem();
+        }
+        else if (actionType == EAction.Action)
+        {
+            if (_interactionHelper.TryGetPickedUpInteraction(out InteractionController stoppedInteraction))
+            {
+                _interactionHelper.TryStopInteraction(stoppedInteraction);
+                _view.OnThrow(stoppedInteraction.transform);
+
+                Vector3 throwDirection = _lookDirection;
+                throwDirection.y = Mathf.Tan(_throwPitchAngle * Mathf.Deg2Rad);
+                stoppedInteraction.GetComponent<Rigidbody>().AddForce(throwDirection * _throwSpeed, ForceMode.VelocityChange);
+            }
         }
     }
 

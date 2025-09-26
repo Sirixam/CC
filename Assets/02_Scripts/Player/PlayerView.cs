@@ -84,6 +84,12 @@ public class PlayerView : MonoBehaviour
         _positionTween = Tween.Position(item, new Vector3(item.position.x, 0, item.position.z), _dropTweenSettings);
     }
 
+    public void OnThrow(Transform item)
+    {
+        item.SetParent(null, worldPositionStays: true);
+        _positionTween.Stop();
+    }
+
     public void OnStartDash()
     {
         foreach (var trailRenderer in _dashTrails)
