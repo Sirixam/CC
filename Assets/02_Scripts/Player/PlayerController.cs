@@ -178,30 +178,12 @@ public class PlayerController : MonoBehaviour, IInteractionActor
 
     private void OnTriggerEnter(Collider other)
     {
-        if (HasAnyTag(other.transform, _interactionData.InteractionTags))
-        {
-            var interaction = other.GetComponentInParent<InteractionController>();
-            if (interaction == null)
-            {
-                Debug.LogError("Interaction controller was not found in object tagged as interaction: " + other.transform.name);
-                return;
-            }
-            _interactionHelper.AddInteraction(interaction);
-        }
+        _interactionHelper.OnTriggerEnter(other);
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (HasAnyTag(other.transform, _interactionData.InteractionTags))
-        {
-            var interaction = other.GetComponentInParent<InteractionController>();
-            if (interaction == null)
-            {
-                Debug.LogError("Interaction controller was not found in object tagged as interaction: " + other.transform.name);
-                return;
-            }
-            _interactionHelper.RemoveInteraction(interaction);
-        }
+        _interactionHelper.OnTriggerExit(other);
     }
 
     private void StartStun(bool isSoftStun)

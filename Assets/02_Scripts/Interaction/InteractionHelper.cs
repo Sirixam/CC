@@ -48,6 +48,35 @@ public class InteractionHelper
         _data.FacingScores.Sort((a, b) => a.MaxAngle.CompareTo(b.MaxAngle)); // Ensure ascending order
     }
 
+    public void OnTriggerEnter(Collider other)
+    {
+        if (HasAnyTag(other.transform, _data.InteractionTags))
+        {
+            var interaction = other.GetComponentInParent<InteractionController>();
+            if (interaction == null)
+            {
+                Debug.LogError("Interaction controller was not found in object tagged as interaction: " + other.transform.name);
+                return;
+            }
+            AddInteraction(interaction);
+        }
+    }
+
+    public void OnTriggerExit(Collider other)
+    {
+        if (HasAnyTag(other.transform, _data.InteractionTags))
+        {
+            var interaction = other.GetComponentInParent<InteractionController>();
+            if (interaction == null)
+            {
+                Debug.LogError("Interaction controller was not found in object tagged as interaction: " + other.transform.name);
+                return;
+            }
+            RemoveInteraction(interaction);
+        }
+    }
+
+
     public void AddInteraction(InteractionController interaction)
     {
         interaction.OnDisableEvent += RemoveInteraction;
@@ -165,5 +194,14 @@ public class InteractionHelper
         if (!_activeInteractions.Remove(stoppedInteraction)) return false;
         stoppedInteraction.OnStopInteraction();
         return true;
+    }
+
+    private bool HasAnyTag(Transform target, string[] tags)
+    {
+        foreach (var tag in tags)
+        {
+            if (target.CompareTag(tag)) return true;
+        }
+        return false;
     }
 }
