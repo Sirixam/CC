@@ -14,6 +14,8 @@ public class PlayerController : MonoBehaviour, IInteractionActor
     [SerializeField] private float _softStunDuration = 0.5f;
     [Tag]
     [SerializeField] private string[] _hardCollisionTags;
+    [Header("TO BE REMOVED")]
+    [SerializeField] private bool _dropByHoldingInteract; // Once we decide on the final input scheme, this can be removed
 
     // Look
     private Vector3 _lookDirection;
@@ -67,6 +69,13 @@ public class PlayerController : MonoBehaviour, IInteractionActor
                 _view.OnPickUp(interaction.transform);
             }
         }
+        else if (actionType == EAction.Action)
+        {
+            if (!_dropByHoldingInteract)
+            {
+                TryDropItem();
+            }
+        }
     }
 
     private void OnDirectionalActionRequested(EDirectionalAction actionType, Vector2 input)
@@ -90,13 +99,18 @@ public class PlayerController : MonoBehaviour, IInteractionActor
 
     private void OnHoldActionRequested(EAction actionType, bool isHolding)
     {
-        if (actionType == EAction.Interact)
+        if (actionType == EAction.Interact && _dropByHoldingInteract)
         {
-            if (_interactionHelper.TryGetPickedUpInteraction(out InteractionController stoppedInteraction))
-            {
-                _interactionHelper.TryStopInteraction(stoppedInteraction);
-                _view.OnDrop(stoppedInteraction.transform);
-            }
+            TryDropItem();
+        }
+    }
+
+    private void TryDropItem()
+    {
+        if (_interactionHelper.TryGetPickedUpInteraction(out InteractionController stoppedInteraction))
+        {
+            _interactionHelper.TryStopInteraction(stoppedInteraction);
+            _view.OnDrop(stoppedInteraction.transform);
         }
     }
 
