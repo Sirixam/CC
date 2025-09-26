@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 5101409339834082186}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -57,6 +57,7 @@ MonoBehaviour:
   _inputHandler: {fileID: 6359063393089842935}
   _playerPhysics:
     _rigidbody: {fileID: 165944274530947382}
+    _collider: {fileID: 8172077511286663205}
     _moveSpeed: 5
     _dashSpeed: 15
     _dashDuration: 0.3
@@ -73,12 +74,14 @@ MonoBehaviour:
     InteractionTags:
     - Interaction
     ScoreLogType: 0
+  _throwData:
+    Speed: 10
+    PitchAngle: 15
+    FlyingLayer: 8
   _lookSpeed: 1080
   _dashCooldown: 0.5
   _hardStunDuration: 1
   _softStunDuration: 0.5
-  _throwSpeed: 10
-  _throwPitchAngle: 15
   _hardCollisionTags:
   - Environment
   _dropByHoldingInteract: 0
@@ -160,22 +163,6 @@ MonoBehaviour:
       useUnscaledTime: 0
       _useFixedUpdate: 0
       _updateType: 0
-  _dropTweenSettings:
-    duration: 0.8
-    ease: 30
-    customEase:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    cycles: 1
-    cycleMode: 0
-    startDelay: 0
-    endDelay: 0
-    useUnscaledTime: 0
-    _useFixedUpdate: 0
-    _updateType: 0
 --- !u!114 &6359063393089842935
 MonoBehaviour:
   m_ObjectHideFlags: 0

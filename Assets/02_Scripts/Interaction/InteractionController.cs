@@ -47,6 +47,8 @@ public class InteractionController : MonoBehaviour
     public int CarryingExtraScore => _data.CarryingExtraScore;
     public Vector3 Position => transform.position;
 
+    public Rigidbody Rigidbody => _rigidbody;
+
     public event Action<InteractionController> OnDisableEvent;
 
     private void Awake()

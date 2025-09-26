@@ -6,6 +6,7 @@ using UnityEngine;
 public class PlayerPhysics
 {
     [SerializeField] private Rigidbody _rigidbody;
+    [SerializeField] private Collider _collider;
     [Header("Configurations")]
     [SerializeField] private float _moveSpeed = 5f; // Meters per second
     [SerializeField] private float _dashSpeed = 10f; // Meters per second
@@ -20,6 +21,7 @@ public class PlayerPhysics
     private Vector3 _dashDirection;
     // Collisions
     private List<Vector3> _collisionNormals = new();
+    public Collider Collider => _collider;
 
     // General
     public Vector3 Direction => IsDashing ? _dashDirection : _moveDirection;

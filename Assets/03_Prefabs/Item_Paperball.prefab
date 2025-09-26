@@ -405,6 +405,7 @@ GameObject:
   - component: {fileID: 3311442955737208034}
   - component: {fileID: -5984599180916989715}
   - component: {fileID: 315868154328462021}
+  - component: {fileID: 7130793065122747167}
   - component: {fileID: 4323039434840745593}
   m_Layer: 0
   m_Name: Item_Paperball
@@ -1047,6 +1048,23 @@ MonoBehaviour:
     - {x: -0.6959634, y: 0.1768332, z: -0.6959634}
     - {x: -0.34139428, y: 0.6646524, z: -0.66459554}
     - {x: -0.17685792, y: 0.6958694, z: -0.6960511}
+--- !u!114 &7130793065122747167
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5219355494168577670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d69db9b602508646be2fceadad41be4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _validTags:
+  - Environment
+  - Player
+  _colliders:
+  - {fileID: 2677114333623177933}
 --- !u!54 &4323039434840745593
 Rigidbody:
   m_ObjectHideFlags: 0

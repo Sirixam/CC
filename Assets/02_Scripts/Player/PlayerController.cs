@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour, IInteractionActor
+public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 {
     [SerializeField] private PlayerView _view;
     [SerializeField] private PlayerInputHandler _inputHandler;
@@ -8,12 +8,11 @@ public class PlayerController : MonoBehaviour, IInteractionActor
 
     [Header("Data")]
     [SerializeField] private InteractionHelper.Data _interactionData;
+    [SerializeField] private ThrowHelper.Data _throwData;
     [SerializeField] private float _lookSpeed = 1080f; // Degrees per second
     [SerializeField] private float _dashCooldown = 0.2f; // Seconds
     [SerializeField] private float _hardStunDuration = 1f;
     [SerializeField] private float _softStunDuration = 0.5f;
-    [SerializeField] private float _throwSpeed = 10f; // Meters per second
-    [SerializeField] private float _throwPitchAngle = 15f; // Degrees
     [Tag]
     [SerializeField] private string[] _hardCollisionTags;
     [Header("TO BE REMOVED")]
@@ -28,15 +27,20 @@ public class PlayerController : MonoBehaviour, IInteractionActor
     private bool _isStunned;
     // Helpers
     private InteractionHelper _interactionHelper;
+    private ThrowHelper _throwHelper;
     // IInteractionActor
     Vector3 IInteractionActor.Position => transform.position;
     Vector3 IInteractionActor.Forward => transform.forward;
+    // IThrowActor
+    Vector3 IThrowActor.LookDirection => _lookDirection;
+    Collider IThrowActor.Collider => _playerPhysics.Collider;
 
     private void Awake()
     {
         _playerPhysics.Initialize();
         _lookDirection = transform.forward;
         _interactionHelper = new InteractionHelper(this, _interactionData);
+        _throwHelper = new ThrowHelper(this, _throwData, _interactionHelper);
     }
 
     private void OnEnable()
@@ -105,17 +109,9 @@ public class PlayerController : MonoBehaviour, IInteractionActor
         {
             TryDropItem();
         }
-        else if (actionType == EAction.Action)
+        else if (actionType == EAction.Action && !isHolding)
         {
-            if (_interactionHelper.TryGetPickedUpInteraction(out InteractionController stoppedInteraction))
-            {
-                _interactionHelper.TryStopInteraction(stoppedInteraction);
-                _view.OnThrow(stoppedInteraction.transform);
-
-                Vector3 throwDirection = _lookDirection;
-                throwDirection.y = Mathf.Tan(_throwPitchAngle * Mathf.Deg2Rad);
-                stoppedInteraction.GetComponent<Rigidbody>().AddForce(throwDirection * _throwSpeed, ForceMode.VelocityChange);
-            }
+            _throwHelper.TryTriggerThrow();
         }
     }
 
@@ -177,14 +173,13 @@ public class PlayerController : MonoBehaviour, IInteractionActor
     }
 
     private void OnTriggerEnter(Collider other)
-    {
-        _interactionHelper.OnTriggerEnter(other);
-    }
+        => _interactionHelper.OnTriggerEnter(other);
 
     private void OnTriggerExit(Collider other)
-    {
-        _interactionHelper.OnTriggerExit(other);
-    }
+        => _interactionHelper.OnTriggerExit(other);
+
+    void IThrowActor.OnThrow(Transform thrownTransform)
+        => _view.OnThrow(thrownTransform);
 
     private void StartStun(bool isSoftStun)
     {
