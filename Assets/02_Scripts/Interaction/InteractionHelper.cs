@@ -29,6 +29,7 @@ public class InteractionHelper
         public float BaseDistanceScore = 30f; // Score at distance 0
         public float DistanceScoreMultiplier = 40f;
         public bool InterpolateFacingScore = false;
+        public ELog ScoreLogType = ELog.None;
     }
 
     private IInteractionActor _actor;
@@ -103,6 +104,7 @@ public class InteractionHelper
         float contextScore = isCarrying ? interaction.CarryingExtraScore : interaction.EmptyHandsExtraScore;
 
         float score = interaction.BaseScore + distanceScore + facingScore + contextScore;
+        Logger.Log(_data.ScoreLogType, $"Score: {score}, interaction: {interaction.name}, yawToTarget: {yawToTarget}, baseScore: {interaction.BaseScore}, distanceScore: {distanceScore}, facingScore: {facingScore}, contextScore: {contextScore}");
         return score;
     }
 
