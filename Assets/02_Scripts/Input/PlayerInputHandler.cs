@@ -1,6 +1,7 @@
 #define LOG_ACTIONS
 
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -38,11 +39,15 @@ public class PlayerInputHandler : MonoBehaviour
 
         private float _startTime;
         private bool _isInputStarted;
+        private bool _waitingToReleaseInput;
 
-        public bool IsHolding;
+        public bool IsHolding { get; private set; }
 
-        public void OnStarted()
+        public void OnPressInput(out bool canProcessInput)
         {
+            canProcessInput = !_isInputStarted && !_waitingToReleaseInput;
+            if (!canProcessInput) return;
+
             _startTime = Time.time;
             _isInputStarted = true;
             IsHolding = false;
@@ -60,9 +65,18 @@ public class PlayerInputHandler : MonoBehaviour
             }
         }
 
-        public void OnCanceled(out bool wasHolding)
+        public void OnReleaseInput(out bool wasHolding, out bool canProcessInput)
         {
+            canProcessInput = _isInputStarted;
             wasHolding = IsHolding;
+            _isInputStarted = false;
+            IsHolding = false;
+            _waitingToReleaseInput = false;
+        }
+
+        public void Cancel()
+        {
+            _waitingToReleaseInput = _isInputStarted;
             _isInputStarted = false;
             IsHolding = false;
         }
@@ -85,6 +99,7 @@ public class PlayerInputHandler : MonoBehaviour
 
     private HoldAction _actionHoldState;
     private HoldAction _interactHoldState;
+    private EInputScope _nextScopeType; // Used when changing scope.
 
     public PlayerInput PlayerInput { get; private set; }
     public EInputScope ScopeType { get; private set; }
@@ -92,6 +107,7 @@ public class PlayerInputHandler : MonoBehaviour
     public bool IsHoldingInteract => _interactHoldState.IsHolding;
 
     public Action<EAction> ActionEvent;
+    public Action<EAction> PreHoldActionEvent;
     public Action<EAction, bool> HoldActionEvent;
     public Action<EDirectionalAction, Vector2> DirectionalActionEvent;
 
@@ -141,9 +157,18 @@ public class PlayerInputHandler : MonoBehaviour
 
     public void SetScope(EInputScope scopeType)
     {
+        if (ScopeType == scopeType) return;
+
+        _nextScopeType = scopeType;
         UnsubscribeActions(ScopeType);
         ScopeType = scopeType;
         SubscribeActions(scopeType);
+        _nextScopeType = EInputScope.Undefined;
+    }
+
+    public void CancelActionHold()
+    {
+        _actionHoldState.Cancel();
     }
 
     private void OnMove(InputAction.CallbackContext context)
@@ -189,11 +214,16 @@ public class PlayerInputHandler : MonoBehaviour
     {
         if (context.started)
         {
-            _actionHoldState.OnStarted();
+            _actionHoldState.OnPressInput(out bool canProcessInput);
+            if (!canProcessInput) return;
+
+            PreHoldActionEvent?.Invoke(EAction.Action);
         }
-        else if (context.canceled)
+        else if (context.canceled && (_nextScopeType == EInputScope.Undefined || !HasActionInput(_nextScopeType))) // Supress cancel when changing scope to one that has the action input too.
         {
-            _actionHoldState.OnCanceled(out bool wasHolding);
+            _actionHoldState.OnReleaseInput(out bool wasHolding, out bool canProcessInput);
+            if (!canProcessInput) return;
+
             if (wasHolding)
             {
                 RequestHoldAction(EAction.Action, false);
@@ -209,11 +239,16 @@ public class PlayerInputHandler : MonoBehaviour
     {
         if (context.started)
         {
-            _interactHoldState.OnStarted();
+            _interactHoldState.OnPressInput(out bool canProcessInput);
+            if (!canProcessInput) return;
+
+            PreHoldActionEvent?.Invoke(EAction.Interact);
         }
         else if (context.canceled)
         {
-            _interactHoldState.OnCanceled(out bool wasHolding);
+            _interactHoldState.OnReleaseInput(out bool wasHolding, out bool canProcessInput);
+            if (!canProcessInput) return;
+
             if (wasHolding)
             {
                 RequestHoldAction(EAction.Interact, false);
@@ -277,6 +312,12 @@ public class PlayerInputHandler : MonoBehaviour
     }
 
     #region SCOPE
+
+    // EXTENDABLE
+    private bool HasActionInput(EInputScope scopeType)
+    {
+        return scopeType == EInputScope.PlayerStanding || scopeType == EInputScope.PlayerSitting || scopeType == EInputScope.PlayerAiming;
+    }
 
     private void UnsubscribeActions(EInputScope scopeType)
     {

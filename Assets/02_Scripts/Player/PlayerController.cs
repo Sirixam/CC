@@ -47,6 +47,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     {
         _inputHandler.ActionEvent += OnActionRequested;
         _inputHandler.DirectionalActionEvent += OnDirectionalActionRequested;
+        _inputHandler.PreHoldActionEvent += OnPreHoldActionDetected;
         _inputHandler.HoldActionEvent += OnHoldActionRequested;
     }
 
@@ -54,6 +55,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     {
         _inputHandler.ActionEvent -= OnActionRequested;
         _inputHandler.DirectionalActionEvent -= OnDirectionalActionRequested;
+        _inputHandler.PreHoldActionEvent -= OnPreHoldActionDetected;
         _inputHandler.HoldActionEvent -= OnHoldActionRequested;
     }
 
@@ -79,7 +81,16 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         {
             if (!_dropByHoldingInteract)
             {
+                _inputHandler.SetScope(EInputScope.PlayerStanding);
                 TryDropItem();
+            }
+        }
+        else if (actionType == EAction.Cancel)
+        {
+            if (_inputHandler.ScopeType == EInputScope.PlayerAiming)
+            {
+                _inputHandler.SetScope(EInputScope.PlayerStanding); // TODO: If sitting, set to PlayerSitting
+                _inputHandler.CancelActionHold();
             }
         }
     }
@@ -103,6 +114,14 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         }
     }
 
+    private void OnPreHoldActionDetected(EAction actionType)
+    {
+        if (actionType == EAction.Action)
+        {
+            _inputHandler.SetScope(EInputScope.PlayerAiming);
+        }
+    }
+
     private void OnHoldActionRequested(EAction actionType, bool isHolding)
     {
         if (actionType == EAction.Interact && _dropByHoldingInteract)
@@ -111,6 +130,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         }
         else if (actionType == EAction.Action && !isHolding)
         {
+            _inputHandler.SetScope(EInputScope.PlayerStanding); // TODO: If sitting, set to PlayerSitting
             _throwHelper.TryTriggerThrow();
         }
     }
