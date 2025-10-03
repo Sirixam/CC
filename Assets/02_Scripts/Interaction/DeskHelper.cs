@@ -61,4 +61,18 @@ public class DeskHelper
         IsTransitioning = false;
         _actorPhysics.SetTargetPoint(null); // Clear
     }
+
+    public void TryShowAnswersSheet()
+    {
+        if (!IsSitting) return;
+
+        _deskController.SetupAnswersSheet(new bool[10]);
+        _deskController.ShowAnswersSheet();
+    }
+
+    public void HideAnswersSheet()
+    {
+        _deskController?.HideAnswersSheet();
+    }
 }
+

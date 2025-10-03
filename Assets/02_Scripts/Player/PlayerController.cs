@@ -75,7 +75,11 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         }
         else if (actionType == EAction.Interact)
         {
-            if (_interactionHelper.TryStartInteraction(out InteractionController interaction))
+            if (_deskHelper.IsSitting)
+            {
+                _deskHelper.HideAnswersSheet();
+            }
+            else if (_interactionHelper.TryStartInteraction(out InteractionController interaction))
             {
                 if (interaction.Type == EInteraction.PickUp)
                 {
@@ -153,18 +157,35 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private void OnPreHoldActionDetected(EAction actionType)
     {
-        if (actionType == EAction.Action && _interactionHelper.TryGetPickedUpInteraction(out _))
+        if (actionType == EAction.Interact)
         {
-            _lookAtPoint = null;
-            _inputHandler.SetScope(EInputScope.PlayerAiming);
+            _deskHelper.TryShowAnswersSheet();
+        }
+        else if (actionType == EAction.Action)
+        {
+            if (_interactionHelper.TryGetPickedUpInteraction(out _))
+            {
+                _lookAtPoint = null;
+                _inputHandler.SetScope(EInputScope.PlayerAiming);
+            }
         }
     }
 
     private void OnHoldActionRequested(EAction actionType, bool isHolding)
     {
-        if (actionType == EAction.Interact && _dropByHoldingInteract)
+        if (actionType == EAction.Interact)
         {
-            TryDropItem();
+            if (_deskHelper.IsSitting)
+            {
+                if (!isHolding)
+                {
+                    _deskHelper.HideAnswersSheet();
+                }
+            }
+            else if (_dropByHoldingInteract)
+            {
+                TryDropItem();
+            }
         }
         else if (actionType == EAction.Action && !isHolding)
         {

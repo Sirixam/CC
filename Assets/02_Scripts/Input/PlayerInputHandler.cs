@@ -402,7 +402,10 @@ public class PlayerInputHandler : MonoBehaviour
         actions[ACTION_ACTION].performed += OnAction;
         actions[ACTION_ACTION].canceled += OnAction;
 
+        actions[INTERACT_ACTION].started += OnInteract;
         actions[INTERACT_ACTION].performed += OnInteract;
+        actions[INTERACT_ACTION].canceled += OnInteract;
+
         actions[UTILITY_ACTION].performed += OnUtility;
         actions[CANCEL_ACTION].performed += OnCancel;
         actions[PAUSE_ACTION].performed += OnPause;
@@ -420,7 +423,10 @@ public class PlayerInputHandler : MonoBehaviour
         actions[ACTION_ACTION].performed -= OnAction;
         actions[ACTION_ACTION].canceled -= OnAction;
 
+        actions[INTERACT_ACTION].started -= OnInteract;
         actions[INTERACT_ACTION].performed -= OnInteract;
+        actions[INTERACT_ACTION].canceled -= OnInteract;
+
         actions[UTILITY_ACTION].performed -= OnUtility;
         actions[CANCEL_ACTION].performed -= OnCancel;
         actions[PAUSE_ACTION].performed -= OnPause;

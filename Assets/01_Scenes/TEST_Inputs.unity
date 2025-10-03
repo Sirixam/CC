@@ -5396,6 +5396,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Interactable_Desk_01
       objectReference: {fileID: 0}
+    - target: {fileID: 8732003128001337862, guid: f1107de062e953747a87d956cc6647dd, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 541495725}
     - target: {fileID: 9141138853756055693, guid: f1107de062e953747a87d956cc6647dd, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2
