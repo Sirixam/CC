@@ -4,7 +4,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 {
     [SerializeField] private PlayerView _view;
     [SerializeField] private PlayerInputHandler _inputHandler;
-    [SerializeField] private PlayerPhysics _playerPhysics;
+    [SerializeField] private PlayerPhysics _physics;
 
     [Header("Data")]
     [SerializeField] private InteractionHelper.Data _interactionData;
@@ -20,6 +20,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     // Look
     private Vector3 _lookDirection;
+    private Transform _lookAtPoint;
     // Timers
     private float _dashCooldownTimer;
     private float _stunTimer;
@@ -28,19 +29,21 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     // Helpers
     private InteractionHelper _interactionHelper;
     private ThrowHelper _throwHelper;
+    private DeskHelper _deskHelper;
     // IInteractionActor
     Vector3 IInteractionActor.Position => transform.position;
     Vector3 IInteractionActor.Forward => transform.forward;
     // IThrowActor
     Vector3 IThrowActor.LookDirection => _lookDirection;
-    Collider IThrowActor.Collider => _playerPhysics.Collider;
+    Collider IThrowActor.Collider => _physics.Collider;
 
     private void Awake()
     {
-        _playerPhysics.Initialize();
+        _physics.Initialize();
         _lookDirection = transform.forward;
         _interactionHelper = new InteractionHelper(this, _interactionData);
         _throwHelper = new ThrowHelper(this, _throwData, _interactionHelper);
+        _deskHelper = new DeskHelper(_inputHandler, _view, _physics);
     }
 
     private void OnEnable()
@@ -66,22 +69,38 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             if (_dashCooldownTimer <= 0)
             {
                 _view.OnStartDash();
-                _playerPhysics.StartDashing(_lookDirection);
+                _physics.StartDashing(_lookDirection);
                 _dashCooldownTimer = _dashCooldown;
             }
         }
         else if (actionType == EAction.Interact)
         {
-            if (_interactionHelper.TryStartInteraction(out InteractionController interaction) && interaction.Type == EInteraction.PickUp)
+            if (_interactionHelper.TryStartInteraction(out InteractionController interaction))
             {
-                _view.OnPickUp(interaction.transform);
+                if (interaction.Type == EInteraction.PickUp)
+                {
+                    _view.OnPickUp(interaction.transform);
+                }
+                else if (interaction.Type == EInteraction.Static)
+                {
+                    DeskController deskController = interaction.GetComponent<DeskController>();
+                    if (deskController != null)
+                    {
+                        _lookAtPoint = deskController.LookAtPoint;
+                        _deskHelper.StartSitting(deskController);
+                    }
+                    else
+                    {
+                        Debug.LogError("Static interaction is not being handled: " + interaction.name);
+                    }
+                }
             }
         }
         else if (actionType == EAction.Action)
         {
             if (!_dropByHoldingInteract)
             {
-                _inputHandler.SetScope(EInputScope.PlayerStanding);
+                RestoreScope();
                 TryDropItem();
             }
         }
@@ -89,9 +108,27 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         {
             if (_inputHandler.ScopeType == EInputScope.PlayerAiming)
             {
-                _inputHandler.SetScope(EInputScope.PlayerStanding); // TODO: If sitting, set to PlayerSitting
+                RestoreScope();
                 _inputHandler.CancelActionHold();
             }
+            else if (_inputHandler.ScopeType == EInputScope.PlayerSitting)
+            {
+                _lookAtPoint = null;
+                _deskHelper.StartStanding();
+            }
+        }
+    }
+
+    private void RestoreScope()
+    {
+        if (_deskHelper.IsSitting)
+        {
+            _lookAtPoint = _deskHelper.LookAtPoint;
+            _inputHandler.SetScope(EInputScope.PlayerSitting);
+        }
+        else
+        {
+            _inputHandler.SetScope(EInputScope.PlayerStanding);
         }
     }
 
@@ -99,7 +136,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     {
         if (actionType == EDirectionalAction.Move)
         {
-            _playerPhysics.SetMoveDirection(new Vector3(input.x, 0, input.y));
+            _physics.SetMoveDirection(new Vector3(input.x, 0, input.y));
             if (input != Vector2.zero)
             {
                 _lookDirection = new Vector3(input.x, 0, input.y);
@@ -116,8 +153,9 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private void OnPreHoldActionDetected(EAction actionType)
     {
-        if (actionType == EAction.Action)
+        if (actionType == EAction.Action && _interactionHelper.TryGetPickedUpInteraction(out _))
         {
+            _lookAtPoint = null;
             _inputHandler.SetScope(EInputScope.PlayerAiming);
         }
     }
@@ -130,7 +168,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         }
         else if (actionType == EAction.Action && !isHolding)
         {
-            _inputHandler.SetScope(EInputScope.PlayerStanding); // TODO: If sitting, set to PlayerSitting
+            RestoreScope();
             _throwHelper.TryTriggerThrow();
         }
     }
@@ -154,6 +192,13 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             return;
         }
 
+        if (_lookAtPoint != null)
+        {
+            Vector3 lookPosition = _lookAtPoint.position;
+            lookPosition.y = transform.position.y;
+            _lookDirection = (lookPosition - transform.position).normalized;
+        }
+
         if (_lookDirection != Vector3.zero)
         {
             Quaternion targetRotation = Quaternion.LookRotation(_lookDirection, Vector3.up);
@@ -165,7 +210,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private void FixedUpdate()
     {
-        _playerPhysics.OnFixedUpdate(Time.fixedDeltaTime, canMove: !_isStunned, out bool stoppedDashing);
+        _physics.OnFixedUpdate(Time.fixedDeltaTime, canMove: !_isStunned, out bool stoppedDashing);
         if (stoppedDashing)
         {
             _view.OnStopDash();
@@ -176,10 +221,10 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     {
         foreach (var contact in collision.contacts)
         {
-            if (_playerPhysics.IsFrontalCollision(contact.normal))
+            if (_physics.IsFrontalCollision(contact.normal))
             {
-                _playerPhysics.ClearCollisionNormals();
-                if (_playerPhysics.TryStopDashing())
+                _physics.ClearCollisionNormals();
+                if (_physics.TryStopDashing())
                 {
                     _view.OnStopDash();
                     bool isSoftStun = !HasAnyTag(collision.transform, _hardCollisionTags);
@@ -188,7 +233,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
                 return;
             }
 
-            _playerPhysics.AddCollisionNormal(contact.normal);
+            _physics.AddCollisionNormal(contact.normal);
         }
     }
 

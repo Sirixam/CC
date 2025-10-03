@@ -1,0 +1,64 @@
+
+using UnityEngine;
+
+public class DeskHelper
+{
+    private PlayerInputHandler _inputHandler;
+    private DeskController _deskController;
+    private PlayerView _actorView;
+    private PlayerPhysics _actorPhysics;
+
+    public bool IsTransitioning { get; private set; }
+    public bool IsSitting { get; private set; }
+
+    public Transform LookAtPoint => _deskController != null ? _deskController.LookAtPoint : null;
+
+    public DeskHelper(PlayerInputHandler inputHandler, PlayerView actorView, PlayerPhysics actorPhysics)
+    {
+        _inputHandler = inputHandler;
+        _actorView = actorView;
+        _actorPhysics = actorPhysics;
+    }
+
+    public void StartSitting(DeskController deskController)
+    {
+        _deskController = deskController;
+        IsTransitioning = true;
+        IsSitting = true;
+        _actorPhysics.OnArriveEvent -= OnArrive;
+        _actorPhysics.OnArriveEvent += OnArrive;
+        _actorPhysics.SetTargetPoint(deskController.SittingPoint);
+        _inputHandler.SetScope(EInputScope.PlayerSitting);
+    }
+
+    public void StartStanding()
+    {
+        Transform standingPoint = GetBestStandingPoint(_deskController);
+        _deskController = null;
+        IsTransitioning = true;
+        IsSitting = false;
+        _actorView.OnStanding();
+        _actorPhysics.OnArriveEvent -= OnArrive;
+        _actorPhysics.OnArriveEvent += OnArrive;
+        _actorPhysics.SetTargetPoint(standingPoint);
+        _inputHandler.SetScope(EInputScope.PlayerStanding);
+    }
+
+    // TODO: Check if point is blocked.
+    private Transform GetBestStandingPoint(DeskController deskController)
+    {
+        int bestIndex = Random.Range(0, deskController.StandingPoints.Length);
+        return deskController.StandingPoints[bestIndex];
+    }
+
+    public void OnArrive()
+    {
+        if (IsSitting)
+        {
+            _actorView.OnSitting();
+        }
+        _actorPhysics.OnArriveEvent -= OnArrive;
+        IsTransitioning = false;
+        _actorPhysics.SetTargetPoint(null); // Clear
+    }
+}

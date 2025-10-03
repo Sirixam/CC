@@ -55,13 +55,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _view: {fileID: 1863892939415744151}
   _inputHandler: {fileID: 6359063393089842935}
-  _playerPhysics:
+  _physics:
     _rigidbody: {fileID: 165944274530947382}
     _collider: {fileID: 8172077511286663205}
     _moveSpeed: 5
     _dashSpeed: 15
     _dashDuration: 0.3
     _frontalCollisionAngle: 30
+    _stopDistance: 0.05
   _interactionData:
     FacingScores:
     - MaxAngle: 60
@@ -98,6 +99,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rendererContainer: {fileID: 9123122298512519571}
+  _bodyRenderer: {fileID: 5990031196250019907}
   _itemContainer: {fileID: 336376250694825317}
   _stunVFX: {fileID: 8779866896397922528}
   _dashTrails:
@@ -129,6 +131,46 @@ MonoBehaviour:
     endValue: 1
     settings:
       duration: 0.25
+      ease: 0
+      customEase:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      cycles: 1
+      cycleMode: 0
+      startDelay: 0
+      endDelay: 0
+      useUnscaledTime: 0
+      _useFixedUpdate: 0
+      _updateType: 0
+  _sittingTweenSettings:
+    startFromCurrent: 0
+    startValue: 0
+    endValue: 0.8
+    settings:
+      duration: 0.5
+      ease: 0
+      customEase:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      cycles: 1
+      cycleMode: 0
+      startDelay: 0
+      endDelay: 0
+      useUnscaledTime: 0
+      _useFixedUpdate: 0
+      _updateType: 0
+  _standingTweenSettings:
+    startFromCurrent: 0
+    startValue: 0
+    endValue: 1
+    settings:
+      duration: 0.5
       ease: 0
       customEase:
         serializedVersion: 2

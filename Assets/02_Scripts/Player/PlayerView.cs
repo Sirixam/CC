@@ -4,26 +4,34 @@ using PrimeTween;
 public class PlayerView : MonoBehaviour
 {
     [SerializeField] private Transform _rendererContainer;
+    [SerializeField] private Transform _bodyRenderer;
     [SerializeField] private Transform _itemContainer;
     [SerializeField] private ParticleSystem _stunVFX;
     [SerializeField] private TrailRenderer[] _dashTrails;
     [SerializeField] private TweenSettings<float> _startStunTweenSettings = new();
     [SerializeField] private TweenSettings<float> _stopStunTweenSettings = new();
+    [SerializeField] private TweenSettings<float> _sittingTweenSettings = new();
+    [SerializeField] private TweenSettings<float> _standingTweenSettings = new();
     [SerializeField] private TweenSettings<Vector3> _pickUpTweenSettings = new();
 
     private MeshRenderer[] _meshRenderes;
+    private float _initialBoundsExtentsY;
     private float _initialBoundsExtentsZ;
     private bool _isSoftStunned;
     private Tween _scaleTweenZ;
+    private Tween _scaleTweenY;
     private Tween _positionTween;
 
     private void Awake()
     {
         _startStunTweenSettings.startFromCurrent = true;
         _stopStunTweenSettings.startFromCurrent = true;
+        _sittingTweenSettings.startFromCurrent = true;
+        _standingTweenSettings.startFromCurrent = true;
         _pickUpTweenSettings.startFromCurrent = true;
         _stunVFX.Stop(withChildren: true, ParticleSystemStopBehavior.StopEmittingAndClear);
         _meshRenderes = _rendererContainer.GetComponentsInChildren<MeshRenderer>();
+        _initialBoundsExtentsY = GetBounds().extents.y;
         _initialBoundsExtentsZ = GetBounds().extents.z;
 
         foreach (var trailRenderer in _dashTrails)
@@ -53,10 +61,16 @@ public class PlayerView : MonoBehaviour
         }
     }
 
+    private void OnUpdateScaleY(Transform target, Tween tween)
+    {
+        float yOffset = (1f - target.localScale.y) * -_initialBoundsExtentsY;
+        _rendererContainer.localPosition = new Vector3(_rendererContainer.localPosition.x, yOffset, _rendererContainer.localPosition.z);
+    }
+
     private void OnUpdateScaleZ(Transform target, Tween tween)
     {
-        float zOffset = (1f - _rendererContainer.localScale.z) * _initialBoundsExtentsZ;
-        _rendererContainer.localPosition = new Vector3(0f, 0f, zOffset);
+        float zOffset = (1f - target.localScale.z) * _initialBoundsExtentsZ;
+        _rendererContainer.localPosition = new Vector3(_rendererContainer.localPosition.x, _rendererContainer.localPosition.y, zOffset);
     }
 
     private Bounds GetBounds()
@@ -102,5 +116,17 @@ public class PlayerView : MonoBehaviour
         {
             trailRenderer.emitting = false;
         }
+    }
+
+    public void OnSitting()
+    {
+        _scaleTweenY.Stop();
+        _scaleTweenY = Tween.ScaleY(_bodyRenderer, _sittingTweenSettings).OnUpdate(_bodyRenderer, OnUpdateScaleY);
+    }
+
+    public void OnStanding()
+    {
+        _scaleTweenY.Stop();
+        _scaleTweenY = Tween.ScaleY(_bodyRenderer, _standingTweenSettings).OnUpdate(_bodyRenderer, OnUpdateScaleY);
     }
 }

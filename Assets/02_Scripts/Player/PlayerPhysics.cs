@@ -9,12 +9,14 @@ public class PlayerPhysics
     [SerializeField] private Collider _collider;
     [Header("Configurations")]
     [SerializeField] private float _moveSpeed = 5f; // Meters per second
-    [SerializeField] private float _dashSpeed = 10f; // Meters per second
-    [SerializeField] private float _dashDuration = 0.4f; // Seconds
+    [SerializeField] private float _dashSpeed = 15f; // Meters per second
+    [SerializeField] private float _dashDuration = 0.3f; // Seconds
     [SerializeField] private float _frontalCollisionAngle = 30f;
+    [SerializeField] private float _stopDistance = 0.05f;
 
     // Movement
     private Vector3 _moveDirection;
+    private Transform _targetPoint;
     // Dash
     public bool IsDashing { get; private set; }
     private float _dashTimer;
@@ -25,6 +27,8 @@ public class PlayerPhysics
 
     // General
     public Vector3 Direction => IsDashing ? _dashDirection : _moveDirection;
+
+    public event Action OnArriveEvent;
 
     public void Initialize()
     {
@@ -62,6 +66,22 @@ public class PlayerPhysics
             return;
         }
 
+        if (_targetPoint != null)
+        {
+            if (IsDashing)
+            {
+                IsDashing = false;
+                stoppedDashing = true;
+            }
+
+            MoveTowardsTarget(_targetPoint, out bool hasArrived); // [AKP] This is ignoring sliding for now
+            if (hasArrived)
+            {
+                OnArriveEvent?.Invoke();
+            }
+            return;
+        }
+
         Vector3 velocity;
         if (IsDashing)
         {
@@ -91,6 +111,32 @@ public class PlayerPhysics
 
         // Apply velocity
         _rigidbody.velocity = velocity;
+    }
+
+    private void MoveTowardsTarget(Transform target, out bool hasArrived)
+    {
+        if (target == null)
+        {
+            hasArrived = false;
+            return;
+        }
+
+        Vector3 toTarget = target.position - _rigidbody.position;
+        float distance = toTarget.magnitude;
+        Vector3 direction = toTarget.normalized;
+
+        Vector3 newPosition = _rigidbody.position + direction * _moveSpeed * Time.fixedDeltaTime;
+        hasArrived = (newPosition - target.position).sqrMagnitude >= distance * distance;
+        if (hasArrived)
+        {
+            newPosition = target.position; // Prevent overshooting
+        }
+        _rigidbody.MovePosition(newPosition);
+    }
+
+    public void SetTargetPoint(Transform point)
+    {
+        _targetPoint = point;
     }
 
     public void AddCollisionNormal(Vector3 value)
