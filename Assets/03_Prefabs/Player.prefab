@@ -79,10 +79,11 @@ MonoBehaviour:
     Speed: 10
     PitchAngle: 15
     FlyingLayer: 8
+  _stunData:
+    HardStunDuration: 1
+    SoftStunDuration: 0.5
   _lookSpeed: 1080
   _dashCooldown: 0.5
-  _hardStunDuration: 1
-  _softStunDuration: 0.5
   _hardCollisionTags:
   - Environment
   _dropByHoldingInteract: 0

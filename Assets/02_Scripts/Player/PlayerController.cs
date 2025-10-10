@@ -9,10 +9,9 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     [Header("Data")]
     [SerializeField] private InteractionHelper.Data _interactionData;
     [SerializeField] private ThrowHelper.Data _throwData;
+    [SerializeField] private StunHelper.Data _stunData;
     [SerializeField] private float _lookSpeed = 1080f; // Degrees per second
     [SerializeField] private float _dashCooldown = 0.2f; // Seconds
-    [SerializeField] private float _hardStunDuration = 1f;
-    [SerializeField] private float _softStunDuration = 0.5f;
     [Tag]
     [SerializeField] private string[] _hardCollisionTags;
     [Header("TO BE REMOVED")]
@@ -23,13 +22,11 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     private Transform _lookAtPoint;
     // Timers
     private float _dashCooldownTimer;
-    private float _stunTimer;
-    // States
-    private bool _isStunned;
     // Helpers
     private InteractionHelper _interactionHelper;
     private ThrowHelper _throwHelper;
     private DeskHelper _deskHelper;
+    private StunHelper _stunHelper;
     // IInteractionActor
     Vector3 IInteractionActor.Position => transform.position;
     Vector3 IInteractionActor.Forward => transform.forward;
@@ -44,6 +41,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _interactionHelper = new InteractionHelper(this, _interactionData);
         _throwHelper = new ThrowHelper(this, _throwData, _interactionHelper);
         _deskHelper = new DeskHelper(_inputHandler, _view, _physics);
+        _stunHelper = new StunHelper(_stunData, _view);
     }
 
     private void OnEnable()
@@ -207,9 +205,9 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     {
         _dashCooldownTimer -= Time.deltaTime;
 
-        if (_isStunned)
+        if (_stunHelper.IsStunned)
         {
-            UpdateStun();
+            _stunHelper.UpdateStun();
             return;
         }
 
@@ -231,7 +229,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private void FixedUpdate()
     {
-        _physics.OnFixedUpdate(Time.fixedDeltaTime, canMove: !_isStunned, out bool stoppedDashing);
+        _physics.OnFixedUpdate(Time.fixedDeltaTime, canMove: !_stunHelper.IsStunned, out bool stoppedDashing);
         if (stoppedDashing)
         {
             _view.OnStopDash();
@@ -249,7 +247,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
                 {
                     _view.OnStopDash();
                     bool isSoftStun = !HasAnyTag(collision.transform, _hardCollisionTags);
-                    StartStun(isSoftStun);
+                    _stunHelper.StartStun(isSoftStun);
                 }
                 return;
             }
@@ -266,23 +264,6 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     void IThrowActor.OnThrow(Transform thrownTransform)
         => _view.OnThrow(thrownTransform);
-
-    private void StartStun(bool isSoftStun)
-    {
-        _stunTimer = isSoftStun ? _softStunDuration : _hardStunDuration;
-        _isStunned = true;
-        _view.OnStartStun(isSoftStun);
-    }
-
-    private void UpdateStun()
-    {
-        _stunTimer -= Time.deltaTime;
-        if (_stunTimer <= 0)
-        {
-            _isStunned = false;
-            _view.OnStopStun();
-        }
-    }
 
     private bool HasAnyTag(Transform target, string[] tags)
     {
