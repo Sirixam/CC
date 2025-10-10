@@ -6,6 +6,7 @@ public class AnswersManager : MonoBehaviour
     [SerializeField] private DeskController[] _playerDesks;
     [SerializeField] private DeskController[] _desksWithAnswersSheet;
     [SerializeField] private GameObject _victoryFeedback;
+    [SerializeField] private TimeManager _timeManager;
 
     private void Awake()
     {
@@ -27,6 +28,7 @@ public class AnswersManager : MonoBehaviour
     {
         if (deskController.IsPlayerDesk && AreAllPlayerAnswersFull())
         {
+            _timeManager.Pause();
             _victoryFeedback.SetActive(true);
         }
     }
