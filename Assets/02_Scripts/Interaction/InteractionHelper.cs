@@ -36,15 +36,17 @@ public class InteractionHelper
 
     private IInteractionActor _actor;
     private Data _data;
+    private bool _isEnabled;
     private List<InteractionController> _interactions = new();
     private List<InteractionController> _activeInteractions = new();
 
     public InteractionController BestInteraction { get; private set; }
 
-    public InteractionHelper(IInteractionActor actor, Data configurations)
+    public InteractionHelper(IInteractionActor actor, Data configurations, bool isEnabled)
     {
         _actor = actor;
         _data = configurations;
+        _isEnabled = isEnabled;
         _data.FacingScores.Sort((a, b) => a.MaxAngle.CompareTo(b.MaxAngle)); // Ensure ascending order
     }
 
@@ -76,6 +78,23 @@ public class InteractionHelper
         }
     }
 
+    public void EnableInteraction()
+    {
+        if (_isEnabled) return;
+        _isEnabled = true;
+        UpdateBestInteraction();
+    }
+
+    public void DisableInteraction()
+    {
+        if (!_isEnabled) return;
+        _isEnabled = false;
+        if (BestInteraction != null)
+        {
+            BestInteraction.DecreaseBestInteractionCount();
+            BestInteraction = null;
+        }
+    }
 
     public void AddInteraction(InteractionController interaction)
     {
@@ -93,6 +112,8 @@ public class InteractionHelper
 
     public void UpdateBestInteraction()
     {
+        if (!_isEnabled) return;
+
         bool isCarrying = _activeInteractions.Exists(x => x.Type == EInteraction.PickUp);
 
         InteractionController bestInteraction = null;

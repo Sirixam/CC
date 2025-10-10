@@ -5,7 +5,7 @@ public interface IThrowActor
 {
     Vector3 LookDirection { get; }
     void OnThrow(Transform thrownTransform);
-    Collider Collider { get; }
+    Collider[] Colliders { get; }
 }
 
 public class ThrowHelper
@@ -42,7 +42,10 @@ public class ThrowHelper
             stoppedInteraction.Rigidbody.AddForce(throwDirection * _data.Speed, ForceMode.VelocityChange);
 
             CollisionComponent collisionComponent = stoppedInteraction.GetComponentInChildren<CollisionComponent>();
-            collisionComponent.IgnoreCollision(_actor.Collider, ignore: true);
+            foreach (var collider in _actor.Colliders)
+            {
+                collisionComponent.IgnoreCollision(collider, ignore: true);
+            }
             collisionComponent.SetLayer(_data.FlyingLayer);
             collisionComponent.OnCollisionExitEvent += OnCollisionExit;
             return true;
@@ -54,6 +57,9 @@ public class ThrowHelper
     {
         collisionComponent.OnCollisionExitEvent -= OnCollisionExit;
         collisionComponent.RestoreLayer();
-        collisionComponent.IgnoreCollision(_actor.Collider, ignore: false);
+        foreach (var collider in _actor.Colliders)
+        {
+            collisionComponent.IgnoreCollision(collider, ignore: false);
+        }
     }
 }

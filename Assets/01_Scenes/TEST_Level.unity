@@ -9093,10 +9093,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Interactable_Desk_01
       objectReference: {fileID: 0}
-    - target: {fileID: 6612940005000892150, guid: f1107de062e953747a87d956cc6647dd, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -0.834
-      objectReference: {fileID: 0}
     - target: {fileID: 9141138853756055693, guid: f1107de062e953747a87d956cc6647dd, type: 3}
       propertyPath: m_LocalPosition.x
       value: -10.48

@@ -4,6 +4,7 @@ using UnityEngine;
 public class DeskHelper
 {
     private PlayerInputHandler _inputHandler;
+    private ChairController _chairController;
     private DeskController _deskController;
     private PlayerView _actorView;
     private PlayerPhysics _actorPhysics;
@@ -21,20 +22,21 @@ public class DeskHelper
         _actorPhysics = actorPhysics;
     }
 
-    public void StartSitting(DeskController deskController)
+    public void StartSitting(ChairController chairController)
     {
-        _deskController = deskController;
+        _chairController = chairController;
+        _deskController = chairController.DeskController;
         IsTransitioning = true;
         IsSitting = true;
         _actorPhysics.OnArriveEvent -= OnArrive;
         _actorPhysics.OnArriveEvent += OnArrive;
-        _actorPhysics.SetTargetPoint(deskController.SittingPoint);
+        _actorPhysics.SetTargetPoint(chairController.SittingPoint);
         _inputHandler.SetScope(EInputScope.PlayerSitting);
     }
 
     public void StartStanding()
     {
-        Transform standingPoint = GetBestStandingPoint(_deskController);
+        Transform standingPoint = GetBestStandingPoint(_chairController);
         _deskController = null;
         IsTransitioning = true;
         IsSitting = false;
@@ -46,10 +48,10 @@ public class DeskHelper
     }
 
     // TODO: Check if point is blocked.
-    private Transform GetBestStandingPoint(DeskController deskController)
+    private Transform GetBestStandingPoint(ChairController chairController)
     {
-        int bestIndex = Random.Range(0, deskController.StandingPoints.Length);
-        return deskController.StandingPoints[bestIndex];
+        int bestIndex = Random.Range(0, chairController.StandingPoints.Length);
+        return chairController.StandingPoints[bestIndex];
     }
 
     public void OnArrive()

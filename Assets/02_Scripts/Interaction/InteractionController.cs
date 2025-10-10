@@ -6,7 +6,7 @@ public enum EInteraction
 {
     Undefined,
     PickUp,
-    Static
+    Static,
 }
 
 public class InteractionController : MonoBehaviour

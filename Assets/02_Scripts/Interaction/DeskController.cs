@@ -12,8 +12,6 @@ public class DeskController : MonoBehaviour
     }
 
     [SerializeField] private Transform _lookAtPoint;
-    [SerializeField] private Transform _sittingPoint;
-    [SerializeField] private Transform[] _standingPoints;
     [SerializeField] private AnswersSheetUI _answersSheetUI;
 
     private Data _data;
@@ -24,8 +22,6 @@ public class DeskController : MonoBehaviour
     public bool IsAnswering => _activeAnswerNumber > 0;
 
     public Transform LookAtPoint => _lookAtPoint;
-    public Transform SittingPoint => _sittingPoint;
-    public Transform[] StandingPoints => _standingPoints;
 
     private void Awake()
     {

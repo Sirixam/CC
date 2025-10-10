@@ -32,13 +32,13 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     Vector3 IInteractionActor.Forward => transform.forward;
     // IThrowActor
     Vector3 IThrowActor.LookDirection => _lookDirection;
-    Collider IThrowActor.Collider => _physics.Collider;
+    Collider[] IThrowActor.Colliders => _physics.Colliders;
 
     private void Awake()
     {
         _physics.Initialize();
         _lookDirection = transform.forward;
-        _interactionHelper = new InteractionHelper(this, _interactionData);
+        _interactionHelper = new InteractionHelper(this, _interactionData, isEnabled: true);
         _throwHelper = new ThrowHelper(this, _throwData, _interactionHelper);
         _deskHelper = new DeskHelper(_inputHandler, _view, _physics);
         _stunHelper = new StunHelper(_stunData, _view);
@@ -64,12 +64,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     {
         if (actionType == EAction.Dash)
         {
-            if (_dashCooldownTimer <= 0)
-            {
-                _view.OnStartDash();
-                _physics.StartDashing(_lookDirection);
-                _dashCooldownTimer = _dashCooldown;
-            }
+            RequestDash();
         }
         else if (actionType == EAction.Interact)
         {
@@ -85,16 +80,11 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
                 }
                 else if (interaction.Type == EInteraction.Static)
                 {
-                    DeskController deskController = interaction.GetComponent<DeskController>();
-                    if (deskController != null)
-                    {
-                        _lookAtPoint = deskController.LookAtPoint;
-                        _deskHelper.StartSitting(deskController);
-                    }
-                    else
-                    {
-                        Debug.LogError("Static interaction is not being handled: " + interaction.name);
-                    }
+                    RequestStaticInteraction(interaction);
+                }
+                else
+                {
+                    Debug.LogError("Interaction type is not being handled: " + interaction.Type);
                 }
             }
         }
@@ -102,7 +92,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         {
             if (!_dropByHoldingInteract)
             {
-                RestoreScope();
+                RestoreInputScope();
                 TryDropItem();
             }
         }
@@ -110,18 +100,55 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         {
             if (_inputHandler.ScopeType == EInputScope.PlayerAiming)
             {
-                RestoreScope();
+                RestoreInputScope();
                 _inputHandler.CancelActionHold();
             }
             else if (_inputHandler.ScopeType == EInputScope.PlayerSitting)
             {
-                _lookAtPoint = null;
-                _deskHelper.StartStanding();
+                RequestStanding();
             }
         }
     }
 
-    private void RestoreScope()
+    private void RequestDash()
+    {
+        if (_dashCooldownTimer <= 0)
+        {
+            _view.OnStartDash();
+            _physics.StartDashing(_lookDirection);
+            _dashCooldownTimer = _dashCooldown;
+        }
+    }
+
+    private void RequestStaticInteraction(InteractionController interaction)
+    {
+        DeskController deskController = interaction.GetComponent<DeskController>();
+        if (deskController != null)
+        {
+            _lookAtPoint = deskController.LookAtPoint;
+            return;
+        }
+
+        ChairController chairController = interaction.GetComponent<ChairController>();
+        if (chairController != null)
+        {
+            _lookAtPoint = chairController.DeskController.LookAtPoint;
+            _deskHelper.StartSitting(chairController);
+            _interactionHelper.DisableInteraction();
+            return;
+        }
+
+        Debug.LogError("Static interaction is not being handled: " + interaction.name);
+    }
+
+    private void RequestStanding()
+    {
+        _lookAtPoint = null;
+        _deskHelper.StartStanding();
+        _interactionHelper.EnableInteraction();
+    }
+
+    private void RestoreInputScope()
     {
         if (_deskHelper.IsSitting)
         {
@@ -194,7 +221,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         }
         else if (actionType == EAction.Action && !isHolding)
         {
-            RestoreScope();
+            RestoreInputScope();
             _throwHelper.TryTriggerThrow();
         }
     }
@@ -237,7 +264,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             _deskHelper.TryUpdateAnswering(out bool finishedAnswering);
             if (finishedAnswering)
             {
-                
+
             }
         }
     }
