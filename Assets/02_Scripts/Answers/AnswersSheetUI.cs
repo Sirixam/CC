@@ -5,7 +5,7 @@ public class AnswersSheetUI : MonoBehaviour
 {
     [SerializeField] private AnswerUI _answerPrefab;
     [SerializeField] private Transform _answersParent;
-    [SerializeField] private ProgressUI _progress;
+    [SerializeField] private AnswerProgressUI _progress;
 
     private List<AnswerUI> _answers = new();
 

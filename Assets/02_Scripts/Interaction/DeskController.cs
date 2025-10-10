@@ -1,17 +1,22 @@
+using System;
 using UnityEngine;
 
 public class DeskController : MonoBehaviour
 {
+    [Serializable]
+    public class Data
+    {
+        public int AnswersCount;
+        public float AnswerDuration;
+        public bool PersistProgress;
+    }
+
     [SerializeField] private Transform _lookAtPoint;
     [SerializeField] private Transform _sittingPoint;
     [SerializeField] private Transform[] _standingPoints;
     [SerializeField] private AnswersSheetUI _answersSheetUI;
 
-    [SerializeField] private bool _persistProgress;
-
-    [SerializeField] private int _answersCount = 10; // TODO: Move elsewhere
-    [SerializeField] private float _answerDuration = 2f; // TODO: Move elsewhere
-
+    private Data _data;
     private int _activeAnswerNumber;
     private float[] _answersProgress;
 
@@ -25,7 +30,13 @@ public class DeskController : MonoBehaviour
     private void Awake()
     {
         _answersSheetUI.Hide();
-        SetupAnswersSheet(_answersCount);
+    }
+
+    public void Setup(Data data)
+    {
+        _data = data;
+        _answersProgress = new float[data.AnswersCount];
+        _answersSheetUI.Setup(data.AnswersCount);
     }
 
     public void ShowAnswersSheet()
@@ -50,7 +61,7 @@ public class DeskController : MonoBehaviour
 
     public void UpdateAnswering(out bool finishedAnswering)
     {
-        float progressDelta = Time.deltaTime / _answerDuration;
+        float progressDelta = Time.deltaTime / _data.AnswerDuration;
         int answerIndex = _activeAnswerNumber - 1;
         _answersProgress[answerIndex] = Mathf.Clamp01(_answersProgress[answerIndex] + progressDelta);
         finishedAnswering = _answersProgress[answerIndex] >= 1;
@@ -71,17 +82,11 @@ public class DeskController : MonoBehaviour
         if (IsAnswering)
         {
             _answersSheetUI.HideProgress();
-            if (!_persistProgress)
+            if (!_data.PersistProgress)
             {
                 _answersProgress[_activeAnswerNumber - 1] = 0;
             }
             _activeAnswerNumber = 0;
         }
-    }
-
-    public void SetupAnswersSheet(int answersCount)
-    {
-        _answersProgress = new float[answersCount];
-        _answersSheetUI.Setup(answersCount);
     }
 }

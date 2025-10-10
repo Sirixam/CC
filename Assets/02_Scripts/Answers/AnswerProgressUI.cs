@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ProgressUI : MonoBehaviour
+public class AnswerProgressUI : MonoBehaviour
 {
     [SerializeField] private Image _fill;
 

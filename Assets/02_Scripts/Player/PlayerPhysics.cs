@@ -12,7 +12,6 @@ public class PlayerPhysics
     [SerializeField] private float _dashSpeed = 15f; // Meters per second
     [SerializeField] private float _dashDuration = 0.3f; // Seconds
     [SerializeField] private float _frontalCollisionAngle = 30f;
-    [SerializeField] private float _stopDistance = 0.05f;
 
     // Movement
     private Vector3 _moveDirection;
