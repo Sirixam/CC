@@ -10,6 +10,7 @@ public class DeskHelper
 
     public bool IsTransitioning { get; private set; }
     public bool IsSitting { get; private set; }
+    public bool IsAnswering => _deskController != null && _deskController.IsAnswering;
 
     public Transform LookAtPoint => _deskController != null ? _deskController.LookAtPoint : null;
 
@@ -65,9 +66,23 @@ public class DeskHelper
     public void TryShowAnswersSheet()
     {
         if (!IsSitting) return;
-
-        _deskController.SetupAnswersSheet(new bool[10]);
         _deskController.ShowAnswersSheet();
+    }
+
+    public void TryStartAnswering(int answerNumber)
+    {
+        if (!IsSitting) return;
+        _deskController.TryStartAnswering(answerNumber);
+    }
+
+    public void TryUpdateAnswering(out bool finishedAnswering)
+    {
+        if (!IsSitting)
+        {
+            finishedAnswering = false;
+            return;
+        }
+        _deskController.UpdateAnswering(out finishedAnswering);
     }
 
     public void HideAnswersSheet()

@@ -157,7 +157,14 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     {
         if (actionType == EAction.Interact)
         {
-            _deskHelper.TryShowAnswersSheet();
+            if (_interactionHelper.TryGetPickedUpInteraction(out PaperBallController paperBallController) && paperBallController.HasAnswer)
+            {
+                _deskHelper.TryStartAnswering(paperBallController.AnswerNumber);
+            }
+            else
+            {
+                _deskHelper.TryShowAnswersSheet();
+            }
         }
         else if (actionType == EAction.Action)
         {
@@ -225,6 +232,14 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         }
 
         _interactionHelper.UpdateBestInteraction();
+        if (_deskHelper.IsAnswering)
+        {
+            _deskHelper.TryUpdateAnswering(out bool finishedAnswering);
+            if (finishedAnswering)
+            {
+                
+            }
+        }
     }
 
     private void FixedUpdate()

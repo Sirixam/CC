@@ -24,18 +24,35 @@ public class AnswersSheetUI : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void Setup(bool[] answers)
+    public void Setup(int answersCount)
     {
         CleanAnswers();
-        for (int i = 0; i < answers.Length; i++)
+        for (int i = 0; i < answersCount; i++)
         {
-            _answers.Add(InstantiateAnswer(i + 1, answers[i]));
+            int answerNumber = i + 1;
+            _answers.Add(InstantiateAnswer(answerNumber, isFilled: false));
         }
+    }
+
+    public void ShowProgress(float percent = 0)
+    {
+        _progress.SetPercent(percent);
+        _progress.Show();
     }
 
     public void SetProgress(float percent)
     {
         _progress.SetPercent(percent);
+    }
+
+    public void HideProgress()
+    {
+        _progress.Hide();
+    }
+
+    public void SetAnswerState(int index, bool isFilled)
+    {
+        _answers[index].SetState(isFilled);
     }
 
     private AnswerUI InstantiateAnswer(int number, bool isFilled)
@@ -58,6 +75,6 @@ public class AnswersSheetUI : MonoBehaviour
     [Button("Create Answers")]
     private void EDITOR_CreateAnswers()
     {
-        Setup(new bool[10]);
+        Setup(10);
     }
 }

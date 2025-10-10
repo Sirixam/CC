@@ -170,6 +170,18 @@ public class InteractionHelper
         return 0;
     }
 
+    public bool TryGetPickedUpInteraction<TComponent>(out TComponent component)
+    {
+        InteractionController interaction = _activeInteractions.Find(x => x.Type == EInteraction.PickUp);
+        if (interaction != null)
+        {
+            component = interaction.GetComponent<TComponent>();
+            return component != null;
+        }
+        component = default;
+        return false;
+    }
+
     public bool TryGetPickedUpInteraction(out InteractionController interaction)
     {
         interaction = _activeInteractions.Find(x => x.Type == EInteraction.PickUp);
