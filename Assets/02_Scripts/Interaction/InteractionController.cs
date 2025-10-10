@@ -40,12 +40,13 @@ public class InteractionController : MonoBehaviour
 
     private int _bestInteractionCount;
     private Tween _scaleTween;
-
+    
     public EInteraction Type => _data.Type;
     public int BaseScore => _data.BaseScore;
     public int EmptyHandsExtraScore => _data.EmptyHandsExtraScore;
     public int CarryingExtraScore => _data.CarryingExtraScore;
     public Vector3 Position => transform.position;
+    public bool IsEnabled => _trigger.enabled;
 
     public Rigidbody Rigidbody => _rigidbody;
 
@@ -100,12 +101,12 @@ public class InteractionController : MonoBehaviour
         }
     }
 
-    private void Enable()
+    public void Enable()
     {
         _trigger.enabled = true;
     }
 
-    private void Disable()
+    public void Disable()
     {
         _trigger.enabled = false;
         TriggerBestInteractionTween(isBestInteraction: false);

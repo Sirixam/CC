@@ -254,6 +254,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _deskController: {fileID: 0}
+  _interactionController: {fileID: 5794938467827128188}
   _sittingPoint: {fileID: 7143904386498343974}
   _standingPoints:
   - {fileID: 6003775662665571311}

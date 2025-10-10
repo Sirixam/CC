@@ -13,13 +13,17 @@ public class DeskController : MonoBehaviour
 
     [SerializeField] private Transform _lookAtPoint;
     [SerializeField] private AnswersSheetUI _answersSheetUI;
+    [SerializeField] private ChairController _chairController;
+    [SerializeField] private InteractionController _interactionController;
 
     private Data _data;
+    private int _playerIndex;
     private int _activeAnswerNumber;
     private float[] _answersProgress;
 
     public bool HasAnswers => _answersProgress != null;
     public bool IsAnswering => _activeAnswerNumber > 0;
+    public bool IsPlayerDesk => _playerIndex >= 0;
 
     public Transform LookAtPoint => _lookAtPoint;
 
@@ -28,11 +32,17 @@ public class DeskController : MonoBehaviour
         _answersSheetUI.Hide();
     }
 
-    public void Setup(Data data)
+    public void Setup(Data data, int playerIndex)
     {
         _data = data;
+        _playerIndex = playerIndex;
         _answersProgress = new float[data.AnswersCount];
         _answersSheetUI.Setup(data.AnswersCount);
+        _chairController.Setup(this); // Trigger after setting player index
+        if (IsPlayerDesk)
+        {
+            _interactionController.Disable();
+        }
     }
 
     public void ShowAnswersSheet()

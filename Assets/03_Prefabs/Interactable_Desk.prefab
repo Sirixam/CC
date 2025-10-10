@@ -694,6 +694,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _lookAtPoint: {fileID: 4773489411899792547}
   _answersSheetUI: {fileID: 9048454342893877241}
+  _chairController: {fileID: 0}
+  _interactionController: {fileID: 1561870790015872626}
 --- !u!114 &1561870790015872626
 MonoBehaviour:
   m_ObjectHideFlags: 0

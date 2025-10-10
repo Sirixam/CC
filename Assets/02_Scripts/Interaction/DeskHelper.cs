@@ -30,6 +30,8 @@ public class DeskHelper
         IsSitting = true;
         _actorPhysics.OnArriveEvent -= OnArrive;
         _actorPhysics.OnArriveEvent += OnArrive;
+
+        _chairController.Block();
         _actorPhysics.SetTargetPoint(chairController.SittingPoint);
         _inputHandler.SetScope(EInputScope.PlayerSitting);
     }
@@ -40,6 +42,8 @@ public class DeskHelper
         _deskController = null;
         IsTransitioning = true;
         IsSitting = false;
+
+        _chairController.Unblock();
         _actorView.OnStanding();
         _actorPhysics.OnArriveEvent -= OnArrive;
         _actorPhysics.OnArriveEvent += OnArrive;

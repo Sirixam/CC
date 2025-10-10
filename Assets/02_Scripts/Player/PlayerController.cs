@@ -130,7 +130,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         }
 
         ChairController chairController = interaction.GetComponent<ChairController>();
-        if (chairController != null)
+        if (chairController != null && chairController.CanPlayerSit)
         {
             _lookAtPoint = chairController.DeskController.LookAtPoint;
             _deskHelper.StartSitting(chairController);

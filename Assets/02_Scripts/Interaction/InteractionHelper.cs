@@ -121,8 +121,8 @@ public class InteractionHelper
 
         foreach (InteractionController interaction in _interactions)
         {
-            if (isCarrying && interaction.Type == EInteraction.PickUp)
-                continue;
+            if (!interaction.IsEnabled) continue;
+            if (isCarrying && interaction.Type == EInteraction.PickUp) continue;
 
             float score = ComputeScore(interaction, isCarrying);
             if (score > bestScore)
