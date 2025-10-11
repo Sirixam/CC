@@ -7952,6 +7952,7 @@ MonoBehaviour:
   - {fileID: 1483827385}
   _victoryFeedback: {fileID: 1284955936}
   _timeManager: {fileID: 222319255}
+  _canUseAnyPlayerChair: 1
 --- !u!1 &2077142835
 GameObject:
   m_ObjectHideFlags: 0

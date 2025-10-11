@@ -14,12 +14,16 @@ public class ChairController : MonoBehaviour
 
     public bool CanPlayerSit => !_isBlocked && DeskController != null && DeskController.IsPlayerDesk;
 
-    public void Setup(DeskController deskController)
+    public void Setup(DeskController deskController, bool canUseAnyPlayerChair)
     {
         DeskController = deskController;
         if (!deskController.IsPlayerDesk)
         {
             _interactionController.Disable();
+        }
+        else if (!canUseAnyPlayerChair)
+        {
+            _interactionController.AddPlayerToWhitelist(deskController.PlayerIndex);
         }
     }
 

@@ -6,6 +6,7 @@ public interface IInteractionActor
 {
     Vector3 Position { get; }
     Vector3 Forward { get; }
+    int PlayerIndex { get; }
 }
 
 public class InteractionHelper
@@ -123,6 +124,7 @@ public class InteractionHelper
         {
             if (!interaction.IsEnabled) continue;
             if (isCarrying && interaction.Type == EInteraction.PickUp) continue;
+            if (!interaction.CanInteract(_actor.PlayerIndex)) continue;
 
             float score = ComputeScore(interaction, isCarrying);
             if (score > bestScore)

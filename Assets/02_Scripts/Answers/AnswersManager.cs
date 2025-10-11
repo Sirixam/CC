@@ -7,6 +7,7 @@ public class AnswersManager : MonoBehaviour
     [SerializeField] private DeskController[] _desksWithAnswersSheet;
     [SerializeField] private GameObject _victoryFeedback;
     [SerializeField] private TimeManager _timeManager;
+    [SerializeField] private bool _canUseAnyPlayerChair;
 
     private void Awake()
     {
@@ -15,12 +16,12 @@ public class AnswersManager : MonoBehaviour
         {
             int playerIndex = i;
             _playerDesks[i].OnFinishAnsweringEvent += OnFinishAnswering;
-            _playerDesks[i].Setup(_data, playerIndex);
+            _playerDesks[i].Setup(_data, playerIndex, _canUseAnyPlayerChair);
         }
         foreach (var deskController in _desksWithAnswersSheet)
         {
             deskController.OnFinishAnsweringEvent += OnFinishAnswering;
-            deskController.Setup(_data, playerIndex: -1);
+            deskController.Setup(_data, playerIndex: -1, false);
         }
     }
 

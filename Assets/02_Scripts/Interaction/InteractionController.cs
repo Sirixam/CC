@@ -1,5 +1,6 @@
 using PrimeTween;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum EInteraction
@@ -40,7 +41,8 @@ public class InteractionController : MonoBehaviour
 
     private int _bestInteractionCount;
     private Tween _scaleTween;
-    
+    private List<int> _whiteListedPlayerIndexes = new(); // [AKP] If empty, all players can interact with this.
+
     public EInteraction Type => _data.Type;
     public int BaseScore => _data.BaseScore;
     public int EmptyHandsExtraScore => _data.EmptyHandsExtraScore;
@@ -99,6 +101,16 @@ public class InteractionController : MonoBehaviour
             _rigidbody.isKinematic = false;
             Enable();
         }
+    }
+
+    public void AddPlayerToWhitelist(int playerIndex)
+    {
+        _whiteListedPlayerIndexes.Add(playerIndex);
+    }
+
+    public bool CanInteract(int playerIndex)
+    {
+        return _whiteListedPlayerIndexes.Count == 0 || _whiteListedPlayerIndexes.Contains(playerIndex);
     }
 
     public void Enable()

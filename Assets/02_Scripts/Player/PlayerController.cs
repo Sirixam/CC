@@ -27,7 +27,9 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     private ThrowHelper _throwHelper;
     private DeskHelper _deskHelper;
     private StunHelper _stunHelper;
+
     // IInteractionActor
+    int IInteractionActor.PlayerIndex => _inputHandler.PlayerInput.playerIndex;
     Vector3 IInteractionActor.Position => transform.position;
     Vector3 IInteractionActor.Forward => transform.forward;
     // IThrowActor
