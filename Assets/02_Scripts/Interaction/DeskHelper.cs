@@ -38,6 +38,7 @@ public class DeskHelper
 
     public void StartStanding()
     {
+        _deskController?.HideAnswersSheet();
         Transform standingPoint = GetBestStandingPoint(_chairController);
         _deskController = null;
         IsTransitioning = true;
