@@ -8233,11 +8233,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _lookAtPoint: {fileID: 0}
-  _sittingPoint: {fileID: 0}
-  _standingPoints:
-  - {fileID: 0}
-  - {fileID: 0}
   _answersSheetUI: {fileID: 0}
+  _chairController: {fileID: 0}
+  _interactionController: {fileID: 0}
 --- !u!114 &3229508275477980479
 MonoBehaviour:
   m_ObjectHideFlags: 0
