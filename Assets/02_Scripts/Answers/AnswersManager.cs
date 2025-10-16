@@ -11,7 +11,10 @@ public class AnswersManager : MonoBehaviour
 
     private void Awake()
     {
-        _victoryFeedback.SetActive(false);
+        if (_victoryFeedback != null)
+        {
+            _victoryFeedback.SetActive(false);
+        }
         for (int i = 0; i < _playerDesks.Length; i++)
         {
             int playerIndex = i;
@@ -30,7 +33,10 @@ public class AnswersManager : MonoBehaviour
         if (deskController.IsPlayerDesk && AreAllPlayerAnswersFull())
         {
             _timeManager.Pause();
-            _victoryFeedback.SetActive(true);
+            if (_victoryFeedback != null)
+            {
+                _victoryFeedback.SetActive(true);
+            }
         }
     }
 
