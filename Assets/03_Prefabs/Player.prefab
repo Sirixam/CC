@@ -62,7 +62,7 @@ MonoBehaviour:
     - {fileID: 6821758476076812693}
     _moveSpeed: 5
     _dashSpeed: 15
-    _dashDuration: 0.3
+    _dashDuration: 0.2
     _frontalCollisionAngle: 30
   _interactionData:
     FacingScores:
@@ -83,8 +83,8 @@ MonoBehaviour:
   _stunData:
     HardStunDuration: 1
     SoftStunDuration: 0.5
-  _lookSpeed: 1080
-  _dashCooldown: 0.5
+  _lookSpeed: 820
+  _dashCooldown: 0.7
   _hardCollisionTags:
   - Environment
   _dropByHoldingInteract: 0
