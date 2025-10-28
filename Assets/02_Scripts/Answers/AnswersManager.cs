@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class AnswersManager : MonoBehaviour
@@ -8,6 +9,10 @@ public class AnswersManager : MonoBehaviour
     [SerializeField] private GameObject _victoryFeedback;
     [SerializeField] private TimeManager _timeManager;
     [SerializeField] private bool _canUseAnyPlayerChair;
+
+    public event Action<int> OnAllPlayersAnsweredFullyEvent;
+
+    public static AnswersManager GetInstance() => FindObjectOfType<AnswersManager>(); // TODO: Remove
 
     private void Awake()
     {
@@ -28,9 +33,16 @@ public class AnswersManager : MonoBehaviour
         }
     }
 
-    private void OnFinishAnswering(DeskController deskController)
+    private void OnFinishAnswering(DeskController deskController, int answerNumber)
     {
-        if (deskController.IsPlayerDesk && HaveAllPlayersAnsweredFully())
+        if (!deskController.IsPlayerDesk) return;
+
+        if (HaveAllPlayersAnsweredFully(answerNumber))
+        {
+            OnAllPlayersAnsweredFullyEvent?.Invoke(answerNumber);
+        }
+
+        if (HaveAllPlayersAnsweredFully())
         {
             _timeManager.Pause();
             if (_victoryFeedback != null)
@@ -52,10 +64,9 @@ public class AnswersManager : MonoBehaviour
         return true;
     }
 
-    public static bool HaveAllPlayersAnsweredFully(int answerNumber)
+    public bool HaveAllPlayersAnsweredFully(int answerNumber)
     {
-        AnswersManager instance = FindObjectOfType<AnswersManager>();
-        foreach (var deskController in instance._playerDesks)
+        foreach (var deskController in _playerDesks)
         {
             if (!deskController.IsAnswerFull(answerNumber))
             {

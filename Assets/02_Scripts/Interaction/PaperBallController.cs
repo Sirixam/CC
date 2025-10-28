@@ -10,8 +10,44 @@ public class PaperBallController : MonoBehaviour
 
     public InteractionController InteractionController => GetComponentInChildren<InteractionController>();
 
+    private void Start()
+    {
+        if (HasAnswer)
+        {
+            AnswersManager.GetInstance().OnAllPlayersAnsweredFullyEvent += OnAllPlayersAnsweredFullyEvent;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        AnswersManager answersManager = AnswersManager.GetInstance();
+        if (answersManager != null)
+        {
+            answersManager.OnAllPlayersAnsweredFullyEvent -= OnAllPlayersAnsweredFullyEvent;
+        }
+    }
+
     public void SetAnswerNumber(int value)
     {
+        bool hadAnswer = HasAnswer;
         _answerNumber = value;
+
+        if (hadAnswer != HasAnswer)
+        {
+            if (hadAnswer)
+            {
+                AnswersManager.GetInstance().OnAllPlayersAnsweredFullyEvent -= OnAllPlayersAnsweredFullyEvent;
+            }
+            else
+            {
+                AnswersManager.GetInstance().OnAllPlayersAnsweredFullyEvent += OnAllPlayersAnsweredFullyEvent;
+            }
+        }
+    }
+
+    private void OnAllPlayersAnsweredFullyEvent(int answerNumber)
+    {
+        if (_answerNumber != answerNumber) return;
+        Destroy(gameObject);
     }
 }

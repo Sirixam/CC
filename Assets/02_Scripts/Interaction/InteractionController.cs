@@ -53,6 +53,7 @@ public class InteractionController : MonoBehaviour
     public Rigidbody Rigidbody => _rigidbody;
 
     public event Action<InteractionController> OnDisableEvent;
+    public event Action<InteractionController> OnDestroyEvent;
 
     private void Awake()
     {
@@ -143,5 +144,10 @@ public class InteractionController : MonoBehaviour
                 _scaleTween = Tween.Scale(_bestInteractionViewData.TweenTarget, _bestInteractionViewData.StopTweenSettings);
             }
         }
+    }
+
+    private void OnDestroy()
+    {
+        OnDestroyEvent?.Invoke(this);
     }
 }

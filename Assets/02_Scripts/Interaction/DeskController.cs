@@ -28,7 +28,7 @@ public class DeskController : MonoBehaviour
 
     public Transform LookAtPoint => _lookAtPoint;
 
-    public event Action<DeskController> OnFinishAnsweringEvent;
+    public event Action<DeskController, int> OnFinishAnsweringEvent;
 
     private void Awake()
     {
@@ -90,7 +90,7 @@ public class DeskController : MonoBehaviour
             _answersSheetUI.SetAnswerState(answerIndex, true);
             _answersSheetUI.HideProgress();
             _activeAnswerNumber = 0;
-            OnFinishAnsweringEvent?.Invoke(this);
+            OnFinishAnsweringEvent?.Invoke(this, answerIndex + 1);
         }
     }
 

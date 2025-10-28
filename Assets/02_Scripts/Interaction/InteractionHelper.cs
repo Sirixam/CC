@@ -100,6 +100,7 @@ public class InteractionHelper
     public void AddInteraction(InteractionController interaction)
     {
         interaction.OnDisableEvent += RemoveInteraction;
+        interaction.OnDestroyEvent += OnDestroyInteraction;
         _interactions.Add(interaction);
         UpdateBestInteraction();
     }
@@ -107,6 +108,7 @@ public class InteractionHelper
     public void RemoveInteraction(InteractionController interaction)
     {
         interaction.OnDisableEvent -= RemoveInteraction;
+        interaction.OnDestroyEvent -= OnDestroyInteraction;
         _interactions.Remove(interaction);
         UpdateBestInteraction();
     }
@@ -217,16 +219,18 @@ public class InteractionHelper
         return interaction != null;
     }
 
-    public void StartInteraction(InteractionController startedInteraction)
+    public void StartInteraction(InteractionController interaction)
     {
-        _activeInteractions.Add(startedInteraction);
-        startedInteraction.OnStartInteraction();
+        _activeInteractions.Add(interaction);
+        interaction.OnDestroyEvent += OnDestroyInteraction;
+        interaction.OnStartInteraction();
     }
 
-    public bool TryStopInteraction(InteractionController stoppedInteraction)
+    public bool TryStopInteraction(InteractionController interaction)
     {
-        if (!_activeInteractions.Remove(stoppedInteraction)) return false;
-        stoppedInteraction.OnStopInteraction();
+        if (!_activeInteractions.Remove(interaction)) return false;
+        interaction.OnDestroyEvent -= OnDestroyInteraction;
+        interaction.OnStopInteraction();
         return true;
     }
 
@@ -237,5 +241,12 @@ public class InteractionHelper
             if (target.CompareTag(tag)) return true;
         }
         return false;
+    }
+
+    private void OnDestroyInteraction(InteractionController interaction)
+    {
+        interaction.OnDestroyEvent -= OnDestroyInteraction;
+        TryStopInteraction(interaction);
+        RemoveInteraction(interaction);
     }
 }

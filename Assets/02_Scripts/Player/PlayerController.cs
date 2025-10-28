@@ -368,12 +368,8 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
                     PaperBallController answerInstance = Instantiate(_answerPrefab, _view.PickUpPosition, Quaternion.identity);
                     answerInstance.SetAnswerNumber(answerNumber);
                     _view.OnPickUp(answerInstance.transform);
+                    _interactionHelper.AddInteraction(answerInstance.InteractionController);
                     _interactionHelper.StartInteraction(answerInstance.InteractionController);
-                }
-                else if (_interactionHelper.TryGetPickedUpInteraction(out PaperBallController paperBallController) && AnswersManager.HaveAllPlayersAnsweredFully(paperBallController.AnswerNumber))
-                {
-                    _interactionHelper.TryStopInteraction(paperBallController.InteractionController);
-                    Destroy(paperBallController.gameObject);
                 }
             }
         }
