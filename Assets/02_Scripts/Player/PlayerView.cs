@@ -8,6 +8,8 @@ public class PlayerView : MonoBehaviour
     [SerializeField] private Transform _itemContainer;
     [SerializeField] private ParticleSystem _stunVFX;
     [SerializeField] private TrailRenderer[] _dashTrails;
+    [SerializeField] private CheatUI _cheatUI;
+    [SerializeField] private MemoryUI _memoryUI;
     [SerializeField] private TweenSettings<float> _startStunTweenSettings = new();
     [SerializeField] private TweenSettings<float> _stopStunTweenSettings = new();
     [SerializeField] private TweenSettings<float> _sittingTweenSettings = new();
@@ -21,6 +23,9 @@ public class PlayerView : MonoBehaviour
     private Tween _scaleTweenZ;
     private Tween _scaleTweenY;
     private Tween _positionTween;
+
+    public CheatUI CheatUI => _cheatUI;
+    public MemoryUI MemoryUI => _memoryUI;
 
     private void Awake()
     {

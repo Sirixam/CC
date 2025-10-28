@@ -211,17 +211,16 @@ public class InteractionHelper
         return interaction != null;
     }
 
-    public bool TryStartInteraction(out InteractionController startedInteraction)
+    public bool TryGetStaticInteraction(out InteractionController interaction)
     {
-        startedInteraction = BestInteraction;
-        if (startedInteraction == null)
-        {
-            return false;
-        }
+        interaction = _activeInteractions.Find(x => x.Type == EInteraction.Static);
+        return interaction != null;
+    }
 
+    public void StartInteraction(InteractionController startedInteraction)
+    {
         _activeInteractions.Add(startedInteraction);
         startedInteraction.OnStartInteraction();
-        return true;
     }
 
     public bool TryStopInteraction(InteractionController stoppedInteraction)

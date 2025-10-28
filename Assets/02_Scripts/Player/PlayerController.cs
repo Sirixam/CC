@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     [SerializeField] private InteractionHelper.Data _interactionData;
     [SerializeField] private ThrowHelper.Data _throwData;
     [SerializeField] private StunHelper.Data _stunData;
+    [SerializeField] private CheatHelper.Data _cheatData;
     [SerializeField] private float _lookSpeed = 1080f; // Degrees per second
     [SerializeField] private float _dashCooldown = 0.2f; // Seconds
     [Tag]
@@ -27,6 +28,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     private ThrowHelper _throwHelper;
     private DeskHelper _deskHelper;
     private StunHelper _stunHelper;
+    private CheatHelper _cheatHelper;
 
     // IInteractionActor
     int IInteractionActor.PlayerIndex => _inputHandler.PlayerInput.playerIndex;
@@ -44,6 +46,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _throwHelper = new ThrowHelper(this, _throwData, _interactionHelper);
         _deskHelper = new DeskHelper(_inputHandler, _view, _physics);
         _stunHelper = new StunHelper(_stunData, _view);
+        _cheatHelper = new CheatHelper(_cheatData, _view);
     }
 
     private void OnEnable()
@@ -70,24 +73,17 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         }
         else if (actionType == EAction.Interact)
         {
-            if (_deskHelper.IsSitting)
+            if (_cheatHelper.IsCheating)
+            {
+                StopCheating();
+            }
+            else if (_deskHelper.IsSitting)
             {
                 _deskHelper.HideAnswersSheet();
             }
-            else if (_interactionHelper.TryStartInteraction(out InteractionController interaction))
+            else
             {
-                if (interaction.Type == EInteraction.PickUp)
-                {
-                    _view.OnPickUp(interaction.transform);
-                }
-                else if (interaction.Type == EInteraction.Static)
-                {
-                    RequestStaticInteraction(interaction);
-                }
-                else
-                {
-                    Debug.LogError("Interaction type is not being handled: " + interaction.Type);
-                }
+                TryStartInteraction();
             }
         }
         else if (actionType == EAction.Action)
@@ -122,25 +118,95 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         }
     }
 
-    private void RequestStaticInteraction(InteractionController interaction)
+    private void TryStartInteraction()
     {
-        DeskController deskController = interaction.GetComponent<DeskController>();
-        if (deskController != null)
-        {
-            _lookAtPoint = deskController.LookAtPoint;
-            return;
-        }
+        InteractionController interaction = _interactionHelper.BestInteraction;
+        if (interaction == null) return;
 
+        if (interaction.Type == EInteraction.PickUp)
+        {
+            _view.OnPickUp(interaction.transform);
+            _interactionHelper.StartInteraction(interaction);
+        }
+        else if (interaction.Type == EInteraction.Static)
+        {
+            if (TryRequestStaticInteraction(interaction))
+            {
+                _interactionHelper.StartInteraction(interaction);
+            }
+        }
+        else
+        {
+            Debug.LogError("Interaction type is not being handled: " + interaction.Type);
+        }
+    }
+
+    private void TryStartInteractionOnHold()
+    {
+        InteractionController interaction = _interactionHelper.BestInteraction;
+        if (interaction == null) return;
+
+        if (interaction.Type == EInteraction.Static)
+        {
+            if (RequestStaticInteractionOnHold(interaction))
+            {
+                _interactionHelper.StartInteraction(interaction);
+            }
+        }
+        else if (interaction.Type != EInteraction.PickUp)
+        {
+            Debug.LogError("Interaction type is not being handled: " + interaction.Type);
+        }
+    }
+
+    private bool TryRequestStaticInteraction(InteractionController interaction)
+    {
         ChairController chairController = interaction.GetComponent<ChairController>();
         if (chairController != null && chairController.CanPlayerSit)
         {
             _lookAtPoint = chairController.DeskController.LookAtPoint;
             _deskHelper.StartSitting(chairController);
             _interactionHelper.DisableInteraction();
-            return;
+            return true;
+        }
+
+        DeskController deskController = interaction.GetComponent<DeskController>();
+        if (deskController != null)
+        {
+            // Empty for now
+            return false;
         }
 
         Debug.LogError("Static interaction is not being handled: " + interaction.name);
+        return false;
+    }
+
+    private bool RequestStaticInteractionOnHold(InteractionController interaction)
+    {
+        DeskController deskController = interaction.GetComponent<DeskController>();
+        if (deskController != null)
+        {
+            _lookAtPoint = deskController.LookAtPoint;
+            _cheatHelper.StartCheating(deskController);
+            return true;
+        }
+
+        ChairController chairController = interaction.GetComponent<ChairController>();
+        if (chairController != null && chairController.CanPlayerSit)
+        {
+            // Empty for now
+            return false;
+        }
+
+        Debug.LogError("Static interaction is not being handled: " + interaction.name);
+        return false;
+    }
+
+    private void StopCheating()
+    {
+        _lookAtPoint = null;
+        _cheatHelper.StopCheating();
+        StopStaticInteraction();
     }
 
     private void RequestStanding()
@@ -148,6 +214,15 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _lookAtPoint = null;
         _deskHelper.StartStanding();
         _interactionHelper.EnableInteraction();
+        StopStaticInteraction();
+    }
+
+    private void StopStaticInteraction()
+    {
+        if (_interactionHelper.TryGetStaticInteraction(out InteractionController stoppedInteraction))
+        {
+            _interactionHelper.TryStopInteraction(stoppedInteraction);
+        }
     }
 
     private void RestoreInputScope()
@@ -186,13 +261,24 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     {
         if (actionType == EAction.Interact)
         {
-            if (_interactionHelper.TryGetPickedUpInteraction(out PaperBallController paperBallController) && paperBallController.HasAnswer)
+            if (_deskHelper.IsSitting)
             {
-                _deskHelper.TryStartAnswering(paperBallController.AnswerNumber);
+                if (_cheatHelper.TryGetRememberedAnswer(out int answerNumber))
+                {
+                    _deskHelper.TryStartAnswering(answerNumber);
+                }
+                else if (_interactionHelper.TryGetPickedUpInteraction(out PaperBallController paperBallController) && paperBallController.HasAnswer)
+                {
+                    _deskHelper.TryStartAnswering(paperBallController.AnswerNumber);
+                }
+                else
+                {
+                    _deskHelper.TryShowAnswersSheet();
+                }
             }
             else
             {
-                _deskHelper.TryShowAnswersSheet();
+                TryStartInteractionOnHold();
             }
         }
         else if (actionType == EAction.Action)
@@ -214,6 +300,13 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
                 if (!isHolding)
                 {
                     _deskHelper.HideAnswersSheet();
+                }
+            }
+            else if (_cheatHelper.IsCheating)
+            {
+                if (!isHolding)
+                {
+                    StopCheating();
                 }
             }
             else if (_dropByHoldingInteract)
@@ -266,8 +359,23 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             _deskHelper.TryUpdateAnswering(out bool finishedAnswering);
             if (finishedAnswering)
             {
-
+                if (_cheatHelper.TryGetRememberedAnswer(out int answerNumber))
+                {
+                    _cheatHelper.StopRemembering();
+                }
             }
+        }
+        if (_cheatHelper.IsCheating)
+        {
+            _cheatHelper.UpdateCheating(out bool finishedCheating);
+            if (finishedCheating)
+            {
+                StopCheating();
+            }
+        }
+        if (_cheatHelper.IsRemembering)
+        {
+            _cheatHelper.UpdateMemory(out bool hasForgotten);
         }
     }
 
