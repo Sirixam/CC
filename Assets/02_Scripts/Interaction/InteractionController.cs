@@ -38,6 +38,7 @@ public class InteractionController : MonoBehaviour
     [SerializeField] private Rigidbody _rigidbody;
     [SerializeField] private Data _data;
     [SerializeField] private BestInteractionViewData _bestInteractionViewData;
+    [SerializeField] private GameObject _destroyVFX;
 
     private int _bestInteractionCount;
     private Tween _scaleTween;
@@ -57,6 +58,10 @@ public class InteractionController : MonoBehaviour
 
     private void Awake()
     {
+        if (_destroyVFX != null)
+        {
+            _destroyVFX.gameObject.SetActive(false);
+        }
         if (_bestInteractionViewData.UseOutline)
         {
             _bestInteractionViewData.Outline.enabled = false;
@@ -148,6 +153,11 @@ public class InteractionController : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (_destroyVFX != null)
+        {
+            _destroyVFX.transform.SetParent(null, worldPositionStays: true);
+            _destroyVFX.gameObject.SetActive(true);
+        }
         OnDestroyEvent?.Invoke(this);
     }
 }

@@ -162,17 +162,18 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private bool TryRequestStaticInteraction(InteractionController interaction)
     {
-        ChairController chairController = interaction.GetComponent<ChairController>();
-        if (chairController != null && chairController.CanPlayerSit)
+        if (interaction.TryGetComponent(out ChairController chairController))
         {
-            _lookAtPoint = chairController.DeskController.LookAtPoint;
-            _deskHelper.StartSitting(chairController);
-            _interactionHelper.DisableInteraction();
+            if (chairController.CanPlayerSit)
+            {
+                _lookAtPoint = chairController.DeskController.LookAtPoint;
+                _deskHelper.StartSitting(chairController);
+                _interactionHelper.DisableInteraction();
+            }
             return true;
         }
 
-        DeskController deskController = interaction.GetComponent<DeskController>();
-        if (deskController != null)
+        if (interaction.TryGetComponent<DeskController>(out _))
         {
             // Empty for now
             return false;
@@ -184,16 +185,14 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private bool RequestStaticInteractionOnHold(InteractionController interaction)
     {
-        DeskController deskController = interaction.GetComponent<DeskController>();
-        if (deskController != null)
+        if (interaction.TryGetComponent(out DeskController deskController))
         {
             _lookAtPoint = deskController.LookAtPoint;
             _cheatHelper.StartCheating(deskController);
             return true;
         }
 
-        ChairController chairController = interaction.GetComponent<ChairController>();
-        if (chairController != null && chairController.CanPlayerSit)
+        if (interaction.TryGetComponent<ChairController>(out _))
         {
             // Empty for now
             return false;
@@ -365,7 +364,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
                     _cheatHelper.StopRemembering();
 
                     // Create answer
-                    PaperBallController answerInstance = Instantiate(_answerPrefab, _view.PickUpPosition, Quaternion.identity);
+                    PaperBallController answerInstance = Instantiate(_answerPrefab, _view.PickUpPosition + Vector3.up, Quaternion.identity); // Slightly above to highlight briefly.
                     answerInstance.SetAnswerNumber(answerNumber);
                     _view.OnPickUp(answerInstance.transform);
                     _interactionHelper.AddInteraction(answerInstance.InteractionController);
@@ -381,9 +380,9 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
                 StopCheating();
             }
         }
-        if (_cheatHelper.IsRemembering)
+        if (_cheatHelper.IsRemembering && !_deskHelper.IsAnswering)
         {
-            _cheatHelper.UpdateMemory(out bool hasForgotten);
+            _cheatHelper.UpdateMemory(out _);
         }
     }
 
