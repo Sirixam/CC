@@ -40,6 +40,11 @@ public class DeskController : MonoBehaviour
         return Array.FindAll(_answersProgress, x => x >= 1).Length;
     }
 
+    public bool IsAnswerFull(int answerNumber)
+    {
+        return _answersProgress[answerNumber - 1] >= 1;
+    }
+
     public void Setup(Data data, int playerIndex, bool canUseAnyPlayerChair)
     {
         _data = data;

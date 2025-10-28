@@ -30,7 +30,7 @@ public class AnswersManager : MonoBehaviour
 
     private void OnFinishAnswering(DeskController deskController)
     {
-        if (deskController.IsPlayerDesk && AreAllPlayerAnswersFull())
+        if (deskController.IsPlayerDesk && HaveAllPlayersAnsweredFully())
         {
             _timeManager.Pause();
             if (_victoryFeedback != null)
@@ -40,11 +40,24 @@ public class AnswersManager : MonoBehaviour
         }
     }
 
-    private bool AreAllPlayerAnswersFull()
+    private bool HaveAllPlayersAnsweredFully()
     {
         foreach (var deskController in _playerDesks)
         {
             if (deskController.GetFullAnswersCount() < _data.AnswersCount)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static bool HaveAllPlayersAnsweredFully(int answerNumber)
+    {
+        AnswersManager instance = FindObjectOfType<AnswersManager>();
+        foreach (var deskController in instance._playerDesks)
+        {
+            if (!deskController.IsAnswerFull(answerNumber))
             {
                 return false;
             }

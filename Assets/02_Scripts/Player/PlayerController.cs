@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     [Tag]
     [SerializeField] private string[] _hardCollisionTags;
     [Header("TO BE REMOVED")]
+    [SerializeField] private PaperBallController _answerPrefab;
     [SerializeField] private bool _dropByHoldingInteract; // Once we decide on the final input scheme, this can be removed
 
     // Look
@@ -362,6 +363,17 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
                 if (_cheatHelper.TryGetRememberedAnswer(out int answerNumber))
                 {
                     _cheatHelper.StopRemembering();
+
+                    // Create answer
+                    PaperBallController answerInstance = Instantiate(_answerPrefab, _view.PickUpPosition, Quaternion.identity);
+                    answerInstance.SetAnswerNumber(answerNumber);
+                    _view.OnPickUp(answerInstance.transform);
+                    _interactionHelper.StartInteraction(answerInstance.InteractionController);
+                }
+                else if (_interactionHelper.TryGetPickedUpInteraction(out PaperBallController paperBallController) && AnswersManager.HaveAllPlayersAnsweredFully(paperBallController.AnswerNumber))
+                {
+                    _interactionHelper.TryStopInteraction(paperBallController.InteractionController);
+                    Destroy(paperBallController.gameObject);
                 }
             }
         }

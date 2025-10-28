@@ -64,6 +64,7 @@ public class CheatHelper
         _memoryProgress = 1;
         _rememberedAnswerNumber = answerNumber;
         _playerView.MemoryUI.Show();
+        _playerView.MemoryUI.SetAnswerNumber(answerNumber);
         _playerView.MemoryUI.SetPercent(_memoryProgress);
     }
 

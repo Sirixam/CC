@@ -24,11 +24,14 @@ public class PlayerView : MonoBehaviour
     private Tween _scaleTweenY;
     private Tween _positionTween;
 
+    public Vector3 PickUpPosition => _itemContainer.position + _pickUpTweenSettings.endValue;
     public CheatUI CheatUI => _cheatUI;
     public MemoryUI MemoryUI => _memoryUI;
 
     private void Awake()
     {
+        _cheatUI.Hide();
+        _memoryUI.Hide();
         _startStunTweenSettings.startFromCurrent = true;
         _stopStunTweenSettings.startFromCurrent = true;
         _sittingTweenSettings.startFromCurrent = true;

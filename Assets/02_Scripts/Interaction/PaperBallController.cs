@@ -7,4 +7,11 @@ public class PaperBallController : MonoBehaviour
 
     public bool HasAnswer => _answerNumber > 0;
     public int AnswerNumber => _answerNumber;
+
+    public InteractionController InteractionController => GetComponentInChildren<InteractionController>();
+
+    public void SetAnswerNumber(int value)
+    {
+        _answerNumber = value;
+    }
 }
