@@ -11,43 +11,39 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     [SerializeField] private ThrowHelper.Data _throwData;
     [SerializeField] private StunHelper.Data _stunData;
     [SerializeField] private CheatHelper.Data _cheatData;
-    [SerializeField] private float _lookSpeed = 1080f; // Degrees per second
-    [SerializeField] private float _dashCooldown = 0.2f; // Seconds
-    [Tag]
-    [SerializeField] private string[] _hardCollisionTags;
+    [SerializeField] private PlayerMovementHelper.Data _movementData;
     [Header("TO BE REMOVED")]
     [SerializeField] private PaperBallController _answerPrefab;
     [SerializeField] private bool _dropByHoldingInteract; // Once we decide on the final input scheme, this can be removed
 
-    // Look
-    private Vector3 _lookDirection;
-    private Transform _lookAtPoint;
-    // Timers
-    private float _dashCooldownTimer;
     // Helpers
     private InteractionHelper _interactionHelper;
     private ThrowHelper _throwHelper;
     private DeskHelper _deskHelper;
     private StunHelper _stunHelper;
     private CheatHelper _cheatHelper;
+    private PlayerMovementHelper _movementHelper;
 
     // IInteractionActor
     int IInteractionActor.PlayerIndex => _inputHandler.PlayerInput.playerIndex;
     Vector3 IInteractionActor.Position => transform.position;
     Vector3 IInteractionActor.Forward => transform.forward;
     // IThrowActor
-    Vector3 IThrowActor.LookDirection => _lookDirection;
+    Vector3 IThrowActor.LookDirection => _movementHelper.LookDirection;
     Collider[] IThrowActor.Colliders => _physics.Colliders;
 
     private void Awake()
     {
         _physics.Initialize();
-        _lookDirection = transform.forward;
         _interactionHelper = new InteractionHelper(this, _interactionData, isEnabled: true);
         _throwHelper = new ThrowHelper(this, _throwData, _interactionHelper);
         _deskHelper = new DeskHelper(_inputHandler, _view, _physics);
         _stunHelper = new StunHelper(_stunData, _view);
         _cheatHelper = new CheatHelper(_cheatData, _view);
+        _movementHelper = new PlayerMovementHelper(_view, _physics, _movementData);
+
+        // Initialize
+        _movementHelper.Initialize(transform.forward);
     }
 
     private void OnEnable()
@@ -70,7 +66,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     {
         if (actionType == EAction.Dash)
         {
-            RequestDash();
+            _movementHelper.RequestDash();
         }
         else if (actionType == EAction.Interact)
         {
@@ -106,16 +102,6 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             {
                 RequestStanding();
             }
-        }
-    }
-
-    private void RequestDash()
-    {
-        if (_dashCooldownTimer <= 0)
-        {
-            _view.OnStartDash();
-            _physics.StartDashing(_lookDirection);
-            _dashCooldownTimer = _dashCooldown;
         }
     }
 
@@ -166,7 +152,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         {
             if (chairController.CanPlayerSit)
             {
-                _lookAtPoint = chairController.DeskController.LookAtPoint;
+                _movementHelper.SetLookAt(chairController.DeskController.LookAtPoint);
                 _deskHelper.StartSitting(chairController);
                 _interactionHelper.DisableInteraction();
             }
@@ -187,7 +173,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     {
         if (interaction.TryGetComponent(out DeskController deskController))
         {
-            _lookAtPoint = deskController.LookAtPoint;
+            _movementHelper.SetLookAt(deskController.LookAtPoint);
             _cheatHelper.StartCheating(deskController);
             return true;
         }
@@ -204,14 +190,14 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private void StopCheating()
     {
-        _lookAtPoint = null;
+        _movementHelper.ClearLookAt();
         _cheatHelper.StopCheating();
         StopStaticInteraction();
     }
 
     private void RequestStanding()
     {
-        _lookAtPoint = null;
+        _movementHelper.ClearLookAt();
         _deskHelper.StartStanding();
         _interactionHelper.EnableInteraction();
         StopStaticInteraction();
@@ -229,7 +215,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     {
         if (_deskHelper.IsSitting)
         {
-            _lookAtPoint = _deskHelper.LookAtPoint;
+            _movementHelper.SetLookAt(_deskHelper.LookAtPoint);
             _inputHandler.SetScope(EInputScope.PlayerSitting);
         }
         else
@@ -243,17 +229,11 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         if (actionType == EDirectionalAction.Move)
         {
             _physics.SetMoveDirection(new Vector3(input.x, 0, input.y));
-            if (input != Vector2.zero)
-            {
-                _lookDirection = new Vector3(input.x, 0, input.y);
-            }
+            _movementHelper.SetLookInput(input);
         }
         else if (actionType == EDirectionalAction.Aim)
         {
-            if (input != Vector2.zero)
-            {
-                _lookDirection = new Vector3(input.x, 0, input.y);
-            }
+            _movementHelper.SetLookInput(input);
         }
     }
 
@@ -285,7 +265,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         {
             if (_interactionHelper.TryGetPickedUpInteraction(out _))
             {
-                _lookAtPoint = null;
+                _movementHelper.ClearLookAt();
                 _inputHandler.SetScope(EInputScope.PlayerAiming);
             }
         }
@@ -332,27 +312,14 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private void Update()
     {
-        _dashCooldownTimer -= Time.deltaTime;
-
+        _movementHelper.UpdateCooldown();
         if (_stunHelper.IsStunned)
         {
             _stunHelper.UpdateStun();
             return;
         }
 
-        if (_lookAtPoint != null)
-        {
-            Vector3 lookPosition = _lookAtPoint.position;
-            lookPosition.y = transform.position.y;
-            _lookDirection = (lookPosition - transform.position).normalized;
-        }
-
-        if (_lookDirection != Vector3.zero)
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(_lookDirection, Vector3.up);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, _lookSpeed * Time.deltaTime);
-        }
-
+        _movementHelper.UpdateRotation(transform);
         _interactionHelper.UpdateBestInteraction();
         if (_deskHelper.IsAnswering)
         {
@@ -397,22 +364,10 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private void OnCollisionStay(Collision collision)
     {
-        foreach (var contact in collision.contacts)
-        {
-            if (_physics.IsFrontalCollision(contact.normal))
-            {
-                _physics.ClearCollisionNormals();
-                if (_physics.TryStopDashing())
-                {
-                    _view.OnStopDash();
-                    bool isSoftStun = !HasAnyTag(collision.transform, _hardCollisionTags);
-                    _stunHelper.StartStun(isSoftStun);
-                }
-                return;
-            }
-
-            _physics.AddCollisionNormal(contact.normal);
-        }
+        _movementHelper.OnCollisionStay(collision, isSoftStun =>
+        {   // OnStopDash
+            _stunHelper.StartStun(isSoftStun);
+        });
     }
 
     private void OnTriggerEnter(Collider other)
@@ -423,13 +378,4 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     void IThrowActor.OnThrow(Transform thrownTransform)
         => _view.OnThrow(thrownTransform);
-
-    private bool HasAnyTag(Transform target, string[] tags)
-    {
-        foreach (var tag in tags)
-        {
-            if (target.CompareTag(tag)) return true;
-        }
-        return false;
-    }
 }
