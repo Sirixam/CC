@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AnswersSheetUI : MonoBehaviour
+public class AnswerSheetUI : MonoBehaviour
 {
     [SerializeField] private AnswerUI _answerPrefab;
     [SerializeField] private Transform _answersParent;

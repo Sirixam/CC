@@ -363,12 +363,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     }
 
     private void OnCollisionStay(Collision collision)
-    {
-        _movementHelper.OnCollisionStay(collision, isSoftStun =>
-        {   // OnStopDash
-            _stunHelper.StartStun(isSoftStun);
-        });
-    }
+        => _movementHelper.OnCollisionStay(collision, OnStopDash: _stunHelper.StartStun);
 
     private void OnTriggerEnter(Collider other)
         => _interactionHelper.OnTriggerEnter(other);

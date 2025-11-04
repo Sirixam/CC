@@ -38,7 +38,7 @@ public class DeskHelper
 
     public void StartStanding()
     {
-        _deskController?.HideAnswersSheet();
+        _deskController?.HideAnswerSheet();
         Transform standingPoint = GetBestStandingPoint(_chairController);
         _deskController = null;
         IsTransitioning = true;
@@ -73,7 +73,7 @@ public class DeskHelper
     public void TryShowAnswersSheet()
     {
         if (!IsSitting) return;
-        _deskController.ShowAnswersSheet();
+        _deskController.ShowAnswerSheet();
     }
 
     public void TryStartAnswering(int answerNumber)
@@ -94,7 +94,7 @@ public class DeskHelper
 
     public void HideAnswersSheet()
     {
-        _deskController?.HideAnswersSheet();
+        _deskController?.HideAnswerSheet();
     }
 }
 
