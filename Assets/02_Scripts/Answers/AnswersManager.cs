@@ -1,63 +1,93 @@
 using System;
 using UnityEngine;
 
-public class AnswerSheet
+public class Answer
 {
     [Serializable]
     public class Data
     {
-        public int AnswersCount;
+        public Sprite TypeIcon;
         public float AnswerDuration;
-        public bool PersistProgress;
     }
 
     private Data _data;
-    private float[] _answersProgress;
 
-    public int AnswersCount => _answersProgress.Length;
+    public float Progress { get; private set; }
+    public bool IsAnswerFull => Progress >= 1;
+    public Sprite TypeIcon => _data.TypeIcon;
 
-    public AnswerSheet(Data data)
+    public Answer(Data data)
     {
         _data = data;
-        _answersProgress = new float[_data.AnswersCount];
+    }
+
+    public float UpdateProgress(out bool finishedAnswering)
+    {
+        float progressDelta = Time.deltaTime / _data.AnswerDuration;
+        Progress = Mathf.Clamp01(Progress + progressDelta);
+        finishedAnswering = Progress >= 1;
+        return Progress;
+    }
+
+    public void ResetProgress()
+    {
+        Progress = 0;
+    }
+}
+
+public class AnswerSheet
+{
+    private bool _persistProgress;
+
+    public Answer[] Answers { get; private set; }
+
+    public AnswerSheet(Answer.Data[] answersData, bool persistProgress)
+    {
+        _persistProgress = persistProgress;
+        Answers = new Answer[answersData.Length];
+        for (int i = 0; i < Answers.Length; i++)
+        {
+            Answers[i] = new Answer(answersData[i]);
+        }
     }
 
     public float UpdateProgress(int answerIndex, out bool finishedAnswering)
     {
-        float progressDelta = Time.deltaTime / _data.AnswerDuration;
-        _answersProgress[answerIndex] = Mathf.Clamp01(_answersProgress[answerIndex] + progressDelta);
-        finishedAnswering = _answersProgress[answerIndex] >= 1;
-        return _answersProgress[answerIndex];
+        return Answers[answerIndex].UpdateProgress(out finishedAnswering);
     }
 
     public int GetFullAnswersCount()
     {
-        return Array.FindAll(_answersProgress, x => x >= 1).Length;
+        return Array.FindAll(Answers, x => x.IsAnswerFull).Length;
     }
 
     public bool IsAnswerFull(int answerIndex, out float progress)
     {
-        progress = _answersProgress[answerIndex];
-        return progress >= 1;
+        Answer answer = Answers[answerIndex];
+        progress = answer.Progress;
+        return answer.IsAnswerFull;
     }
 
     public void OnStopAnswering(int answerIndex)
     {
-        if (!_data.PersistProgress)
+        if (!_persistProgress)
         {
-            _answersProgress[answerIndex] = 0;
+            Answers[answerIndex].ResetProgress();
         }
     }
 }
 
 public class AnswersManager : MonoBehaviour
 {
-    [SerializeField] private AnswerSheet.Data _data = new() { AnswersCount = 10, AnswerDuration = 1.5f };
+    [SerializeField] private Answer.Data[] _playerAnswersData;
+    [SerializeField] private Answer.Data[] _npcAnswersData;
     [SerializeField] private DeskController[] _playerDesks;
-    [SerializeField] private DeskController[] _desksWithAnswersSheet;
+    [SerializeField] private DeskController[] _npcDesks;
+    [SerializeField] private AnswerPeekUI[] _answerPeekUIs;
     [SerializeField] private GameObject _victoryFeedback;
     [SerializeField] private TimeManager _timeManager;
     [SerializeField] private bool _canUseAnyPlayerChair;
+    [SerializeField] private bool _persistProgress;
 
     private AnswerSheet[] _answerSheets;
 
@@ -76,13 +106,17 @@ public class AnswersManager : MonoBehaviour
         {
             int playerIndex = i;
             _playerDesks[i].OnFinishAnsweringEvent += OnFinishAnswering;
-            _answerSheets[i] = new AnswerSheet(_data);
+            _answerSheets[i] = new AnswerSheet(_playerAnswersData, _persistProgress);
             _playerDesks[i].Setup(_answerSheets[i], playerIndex, _canUseAnyPlayerChair);
         }
-        foreach (var deskController in _desksWithAnswersSheet)
+        foreach (var deskController in _npcDesks)
         {
             deskController.OnFinishAnsweringEvent += OnFinishAnswering;
             deskController.Setup(null, playerIndex: -1, false);
+        }
+        foreach (var answerPeekUI in _answerPeekUIs)
+        {
+            answerPeekUI.Hide();
         }
     }
 
@@ -109,7 +143,7 @@ public class AnswersManager : MonoBehaviour
     {
         foreach (var answerSheet in _answerSheets)
         {
-            if (answerSheet.GetFullAnswersCount() < _data.AnswersCount)
+            if (answerSheet.GetFullAnswersCount() < _playerAnswersData.Length)
             {
                 return false;
             }

@@ -32,7 +32,7 @@ public class DeskController : MonoBehaviour
         PlayerIndex = playerIndex;
         if (answerSheet != null)
         {
-            _answerSheetUI.Setup(answerSheet.AnswersCount);
+            _answerSheetUI.Setup(answerSheet.Answers);
         }
         _chairController.Setup(this, canUseAnyPlayerChair); // Trigger after setting player index
         if (IsPlayerDesk)

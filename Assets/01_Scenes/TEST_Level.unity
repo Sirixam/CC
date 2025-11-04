@@ -9173,10 +9173,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0439427bab58e9445908f1d2d5635817, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _data:
-    AnswersCount: 2
-    AnswerDuration: 1.5
-    PersistProgress: 0
+  _playerAnswersData:
+  - TypeIcon: {fileID: 21300000, guid: 41dd33abccd6ae7488b8e317968689b0, type: 3}
+    AnswerDuration: 2
+  - TypeIcon: {fileID: 21300000, guid: fba3f8b4e31fd1c47b771c9bea630dac, type: 3}
+    AnswerDuration: 2
+  _npcAnswersData:
+  - TypeIcon: {fileID: 21300000, guid: fba3f8b4e31fd1c47b771c9bea630dac, type: 3}
+    AnswerDuration: 2
+  - TypeIcon: {fileID: 21300000, guid: 41dd33abccd6ae7488b8e317968689b0, type: 3}
+    AnswerDuration: 2
+  - TypeIcon: {fileID: 21300000, guid: 399679284a87f064a9c371ac7c10a4f6, type: 3}
+    AnswerDuration: 2
+  - TypeIcon: {fileID: 10915, guid: 0000000000000000f000000000000000, type: 0}
+    AnswerDuration: 2
   _playerDesks:
   - {fileID: 308226760}
   - {fileID: 1998157065}
@@ -9196,10 +9206,12 @@ MonoBehaviour:
   - {fileID: 713463729}
   - {fileID: 1869526609}
   - {fileID: 777102169}
-  _desksWithAnswersSheet: []
+  _npcDesks: []
+  _answerPeekUIs: []
   _victoryFeedback: {fileID: 1900106230}
   _timeManager: {fileID: 147876397}
   _canUseAnyPlayerChair: 1
+  _persistProgress: 0
 --- !u!1 &856778330
 GameObject:
   m_ObjectHideFlags: 0

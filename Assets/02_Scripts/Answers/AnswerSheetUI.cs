@@ -24,13 +24,13 @@ public class AnswerSheetUI : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void Setup(int answersCount)
+    public void Setup(Answer[] answers)
     {
         CleanAnswers();
-        for (int i = 0; i < answersCount; i++)
+        for (int i = 0; i < answers.Length; i++)
         {
             int answerNumber = i + 1;
-            _answers.Add(InstantiateAnswer(answerNumber, isFilled: false));
+            _answers.Add(InstantiateAnswer(answerNumber, answers[i].TypeIcon, isFilled: false));
         }
     }
 
@@ -55,10 +55,11 @@ public class AnswerSheetUI : MonoBehaviour
         _answers[index].SetState(isFilled);
     }
 
-    private AnswerUI InstantiateAnswer(int number, bool isFilled)
+    private AnswerUI InstantiateAnswer(int number, Sprite icon, bool isFilled)
     {
         AnswerUI instance = Instantiate(_answerPrefab, _answersParent);
         instance.SetNumber(number);
+        instance.SetIcon(icon);
         instance.SetState(isFilled);
         return instance;
     }
@@ -70,11 +71,5 @@ public class AnswerSheetUI : MonoBehaviour
             Destroy(answer.gameObject);
         }
         _answers.Clear();
-    }
-
-    [Button("Create Answers")]
-    private void EDITOR_CreateAnswers()
-    {
-        Setup(10);
     }
 }
