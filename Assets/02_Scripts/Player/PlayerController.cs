@@ -11,7 +11,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     [SerializeField] private ThrowHelper.Data _throwData;
     [SerializeField] private StunHelper.Data _stunData;
     [SerializeField] private CheatHelper.Data _cheatData;
-    [SerializeField] private PlayerMovementHelper.Data _movementData;
+    [SerializeField] private MovementHelper.Data _movementData;
     [Header("TO BE REMOVED")]
     [SerializeField] private PaperBallController _answerPrefab;
     [SerializeField] private bool _dropByHoldingInteract; // Once we decide on the final input scheme, this can be removed
@@ -22,7 +22,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     private DeskHelper _deskHelper;
     private StunHelper _stunHelper;
     private CheatHelper _cheatHelper;
-    private PlayerMovementHelper _movementHelper;
+    private MovementHelper _movementHelper;
 
     // IInteractionActor
     int IInteractionActor.PlayerIndex => _inputHandler.PlayerInput.playerIndex;
@@ -40,7 +40,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _deskHelper = new DeskHelper(_inputHandler, _view, _physics);
         _stunHelper = new StunHelper(_stunData, _view);
         _cheatHelper = new CheatHelper(_cheatData, _view);
-        _movementHelper = new PlayerMovementHelper(_view, _physics, _movementData);
+        _movementHelper = new MovementHelper(_view, _physics, _movementData);
 
         // Initialize
         _movementHelper.Initialize(transform.forward);

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class PlayerMovementHelper
+public class MovementHelper
 {
     [Serializable]
     public class Data
@@ -21,7 +21,7 @@ public class PlayerMovementHelper
 
     public Vector3 LookDirection => _lookDirection;
 
-    public PlayerMovementHelper(PlayerView view, PlayerPhysics physics, Data data)
+    public MovementHelper(PlayerView view, PlayerPhysics physics, Data data)
     {
         _view = view;
         _physics = physics;
