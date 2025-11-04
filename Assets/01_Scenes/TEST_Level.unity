@@ -9173,20 +9173,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0439427bab58e9445908f1d2d5635817, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerAnswersData:
-  - TypeIcon: {fileID: 21300000, guid: 41dd33abccd6ae7488b8e317968689b0, type: 3}
-    AnswerDuration: 2
-  - TypeIcon: {fileID: 21300000, guid: fba3f8b4e31fd1c47b771c9bea630dac, type: 3}
-    AnswerDuration: 2
-  _npcAnswersData:
-  - TypeIcon: {fileID: 21300000, guid: fba3f8b4e31fd1c47b771c9bea630dac, type: 3}
-    AnswerDuration: 2
-  - TypeIcon: {fileID: 21300000, guid: 41dd33abccd6ae7488b8e317968689b0, type: 3}
-    AnswerDuration: 2
-  - TypeIcon: {fileID: 21300000, guid: 399679284a87f064a9c371ac7c10a4f6, type: 3}
-    AnswerDuration: 2
-  - TypeIcon: {fileID: 10915, guid: 0000000000000000f000000000000000, type: 0}
-    AnswerDuration: 2
+  _playerAnswersDefinitions:
+  - {fileID: 11400000, guid: 688d70872986a7848a8364babff9f90d, type: 2}
+  - {fileID: 11400000, guid: 9f67efe7b42baa2448cdc123a36988cb, type: 2}
+  _npcAnswersDefinitions:
+  - {fileID: 11400000, guid: 688d70872986a7848a8364babff9f90d, type: 2}
+  - {fileID: 11400000, guid: 506ce7810c85be34aaa2ecd4571f5faf, type: 2}
+  - {fileID: 11400000, guid: 27362b46e3cce524ab9e00b199c4cf5b, type: 2}
+  - {fileID: 11400000, guid: 9f67efe7b42baa2448cdc123a36988cb, type: 2}
+  - {fileID: 11400000, guid: 7d9e8d81f2c6b3b4ab63797a91605dc6, type: 2}
+  - {fileID: 11400000, guid: b953172722e381c419901feffbd23a9a, type: 2}
   _playerDesks:
   - {fileID: 308226760}
   - {fileID: 1998157065}

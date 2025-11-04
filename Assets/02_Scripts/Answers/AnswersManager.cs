@@ -3,27 +3,21 @@ using UnityEngine;
 
 public class Answer
 {
-    [Serializable]
-    public class Data
-    {
-        public Sprite TypeIcon;
-        public float AnswerDuration;
-    }
-
-    private Data _data;
+    private AnswerDefinition _definition;
 
     public float Progress { get; private set; }
     public bool IsAnswerFull => Progress >= 1;
-    public Sprite TypeIcon => _data.TypeIcon;
+    public Sprite Icon => _definition.Icon;
+    public Color Color => _definition.Color;
 
-    public Answer(Data data)
+    public Answer(AnswerDefinition definition)
     {
-        _data = data;
+        _definition = definition;
     }
 
     public float UpdateProgress(out bool finishedAnswering)
     {
-        float progressDelta = Time.deltaTime / _data.AnswerDuration;
+        float progressDelta = Time.deltaTime / _definition.BaseDuration;
         Progress = Mathf.Clamp01(Progress + progressDelta);
         finishedAnswering = Progress >= 1;
         return Progress;
@@ -41,13 +35,13 @@ public class AnswerSheet
 
     public Answer[] Answers { get; private set; }
 
-    public AnswerSheet(Answer.Data[] answersData, bool persistProgress)
+    public AnswerSheet(AnswerDefinition[] answersDefinitions, bool persistProgress)
     {
         _persistProgress = persistProgress;
-        Answers = new Answer[answersData.Length];
+        Answers = new Answer[answersDefinitions.Length];
         for (int i = 0; i < Answers.Length; i++)
         {
-            Answers[i] = new Answer(answersData[i]);
+            Answers[i] = new Answer(answersDefinitions[i]);
         }
     }
 
@@ -79,8 +73,8 @@ public class AnswerSheet
 
 public class AnswersManager : MonoBehaviour
 {
-    [SerializeField] private Answer.Data[] _playerAnswersData;
-    [SerializeField] private Answer.Data[] _npcAnswersData;
+    [SerializeField] private AnswerDefinition[] _playerAnswersDefinitions;
+    [SerializeField] private AnswerDefinition[] _npcAnswersDefinitions;
     [SerializeField] private DeskController[] _playerDesks;
     [SerializeField] private DeskController[] _npcDesks;
     [SerializeField] private AnswerPeekUI[] _answerPeekUIs;
@@ -106,7 +100,7 @@ public class AnswersManager : MonoBehaviour
         {
             int playerIndex = i;
             _playerDesks[i].OnFinishAnsweringEvent += OnFinishAnswering;
-            _answerSheets[i] = new AnswerSheet(_playerAnswersData, _persistProgress);
+            _answerSheets[i] = new AnswerSheet(_playerAnswersDefinitions, _persistProgress);
             _playerDesks[i].Setup(_answerSheets[i], playerIndex, _canUseAnyPlayerChair);
         }
         foreach (var deskController in _npcDesks)
@@ -143,7 +137,7 @@ public class AnswersManager : MonoBehaviour
     {
         foreach (var answerSheet in _answerSheets)
         {
-            if (answerSheet.GetFullAnswersCount() < _playerAnswersData.Length)
+            if (answerSheet.GetFullAnswersCount() < _playerAnswersDefinitions.Length)
             {
                 return false;
             }
