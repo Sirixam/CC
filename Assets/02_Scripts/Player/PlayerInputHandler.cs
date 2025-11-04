@@ -12,6 +12,7 @@ public enum EInputScope
     PlayerStanding,
     PlayerSitting,
     PlayerAiming,
+    PlayerPeeking,
 }
 
 public enum EDirectionalAction
@@ -26,7 +27,7 @@ public enum EAction
     Action,
     Interact,
     Dash,
-    Utility,
+    Peek,
     Cancel,
     Pause,
 }
@@ -85,6 +86,7 @@ public class PlayerInputHandler : MonoBehaviour
     private const string PLAYER_STANDING_MAP = "Player - Standing";
     private const string PLAYER_SITTING_MAP = "Player - Sitting";
     private const string PLAYER_AIMING_MAP = "Player - Aiming";
+    private const string PLAYER_PEEKING_MAP = "Player - Peeking";
     //private const string MENU_MAP = "Menu";
 
     private static readonly string AIM_ACTION = EDirectionalAction.Aim.ToString();
@@ -93,11 +95,12 @@ public class PlayerInputHandler : MonoBehaviour
     private static readonly string ACTION_ACTION = EAction.Action.ToString();
     private static readonly string INTERACT_ACTION = EAction.Interact.ToString();
     private static readonly string DASH_ACTION = EAction.Dash.ToString();
-    private static readonly string UTILITY_ACTION = EAction.Utility.ToString();
+    private static readonly string PEEK_ACTION = EAction.Peek.ToString();
     private static readonly string CANCEL_ACTION = EAction.Cancel.ToString();
     private static readonly string PAUSE_ACTION = EAction.Pause.ToString();
 
     private HoldAction _actionHoldState;
+    private HoldAction _peekHoldState;
     private HoldAction _interactHoldState;
     private EInputScope _nextScopeType; // Used when changing scope.
 
@@ -119,6 +122,7 @@ public class PlayerInputHandler : MonoBehaviour
         PlayerInput.actions.FindActionMap(PLAYER_STANDING_MAP).Disable();
         PlayerInput.actions.FindActionMap(PLAYER_SITTING_MAP).Disable();
         PlayerInput.actions.FindActionMap(PLAYER_AIMING_MAP).Disable();
+        PlayerInput.actions.FindActionMap(PLAYER_PEEKING_MAP).Disable();
         //_playerInput.actions.FindActionMap(MENU_MAP).Disable();
 
         Debug.Log("Current control scheme: " + PlayerInput.currentControlScheme);
@@ -153,6 +157,12 @@ public class PlayerInputHandler : MonoBehaviour
         {
             RequestHoldAction(EAction.Interact, true);
         }
+
+        _peekHoldState.OnUpdate(out bool beginHoldPeek);
+        if (beginHoldPeek)
+        {
+            RequestHoldAction(EAction.Peek, true);
+        }
     }
 
     public void SetScope(EInputScope scopeType)
@@ -169,6 +179,11 @@ public class PlayerInputHandler : MonoBehaviour
     public void CancelActionHold()
     {
         _actionHoldState.Cancel();
+    }
+
+    public void CancelPeekHold()
+    {
+        _peekHoldState.Cancel();
     }
 
     private void OnMove(InputAction.CallbackContext context)
@@ -265,9 +280,29 @@ public class PlayerInputHandler : MonoBehaviour
         RequestAction(EAction.Dash);
     }
 
-    private void OnUtility(InputAction.CallbackContext context)
+    private void OnPeek(InputAction.CallbackContext context)
     {
-        RequestAction(EAction.Utility);
+        if (context.started)
+        {
+            _peekHoldState.OnPressInput(out bool canProcessInput);
+            if (!canProcessInput) return;
+
+            PreHoldActionEvent?.Invoke(EAction.Peek);
+        }
+        else if (context.canceled && (_nextScopeType == EInputScope.Undefined || !HasPeekInput(_nextScopeType))) // Supress cancel when changing scope to one that has the action input too.
+        {
+            _peekHoldState.OnReleaseInput(out bool wasHolding, out bool canProcessInput);
+            if (!canProcessInput) return;
+
+            if (wasHolding)
+            {
+                RequestHoldAction(EAction.Peek, false);
+            }
+            else
+            {
+                RequestAction(EAction.Peek);
+            }
+        }
     }
 
     private void OnCancel(InputAction.CallbackContext context)
@@ -319,6 +354,11 @@ public class PlayerInputHandler : MonoBehaviour
         return scopeType == EInputScope.PlayerStanding || scopeType == EInputScope.PlayerSitting || scopeType == EInputScope.PlayerAiming;
     }
 
+    private bool HasPeekInput(EInputScope scopeType)
+    {
+        return scopeType == EInputScope.PlayerStanding || scopeType == EInputScope.PlayerPeeking;
+    }
+
     private void UnsubscribeActions(EInputScope scopeType)
     {
         switch (scopeType)
@@ -327,6 +367,7 @@ public class PlayerInputHandler : MonoBehaviour
             case EInputScope.PlayerStanding: UnsubscribePlayerStandingActions(); break;
             case EInputScope.PlayerSitting: UnsubscribePlayerSittingActions(); break;
             case EInputScope.PlayerAiming: UnsubscribePlayerAimingActions(); break;
+            case EInputScope.PlayerPeeking: UnsubscribePlayerPeekingActions(); break;
             case EInputScope.Undefined: break;
             default:
                 Debug.LogError("Scope is not being handled: " + scopeType);
@@ -342,6 +383,7 @@ public class PlayerInputHandler : MonoBehaviour
             case EInputScope.PlayerStanding: SubscribePlayerStandingActions(); break;
             case EInputScope.PlayerSitting: SubscribePlayerSittingActions(); break;
             case EInputScope.PlayerAiming: SubscribePlayerAimingActions(); break;
+            case EInputScope.PlayerPeeking: SubscribePlayerPeekingActions(); break;
             default:
                 Debug.LogError("Scope is not being handled: " + scopeType);
                 break;
@@ -365,6 +407,10 @@ public class PlayerInputHandler : MonoBehaviour
         actions[INTERACT_ACTION].performed += OnInteract;
         actions[INTERACT_ACTION].canceled += OnInteract;
 
+        actions[PEEK_ACTION].started += OnPeek;
+        actions[PEEK_ACTION].performed += OnPeek;
+        actions[PEEK_ACTION].canceled += OnPeek;
+
         actions[DASH_ACTION].performed += OnDash;
         actions[PAUSE_ACTION].performed += OnPause;
     }
@@ -386,6 +432,10 @@ public class PlayerInputHandler : MonoBehaviour
         actions[INTERACT_ACTION].performed -= OnInteract;
         actions[INTERACT_ACTION].canceled -= OnInteract;
 
+        actions[PEEK_ACTION].started -= OnPeek;
+        actions[PEEK_ACTION].performed -= OnPeek;
+        actions[PEEK_ACTION].canceled -= OnPeek;
+
         actions[DASH_ACTION].performed -= OnDash;
         actions[PAUSE_ACTION].performed -= OnPause;
     }
@@ -406,7 +456,6 @@ public class PlayerInputHandler : MonoBehaviour
         actions[INTERACT_ACTION].performed += OnInteract;
         actions[INTERACT_ACTION].canceled += OnInteract;
 
-        actions[UTILITY_ACTION].performed += OnUtility;
         actions[CANCEL_ACTION].performed += OnCancel;
         actions[PAUSE_ACTION].performed += OnPause;
     }
@@ -427,7 +476,6 @@ public class PlayerInputHandler : MonoBehaviour
         actions[INTERACT_ACTION].performed -= OnInteract;
         actions[INTERACT_ACTION].canceled -= OnInteract;
 
-        actions[UTILITY_ACTION].performed -= OnUtility;
         actions[CANCEL_ACTION].performed -= OnCancel;
         actions[PAUSE_ACTION].performed -= OnPause;
     }
@@ -459,6 +507,38 @@ public class PlayerInputHandler : MonoBehaviour
         actions[ACTION_ACTION].canceled -= OnAction;
 
         actions[CANCEL_ACTION].performed -= OnCancel;
+        actions[PAUSE_ACTION].performed -= OnPause;
+    }
+
+    private void SubscribePlayerPeekingActions()
+    {
+        PlayerInput.actions.FindActionMap(PLAYER_PEEKING_MAP).Enable();
+
+        var actions = PlayerInput.actions;
+        actions[AIM_ACTION].performed += OnAim;
+        actions[AIM_ACTION].canceled += OnAim;
+
+        actions[PEEK_ACTION].started += OnPeek;
+        actions[PEEK_ACTION].performed += OnPeek;
+        actions[PEEK_ACTION].canceled += OnPeek;
+
+        actions[DASH_ACTION].performed += OnDash;
+        actions[PAUSE_ACTION].performed += OnPause;
+    }
+
+    private void UnsubscribePlayerPeekingActions()
+    {
+        PlayerInput.actions.FindActionMap(PLAYER_PEEKING_MAP).Disable();
+
+        var actions = PlayerInput.actions;
+        actions[AIM_ACTION].performed -= OnAim;
+        actions[AIM_ACTION].canceled -= OnAim;
+
+        actions[PEEK_ACTION].started -= OnPeek;
+        actions[PEEK_ACTION].performed -= OnPeek;
+        actions[PEEK_ACTION].canceled -= OnPeek;
+
+        actions[DASH_ACTION].performed -= OnDash;
         actions[PAUSE_ACTION].performed -= OnPause;
     }
 

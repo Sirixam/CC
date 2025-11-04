@@ -103,6 +103,14 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
                 RequestStanding();
             }
         }
+        else if (actionType == EAction.Peek)
+        {
+            if (_inputHandler.ScopeType == EInputScope.PlayerPeeking)
+            {
+                RestoreInputScope();
+                _inputHandler.CancelPeekHold();
+            }
+        }
     }
 
     private void TryStartInteraction()
@@ -269,6 +277,11 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
                 _inputHandler.SetScope(EInputScope.PlayerAiming);
             }
         }
+        else if (actionType == EAction.Peek)
+        {
+            _movementHelper.ClearLookAt();
+            _inputHandler.SetScope(EInputScope.PlayerPeeking);
+        }
     }
 
     private void OnHoldActionRequested(EAction actionType, bool isHolding)
@@ -294,10 +307,20 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
                 TryDropItem();
             }
         }
-        else if (actionType == EAction.Action && !isHolding)
+        else if (actionType == EAction.Action)
         {
-            RestoreInputScope();
-            _throwHelper.TryTriggerThrow();
+            if (!isHolding)
+            {
+                RestoreInputScope();
+                _throwHelper.TryTriggerThrow();
+            }
+        }
+        else if (actionType == EAction.Peek)
+        {
+            if (!isHolding)
+            {
+                RestoreInputScope();
+            }
         }
     }
 
