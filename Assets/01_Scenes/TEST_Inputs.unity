@@ -1167,7 +1167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7257e2124a47ace4fb7cb23a49f052f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxTimeInSeconds: 15
+  _maxTimeInSeconds: 60
   _timeUI: {fileID: 2148367333320432987}
   _timesUpFeedback: {fileID: 2022618691}
 --- !u!1 &236913543
