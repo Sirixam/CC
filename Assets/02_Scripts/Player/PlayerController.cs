@@ -5,6 +5,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     [SerializeField] private PlayerView _view;
     [SerializeField] private PlayerInputHandler _inputHandler;
     [SerializeField] private PlayerPhysics _physics;
+    [SerializeField] private FieldOfViewController _fieldOfViewController;
 
     [Header("Data")]
     [SerializeField] private InteractionHelper.Data _interactionData;
@@ -44,6 +45,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
         // Initialize
         _movementHelper.Initialize(transform.forward);
+        _fieldOfViewController.Hide();
     }
 
     private void OnEnable()
@@ -221,6 +223,13 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private void RestoreInputScope()
     {
+        // Handle specific cases
+        if (_inputHandler.ScopeType == EInputScope.PlayerPeeking)
+        {
+            _fieldOfViewController.Hide();
+        }
+
+        // Restore
         if (_deskHelper.IsSitting)
         {
             _movementHelper.SetLookAt(_deskHelper.LookAtPoint);
@@ -281,6 +290,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         {
             _movementHelper.ClearLookAt();
             _inputHandler.SetScope(EInputScope.PlayerPeeking);
+            _fieldOfViewController.Show();
         }
     }
 
