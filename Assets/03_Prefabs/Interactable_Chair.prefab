@@ -253,7 +253,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57e2370f59cdbcc4296dac125851854d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _deskController: {fileID: 0}
   _interactionController: {fileID: 5794938467827128188}
   _sittingPoint: {fileID: 7143904386498343974}
   _standingPoints:
@@ -323,6 +322,7 @@ MonoBehaviour:
         useUnscaledTime: 0
         _useFixedUpdate: 0
         _updateType: 0
+  _destroyVFX: {fileID: 0}
 --- !u!114 &2965237648783132036
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -335,7 +335,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  outlineMode: 0
+  outlineMode: 1
   outlineColor: {r: 0, g: 1, b: 0, a: 1}
   outlineWidth: 2
   precomputeOutline: 1
