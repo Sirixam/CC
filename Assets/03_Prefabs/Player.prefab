@@ -1038,7 +1038,7 @@ MonoBehaviour:
   _meshCollider: {fileID: 7138881696294834915}
   _maxDistance: 4
   _fieldOfView: 90
-  _fieldOfViewWidth: 0
+  _fieldOfViewWidth: 0.5
 --- !u!33 &368862458362584757
 MeshFilter:
   m_ObjectHideFlags: 0

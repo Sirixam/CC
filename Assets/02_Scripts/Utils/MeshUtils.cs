@@ -20,7 +20,7 @@ public static class MeshUtils
         return mergedMesh;
     }
 
-    public static Mesh CreateRectangleMesh(params Vector3[] vertices)
+    public static Mesh CreateRectangleMesh2D(params Vector3[] vertices)
     {
         // Define the triangles (indices)
         int[] triangles = new int[6];
@@ -33,12 +33,11 @@ public static class MeshUtils
         triangles[4] = 3;
         triangles[5] = 1;
 
-        // Create a new mesh
-        Mesh mesh = new();
-        mesh.vertices = vertices;
-        mesh.triangles = triangles;
-
-        // Recalculate the normals for proper shading
+        Mesh mesh = new()
+        {
+            vertices = vertices,
+            triangles = triangles
+        };
         mesh.RecalculateNormals();
         mesh.RecalculateBounds();
         return mesh;
@@ -87,12 +86,11 @@ public static class MeshUtils
             }
         }
 
-        // Create a new mesh
-        Mesh mesh = new();
-        mesh.vertices = vertices;
-        mesh.triangles = triangles;
-
-        // Recalculate the normals for proper shading
+        Mesh mesh = new()
+        {
+            vertices = vertices,
+            triangles = triangles
+        };
         mesh.RecalculateNormals();
         mesh.RecalculateBounds();
         return mesh;
@@ -124,7 +122,7 @@ public static class MeshUtils
             vertices[i] = MathUtils.RotatePointAroundPivot(vertice, originPoint, new Vector3(0, angleForward, 0));
         }
 
-        // Duplicate vertices with offset in Y
+        // Duplicate vertices for thickness
         int vertCount = vertices.Length;
         Vector3[] fullVerts = new Vector3[vertCount * 2];
         for (int i = 0; i < vertCount; i++)
@@ -133,46 +131,83 @@ public static class MeshUtils
             fullVerts[i + vertCount] = vertices[i] + Vector3.up * thickness;
         }
 
-        List<int> triangles = new();
+        List<int> tris = new();
+        int offset = vertCount;
 
-        // Bottom (existing)
+        // Bottom fan
         for (int i = 0; i < segments; i++)
         {
-            triangles.Add(0);
-            triangles.Add(i + 1);
-            triangles.Add(i + 2);
+            tris.Add(0);
+            if (invertDrawOrder)
+            {
+                tris.Add(i + 1);
+                tris.Add(i + 2);
+            }
+            else
+            {
+                tris.Add(i + 2);
+                tris.Add(i + 1);
+            }
         }
 
-        // Top (reverse order)
-        int offset = vertCount;
+        // Top fan (reverse winding)
         for (int i = 0; i < segments; i++)
         {
-            triangles.Add(offset);
-            triangles.Add(offset + i + 2);
-            triangles.Add(offset + i + 1);
+            tris.Add(offset);
+            if (invertDrawOrder)
+            {
+                tris.Add(offset + i + 2);
+                tris.Add(offset + i + 1);
+            }
+            else
+            {
+                tris.Add(offset + i + 1);
+                tris.Add(offset + i + 2);
+            }
         }
 
         // Sides
         for (int i = 1; i <= segments + 1; i++)
         {
             int next = (i == segments + 1) ? 1 : i + 1;
-            triangles.Add(i);
-            triangles.Add(offset + i);
-            triangles.Add(offset + next);
+            int a = i;
+            int b = next;
+            int c = offset + next;
+            int d = offset + i;
 
-            triangles.Add(i);
-            triangles.Add(offset + next);
-            triangles.Add(next);
+            tris.Add(a);
+            if (invertDrawOrder)
+            {
+                tris.Add(b);
+                tris.Add(c);
+            }
+            else
+            {
+                tris.Add(c);
+                tris.Add(b);
+            }
+
+            tris.Add(a);
+            if (invertDrawOrder)
+            {
+                tris.Add(c);
+                tris.Add(d);
+            }
+            else
+            {
+                tris.Add(d);
+                tris.Add(c);
+            }
         }
 
-        //// Create a new mesh
-        Mesh mesh = new();
-        mesh.vertices = fullVerts;
-        mesh.triangles = triangles.ToArray();
-
-        //// Recalculate the normals for proper shading
+        Mesh mesh = new()
+        {
+            vertices = fullVerts,
+            triangles = tris.ToArray()
+        };
         mesh.RecalculateNormals();
         mesh.RecalculateBounds();
         return mesh;
     }
+
 }

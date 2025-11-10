@@ -57,7 +57,12 @@ public class FieldOfViewController : MonoBehaviour
 
         Mesh leftMesh = MeshUtils.CreateCircularTriangleMesh3D(leftOrigin, leftLimit, leftForward, forward, invertDrawOrder: true);
         Mesh rightMesh = MeshUtils.CreateCircularTriangleMesh3D(rightOrigin, rightLimit, rightForward, forward, invertDrawOrder: false);
-        Mesh centerMesh = MeshUtils.CreateRectangleMesh(leftOrigin, rightOrigin, leftForward, rightForward);
-        return new Mesh[] { leftMesh, centerMesh, rightMesh };
+        if (fieldOfViewWidth > 0)
+        {
+            Vector3 offset = Vector3.up * 0.01f; // 0.01 = thickness
+            Mesh centerMesh = MeshUtils.CreateRectangleMesh2D(leftOrigin + offset, rightOrigin + offset, leftForward + offset, rightForward + offset);
+            return new Mesh[] { leftMesh, centerMesh, rightMesh };
+        }
+        return new Mesh[] { leftMesh, rightMesh };
     }
 }
