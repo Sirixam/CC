@@ -51,32 +51,38 @@ public class InteractionHelper
         _data.FacingScores.Sort((a, b) => a.MaxAngle.CompareTo(b.MaxAngle)); // Ensure ascending order
     }
 
-    public void OnTriggerEnter(Collider other)
+    public bool TryAddInteraction(Collider other, out InteractionController interaction)
     {
         if (HasAnyTag(other.transform, _data.InteractionTags))
         {
-            var interaction = other.GetComponentInParent<InteractionController>();
+            interaction = other.GetComponentInParent<InteractionController>();
             if (interaction == null)
             {
                 Debug.LogError("Interaction controller was not found in object tagged as interaction: " + other.transform.name);
-                return;
+                return false;
             }
             AddInteraction(interaction);
+            return true;
         }
+        interaction = default;
+        return false;
     }
 
-    public void OnTriggerExit(Collider other)
+    public bool TryRemoveInteraction(Collider other, out InteractionController interaction)
     {
         if (HasAnyTag(other.transform, _data.InteractionTags))
         {
-            var interaction = other.GetComponentInParent<InteractionController>();
+            interaction = other.GetComponentInParent<InteractionController>();
             if (interaction == null)
             {
                 Debug.LogError("Interaction controller was not found in object tagged as interaction: " + other.transform.name);
-                return;
+                return false;
             }
             RemoveInteraction(interaction);
+            return true;
         }
+        interaction = default;
+        return false;
     }
 
     public void EnableInteraction()

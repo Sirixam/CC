@@ -399,10 +399,28 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         => _movementHelper.OnCollisionStay(collision, OnStopDash: _stunHelper.StartStun);
 
     private void OnTriggerEnter(Collider other)
-        => _interactionHelper.OnTriggerEnter(other);
+    {
+        if (!_interactionHelper.TryAddInteraction(other, out InteractionController interaction)) return;
+        if (_inputHandler.ScopeType != EInputScope.PlayerPeeking) return;
+
+        if (interaction.TryGetComponent(out DeskController deskController))
+        {
+            _cheatHelper.StartCheating(deskController); // TODO: Replace with peek
+            _interactionHelper.StartInteraction(interaction);
+        }
+    }
 
     private void OnTriggerExit(Collider other)
-        => _interactionHelper.OnTriggerExit(other);
+    {
+        if (!_interactionHelper.TryRemoveInteraction(other, out InteractionController interaction)) return;
+        if (_inputHandler.ScopeType != EInputScope.PlayerPeeking) return;
+
+        if (interaction.TryGetComponent(out DeskController deskController))
+        {
+            _cheatHelper.StopCheating(); // TODO: Replace with peek
+            _interactionHelper.TryStopInteraction(interaction);
+        }
+    }
 
     void IThrowActor.OnThrow(Transform thrownTransform)
         => _view.OnThrow(thrownTransform);
