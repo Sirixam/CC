@@ -34,23 +34,27 @@ public class InteractionController : MonoBehaviour
         public TweenSettings<Vector3> StopTweenSettings;
     }
 
-    [SerializeField] private SphereCollider _trigger;
+    [SerializeField] private Collider[] _triggers;
     [SerializeField] private Rigidbody _rigidbody;
     [SerializeField] private Data _data;
     [SerializeField] private BestInteractionViewData _bestInteractionViewData;
     [SerializeField] private GameObject _destroyVFX;
+    [Tag]
+    [SerializeField] private string _interactableTag = "Interaction";
+    [Tag]
+    [SerializeField] private string _notInteractableTag = "Untagged";
+    [SerializeField] private bool _isEnabledByDefault = true;
 
     private int _bestInteractionCount;
     private Tween _scaleTween;
     private List<int> _whiteListedPlayerIndexes = new(); // [AKP] If empty, all players can interact with this.
+    public bool IsEnabled { get; private set; }
 
     public EInteraction Type => _data.Type;
     public int BaseScore => _data.BaseScore;
     public int EmptyHandsExtraScore => _data.EmptyHandsExtraScore;
     public int CarryingExtraScore => _data.CarryingExtraScore;
     public Vector3 Position => transform.position;
-    public bool IsEnabled => _trigger.enabled;
-
     public Rigidbody Rigidbody => _rigidbody;
 
     public event Action<InteractionController> OnDisableEvent;
@@ -71,6 +75,8 @@ public class InteractionController : MonoBehaviour
             _bestInteractionViewData.StartTweenSettings.startFromCurrent = true;
             _bestInteractionViewData.StopTweenSettings.startFromCurrent = true;
         }
+
+        SetIsEnabled(_isEnabledByDefault);
     }
 
     public void IncreaseBestInteractionCount()
@@ -121,14 +127,31 @@ public class InteractionController : MonoBehaviour
 
     public void Enable()
     {
-        _trigger.enabled = true;
+        SetIsEnabled(true);
     }
 
     public void Disable()
     {
-        _trigger.enabled = false;
+        SetIsEnabled(false);
         TriggerBestInteractionTween(isBestInteraction: false);
         OnDisableEvent?.Invoke(this);
+    }
+
+    private void SetIsEnabled(bool value)
+    {
+        IsEnabled = value;
+        string colliderTag = value ? _interactableTag : _notInteractableTag;
+        foreach (var trigger in _triggers)
+        {
+            if (trigger.isTrigger)
+            {
+                trigger.enabled = value;
+            }
+            else // isCollider
+            {
+                trigger.tag = colliderTag;
+            }
+        }
     }
 
     private void TriggerBestInteractionTween(bool isBestInteraction)

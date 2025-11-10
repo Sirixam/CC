@@ -453,59 +453,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!1 &3862271349901356063
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4654900802881356922}
-  - component: {fileID: 7914634927686884921}
-  m_Layer: 0
-  m_Name: Trigger
-  m_TagString: Interaction
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &4654900802881356922
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3862271349901356063}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 3316289737042317936}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!135 &7914634927686884921
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3862271349901356063}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 1
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &4582913023674087484
 GameObject:
   m_ObjectHideFlags: 0
@@ -557,7 +504,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.25
+  m_Radius: 0.2
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &5219355494168577670
 GameObject:
@@ -596,7 +543,6 @@ Transform:
   m_Children:
   - {fileID: 3927386109324995639}
   - {fileID: 2989916736925958641}
-  - {fileID: 4654900802881356922}
   - {fileID: 7294283888966937462}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -625,7 +571,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac2614fbe84c86b49be133608bedbdb7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _trigger: {fileID: 7914634927686884921}
+  _triggers:
+  - {fileID: 2677114333623177933}
   _rigidbody: {fileID: 4323039434840745593}
   _data:
     Type: 1
@@ -678,6 +625,9 @@ MonoBehaviour:
         _useFixedUpdate: 0
         _updateType: 0
   _destroyVFX: {fileID: 7294283888966937461}
+  _interactableTag: Interaction
+  _notInteractableTag: Untagged
+  _isEnabledByDefault: 1
 --- !u!114 &3884154065179673130
 MonoBehaviour:
   m_ObjectHideFlags: 0

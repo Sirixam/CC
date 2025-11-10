@@ -445,7 +445,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac2614fbe84c86b49be133608bedbdb7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _trigger: {fileID: 7914634927686884921}
+  _triggers: []
   _rigidbody: {fileID: 4323039434840745593}
   _data:
     Type: 1
@@ -498,6 +498,9 @@ MonoBehaviour:
         _useFixedUpdate: 0
         _updateType: 0
   _destroyVFX: {fileID: 5236044014082923457}
+  _interactableTag: Interaction
+  _notInteractableTag: Untagged
+  _isEnabledByDefault: 1
 --- !u!114 &-5984599180916989715
 MonoBehaviour:
   m_ObjectHideFlags: 0
