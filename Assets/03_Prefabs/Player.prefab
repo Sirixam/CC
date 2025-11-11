@@ -1036,8 +1036,8 @@ MonoBehaviour:
   _meshFilter: {fileID: 368862458362584757}
   _meshRenderer: {fileID: 6967629285112109257}
   _meshCollider: {fileID: 7138881696294834915}
-  _maxDistance: 4
-  _fieldOfView: 90
+  _maxDistance: 3
+  _fieldOfView: 60
   _fieldOfViewWidth: 0.5
 --- !u!33 &368862458362584757
 MeshFilter:
