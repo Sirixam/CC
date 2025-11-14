@@ -1,5 +1,6 @@
 using System;
-using System.Collections;
+using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 public class Answer
@@ -70,6 +71,11 @@ public class AnswerSheet
             Answers[answerIndex].ResetProgress();
         }
     }
+
+    public void ResetProgress(int answerIndex)
+    {
+        Answers[answerIndex].ResetProgress();
+    }
 }
 
 public class AnswersManager : MonoBehaviour
@@ -106,7 +112,8 @@ public class AnswersManager : MonoBehaviour
         foreach (var deskController in _npcDesks)
         {
             deskController.OnFinishAnsweringEvent += OnFinishAnswering;
-            deskController.Setup(null, playerIndex: -1);
+            AnswerSheet answerSheet = new(_npcAnswersDefinitions, _globalDefinition.PersistAnswerProgress);
+            deskController.Setup(answerSheet, playerIndex: -1);
         }
         foreach (var answerPeekUI in _answerPeekUIs)
         {
@@ -114,30 +121,61 @@ public class AnswersManager : MonoBehaviour
         }
     }
 
-    //private IEnumerator Start()
-    //{
-    //    yield return new WaitForSeconds(1f);
-
-    //    _answerPeekUIs[0].Setup(null, null, 0);
-    //    _answerPeekUIs[0].Show();
-
-    //    while (true)
-    //    {
-    //        _answerPeekUIs[0].SetProgress(Mathf.Clamp01((Time.time - 1f) / 5));
-    //        if (Time.time > 6 && !_isReady)
-    //        {
-    //            _isReady = true;
-    //            _answerPeekUIs[0].ShowReady();
-    //        }
-    //        yield return null;
-    //    }
-    //}
-
-    private bool _isReady;
-
-    private void OnFinishAnswering(AnswerController deskController, int answerNumber)
+    private void Start()
     {
-        if (!deskController.IsPlayerDesk) return;
+        foreach (var answerController in _npcDesks)
+        {
+            SimulateNPCAnswering(answerController).Forget();
+        }
+
+        //yield return new WaitForSeconds(1f);
+
+        //_answerPeekUIs[0].Setup(null, null, 0);
+        //_answerPeekUIs[0].Show();
+
+        //while (true)
+        //{
+        //    _answerPeekUIs[0].SetProgress(Mathf.Clamp01((Time.time - 1f) / 5));
+        //    if (Time.time > 6 && !_isReady)
+        //    {
+        //        _isReady = true;
+        //        _answerPeekUIs[0].ShowReady();
+        //    }
+        //    yield return null;
+        //}
+    }
+
+    private async UniTask SimulateNPCAnswering(AnswerController answerController)
+    {
+        int answerNumber = UnityEngine.Random.Range(1, _npcAnswersDefinitions.Length);
+        while (true)
+        {
+            bool startedAnswering = answerController.TryRestartAnswering(answerNumber);
+            if (startedAnswering)
+            {
+                bool finishedAnswering = false;
+                while (!finishedAnswering)
+                {
+                    answerController.UpdateAnswering(out finishedAnswering);
+                    await UniTask.Yield();
+                }
+
+                await UniTask.WaitForSeconds(UnityEngine.Random.Range(_globalDefinition.PostAnsweringDelayMin, _globalDefinition.PostAnsweringDelayMax));
+            }
+
+            int newAnswerNumber;
+            do
+            {
+                newAnswerNumber = UnityEngine.Random.Range(1, _npcAnswersDefinitions.Length);
+            } while (newAnswerNumber == answerNumber);
+            answerNumber = newAnswerNumber;
+            await UniTask.Yield(); // Prevent blocking if failed to start answering.
+        }
+    }
+
+    private void OnFinishAnswering(AnswerController answerController, int answerNumber)
+    {
+        if (!answerController.IsPlayer) return;
 
         if (HaveAllPlayersAnsweredFully(answerNumber))
         {

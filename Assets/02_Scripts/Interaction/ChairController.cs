@@ -13,7 +13,7 @@ public class ChairController : MonoBehaviour
     public Transform SittingPoint => _sittingPoint;
     public Transform[] StandingPoints => _standingPoints;
 
-    public bool CanPlayerSit => !_isBlocked && AnswerController != null && AnswerController.IsPlayerDesk;
+    public bool CanPlayerSit => !_isBlocked && AnswerController != null && AnswerController.IsPlayer;
 
     private void Awake()
     {
@@ -22,7 +22,7 @@ public class ChairController : MonoBehaviour
 
     private void Start()
     {
-        if (!AnswerController.IsPlayerDesk)
+        if (!AnswerController.IsPlayer)
         {
             _interactionController.Disable();
         }

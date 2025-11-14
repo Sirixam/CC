@@ -183,8 +183,11 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     {
         if (interaction.TryGetComponent(out AnswerController answerController))
         {
-            _movementHelper.SetLookAt(answerController.LookAtPoint);
-            _cheatHelper.StartCheating(answerController);
+            if (_cheatHelper.CanStartCheating(answerController))
+            {
+                _movementHelper.SetLookAt(answerController.LookAtPoint);
+                _cheatHelper.StartCheating(answerController);
+            }
             return true;
         }
 

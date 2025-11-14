@@ -27,6 +27,11 @@ public class CheatHelper
         _playerView = playerView;
     }
 
+    public bool CanStartCheating(AnswerController answerController)
+    {
+        return answerController.ActiveAnswerNumber != 0;
+    }
+
     public void StartCheating(AnswerController answerController)
     {
         _answerController = answerController;
@@ -53,7 +58,7 @@ public class CheatHelper
 
         if (finishedCheating)
         {
-            StartRemembering(answerNumber: 1); //TODO
+            StartRemembering(answerNumber: _answerController.ActiveAnswerNumber);
         }
     }
 
