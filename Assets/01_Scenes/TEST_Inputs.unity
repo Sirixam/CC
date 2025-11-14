@@ -2475,7 +2475,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 243e15b152075e243993dc522068d02b, type: 3}
+  m_Script: {fileID: 11500000, guid: 28d30b783106d874aa8c2222609ab86c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!4 &633258583 stripped
@@ -4491,7 +4491,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 243e15b152075e243993dc522068d02b, type: 3}
+  m_Script: {fileID: 11500000, guid: 28d30b783106d874aa8c2222609ab86c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!4 &1009516979 stripped
@@ -6648,7 +6648,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 243e15b152075e243993dc522068d02b, type: 3}
+  m_Script: {fileID: 11500000, guid: 28d30b783106d874aa8c2222609ab86c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!4 &1483827386 stripped
@@ -8831,8 +8831,7 @@ MonoBehaviour:
   - {fileID: 2135692740}
   _victoryFeedback: {fileID: 1284955936}
   _timeManager: {fileID: 222319255}
-  _canUseAnyPlayerChair: 1
-  _persistProgress: 0
+  _globalDefinition: {fileID: 11400000, guid: 2b0875648e78a8e45b08a646836071ca, type: 2}
 --- !u!1 &2077142835
 GameObject:
   m_ObjectHideFlags: 0

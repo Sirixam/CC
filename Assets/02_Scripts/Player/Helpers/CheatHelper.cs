@@ -1,6 +1,4 @@
-
 using System;
-using TMPro;
 using UnityEngine;
 
 public class CheatHelper
@@ -14,7 +12,7 @@ public class CheatHelper
 
     private Data _data;
     private PlayerView _playerView;
-    private DeskController _deskController;
+    private AnswerController _answerController;
 
     private float _cheatingProgress;
     private float _memoryProgress;
@@ -29,9 +27,9 @@ public class CheatHelper
         _playerView = playerView;
     }
 
-    public void StartCheating(DeskController deskController)
+    public void StartCheating(AnswerController answerController)
     {
-        _deskController = deskController;
+        _answerController = answerController;
         IsCheating = true;
         _cheatingProgress = 0;
         _playerView.CheatUI.Show();
@@ -41,7 +39,7 @@ public class CheatHelper
     public void StopCheating()
     {
         //_deskController?.HideAnswersSheet();
-        _deskController = null;
+        _answerController = null;
         IsCheating = false;
         _playerView.CheatUI.Hide();
     }

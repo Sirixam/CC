@@ -162,14 +162,14 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         {
             if (chairController.CanPlayerSit)
             {
-                _movementHelper.SetLookAt(chairController.DeskController.LookAtPoint);
+                _movementHelper.SetLookAt(chairController.AnswerController.LookAtPoint);
                 _deskHelper.StartSitting(chairController);
                 _interactionHelper.DisableInteraction();
             }
             return true;
         }
 
-        if (interaction.TryGetComponent<DeskController>(out _))
+        if (interaction.TryGetComponent<AnswerController>(out _))
         {
             // Empty for now
             return false;
@@ -181,10 +181,10 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private bool RequestStaticInteractionOnHold(InteractionController interaction)
     {
-        if (interaction.TryGetComponent(out DeskController deskController))
+        if (interaction.TryGetComponent(out AnswerController answerController))
         {
-            _movementHelper.SetLookAt(deskController.LookAtPoint);
-            _cheatHelper.StartCheating(deskController);
+            _movementHelper.SetLookAt(answerController.LookAtPoint);
+            _cheatHelper.StartCheating(answerController);
             return true;
         }
 
@@ -403,9 +403,9 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         if (!_interactionHelper.TryAddInteraction(other, out InteractionController interaction)) return;
         if (_inputHandler.ScopeType != EInputScope.PlayerPeeking) return;
 
-        if (interaction.TryGetComponent(out DeskController deskController))
+        if (interaction.TryGetComponent(out AnswerController answerController))
         {
-            _cheatHelper.StartCheating(deskController); // TODO: Replace with peek
+            _cheatHelper.StartCheating(answerController); // TODO: Replace with peek
             _interactionHelper.StartInteraction(interaction);
         }
     }
@@ -415,7 +415,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         if (!_interactionHelper.TryRemoveInteraction(other, out InteractionController interaction)) return;
         if (_inputHandler.ScopeType != EInputScope.PlayerPeeking) return;
 
-        if (interaction.TryGetComponent(out DeskController deskController))
+        if (interaction.TryGetComponent(out AnswerController answerController))
         {
             _cheatHelper.StopCheating(); // TODO: Replace with peek
             _interactionHelper.TryStopInteraction(interaction);

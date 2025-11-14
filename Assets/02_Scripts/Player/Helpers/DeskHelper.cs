@@ -5,15 +5,15 @@ public class DeskHelper
 {
     private PlayerInputHandler _inputHandler;
     private ChairController _chairController;
-    private DeskController _deskController;
+    private AnswerController _answerController;
     private PlayerView _actorView;
     private PlayerPhysics _actorPhysics;
 
     public bool IsTransitioning { get; private set; }
     public bool IsSitting { get; private set; }
-    public bool IsAnswering => _deskController != null && _deskController.IsAnswering;
+    public bool IsAnswering => _answerController != null && _answerController.IsAnswering;
 
-    public Transform LookAtPoint => _deskController != null ? _deskController.LookAtPoint : null;
+    public Transform LookAtPoint => _answerController != null ? _answerController.LookAtPoint : null;
 
     public DeskHelper(PlayerInputHandler inputHandler, PlayerView actorView, PlayerPhysics actorPhysics)
     {
@@ -25,7 +25,7 @@ public class DeskHelper
     public void StartSitting(ChairController chairController)
     {
         _chairController = chairController;
-        _deskController = chairController.DeskController;
+        _answerController = chairController.AnswerController;
         IsTransitioning = true;
         IsSitting = true;
         _actorPhysics.OnArriveEvent -= OnArrive;
@@ -38,9 +38,9 @@ public class DeskHelper
 
     public void StartStanding()
     {
-        _deskController?.HideAnswerSheet();
+        _answerController?.HideAnswerSheet();
         Transform standingPoint = GetBestStandingPoint(_chairController);
-        _deskController = null;
+        _answerController = null;
         IsTransitioning = true;
         IsSitting = false;
 
@@ -73,13 +73,13 @@ public class DeskHelper
     public void TryShowAnswersSheet()
     {
         if (!IsSitting) return;
-        _deskController.ShowAnswerSheet();
+        _answerController.ShowAnswerSheet();
     }
 
     public void TryStartAnswering(int answerNumber)
     {
         if (!IsSitting) return;
-        _deskController.TryStartAnswering(answerNumber);
+        _answerController.TryStartAnswering(answerNumber);
     }
 
     public void TryUpdateAnswering(out bool finishedAnswering)
@@ -89,12 +89,12 @@ public class DeskHelper
             finishedAnswering = false;
             return;
         }
-        _deskController.UpdateAnswering(out finishedAnswering);
+        _answerController.UpdateAnswering(out finishedAnswering);
     }
 
     public void HideAnswersSheet()
     {
-        _deskController?.HideAnswerSheet();
+        _answerController?.HideAnswerSheet();
     }
 }
 

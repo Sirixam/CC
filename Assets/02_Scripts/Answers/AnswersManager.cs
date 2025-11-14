@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class Answer
@@ -75,13 +76,12 @@ public class AnswersManager : MonoBehaviour
 {
     [SerializeField] private AnswerDefinition[] _playerAnswersDefinitions;
     [SerializeField] private AnswerDefinition[] _npcAnswersDefinitions;
-    [SerializeField] private DeskController[] _playerDesks;
-    [SerializeField] private DeskController[] _npcDesks;
+    [SerializeField] private AnswerController[] _playerDesks;
+    [SerializeField] private AnswerController[] _npcDesks;
     [SerializeField] private AnswerPeekUI[] _answerPeekUIs;
     [SerializeField] private GameObject _victoryFeedback;
     [SerializeField] private TimeManager _timeManager;
-    [SerializeField] private bool _canUseAnyPlayerChair;
-    [SerializeField] private bool _persistProgress;
+    [SerializeField] private GlobalDefinition _globalDefinition;
 
     private AnswerSheet[] _answerSheets;
 
@@ -100,13 +100,13 @@ public class AnswersManager : MonoBehaviour
         {
             int playerIndex = i;
             _playerDesks[i].OnFinishAnsweringEvent += OnFinishAnswering;
-            _answerSheets[i] = new AnswerSheet(_playerAnswersDefinitions, _persistProgress);
-            _playerDesks[i].Setup(_answerSheets[i], playerIndex, _canUseAnyPlayerChair);
+            _answerSheets[i] = new AnswerSheet(_playerAnswersDefinitions, _globalDefinition.PersistAnswerProgress);
+            _playerDesks[i].Setup(_answerSheets[i], playerIndex);
         }
         foreach (var deskController in _npcDesks)
         {
             deskController.OnFinishAnsweringEvent += OnFinishAnswering;
-            deskController.Setup(null, playerIndex: -1, false);
+            deskController.Setup(null, playerIndex: -1);
         }
         foreach (var answerPeekUI in _answerPeekUIs)
         {
@@ -114,7 +114,28 @@ public class AnswersManager : MonoBehaviour
         }
     }
 
-    private void OnFinishAnswering(DeskController deskController, int answerNumber)
+    //private IEnumerator Start()
+    //{
+    //    yield return new WaitForSeconds(1f);
+
+    //    _answerPeekUIs[0].Setup(null, null, 0);
+    //    _answerPeekUIs[0].Show();
+
+    //    while (true)
+    //    {
+    //        _answerPeekUIs[0].SetProgress(Mathf.Clamp01((Time.time - 1f) / 5));
+    //        if (Time.time > 6 && !_isReady)
+    //        {
+    //            _isReady = true;
+    //            _answerPeekUIs[0].ShowReady();
+    //        }
+    //        yield return null;
+    //    }
+    //}
+
+    private bool _isReady;
+
+    private void OnFinishAnswering(AnswerController deskController, int answerNumber)
     {
         if (!deskController.IsPlayerDesk) return;
 

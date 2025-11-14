@@ -236,6 +236,7 @@ MonoBehaviour:
   _standingPoints:
   - {fileID: 6003775662665571311}
   - {fileID: 3372036648344291618}
+  _globalDefinition: {fileID: 11400000, guid: 2b0875648e78a8e45b08a646836071ca, type: 2}
 --- !u!114 &5794938467827128188
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,11 +1,10 @@
 using System;
 using UnityEngine;
 
-public class DeskController : MonoBehaviour
+public class AnswerController : MonoBehaviour
 {
     [SerializeField] private Transform _lookAtPoint;
     [SerializeField] private AnswerSheetUI _answerSheetUI;
-    [SerializeField] private ChairController _chairController;
     [SerializeField] private InteractionController _interactionController;
 
     private int _activeAnswerNumber;
@@ -19,14 +18,14 @@ public class DeskController : MonoBehaviour
 
     public Transform LookAtPoint => _lookAtPoint;
 
-    public event Action<DeskController, int> OnFinishAnsweringEvent;
+    public event Action<AnswerController, int> OnFinishAnsweringEvent;
 
     private void Awake()
     {
         _answerSheetUI.Hide();
     }
 
-    public void Setup(AnswerSheet answerSheet, int playerIndex, bool canUseAnyPlayerChair)
+    public void Setup(AnswerSheet answerSheet, int playerIndex)
     {
         _answerSheet = answerSheet;
         PlayerIndex = playerIndex;
@@ -34,7 +33,6 @@ public class DeskController : MonoBehaviour
         {
             _answerSheetUI.Setup(answerSheet.Answers);
         }
-        _chairController.Setup(this, canUseAnyPlayerChair); // Trigger after setting player index
         if (IsPlayerDesk)
         {
             _interactionController.Disable();
