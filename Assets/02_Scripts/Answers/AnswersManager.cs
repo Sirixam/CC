@@ -57,6 +57,11 @@ public class AnswerSheet
         return Array.FindAll(Answers, x => x.IsAnswerFull).Length;
     }
 
+    public bool HasAnswer(int answerIndex)
+    {
+        return answerIndex >= 0 && answerIndex < Answers.Length;
+    }
+
     public bool IsAnswerFull(int answerIndex, out float progress)
     {
         Answer answer = Answers[answerIndex];

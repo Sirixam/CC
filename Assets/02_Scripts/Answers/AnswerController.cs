@@ -48,7 +48,7 @@ public class AnswerController : MonoBehaviour
 
     public bool TryRestartAnswering(int answerNumber)
     {
-        if (!HasAnswerSheet) return false; // No answer sheet in this desk
+        if (!HasAnswerSheet || !_answerSheet.HasAnswer(answerNumber - 1)) return false; // No answer sheet in this desk
         _answerSheet.ResetProgress(answerNumber - 1);
         StartAnswering(answerNumber, progress: 0);
         return true;
@@ -56,7 +56,7 @@ public class AnswerController : MonoBehaviour
 
     public bool TryStartAnswering(int answerNumber)
     {
-        if (!HasAnswerSheet) return false; // No answer sheet in this desk
+        if (!HasAnswerSheet || !_answerSheet.HasAnswer(answerNumber - 1)) return false; // No answer sheet in this desk
         if (_answerSheet.IsAnswerFull(answerNumber - 1, out float progress)) return false; // Already answered
         StartAnswering(answerNumber, progress);
         return true;
