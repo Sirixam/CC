@@ -191,7 +191,7 @@ public class AnswersManager : MonoBehaviour
 
     private async UniTask SimulateNPCAnswering(AnswerController answerController)
     {
-        int answerIndex = UnityEngine.Random.Range(0, _npcAnswersDefinitions.Length - 1);
+        int answerIndex = UnityEngine.Random.Range(0, _npcAnswersDefinitions.Length);
         while (true)
         {
             AnswerDefinition answerDef = _npcAnswersDefinitions[answerIndex];
@@ -215,7 +215,7 @@ public class AnswersManager : MonoBehaviour
             int newAnswerIndex;
             do
             {
-                newAnswerIndex = UnityEngine.Random.Range(0, _npcAnswersDefinitions.Length - 1);
+                newAnswerIndex = UnityEngine.Random.Range(0, _npcAnswersDefinitions.Length);
             } while (newAnswerIndex == answerIndex);
             answerIndex = newAnswerIndex;
             await UniTask.Yield(); // Prevent blocking if failed to start answering.
