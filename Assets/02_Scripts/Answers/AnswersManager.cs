@@ -167,22 +167,6 @@ public class AnswersManager : MonoBehaviour
         {
             SimulateNPCAnswering(answerController).Forget();
         }
-
-        //yield return new WaitForSeconds(1f);
-
-        //_answerPeekUIs[0].Setup(null, null, 0);
-        //_answerPeekUIs[0].Show();
-
-        //while (true)
-        //{
-        //    _answerPeekUIs[0].SetProgress(Mathf.Clamp01((Time.time - 1f) / 5));
-        //    if (Time.time > 6 && !_isReady)
-        //    {
-        //        _isReady = true;
-        //        _answerPeekUIs[0].ShowReady();
-        //    }
-        //    yield return null;
-        //}
     }
 
     private void Update()

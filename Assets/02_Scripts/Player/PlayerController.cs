@@ -237,6 +237,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         // Handle specific cases
         if (_inputHandler.ScopeType == EInputScope.PlayerPeeking)
         {
+            StopPeeking();
             _fieldOfViewController.Hide();
         }
 
