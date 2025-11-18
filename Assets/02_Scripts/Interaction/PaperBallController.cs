@@ -3,10 +3,12 @@ using UnityEngine;
 public class PaperBallController : MonoBehaviour
 {
     [Tooltip("Use 0 if there's no answer in this paper ball")]
-    [SerializeField] private int _answerNumber;
+    [SerializeField] private AnswerDefinition _defaultAnswerDefinition;
 
-    public bool HasAnswer => _answerNumber > 0;
-    public int AnswerNumber => _answerNumber;
+    private string _answerID;
+
+    public bool HasAnswer => !string.IsNullOrWhiteSpace(_answerID) || _defaultAnswerDefinition != null;
+    public string AnswerID => !string.IsNullOrWhiteSpace(_answerID) ? _answerID : _defaultAnswerDefinition != null ? _defaultAnswerDefinition.ID : null;
 
     public InteractionController InteractionController => GetComponentInChildren<InteractionController>();
 
@@ -27,10 +29,10 @@ public class PaperBallController : MonoBehaviour
         }
     }
 
-    public void SetAnswerNumber(int value)
+    public void SetAnswer(string answerID)
     {
         bool hadAnswer = HasAnswer;
-        _answerNumber = value;
+        _answerID = answerID;
 
         if (hadAnswer != HasAnswer)
         {
@@ -45,9 +47,9 @@ public class PaperBallController : MonoBehaviour
         }
     }
 
-    private void OnAllPlayersAnsweredFullyEvent(int answerNumber)
+    private void OnAllPlayersAnsweredFullyEvent(string answerID)
     {
-        if (_answerNumber != answerNumber) return;
+        if (AnswerID != answerID) return;
         Destroy(gameObject);
     }
 }

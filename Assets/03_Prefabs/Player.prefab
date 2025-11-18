@@ -107,8 +107,8 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4043065790542105686}
-  - {fileID: 279270867879004404}
   - {fileID: 527802872396791412}
+  - {fileID: 279270867879004404}
   m_Father: {fileID: 4979429217401774222}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -130,7 +130,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _fill: {fileID: 5971400095842788302}
   _answerTypeIcon: {fileID: 6401406683026602670}
-  _answerNumberText: {fileID: 2010130403538341331}
+  _answerID: {fileID: 2010130403538341331}
 --- !u!222 &6829198419989293833
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -944,12 +944,12 @@ GameObject:
   - component: {fileID: 4036810438055104580}
   - component: {fileID: 2010130403538341331}
   m_Layer: 5
-  m_Name: AnswerNumber
+  m_Name: AnswerID
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &279270867879004404
 RectTransform:
   m_ObjectHideFlags: 0
@@ -997,7 +997,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 1
+  m_text: ID
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 360d80bf806c5a041b619f2d3bf5698f, type: 2}
@@ -1024,12 +1024,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 45
+  m_fontSize: 35.8
   m_fontSizeBase: 45
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 15
+  m_fontSizeMax: 45
   m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512

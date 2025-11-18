@@ -18,7 +18,7 @@ public class CheatHelper
     private float _peekingProgress;
     private float _cheatingProgress;
     private float _memoryProgress;
-    private int _rememberedAnswerNumber;
+    private string _rememberedAnswerID;
 
     public bool IsPeeking { get; private set; }
     public bool IsCheating { get; private set; }
@@ -58,13 +58,13 @@ public class CheatHelper
         _playerView.CheatUI.SetPercent(_cheatingProgress);
     }
 
-    public void StartRemembering(int answerNumber, Sprite answerTypeIcon)
+    public void StartRemembering(string answerID, Sprite answerTypeIcon)
     {
         _memoryProgress = 1;
-        _rememberedAnswerNumber = answerNumber;
+        _rememberedAnswerID = answerID;
         _playerView.MemoryUI.Show();
         _playerView.MemoryUI.SetAnswerTypeIcon(answerTypeIcon);
-        _playerView.MemoryUI.SetAnswerNumber(answerNumber);
+        _playerView.MemoryUI.SetAnswerID(answerID);
         _playerView.MemoryUI.SetPercent(_memoryProgress);
     }
 
@@ -87,7 +87,7 @@ public class CheatHelper
     public void StopRemembering()
     {
         _memoryProgress = 0;
-        _rememberedAnswerNumber = 0;
+        _rememberedAnswerID = null;
         _playerView.MemoryUI.Hide();
     }
 
@@ -113,8 +113,8 @@ public class CheatHelper
 
         if (finished)
         {
-            Sprite answerTypeIcon = AnswersManager.GetInstance().GetAnswerTypeIcon(_answerController.LastFinishedAnswerNumber);
-            StartRemembering(answerNumber: _answerController.LastFinishedAnswerNumber, answerTypeIcon);
+            Sprite answerTypeIcon = AnswersManager.GetInstance().GetAnswerTypeIcon(_answerController.LastFinishedAnswerID);
+            StartRemembering(answerID: _answerController.LastFinishedAnswerID, answerTypeIcon);
         }
     }
 
@@ -130,14 +130,14 @@ public class CheatHelper
         }
     }
 
-    public bool TryGetRememberedAnswer(out int answerNumber)
+    public bool TryGetRememberedAnswer(out string answerID)
     {
         if (IsRemembering)
         {
-            answerNumber = _rememberedAnswerNumber;
+            answerID = _rememberedAnswerID;
             return true;
         }
-        answerNumber = 0;
+        answerID = null;
         return false;
     }
 }

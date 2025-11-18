@@ -6,16 +6,16 @@ public class MemoryUI : MonoBehaviour
 {
     [SerializeField] private Image _fill;
     [SerializeField] private Image _answerTypeIcon;
-    [SerializeField] private TMP_Text _answerNumberText;
+    [SerializeField] private TMP_Text _answerID;
 
     public void SetAnswerTypeIcon(Sprite icon)
     {
         _answerTypeIcon.sprite = icon;
     }
 
-    public void SetAnswerNumber(int value)
+    public void SetAnswerID(string value)
     {
-        _answerNumberText.text = value.ToString();
+        _answerID.text = value;
     }
 
     public void SetPercent(float value)

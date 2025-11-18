@@ -77,10 +77,10 @@ public class DeskHelper
         _answerController.ShowAnswerSheet();
     }
 
-    public void TryStartAnswering(int answerNumber)
+    public void TryStartAnswering(string answerID)
     {
         if (!IsSitting) return;
-        _answerController.TryStartAnswering(answerNumber);
+        _answerController.TryStartAnswering(answerID);
     }
 
     public void TryUpdateAnswering(out bool finishedAnswering)

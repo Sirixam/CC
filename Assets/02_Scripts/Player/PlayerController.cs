@@ -271,13 +271,13 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         {
             if (_deskHelper.IsSitting)
             {
-                if (_cheatHelper.TryGetRememberedAnswer(out int answerNumber))
+                if (_cheatHelper.TryGetRememberedAnswer(out string answerID))
                 {
-                    _deskHelper.TryStartAnswering(answerNumber);
+                    _deskHelper.TryStartAnswering(answerID);
                 }
                 else if (_interactionHelper.TryGetPickedUpInteraction(out PaperBallController paperBallController) && paperBallController.HasAnswer)
                 {
-                    _deskHelper.TryStartAnswering(paperBallController.AnswerNumber);
+                    _deskHelper.TryStartAnswering(paperBallController.AnswerID);
                 }
                 else
                 {
@@ -370,13 +370,13 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             _deskHelper.TryUpdateAnswering(out bool finishedAnswering);
             if (finishedAnswering)
             {
-                if (_cheatHelper.TryGetRememberedAnswer(out int answerNumber))
+                if (_cheatHelper.TryGetRememberedAnswer(out string answerID))
                 {
                     _cheatHelper.StopRemembering();
 
                     // Create answer
                     PaperBallController answerInstance = Instantiate(_answerPrefab, _view.PickUpPosition + Vector3.up, Quaternion.identity); // Slightly above to highlight briefly.
-                    answerInstance.SetAnswerNumber(answerNumber);
+                    answerInstance.SetAnswer(answerID);
                     _view.OnPickUp(answerInstance.transform);
                     _interactionHelper.AddInteraction(answerInstance.InteractionController);
                     _interactionHelper.StartInteraction(answerInstance.InteractionController);

@@ -7,6 +7,7 @@ public class Answer
 {
     private AnswerDefinition _definition;
 
+    public string ID => _definition.ID;
     public float Progress { get; private set; }
     public bool IsAnswerFull => Progress >= 1;
     public Sprite Icon => _definition.Icon;
@@ -47,9 +48,16 @@ public class AnswerSheet
         }
     }
 
-    public float UpdateProgress(int answerIndex, out bool finishedAnswering)
+    public float UpdateProgress(string answerID, out bool finishedAnswering)
     {
-        return Answers[answerIndex].UpdateProgress(out finishedAnswering);
+        Answer answer = Array.Find(Answers, x => x.ID == answerID);
+        if (answer != null)
+        {
+            return answer.UpdateProgress(out finishedAnswering);
+        }
+        Debug.LogError("UpdateProgress.AnswerID was not found: " + answerID);
+        finishedAnswering = false;
+        return 0;
     }
 
     public int GetFullAnswersCount()
@@ -57,29 +65,37 @@ public class AnswerSheet
         return Array.FindAll(Answers, x => x.IsAnswerFull).Length;
     }
 
-    public bool HasAnswer(int answerIndex)
+    public bool HasAnswer(string answerID)
     {
-        return answerIndex >= 0 && answerIndex < Answers.Length;
+        return Array.Exists(Answers, x => x.ID == answerID);
     }
 
-    public bool IsAnswerFull(int answerIndex, out float progress)
+    public bool IsAnswerFull(string answerID, out float progress)
     {
-        Answer answer = Answers[answerIndex];
-        progress = answer.Progress;
-        return answer.IsAnswerFull;
+        Answer answer = Array.Find(Answers, x => x.ID == answerID);
+        if (answer != null)
+        {
+            progress = answer.Progress;
+            return answer.IsAnswerFull;
+        }
+        Debug.LogError("IsAnswerFull.AnswerID was not found: " + answerID);
+        progress = 0;
+        return false;
     }
 
-    public void OnStopAnswering(int answerIndex)
+    public void OnStopAnswering(string answerID)
     {
         if (!_persistProgress)
         {
-            Answers[answerIndex].ResetProgress();
+            Answer answer = Array.Find(Answers, x => x.ID == answerID);
+            answer?.ResetProgress();
         }
     }
 
-    public void ResetProgress(int answerIndex)
+    public void ResetProgress(string answerID)
     {
-        Answers[answerIndex].ResetProgress();
+        Answer answer = Array.Find(Answers, x => x.ID == answerID);
+        answer?.ResetProgress();
     }
 }
 
@@ -87,7 +103,7 @@ public class AnswerPeek
 {
     public string ActorID;
     public AnswerSheet AnswerSheet;
-    public int AnswerNumber;
+    public string AnswerID;
     public float RemainingTime;
 }
 
@@ -106,7 +122,7 @@ public class AnswersManager : MonoBehaviour
     private Dictionary<string, AnswerSheet> _actorId2AnswerSheet;
     private List<AnswerPeek> _activePeeks = new();
 
-    public event Action<int> OnAllPlayersAnsweredFullyEvent;
+    public event Action<string> OnAllPlayersAnsweredFullyEvent;
 
     public static AnswersManager GetInstance() => FindObjectOfType<AnswersManager>(); // TODO: Remove
 
@@ -191,10 +207,11 @@ public class AnswersManager : MonoBehaviour
 
     private async UniTask SimulateNPCAnswering(AnswerController answerController)
     {
-        int answerNumber = UnityEngine.Random.Range(1, _npcAnswersDefinitions.Length);
+        int answerIndex = UnityEngine.Random.Range(0, _npcAnswersDefinitions.Length - 1);
         while (true)
         {
-            bool startedThinking = answerController.TryRestartAnswering(answerNumber, isThinking: true);
+            AnswerDefinition answerDef = _npcAnswersDefinitions[answerIndex];
+            bool startedThinking = answerController.TryRestartAnswering(answerDef.ID, isThinking: true);
             if (startedThinking)
             {
                 await UniTask.WaitForSeconds(UnityEngine.Random.Range(_globalDefinition.PreAnsweringDelay.x, _globalDefinition.PreAnsweringDelay.y));
@@ -211,23 +228,23 @@ public class AnswersManager : MonoBehaviour
                 await UniTask.WaitForSeconds(UnityEngine.Random.Range(_globalDefinition.PostAnsweringDelay.x, _globalDefinition.PostAnsweringDelay.y));
             }
 
-            int newAnswerNumber;
+            int newAnswerIndex;
             do
             {
-                newAnswerNumber = UnityEngine.Random.Range(1, _npcAnswersDefinitions.Length);
-            } while (newAnswerNumber == answerNumber);
-            answerNumber = newAnswerNumber;
+                newAnswerIndex = UnityEngine.Random.Range(0, _npcAnswersDefinitions.Length - 1);
+            } while (newAnswerIndex == answerIndex);
+            answerIndex = newAnswerIndex;
             await UniTask.Yield(); // Prevent blocking if failed to start answering.
         }
     }
 
-    private void OnFinishAnswering(AnswerController answerController, int answerNumber)
+    private void OnFinishAnswering(AnswerController answerController, string answerID)
     {
         if (!answerController.IsPlayer) return;
 
-        if (HaveAllPlayersAnsweredFully(answerNumber))
+        if (HaveAllPlayersAnsweredFully(answerID))
         {
-            OnAllPlayersAnsweredFullyEvent?.Invoke(answerNumber);
+            OnAllPlayersAnsweredFullyEvent?.Invoke(answerID);
         }
 
         if (HaveAllPlayersAnsweredFully())
@@ -240,9 +257,9 @@ public class AnswersManager : MonoBehaviour
         }
     }
 
-    private void OnFinishPeeking(AnswerController answerController, int answerNumber)
+    private void OnFinishPeeking(AnswerController answerController, string answerID)
     {
-        AnswerPeek peek = _activePeeks.Find(x => x.AnswerSheet == answerController.AnswerSheet && x.AnswerNumber == answerNumber);
+        AnswerPeek peek = _activePeeks.Find(x => x.AnswerSheet == answerController.AnswerSheet && x.AnswerID == answerID);
         if (peek != null)
         {
             peek.RemainingTime = _globalDefinition.PeekDuration;
@@ -256,19 +273,19 @@ public class AnswersManager : MonoBehaviour
         {
             ActorID = answerController.ActorID,
             AnswerSheet = answerController.AnswerSheet,
-            AnswerNumber = answerNumber,
+            AnswerID = answerID,
             RemainingTime = _globalDefinition.PeekDuration
         };
         _activePeeks.Add(peek);
 
-        Sprite answerTypeIcon = GetAnswerTypeIcon(answerNumber);
+        Sprite answerTypeIcon = GetAnswerTypeIcon(answerID);
         peekUI.Setup(peek, null, answerTypeIcon);
         peekUI.Show();
     }
 
-    public Sprite GetAnswerTypeIcon(int answerNumber)
+    public Sprite GetAnswerTypeIcon(string answerID)
     {
-        AnswerDefinition answerDefinition = _npcAnswersDefinitions[answerNumber - 1];
+        AnswerDefinition answerDefinition = Array.Find(_npcAnswersDefinitions, x => x.ID == answerID);
         return answerDefinition.Icon;
     }
 
@@ -284,11 +301,11 @@ public class AnswersManager : MonoBehaviour
         return true;
     }
 
-    public bool HaveAllPlayersAnsweredFully(int answerNumber)
+    public bool HaveAllPlayersAnsweredFully(string answerID)
     {
         foreach (var answerSheet in _playerAnswerSheets)
         {
-            if (!answerSheet.IsAnswerFull(answerNumber - 1, out _))
+            if (!answerSheet.IsAnswerFull(answerID, out _))
             {
                 return false;
             }

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18324c38214a2234d82d5bd3d61cc9db, type: 3}
   m_Name: DEF_Answer_SquareB
   m_EditorClassIdentifier: 
-  ID: Square
+  ID: SB
   Icon: {fileID: 21300000, guid: 41dd33abccd6ae7488b8e317968689b0, type: 3}
   Color: {r: 1, g: 0, b: 0, a: 1}
   BaseAnswerDuration: 2

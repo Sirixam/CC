@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -30,7 +31,7 @@ public class AnswerSheetUI : MonoBehaviour
         for (int i = 0; i < answers.Length; i++)
         {
             int answerNumber = i + 1;
-            _answers.Add(InstantiateAnswer(answerNumber, answers[i].Icon, answers[i].Color, isFilled: false));
+            _answers.Add(InstantiateAnswer(answers[i].ID, answerNumber, answers[i].Icon, answers[i].Color, isFilled: false));
         }
     }
 
@@ -50,14 +51,16 @@ public class AnswerSheetUI : MonoBehaviour
         _progress.Hide();
     }
 
-    public void SetAnswerState(int index, bool isFilled)
+    public void SetAnswerState(string answerID, bool isFilled)
     {
-        _answers[index].SetState(isFilled);
+        AnswerUI answerUI = _answers.Find(x => x.ID == answerID);
+        answerUI.SetState(isFilled);
     }
 
-    private AnswerUI InstantiateAnswer(int number, Sprite icon, Color color, bool isFilled)
+    private AnswerUI InstantiateAnswer(string answerID, int number, Sprite icon, Color color, bool isFilled)
     {
         AnswerUI instance = Instantiate(_answerPrefab, _answersParent);
+        instance.SetID(answerID);
         instance.SetNumber(number, color);
         instance.SetIcon(icon, color);
         instance.SetState(isFilled);

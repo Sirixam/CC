@@ -9,6 +9,13 @@ public class AnswerUI : MonoBehaviour
     [SerializeField] private GameObject _notFilledState;
     [SerializeField] private GameObject _filledState;
 
+    public string ID { get; private set; }
+
+    public void SetID(string value)
+    {
+        ID = value;
+    }
+
     public void SetIcon(Sprite icon, Color color)
     {
         _icon.sprite = icon;
