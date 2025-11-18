@@ -29,7 +29,7 @@ public class CheatHelper
 
     public bool CanStartCheating(AnswerController answerController)
     {
-        return answerController.ActiveAnswerNumber != 0;
+        return answerController.IsCheckingAnswer;
     }
 
     public void StartCheating(AnswerController answerController)

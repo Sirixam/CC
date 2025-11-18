@@ -12,6 +12,7 @@ public class DeskHelper
     public bool IsTransitioning { get; private set; }
     public bool IsSitting { get; private set; }
     public bool IsAnswering => _answerController != null && _answerController.IsAnswering;
+    public bool IsCheckingAnswer => _answerController != null && _answerController.IsCheckingAnswer;
 
     public Transform LookAtPoint => _answerController != null ? _answerController.LookAtPoint : null;
 
