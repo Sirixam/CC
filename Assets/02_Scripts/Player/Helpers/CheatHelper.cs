@@ -58,11 +58,12 @@ public class CheatHelper
         _playerView.CheatUI.SetPercent(_cheatingProgress);
     }
 
-    public void StartRemembering(int answerNumber)
+    public void StartRemembering(int answerNumber, Sprite answerTypeIcon)
     {
         _memoryProgress = 1;
         _rememberedAnswerNumber = answerNumber;
         _playerView.MemoryUI.Show();
+        _playerView.MemoryUI.SetAnswerTypeIcon(answerTypeIcon);
         _playerView.MemoryUI.SetAnswerNumber(answerNumber);
         _playerView.MemoryUI.SetPercent(_memoryProgress);
     }
@@ -112,7 +113,8 @@ public class CheatHelper
 
         if (finished)
         {
-            StartRemembering(answerNumber: _answerController.LastFinishedAnswerNumber);
+            Sprite answerTypeIcon = AnswersManager.GetInstance().GetAnswerTypeIcon(_answerController.LastFinishedAnswerNumber);
+            StartRemembering(answerNumber: _answerController.LastFinishedAnswerNumber, answerTypeIcon);
         }
     }
 

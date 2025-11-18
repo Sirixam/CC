@@ -260,8 +260,16 @@ public class AnswersManager : MonoBehaviour
             RemainingTime = _globalDefinition.PeekDuration
         };
         _activePeeks.Add(peek);
-        peekUI.Setup(peek, null, null);
+
+        Sprite answerTypeIcon = GetAnswerTypeIcon(answerNumber);
+        peekUI.Setup(peek, null, answerTypeIcon);
         peekUI.Show();
+    }
+
+    public Sprite GetAnswerTypeIcon(int answerNumber)
+    {
+        AnswerDefinition answerDefinition = _npcAnswersDefinitions[answerNumber - 1];
+        return answerDefinition.Icon;
     }
 
     private bool HaveAllPlayersAnsweredFully()

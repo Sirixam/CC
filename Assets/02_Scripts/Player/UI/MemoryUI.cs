@@ -5,7 +5,13 @@ using UnityEngine.UI;
 public class MemoryUI : MonoBehaviour
 {
     [SerializeField] private Image _fill;
+    [SerializeField] private Image _answerTypeIcon;
     [SerializeField] private TMP_Text _answerNumberText;
+
+    public void SetAnswerTypeIcon(Sprite icon)
+    {
+        _answerTypeIcon.sprite = icon;
+    }
 
     public void SetAnswerNumber(int value)
     {
