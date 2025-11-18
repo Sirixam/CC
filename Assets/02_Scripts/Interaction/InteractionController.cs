@@ -47,7 +47,7 @@ public class InteractionController : MonoBehaviour
 
     private int _bestInteractionCount;
     private Tween _scaleTween;
-    private List<int> _whiteListedPlayerIndexes = new(); // [AKP] If empty, all players can interact with this.
+    private List<string> _whiteListedActorIDs = new(); // [AKP] If empty, all actors can interact with this.
     public bool IsEnabled { get; private set; }
 
     public EInteraction Type => _data.Type;
@@ -115,14 +115,14 @@ public class InteractionController : MonoBehaviour
         }
     }
 
-    public void AddPlayerToWhitelist(int playerIndex)
+    public void AddPlayerToWhitelist(string actorID)
     {
-        _whiteListedPlayerIndexes.Add(playerIndex);
+        _whiteListedActorIDs.Add(actorID);
     }
 
-    public bool CanInteract(int playerIndex)
+    public bool CanInteract(string actorID)
     {
-        return _whiteListedPlayerIndexes.Count == 0 || _whiteListedPlayerIndexes.Contains(playerIndex);
+        return _whiteListedActorIDs.Count == 0 || _whiteListedActorIDs.Contains(actorID);
     }
 
     public void Enable()

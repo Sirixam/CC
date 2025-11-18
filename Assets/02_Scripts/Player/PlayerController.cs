@@ -25,8 +25,9 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     private CheatHelper _cheatHelper;
     private MovementHelper _movementHelper;
 
+    // IActor
+    string IActor.ID => IActor.GetPlayerID(_inputHandler.PlayerInput.playerIndex);
     // IInteractionActor
-    int IInteractionActor.PlayerIndex => _inputHandler.PlayerInput.playerIndex;
     Vector3 IInteractionActor.Position => transform.position;
     Vector3 IInteractionActor.Forward => transform.forward;
     // IThrowActor
@@ -199,6 +200,13 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
         Debug.LogError("Static interaction is not being handled: " + interaction.name);
         return false;
+    }
+
+    private void StopPeeking()
+    {
+        _movementHelper.ClearLookAt();
+        _cheatHelper.StopPeeking();
+        StopStaticInteraction();
     }
 
     private void StopCheating()
@@ -375,6 +383,14 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
                 }
             }
         }
+        if (_cheatHelper.IsPeeking)
+        {
+            _cheatHelper.UpdatePeeking(out bool finishedPeeking);
+            if (finishedPeeking)
+            {
+                StopPeeking();
+            }
+        }
         if (_cheatHelper.IsCheating)
         {
             _cheatHelper.UpdateCheating(out bool finishedCheating);
@@ -406,9 +422,9 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         if (!_interactionHelper.TryAddInteraction(other, out InteractionController interaction)) return;
         if (_inputHandler.ScopeType != EInputScope.PlayerPeeking) return;
 
-        if (interaction.TryGetComponent(out AnswerController answerController))
+        if (interaction.TryGetComponent(out AnswerController answerController) && _cheatHelper.CanStartPeeking(answerController))
         {
-            _cheatHelper.StartCheating(answerController); // TODO: Replace with peek
+            _cheatHelper.StartPeeking(answerController);
             _interactionHelper.StartInteraction(interaction);
         }
     }
@@ -420,7 +436,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
         if (interaction.TryGetComponent(out AnswerController answerController))
         {
-            _cheatHelper.StopCheating(); // TODO: Replace with peek
+            _cheatHelper.StopPeeking();
             _interactionHelper.TryStopInteraction(interaction);
         }
     }

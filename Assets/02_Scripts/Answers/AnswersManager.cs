@@ -1,5 +1,5 @@
 using System;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
@@ -83,6 +83,14 @@ public class AnswerSheet
     }
 }
 
+public class AnswerPeek
+{
+    public string ActorID;
+    public AnswerSheet AnswerSheet;
+    public int AnswerNumber;
+    public float RemainingTime;
+}
+
 public class AnswersManager : MonoBehaviour
 {
     [SerializeField] private AnswerDefinition[] _playerAnswersDefinitions;
@@ -94,7 +102,9 @@ public class AnswersManager : MonoBehaviour
     [SerializeField] private TimeManager _timeManager;
     [SerializeField] private GlobalDefinition _globalDefinition;
 
-    private AnswerSheet[] _answerSheets;
+    private AnswerSheet[] _playerAnswerSheets;
+    private Dictionary<string, AnswerSheet> _actorId2AnswerSheet;
+    private List<AnswerPeek> _activePeeks = new();
 
     public event Action<int> OnAllPlayersAnsweredFullyEvent;
 
@@ -106,19 +116,28 @@ public class AnswersManager : MonoBehaviour
         {
             _victoryFeedback.SetActive(false);
         }
-        _answerSheets = new AnswerSheet[_playerDesks.Length];
+
+        _actorId2AnswerSheet = new();
+        _playerAnswerSheets = new AnswerSheet[_playerDesks.Length];
         for (int i = 0; i < _playerDesks.Length; i++)
         {
-            int playerIndex = i;
-            _playerDesks[i].OnFinishAnsweringEvent += OnFinishAnswering;
-            _answerSheets[i] = new AnswerSheet(_playerAnswersDefinitions, _globalDefinition.PersistAnswerProgress);
-            _playerDesks[i].Setup(_answerSheets[i], playerIndex);
+            AnswerController answerController = _playerDesks[i];
+            string actorID = IActor.GetPlayerID(i);
+            AnswerSheet answerSheet = new(_playerAnswersDefinitions, _globalDefinition.PersistAnswerProgress);
+            answerController.Setup(answerSheet, actorID, isPlayer: true);
+            answerController.OnFinishAnsweringEvent += OnFinishAnswering;
+            _playerAnswerSheets[i] = answerSheet;
+            _actorId2AnswerSheet.Add(actorID, answerSheet);
         }
-        foreach (var deskController in _npcDesks)
+        for (int i = 0; i < _npcDesks.Length; i++)
         {
-            deskController.OnFinishAnsweringEvent += OnFinishAnswering;
+            AnswerController answerController = _npcDesks[i];
+            string actorID = IActor.GetNpcID(i);
             AnswerSheet answerSheet = new(_npcAnswersDefinitions, _globalDefinition.PersistAnswerProgress);
-            deskController.Setup(answerSheet, playerIndex: -1);
+            answerController.Setup(answerSheet, actorID, isPlayer: false);
+            answerController.OnFinishAnsweringEvent += OnFinishAnswering;
+            answerController.OnFinishPeekingEvent += OnFinishPeeking;
+            _actorId2AnswerSheet.Add(actorID, answerSheet);
         }
         foreach (var answerPeekUI in _answerPeekUIs)
         {
@@ -148,6 +167,26 @@ public class AnswersManager : MonoBehaviour
         //    }
         //    yield return null;
         //}
+    }
+
+    private void Update()
+    {
+        for (int i = _activePeeks.Count - 1; i >= 0; i--)
+        {
+            AnswerPeek peek = _activePeeks[i];
+            peek.RemainingTime -= Time.deltaTime;
+            AnswerPeekUI answerPeekUI = Array.Find(_answerPeekUIs, x => x.AnswerPeek == peek);
+            if (peek.RemainingTime > 0)
+            {
+                answerPeekUI.UpdateProgress();
+            }
+            else
+            {
+                answerPeekUI.Clear();
+                answerPeekUI.Hide();
+                _activePeeks.RemoveAt(i);
+            }
+        }
     }
 
     private async UniTask SimulateNPCAnswering(AnswerController answerController)
@@ -197,9 +236,33 @@ public class AnswersManager : MonoBehaviour
         }
     }
 
+    private void OnFinishPeeking(AnswerController answerController, int answerNumber)
+    {
+        AnswerPeek peek = _activePeeks.Find(x => x.AnswerSheet == answerController.AnswerSheet && x.AnswerNumber == answerNumber);
+        if (peek != null)
+        {
+            peek.RemainingTime = _globalDefinition.PeekDuration;
+            return;
+        }
+
+        AnswerPeekUI peekUI = Array.Find(_answerPeekUIs, x => x.AnswerPeek == null);
+        if (peekUI == null) return;
+
+        peek = new AnswerPeek()
+        {
+            ActorID = answerController.ActorID,
+            AnswerSheet = answerController.AnswerSheet,
+            AnswerNumber = answerNumber,
+            RemainingTime = _globalDefinition.PeekDuration
+        };
+        _activePeeks.Add(peek);
+        peekUI.Setup(peek, null, null);
+        peekUI.Show();
+    }
+
     private bool HaveAllPlayersAnsweredFully()
     {
-        foreach (var answerSheet in _answerSheets)
+        foreach (var answerSheet in _playerAnswerSheets)
         {
             if (answerSheet.GetFullAnswersCount() < _playerAnswersDefinitions.Length)
             {
@@ -211,7 +274,7 @@ public class AnswersManager : MonoBehaviour
 
     public bool HaveAllPlayersAnsweredFully(int answerNumber)
     {
-        foreach (var answerSheet in _answerSheets)
+        foreach (var answerSheet in _playerAnswerSheets)
         {
             if (!answerSheet.IsAnswerFull(answerNumber - 1, out _))
             {

@@ -16,6 +16,8 @@ public class AnswerPeekUI : MonoBehaviour
 
     private Tween _readyTween;
 
+    public AnswerPeek AnswerPeek { get; private set; }
+
     private void Awake()
     {
         _notReadyTweenSettings.startFromCurrent = true;
@@ -32,12 +34,24 @@ public class AnswerPeekUI : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void Setup(Sprite playerIcon, Sprite answerTypeIcon, float progress)
+    public void Setup(AnswerPeek answerPeek, Sprite playerIcon, Sprite answerTypeIcon)
     {
+        AnswerPeek = answerPeek;
         _playerIcon.sprite = playerIcon;
         _answerTypeIcon.sprite = answerTypeIcon;
-        _readyObject.anchoredPosition = progress >= 1 ? _readyTweenSettings.endValue : _notReadyTweenSettings.endValue;
+        UpdateProgress();
+    }
+
+    public void UpdateProgress()
+    {
+        bool isFull = AnswerPeek.AnswerSheet.IsAnswerFull(AnswerPeek.AnswerNumber - 1, out float progress);
+        _readyObject.anchoredPosition = isFull ? _readyTweenSettings.endValue : _notReadyTweenSettings.endValue;
         SetProgress(progress);
+    }
+
+    public void Clear()
+    {
+        AnswerPeek = null;
     }
 
     public void ShowNotReady()
@@ -52,7 +66,7 @@ public class AnswerPeekUI : MonoBehaviour
         _readyTween = Tween.UIAnchoredPosition(_readyObject, _readyTweenSettings);
     }
 
-    public void SetProgress(float percent)
+    private void SetProgress(float percent)
     {
         _progressMask.fillAmount = percent;
         _progressFill.color = _progressGradient.Evaluate(percent);

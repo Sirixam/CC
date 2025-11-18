@@ -2,11 +2,10 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IInteractionActor
+public interface IInteractionActor : IActor
 {
     Vector3 Position { get; }
     Vector3 Forward { get; }
-    int PlayerIndex { get; }
 }
 
 public class InteractionHelper
@@ -132,7 +131,7 @@ public class InteractionHelper
         {
             if (!interaction.IsEnabled) continue;
             if (isCarrying && interaction.Type == EInteraction.PickUp) continue;
-            if (!interaction.CanInteract(_actor.PlayerIndex)) continue;
+            if (!interaction.CanInteract(_actor.ID)) continue;
 
             float score = ComputeScore(interaction, isCarrying);
             if (score > bestScore)

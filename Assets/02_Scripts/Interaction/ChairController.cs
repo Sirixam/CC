@@ -28,7 +28,7 @@ public class ChairController : MonoBehaviour
         }
         else if (!_globalDefinition.CanUseAnyPlayerChair)
         {
-            _interactionController.AddPlayerToWhitelist(AnswerController.PlayerIndex);
+            _interactionController.AddPlayerToWhitelist(AnswerController.ActorID);
         }
     }
 

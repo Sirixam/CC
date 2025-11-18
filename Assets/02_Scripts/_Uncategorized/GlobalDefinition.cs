@@ -5,6 +5,7 @@ public class GlobalDefinition : ScriptableObject
 {
     public bool CanUseAnyPlayerChair;
     public bool PersistAnswerProgress;
+    public float PeekDuration;
     public float PostAnsweringDelayMin;
     public float PostAnsweringDelayMax;
 }

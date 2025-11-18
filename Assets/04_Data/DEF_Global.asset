@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CanUseAnyPlayerChair: 1
   PersistAnswerProgress: 0
+  PeekDuration: 5
   PostAnsweringDelayMin: 3
   PostAnsweringDelayMax: 3

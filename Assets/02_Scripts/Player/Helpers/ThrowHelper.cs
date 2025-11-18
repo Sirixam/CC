@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public interface IThrowActor
+public interface IThrowActor : IActor
 {
     Vector3 LookDirection { get; }
     void OnThrow(Transform thrownTransform);
