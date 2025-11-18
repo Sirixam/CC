@@ -19,7 +19,7 @@ public class Answer
 
     public float UpdateProgress(out bool finishedAnswering)
     {
-        float progressDelta = Time.deltaTime / _definition.BaseDuration;
+        float progressDelta = Time.deltaTime / _definition.BaseAnswerDuration;
         Progress = Mathf.Clamp01(Progress + progressDelta);
         finishedAnswering = Progress >= 1;
         return Progress;
@@ -194,9 +194,13 @@ public class AnswersManager : MonoBehaviour
         int answerNumber = UnityEngine.Random.Range(1, _npcAnswersDefinitions.Length);
         while (true)
         {
-            bool startedAnswering = answerController.TryRestartAnswering(answerNumber);
-            if (startedAnswering)
+            bool startedThinking = answerController.TryRestartAnswering(answerNumber, isThinking: true);
+            if (startedThinking)
             {
+                await UniTask.WaitForSeconds(UnityEngine.Random.Range(_globalDefinition.PreAnsweringDelay.x, _globalDefinition.PreAnsweringDelay.y));
+
+                answerController.StartAnswering(progress: 0);
+
                 bool finishedAnswering = false;
                 while (!finishedAnswering)
                 {
@@ -204,7 +208,7 @@ public class AnswersManager : MonoBehaviour
                     await UniTask.Yield();
                 }
 
-                await UniTask.WaitForSeconds(UnityEngine.Random.Range(_globalDefinition.PostAnsweringDelayMin, _globalDefinition.PostAnsweringDelayMax));
+                await UniTask.WaitForSeconds(UnityEngine.Random.Range(_globalDefinition.PostAnsweringDelay.x, _globalDefinition.PostAnsweringDelay.y));
             }
 
             int newAnswerNumber;

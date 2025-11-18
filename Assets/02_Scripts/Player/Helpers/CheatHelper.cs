@@ -112,7 +112,7 @@ public class CheatHelper
 
         if (finished)
         {
-            StartRemembering(answerNumber: _answerController.ActiveAnswerNumber);
+            StartRemembering(answerNumber: _answerController.LastFinishedAnswerNumber);
         }
     }
 

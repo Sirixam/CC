@@ -9,16 +9,15 @@ public class AnswerController : MonoBehaviour
     [SerializeField] private InteractionController _interactionController;
     [SerializeField] private TMP_Text _stateText;
 
-    private int _lastFinishedAnswerNumber;
-
     public AnswerSheet AnswerSheet { get; private set; }
     public int ActiveAnswerNumber { get; private set; }
+    public int LastFinishedAnswerNumber { get; private set; }
     public string ActorID { get; private set; }
     public bool IsPlayer { get; private set; }
 
     private bool HasAnswerSheet => AnswerSheet != null;
     public bool IsAnswering => ActiveAnswerNumber > 0;
-    public bool IsCheckingAnswer => !IsAnswering && AnswerSheet.IsAnswerFull(_lastFinishedAnswerNumber - 1, out _);    
+    public bool IsCheckingAnswer => !IsAnswering && AnswerSheet.IsAnswerFull(LastFinishedAnswerNumber - 1, out _);
 
     public Transform LookAtPoint => _lookAtPoint;
 
@@ -56,11 +55,19 @@ public class AnswerController : MonoBehaviour
         _answerSheetUI.Show();
     }
 
-    public bool TryRestartAnswering(int answerNumber)
+    public bool TryRestartAnswering(int answerNumber, bool isThinking)
     {
         if (!HasAnswerSheet || !AnswerSheet.HasAnswer(answerNumber - 1)) return false; // No answer sheet in this desk
         AnswerSheet.ResetProgress(answerNumber - 1);
-        StartAnswering(answerNumber, progress: 0);
+        ActiveAnswerNumber = answerNumber;
+        if (!isThinking)
+        {
+            StartAnswering(progress: 0);
+        }
+        else if (!IsPlayer)
+        {
+            _stateText.text = "Thinking";
+        }
         return true;
     }
 
@@ -68,13 +75,13 @@ public class AnswerController : MonoBehaviour
     {
         if (!HasAnswerSheet || !AnswerSheet.HasAnswer(answerNumber - 1)) return false; // No answer sheet in this desk
         if (AnswerSheet.IsAnswerFull(answerNumber - 1, out float progress)) return false; // Already answered
-        StartAnswering(answerNumber, progress);
+        ActiveAnswerNumber = answerNumber;
+        StartAnswering(progress);
         return true;
     }
 
-    private void StartAnswering(int answerNumber, float progress)
+    public void StartAnswering(float progress)
     {
-        ActiveAnswerNumber = answerNumber;
         if (IsPlayer)
         {
             _answerSheetUI.ShowProgress(progress);
@@ -105,7 +112,7 @@ public class AnswerController : MonoBehaviour
             {
                 _stateText.text = "Checking";
             }
-            _lastFinishedAnswerNumber = ActiveAnswerNumber;
+            LastFinishedAnswerNumber = ActiveAnswerNumber;
             ActiveAnswerNumber = 0;
             OnFinishAnsweringEvent?.Invoke(this, answerIndex + 1);
         }
@@ -132,7 +139,7 @@ public class AnswerController : MonoBehaviour
 
     public void TriggerFinishedPeeking()
     {
-        int answerNumber = IsAnswering ? ActiveAnswerNumber : _lastFinishedAnswerNumber;
+        int answerNumber = IsAnswering ? ActiveAnswerNumber : LastFinishedAnswerNumber;
         OnFinishPeekingEvent?.Invoke(this, answerNumber);
     }
 }

@@ -6,5 +6,5 @@ public class AnswerDefinition : ScriptableObject
     public string ID;
     public Sprite Icon;
     public Color Color = Color.white;
-    public float BaseDuration;
+    public float BaseAnswerDuration;
 }
