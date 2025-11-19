@@ -128,6 +128,8 @@ public class AnswersManager : MonoBehaviour
     private Dictionary<string, AnswerSheet> _actorId2AnswerSheet;
     private List<AnswerPeek> _activePeeks = new();
 
+    public int RequiredPlayersCount => _playerDesks.Length;
+
     public event Action<string> OnAllPlayersFinishedAnswer;
     public event Action OnAllPlayersFinishedAllAnswers;
 

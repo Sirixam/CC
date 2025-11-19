@@ -1502,6 +1502,7 @@ MonoBehaviour:
   _victoryFeedback: {fileID: 1236636714}
   _timeUI: {fileID: 2148367333320432987}
   _timesUpFeedback: {fileID: 1940684079}
+  _globalDefinition: {fileID: 11400000, guid: 2b0875648e78a8e45b08a646836071ca, type: 2}
   _maxTimeInSeconds: 30
 --- !u!1 &291617659
 GameObject:

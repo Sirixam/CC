@@ -12,8 +12,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject _timesUpFeedback;
 
     [Header("Configuratinos")]
+    [SerializeField] private GlobalDefinition _globalDefinition;
     [SerializeField] private float _maxTimeInSeconds = 30;
 
+    private int _playersCount;
     private TimeHelper _timeHelper;
     private CancellationTokenSource _gameCancellationSource;
 
@@ -49,7 +51,12 @@ public class GameManager : MonoBehaviour
     // Triggere externallyd when a player joins the game
     public void OnPlayerJoined()
     {
-        StartGame();
+        if (_gameCancellationSource != null) return; // Game already started
+
+        if (++_playersCount >= _answerManager.RequiredPlayersCount || !_globalDefinition.StartGameWhenAllPlayersJoined)
+        {
+            StartGame();
+        }
     }
 
     private void StartGame()

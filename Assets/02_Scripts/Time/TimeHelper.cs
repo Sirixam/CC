@@ -8,7 +8,7 @@ public class TimeHelper
     private TimeUI _timeUI;
 
     private bool _isPaused;
-    private bool _isRunning;
+    public bool IsRunning { get; private set; }
     private float _remainingTime;
 
     public Action OnTimesUp;
@@ -26,15 +26,15 @@ public class TimeHelper
 
     public async UniTask StartTimer(CancellationToken cancellationToken)
     {
-        if (_isRunning) return;
+        if (IsRunning) return;
 
         if (_timeUI != null)
         {
             _timeUI.gameObject.SetActive(true);
         }
 
-        _isRunning = true;
-        while (_isRunning && !cancellationToken.IsCancellationRequested)
+        IsRunning = true;
+        while (IsRunning && !cancellationToken.IsCancellationRequested)
         {
             await UniTask.Yield();
             if (_isPaused) continue;
@@ -44,11 +44,11 @@ public class TimeHelper
 
             if (_remainingTime <= 0)
             {
-                _isRunning = false;
+                IsRunning = false;
                 OnTimesUp.Invoke();
             }
         }
-        _isRunning = false;
+        IsRunning = false;
     }
 
     public void Pause()
