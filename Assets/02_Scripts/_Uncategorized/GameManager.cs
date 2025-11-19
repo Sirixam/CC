@@ -77,6 +77,7 @@ public class GameManager : MonoBehaviour
 
     private void RestartGame()
     {
+        _answerManager.ResetProgress();
         if (_victoryFeedback != null)
         {
             _victoryFeedback.SetActive(false);

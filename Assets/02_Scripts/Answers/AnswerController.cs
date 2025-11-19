@@ -143,4 +143,15 @@ public class AnswerController : MonoBehaviour
         string answerID = IsAnswering ? ActiveAnswerID : LastFinishedAnswerID;
         OnFinishPeekingEvent?.Invoke(this, answerID);
     }
+
+    public void ResetProgress()
+    {
+        if (!HasAnswerSheet) return;
+        AnswerSheet.ResetProgress();
+        if (IsPlayer)
+        {
+            _answerSheetUI.HideProgress();
+            _answerSheetUI.ResetAnswerStates();
+        }
+    }
 }

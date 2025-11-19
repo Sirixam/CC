@@ -67,6 +67,14 @@ public class AnswerSheetUI : MonoBehaviour
         return instance;
     }
 
+    public void ResetAnswerStates()
+    {
+        foreach (var answer in _answers)
+        {
+            answer.SetState(isFilled: false);
+        }
+    }
+
     private void CleanAnswers()
     {
         foreach (var answer in _answers)

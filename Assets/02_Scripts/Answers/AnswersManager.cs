@@ -105,6 +105,14 @@ public class AnswerSheet
             Debug.LogError("ResetProgress.AnswerID was not found: " + answerID);
         }
     }
+
+    public void ResetProgress()
+    {
+        foreach (var answer in _id2Answer.Values)
+        {
+            answer.ResetProgress();
+        }
+    }
 }
 
 public class AnswerPeek
@@ -126,6 +134,7 @@ public class AnswersManager : MonoBehaviour
 
     private AnswerSheet[] _playerAnswerSheets;
     private Dictionary<string, AnswerSheet> _actorId2AnswerSheet;
+    private List<AnswerController> _answerControllers = new();
     private List<AnswerPeek> _activePeeks = new();
 
     public int RequiredPlayersCount => _playerDesks.Length;
@@ -148,6 +157,7 @@ public class AnswersManager : MonoBehaviour
             answerController.OnFinishAnsweringEvent += OnFinishAnswering;
             _playerAnswerSheets[i] = answerSheet;
             _actorId2AnswerSheet.Add(actorID, answerSheet);
+            _answerControllers.Add(answerController);
         }
         for (int i = 0; i < _npcDesks.Length; i++)
         {
@@ -158,6 +168,7 @@ public class AnswersManager : MonoBehaviour
             answerController.OnFinishAnsweringEvent += OnFinishAnswering;
             answerController.OnFinishPeekingEvent += OnFinishPeeking;
             _actorId2AnswerSheet.Add(actorID, answerSheet);
+            _answerControllers.Add(answerController);
         }
         foreach (var answerPeekUI in _answerPeekUIs)
         {
@@ -182,6 +193,14 @@ public class AnswersManager : MonoBehaviour
                 answerPeekUI.Hide();
                 _activePeeks.RemoveAt(i);
             }
+        }
+    }
+
+    public void ResetProgress()
+    {
+        foreach (var answerController in _answerControllers)
+        {
+            answerController.ResetProgress();
         }
     }
 
