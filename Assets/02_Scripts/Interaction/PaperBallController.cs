@@ -16,7 +16,7 @@ public class PaperBallController : MonoBehaviour
     {
         if (HasAnswer)
         {
-            AnswersManager.GetInstance().OnAllPlayersAnsweredFullyEvent += OnAllPlayersAnsweredFullyEvent;
+            AnswersManager.GetInstance().OnAllPlayersFinishedAnswer += OnAllPlayersAnsweredFullyEvent;
         }
     }
 
@@ -25,7 +25,7 @@ public class PaperBallController : MonoBehaviour
         AnswersManager answersManager = AnswersManager.GetInstance();
         if (answersManager != null)
         {
-            answersManager.OnAllPlayersAnsweredFullyEvent -= OnAllPlayersAnsweredFullyEvent;
+            answersManager.OnAllPlayersFinishedAnswer -= OnAllPlayersAnsweredFullyEvent;
         }
     }
 
@@ -38,11 +38,11 @@ public class PaperBallController : MonoBehaviour
         {
             if (hadAnswer)
             {
-                AnswersManager.GetInstance().OnAllPlayersAnsweredFullyEvent -= OnAllPlayersAnsweredFullyEvent;
+                AnswersManager.GetInstance().OnAllPlayersFinishedAnswer -= OnAllPlayersAnsweredFullyEvent;
             }
             else
             {
-                AnswersManager.GetInstance().OnAllPlayersAnsweredFullyEvent += OnAllPlayersAnsweredFullyEvent;
+                AnswersManager.GetInstance().OnAllPlayersFinishedAnswer += OnAllPlayersAnsweredFullyEvent;
             }
         }
     }
