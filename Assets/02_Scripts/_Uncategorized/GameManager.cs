@@ -1,5 +1,4 @@
 using Cysharp.Threading.Tasks;
-using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
@@ -10,6 +9,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject _victoryFeedback;
     [SerializeField] private TimeUI _timeUI;
     [SerializeField] private GameObject _timesUpFeedback;
+    [SerializeField] private ButtonListener[] _restartButtons;
 
     [Header("Configuratinos")]
     [SerializeField] private GlobalDefinition _globalDefinition;
@@ -32,6 +32,10 @@ public class GameManager : MonoBehaviour
         if (_timeUI != null)
         {
             _timeUI.gameObject.SetActive(false);
+        }
+        foreach (var button in _restartButtons)
+        {
+            button.OnClickEvent += RestartGame;
         }
         _timeHelper = new TimeHelper(_timeUI);
     }
@@ -69,6 +73,20 @@ public class GameManager : MonoBehaviour
     private void StopGame()
     {
         _gameCancellationSource.Cancel();
+    }
+
+    private void RestartGame()
+    {
+        if (_victoryFeedback != null)
+        {
+            _victoryFeedback.SetActive(false);
+        }
+        if (_timesUpFeedback != null)
+        {
+            _timesUpFeedback.SetActive(false);
+        }
+        StopGame();
+        StartGame();
     }
 
     private void StartTimer()

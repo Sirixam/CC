@@ -1502,6 +1502,9 @@ MonoBehaviour:
   _victoryFeedback: {fileID: 1236636714}
   _timeUI: {fileID: 2148367333320432987}
   _timesUpFeedback: {fileID: 1940684079}
+  _restartButtons:
+  - {fileID: 1940684080}
+  - {fileID: 1236636715}
   _globalDefinition: {fileID: 11400000, guid: 2b0875648e78a8e45b08a646836071ca, type: 2}
   _maxTimeInSeconds: 30
 --- !u!1 &291617659
@@ -4982,6 +4985,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 7021156499925879989, guid: a02930eec20a20447885a6a47299aece, type: 3}
   m_PrefabInstance: {fileID: 1236636712}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1236636715 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4518531687029548217, guid: a02930eec20a20447885a6a47299aece, type: 3}
+  m_PrefabInstance: {fileID: 1236636712}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a29203a3b428e44fa99a3856981ec12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1246640189
 GameObject:
   m_ObjectHideFlags: 0
@@ -8289,6 +8303,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 7779042745393812245, guid: 4bd57964c129d7a4ebd0f5a4e52de4bb, type: 3}
   m_PrefabInstance: {fileID: 1940684077}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1940684080 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4421369871155013375, guid: 4bd57964c129d7a4ebd0f5a4e52de4bb, type: 3}
+  m_PrefabInstance: {fileID: 1940684077}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a29203a3b428e44fa99a3856981ec12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1971265378
 GameObject:
   m_ObjectHideFlags: 0
