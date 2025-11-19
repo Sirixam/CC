@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
@@ -14,7 +15,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float _maxTimeInSeconds = 30;
 
     private TimeHelper _timeHelper;
-    private CancellationToken _timeCancellationToken;
+    private CancellationTokenSource _gameCancellationSource;
 
     private void Awake()
     {
@@ -45,16 +46,33 @@ public class GameManager : MonoBehaviour
         _answerManager.OnAllPlayersFinishedAllAnswers -= OnAllPlayersFinishedAllAnswers;
     }
 
-    private void Start()
+    // Triggere externallyd when a player joins the game
+    public void OnPlayerJoined()
+    {
+        StartGame();
+    }
+
+    private void StartGame()
+    {
+        _gameCancellationSource = new CancellationTokenSource();
+        StartTimer();
+        _answerManager.StartStimulation(_gameCancellationSource.Token);
+    }
+
+    private void StopGame()
+    {
+        _gameCancellationSource.Cancel();
+    }
+
+    private void StartTimer()
     {
         _timeHelper.Setup(_maxTimeInSeconds);
-        _timeCancellationToken = new CancellationToken();
-        _timeHelper.StartTimer(_timeCancellationToken).Forget();
+        _timeHelper.StartTimer(_gameCancellationSource.Token).Forget();
     }
 
     private void OnAllPlayersFinishedAllAnswers()
     {
-        _timeHelper.Pause();
+        StopGame();
         if (_victoryFeedback != null)
         {
             _victoryFeedback.SetActive(true);
@@ -63,6 +81,7 @@ public class GameManager : MonoBehaviour
 
     private void OnTimesUp()
     {
+        StopGame();
         if (_timesUpFeedback != null)
         {
             _timesUpFeedback.SetActive(true);

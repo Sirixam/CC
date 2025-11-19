@@ -15433,9 +15433,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: TimeManager, Game
-        m_MethodName: StartTimer
+      - m_Target: {fileID: 147876398}
+        m_TargetAssemblyTypeName: GameManager, Game
+        m_MethodName: OnPlayerJoined
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

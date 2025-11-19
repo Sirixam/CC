@@ -163,14 +163,6 @@ public class AnswersManager : MonoBehaviour
         }
     }
 
-    private void Start()
-    {
-        foreach (var answerController in _npcDesks)
-        {
-            SimulateNPCAnswering(answerController, destroyCancellationToken).Forget();
-        }
-    }
-
     private void Update()
     {
         for (int i = _activePeeks.Count - 1; i >= 0; i--)
@@ -188,6 +180,14 @@ public class AnswersManager : MonoBehaviour
                 answerPeekUI.Hide();
                 _activePeeks.RemoveAt(i);
             }
+        }
+    }
+
+    public void StartStimulation(CancellationToken cancellationToken)
+    {
+        foreach (var answerController in _npcDesks)
+        {
+            SimulateNPCAnswering(answerController, cancellationToken).Forget();
         }
     }
 
