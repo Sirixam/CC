@@ -520,7 +520,6 @@ MonoBehaviour:
     CheatDuration: 1
     MemoryDuration: 5
   _dashData:
-    LookSpeed: 400
     DashCooldown: 0.7
     HardCollisionTags:
     - Environment

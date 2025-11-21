@@ -8,8 +8,8 @@ public interface IActor
         return "Player_" + index;
     }
 
-    public static string GetNpcID(int index)
+    public static string GetStudentNpcID(int index)
     {
-        return "Npc_" + index;
+        return "StudentNpc_" + index;
     }
 }

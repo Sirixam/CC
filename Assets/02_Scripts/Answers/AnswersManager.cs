@@ -162,7 +162,7 @@ public class AnswersManager : MonoBehaviour
         for (int i = 0; i < _npcDesks.Length; i++)
         {
             AnswerController answerController = _npcDesks[i];
-            string actorID = IActor.GetNpcID(i);
+            string actorID = IActor.GetStudentNpcID(i);
             AnswerSheet answerSheet = new(_npcAnswersDefinitions, _globalDefinition.PersistAnswerProgress);
             answerController.Setup(answerSheet, actorID, isPlayer: false);
             answerController.OnFinishAnsweringEvent += OnFinishAnswering;
