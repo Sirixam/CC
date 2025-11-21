@@ -489,8 +489,7 @@ MonoBehaviour:
   _physics:
     _rigidbody: {fileID: 165944274530947382}
     _colliders:
-    - {fileID: 0}
-    - {fileID: 0}
+    - {fileID: 7674370848420735673}
     _moveSpeed: 5
     _dashSpeed: 15
     _dashDuration: 0.2

@@ -9,34 +9,41 @@ public class StudentManager : MonoBehaviour
     [SerializeField] private StudentNpcController[] _students;
     [SerializeField] private GlobalDefinition _globalDefinition;
 
-    public void StartStimulation(CancellationToken cancellationToken)
+    private void Start()
     {
-        foreach (var answerController in _answerManager.StudentNpcDesks)
+        for (int i = 0; i < _students.Length; i++)
         {
-            SimulateNPCAnswering(answerController, cancellationToken).Forget();
+            string actorID = IActor.GetStudentNpcID(i);
+            _answerManager.AddStudentNpc(actorID, _students[i].AnswerController);
         }
     }
 
-    private async UniTask SimulateNPCAnswering(AnswerController answerController, CancellationToken cancellationToken)
+    public void StartStimulation(CancellationToken cancellationToken)
     {
-        StudentNpcController student = Array.Find(_students, x => x.AnswerController == answerController);
+        foreach (var student in _students)
+        {
+            SimulateNPCAnswering(student, cancellationToken).Forget();
+        }
+    }
+
+    private async UniTask SimulateNPCAnswering(StudentNpcController student, CancellationToken cancellationToken)
+    {
         AnswerDefinition answerDef = null;
         while (!cancellationToken.IsCancellationRequested)
         {
             answerDef = _answerManager.GetNewStudentAnswer(answerDef);
-            bool startedThinking = answerController.TryRestartAnswering(answerDef.ID, isThinking: true);
+            bool startedThinking = student.AnswerController.TryRestartAnswering(answerDef.ID, isThinking: true);
             if (startedThinking)
             {
-                student?.StartThinking();
+                student.StartThinking();
                 await UniTask.WaitForSeconds(UnityEngine.Random.Range(_globalDefinition.PreAnsweringDelay.x, _globalDefinition.PreAnsweringDelay.y), cancellationToken: cancellationToken);
 
-                student?.StartAnswering();
-                answerController.StartAnswering(progress: 0);
+                student.StartAnswering();
 
                 bool finishedAnswering = false;
                 while (!finishedAnswering)
                 {
-                    answerController.UpdateAnswering(out finishedAnswering);
+                    student.AnswerController.UpdateAnswering(out finishedAnswering);
                     await UniTask.Yield(cancellationToken);
                 }
 

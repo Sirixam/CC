@@ -36,6 +36,7 @@ public class StudentNpcController : MonoBehaviour
     public void StartAnswering()
     {
         _stateText.text = "Answering";
+        AnswerController.StartAnswering(progress: 0);
     }
 
     public void StartValidating()

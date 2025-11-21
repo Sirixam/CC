@@ -128,7 +128,6 @@ public class AnswersManager : MonoBehaviour
     [SerializeField] private AnswerDefinition[] _playerAnswersDefinitions;
     [SerializeField] private AnswerDefinition[] _npcAnswersDefinitions;
     [SerializeField] private AnswerController[] _playerDesks;
-    [SerializeField] private AnswerController[] _npcDesks;
     [SerializeField] private AnswerPeekUI[] _answerPeekUIs;
     [SerializeField] private GlobalDefinition _globalDefinition;
 
@@ -137,7 +136,6 @@ public class AnswersManager : MonoBehaviour
     private List<AnswerController> _answerControllers = new();
     private List<AnswerPeek> _activePeeks = new();
 
-    public AnswerController[] StudentNpcDesks => _npcDesks;
     public int RequiredPlayersCount => _playerDesks.Length;
 
     public event Action<string> OnAllPlayersFinishedAnswer;
@@ -157,17 +155,6 @@ public class AnswersManager : MonoBehaviour
             answerController.Setup(answerSheet, actorID, isPlayer: true);
             answerController.OnFinishAnsweringEvent += OnFinishAnswering;
             _playerAnswerSheets[i] = answerSheet;
-            _actorId2AnswerSheet.Add(actorID, answerSheet);
-            _answerControllers.Add(answerController);
-        }
-        for (int i = 0; i < _npcDesks.Length; i++)
-        {
-            AnswerController answerController = _npcDesks[i];
-            string actorID = IActor.GetStudentNpcID(i);
-            AnswerSheet answerSheet = new(_npcAnswersDefinitions, _globalDefinition.PersistAnswerProgress);
-            answerController.Setup(answerSheet, actorID, isPlayer: false);
-            answerController.OnFinishAnsweringEvent += OnFinishAnswering;
-            answerController.OnFinishPeekingEvent += OnFinishPeeking;
             _actorId2AnswerSheet.Add(actorID, answerSheet);
             _answerControllers.Add(answerController);
         }
@@ -195,6 +182,16 @@ public class AnswersManager : MonoBehaviour
                 _activePeeks.RemoveAt(i);
             }
         }
+    }
+
+    public void AddStudentNpc(string actorID, AnswerController answerController)
+    {
+        AnswerSheet answerSheet = new(_npcAnswersDefinitions, _globalDefinition.PersistAnswerProgress);
+        answerController.Setup(answerSheet, actorID, isPlayer: false);
+        answerController.OnFinishAnsweringEvent += OnFinishAnswering;
+        answerController.OnFinishPeekingEvent += OnFinishPeeking;
+        _actorId2AnswerSheet.Add(actorID, answerSheet);
+        _answerControllers.Add(answerController);
     }
 
     public void ResetProgress()
