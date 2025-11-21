@@ -519,11 +519,13 @@ MonoBehaviour:
     PeekDuration: 2
     CheatDuration: 1
     MemoryDuration: 5
-  _movementData:
+  _dashData:
     LookSpeed: 400
     DashCooldown: 0.7
     HardCollisionTags:
     - Environment
+  _lookData:
+    LookSpeed: 400
   _answerPrefab: {fileID: 7322142745343497653, guid: 1a918e96e086428419e3a9e7e1c16e9d, type: 3}
   _dropByHoldingInteract: 0
 --- !u!114 &1863892939415744151

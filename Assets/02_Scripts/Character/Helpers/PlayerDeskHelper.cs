@@ -1,7 +1,7 @@
 
 using UnityEngine;
 
-public class DeskHelper
+public class PlayerDeskHelper
 {
     private PlayerInputHandler _inputHandler;
     private ChairController _chairController;
@@ -16,7 +16,7 @@ public class DeskHelper
 
     public Transform LookAtPoint => _answerController != null ? _answerController.LookAtPoint : null;
 
-    public DeskHelper(PlayerInputHandler inputHandler, PlayerView actorView, PlayerPhysics actorPhysics)
+    public PlayerDeskHelper(PlayerInputHandler inputHandler, PlayerView actorView, PlayerPhysics actorPhysics)
     {
         _inputHandler = inputHandler;
         _actorView = actorView;

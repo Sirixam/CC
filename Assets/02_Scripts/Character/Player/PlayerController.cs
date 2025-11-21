@@ -11,8 +11,10 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     [SerializeField] private InteractionHelper.Data _interactionData;
     [SerializeField] private ThrowHelper.Data _throwData;
     [SerializeField] private StunHelper.Data _stunData;
-    [SerializeField] private CheatHelper.Data _cheatData;
-    [SerializeField] private MovementHelper.Data _movementData;
+    [SerializeField] private PlayerCheatHelper.Data _cheatData;
+    [UnityEngine.Serialization.FormerlySerializedAs("_movementData")]
+    [SerializeField] private DashHelper.Data _dashData;
+    [SerializeField] private LookHelper.Data _lookData;
     [Header("TO BE REMOVED")]
     [SerializeField] private PaperBallController _answerPrefab;
     [SerializeField] private bool _dropByHoldingInteract; // Once we decide on the final input scheme, this can be removed
@@ -20,10 +22,11 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     // Helpers
     private InteractionHelper _interactionHelper;
     private ThrowHelper _throwHelper;
-    private DeskHelper _deskHelper;
+    private PlayerDeskHelper _deskHelper;
     private StunHelper _stunHelper;
-    private CheatHelper _cheatHelper;
-    private MovementHelper _movementHelper;
+    private PlayerCheatHelper _cheatHelper;
+    private LookHelper _lookHelper;
+    private DashHelper _dashHelper;
 
     // IActor
     string IActor.ID => IActor.GetPlayerID(_inputHandler.PlayerInput.playerIndex);
@@ -31,7 +34,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     Vector3 IInteractionActor.Position => transform.position;
     Vector3 IInteractionActor.Forward => transform.forward;
     // IThrowActor
-    Vector3 IThrowActor.LookDirection => _movementHelper.LookDirection;
+    Vector3 IThrowActor.LookDirection => _lookHelper.LookDirection;
     Collider[] IThrowActor.Colliders => _physics.Colliders;
 
     private void Awake()
@@ -39,13 +42,14 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _physics.Initialize();
         _interactionHelper = new InteractionHelper(this, _interactionData, isEnabled: true);
         _throwHelper = new ThrowHelper(this, _throwData, _interactionHelper);
-        _deskHelper = new DeskHelper(_inputHandler, _view, _physics);
+        _deskHelper = new PlayerDeskHelper(_inputHandler, _view, _physics);
         _stunHelper = new StunHelper(_stunData, _view);
-        _cheatHelper = new CheatHelper(_cheatData, _view);
-        _movementHelper = new MovementHelper(_view, _physics, _movementData);
+        _cheatHelper = new PlayerCheatHelper(_cheatData, _view);
+        _lookHelper = new LookHelper(_lookData);
+        _dashHelper = new DashHelper(_view, _physics, _lookHelper, _dashData);
 
         // Initialize
-        _movementHelper.Initialize(transform.forward);
+        _lookHelper.Initialize(transform.forward);
         _fieldOfViewController.Hide();
     }
 
@@ -69,7 +73,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     {
         if (actionType == EAction.Dash)
         {
-            _movementHelper.RequestDash();
+            _dashHelper.RequestDash();
         }
         else if (actionType == EAction.Interact)
         {
@@ -163,7 +167,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         {
             if (chairController.CanPlayerSit)
             {
-                _movementHelper.SetLookAt(chairController.AnswerController.LookAtPoint);
+                _lookHelper.SetLookAt(chairController.AnswerController.LookAtPoint);
                 _deskHelper.StartSitting(chairController);
                 _interactionHelper.DisableInteraction();
             }
@@ -186,7 +190,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         {
             if (_cheatHelper.CanStartCheating(answerController))
             {
-                _movementHelper.SetLookAt(answerController.LookAtPoint);
+                _lookHelper.SetLookAt(answerController.LookAtPoint);
                 _cheatHelper.StartCheating(answerController);
             }
             return true;
@@ -204,21 +208,21 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private void StopPeeking()
     {
-        _movementHelper.ClearLookAt();
+        _lookHelper.ClearLookAt();
         _cheatHelper.StopPeeking();
         StopStaticInteraction();
     }
 
     private void StopCheating()
     {
-        _movementHelper.ClearLookAt();
+        _lookHelper.ClearLookAt();
         _cheatHelper.StopCheating();
         StopStaticInteraction();
     }
 
     private void RequestStanding()
     {
-        _movementHelper.ClearLookAt();
+        _lookHelper.ClearLookAt();
         _deskHelper.StartStanding();
         _interactionHelper.EnableInteraction();
         StopStaticInteraction();
@@ -244,7 +248,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         // Restore
         if (_deskHelper.IsSitting)
         {
-            _movementHelper.SetLookAt(_deskHelper.LookAtPoint);
+            _lookHelper.SetLookAt(_deskHelper.LookAtPoint);
             _inputHandler.SetScope(EInputScope.PlayerSitting);
         }
         else
@@ -258,11 +262,11 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         if (actionType == EDirectionalAction.Move)
         {
             _physics.SetMoveDirection(new Vector3(input.x, 0, input.y));
-            _movementHelper.SetLookInput(input);
+            _lookHelper.SetLookInput(input);
         }
         else if (actionType == EDirectionalAction.Aim)
         {
-            _movementHelper.SetLookInput(input);
+            _lookHelper.SetLookInput(input);
         }
     }
 
@@ -294,13 +298,13 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         {
             if (_interactionHelper.TryGetPickedUpInteraction(out _))
             {
-                _movementHelper.ClearLookAt();
+                _lookHelper.ClearLookAt();
                 _inputHandler.SetScope(EInputScope.PlayerAiming);
             }
         }
         else if (actionType == EAction.Peek)
         {
-            _movementHelper.ClearLookAt();
+            _lookHelper.ClearLookAt();
             _inputHandler.SetScope(EInputScope.PlayerPeeking);
             _fieldOfViewController.Show();
         }
@@ -357,14 +361,14 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private void Update()
     {
-        _movementHelper.UpdateCooldown();
+        _dashHelper.UpdateCooldown();
         if (_stunHelper.IsStunned)
         {
             _stunHelper.UpdateStun();
             return;
         }
 
-        _movementHelper.UpdateRotation(transform);
+        _lookHelper.UpdateRotation(transform);
         _interactionHelper.UpdateBestInteraction();
         if (_deskHelper.IsAnswering)
         {
@@ -416,7 +420,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     }
 
     private void OnCollisionStay(Collision collision)
-        => _movementHelper.OnCollisionStay(collision, OnStopDash: _stunHelper.StartStun);
+        => _dashHelper.OnCollisionStay(collision, OnStopDash: _stunHelper.StartStun);
 
     private void OnTriggerEnter(Collider other)
     {

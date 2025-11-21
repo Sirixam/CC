@@ -1,6 +1,12 @@
 using System;
 using UnityEngine;
 
+public interface IStunView
+{
+    void OnStartStun(bool isSoftStun);
+    void OnStopStun();
+}
+
 public class StunHelper
 {
     [Serializable]
@@ -11,13 +17,13 @@ public class StunHelper
     }
 
     private Data _data;
-    private PlayerView _ownerView;
+    private IStunView _ownerView;
 
     private float _stunTimer;
 
     public bool IsStunned { get; private set; }
 
-    public StunHelper(Data data, PlayerView ownerView)
+    public StunHelper(Data data, IStunView ownerView)
     {
         _data = data;
         _ownerView = ownerView;

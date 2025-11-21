@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class CheatHelper
+public class PlayerCheatHelper
 {
     [Serializable]
     public class Data
@@ -24,7 +24,7 @@ public class CheatHelper
     public bool IsCheating { get; private set; }
     public bool IsRemembering => _memoryProgress > 0;
 
-    public CheatHelper(Data data, PlayerView playerView)
+    public PlayerCheatHelper(Data data, PlayerView playerView)
     {
         _data = data;
         _playerView = playerView;
