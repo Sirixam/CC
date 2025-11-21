@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 
@@ -8,12 +9,11 @@ public class StudentNpcController : MonoBehaviour
 
     [Header("Data")]
     [SerializeField] private LookHelper.Data _lookData;
-    [SerializeField] private float _distractedDuration;
+    [SerializeField] private float _distractionDuration = 5f;
+    [SerializeField] private float _distractionRotationDelay = 1f;
     [SerializeField][Tag] private string _distractionTag = "Distraction";
 
     // Runtime
-    private float _distractedTimer;
-
     public bool IsDistracted { get; private set; }
     public AnswerController AnswerController { get; private set; }
 
@@ -36,14 +36,7 @@ public class StudentNpcController : MonoBehaviour
 
     private void Update()
     {
-        if (IsDistracted)
-        {
-            _distractedTimer -= Time.deltaTime;
-            if (_distractedTimer <= 0)
-            {
-                OnDistractedEnd();
-            }
-        }
+        _lookHelper.UpdateRotation(transform);
     }
 
     public void StartThinking()
@@ -62,39 +55,40 @@ public class StudentNpcController : MonoBehaviour
         _stateText.text = "Validating";
     }
 
-    private void OnDistractedStart()
+    private async UniTask OnDistracted(Vector3 hitDirection)
     {
         if (IsDistracted) return;
 
+        string initialState = _stateText.text;
+
         IsDistracted = true;
-        _distractedTimer = _distractedDuration;
         _stateText.text = "Distracted";
         AnswerController.UnblockCheat();
-    }
 
-    private void OnDistractedEnd()
-    {
+        await UniTask.WaitForSeconds(_distractionRotationDelay);
+
+        Vector2 lookDirection = new Vector2(hitDirection.x, hitDirection.z).normalized;
+        _lookHelper.SetLookInput(lookDirection);
+
+        await UniTask.WaitForSeconds(_distractionDuration - _distractionRotationDelay);
+
         IsDistracted = false;
         AnswerController.BlockCheat();
-        if (AnswerController.IsAnswering)
-        {
-            _stateText.text = "Answering";
-        }
-        else if (AnswerController.IsValidatingAnswer)
-        {
-            _stateText.text = "Validating";
-        }
-        else
-        {
-            _stateText.text = "Thinking";
-        }
+        _lookHelper.RestoreInitialLookDirection();
+        _stateText.text = initialState;
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision collision)
     {
-        if (other.CompareTag(_distractionTag))
+        if (collision.collider.CompareTag(_distractionTag))
         {
-            OnDistractedStart();
+            Vector3 hitDirection = Vector3.zero;
+            foreach (var contact in collision.contacts)
+            {
+                hitDirection = (contact.point - transform.position).normalized;
+            }
+
+            OnDistracted(hitDirection).Forget();
         }
     }
 }

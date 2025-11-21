@@ -11,6 +11,7 @@ public class LookHelper
 
     private readonly Data _data;
 
+    private Vector3 _initialLookDirection;
     private Vector3 _lookDirection;
     private Transform _lookAtPoint;
 
@@ -21,9 +22,10 @@ public class LookHelper
         _data = data;
     }
 
-    public void Initialize(Vector3 startForward)
+    public void Initialize(Vector3 lookDirection)
     {
-        _lookDirection = startForward;
+        _initialLookDirection = lookDirection;
+        _lookDirection = lookDirection;
     }
 
     public void SetLookAt(Transform lookAtPoint) => _lookAtPoint = lookAtPoint;
@@ -52,5 +54,10 @@ public class LookHelper
             Quaternion targetRotation = Quaternion.LookRotation(_lookDirection, Vector3.up);
             transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, _data.LookSpeed * Time.deltaTime);
         }
+    }
+
+    public void RestoreInitialLookDirection()
+    {
+        _lookDirection = _initialLookDirection;
     }
 }
