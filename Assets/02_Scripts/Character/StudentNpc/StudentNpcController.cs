@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class StudentNpcController : MonoBehaviour
 {
-    [SerializeField] private AnswerController _answerController;
     [SerializeField] private FieldOfViewController _fieldOfViewController;
     [SerializeField] private TMP_Text _stateText;
 
@@ -11,13 +10,16 @@ public class StudentNpcController : MonoBehaviour
     [SerializeField] private LookHelper.Data _lookData;
 
     // Runtime
-    public AnswerController AnswerController => _answerController;
+    public AnswerController AnswerController { get; private set; }
 
     // Helpers
     private LookHelper _lookHelper;
 
     private void Awake()
     {
+        AnswerController = transform.parent.GetComponentInChildren<AnswerController>();
+
+        // Helpers
         _lookHelper = new LookHelper(_lookData);
 
         // Initialize

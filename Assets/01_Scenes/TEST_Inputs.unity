@@ -676,10 +676,6 @@ PrefabInstance:
     m_TransformParent: {fileID: 11547498}
     m_Modifications:
     - target: {fileID: 2944479032006777661, guid: 649a52eb9be1e38488822554b4dc6fc6, type: 3}
-      propertyPath: _lookAtPoint
-      value: 
-      objectReference: {fileID: 1218540389}
-    - target: {fileID: 2944479032006777661, guid: 649a52eb9be1e38488822554b4dc6fc6, type: 3}
       propertyPath: _deskController
       value: 
       objectReference: {fileID: 1009516978}
@@ -2914,11 +2910,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Asset: {fileID: -944628639613478452, guid: e257d6f87f26a7f4e89afffd1b4afe90, type: 3}
   m_ActionId: 078690e3-2ebc-40be-9575-3a2f766c3c78
---- !u!4 &716899321 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4773489411899792547, guid: f1107de062e953747a87d956cc6647dd, type: 3}
-  m_PrefabInstance: {fileID: 7433987398633019892}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &727964613
 GameObject:
   m_ObjectHideFlags: 0
@@ -4766,11 +4757,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b0186338df16fc4bba9d2d4e37a4c03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &1218540389 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4773489411899792547, guid: f1107de062e953747a87d956cc6647dd, type: 3}
-  m_PrefabInstance: {fileID: 1009516977}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1230153942
 GameObject:
   m_ObjectHideFlags: 0
@@ -5650,10 +5636,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1387585525}
     m_Modifications:
-    - target: {fileID: 2944479032006777661, guid: 649a52eb9be1e38488822554b4dc6fc6, type: 3}
-      propertyPath: _lookAtPoint
-      value: 
-      objectReference: {fileID: 716899321}
     - target: {fileID: 2944479032006777661, guid: 649a52eb9be1e38488822554b4dc6fc6, type: 3}
       propertyPath: _deskController
       value: 
@@ -8026,11 +8008,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1862083136}
   m_CullTransparentMesh: 1
---- !u!4 &1879308916 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4773489411899792547, guid: f1107de062e953747a87d956cc6647dd, type: 3}
-  m_PrefabInstance: {fileID: 1483827384}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1898609634
 GameObject:
   m_ObjectHideFlags: 0
@@ -9193,10 +9170,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1431940521}
     m_Modifications:
-    - target: {fileID: 2944479032006777661, guid: 649a52eb9be1e38488822554b4dc6fc6, type: 3}
-      propertyPath: _lookAtPoint
-      value: 
-      objectReference: {fileID: 1879308916}
     - target: {fileID: 2944479032006777661, guid: 649a52eb9be1e38488822554b4dc6fc6, type: 3}
       propertyPath: _deskController
       value: 
