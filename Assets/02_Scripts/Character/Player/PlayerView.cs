@@ -1,7 +1,7 @@
 using UnityEngine;
 using PrimeTween;
 
-public class PlayerView : MonoBehaviour, IStunView
+public class PlayerView : MonoBehaviour, IStunView, IChairView
 {
     [SerializeField] private Transform _rendererContainer;
     [SerializeField] private Transform _bodyRenderer;

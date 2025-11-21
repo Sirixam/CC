@@ -19,14 +19,19 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     [SerializeField] private PaperBallController _answerPrefab;
     [SerializeField] private bool _dropByHoldingInteract; // Once we decide on the final input scheme, this can be removed
 
+    // Runtime
+    private AnswerController _answerController;
+
+    private bool IsAnswering => _answerController != null && _answerController.IsAnswering;
+
     // Helpers
     private InteractionHelper _interactionHelper;
     private ThrowHelper _throwHelper;
-    private PlayerDeskHelper _deskHelper;
     private StunHelper _stunHelper;
     private PlayerCheatHelper _cheatHelper;
     private LookHelper _lookHelper;
     private DashHelper _dashHelper;
+    private ChairHelper _chairHelper;
 
     // IActor
     string IActor.ID => IActor.GetPlayerID(_inputHandler.PlayerInput.playerIndex);
@@ -42,7 +47,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _physics.Initialize();
         _interactionHelper = new InteractionHelper(this, _interactionData, isEnabled: true);
         _throwHelper = new ThrowHelper(this, _throwData, _interactionHelper);
-        _deskHelper = new PlayerDeskHelper(_inputHandler, _view, _physics);
+        _chairHelper = new ChairHelper(_inputHandler, _view, _physics);
         _stunHelper = new StunHelper(_stunData, _view);
         _cheatHelper = new PlayerCheatHelper(_cheatData, _view);
         _lookHelper = new LookHelper(_lookData);
@@ -81,9 +86,9 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             {
                 StopCheating();
             }
-            else if (_deskHelper.IsSitting)
+            else if (_chairHelper.IsSitting)
             {
-                _deskHelper.HideAnswersSheet();
+                _answerController.HideAnswerSheet();
             }
             else
             {
@@ -167,9 +172,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         {
             if (chairController.CanPlayerSit)
             {
-                _lookHelper.SetLookAt(chairController.AnswerController.LookAtPoint);
-                _deskHelper.StartSitting(chairController);
-                _interactionHelper.DisableInteraction();
+                RequestSitting(chairController);
             }
             return true;
         }
@@ -220,11 +223,20 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         StopStaticInteraction();
     }
 
+    private void RequestSitting(ChairController chairController)
+    {
+        _lookHelper.SetLookAt(chairController.LookAtPoint);
+        _chairHelper.StartSitting(chairController);
+        _interactionHelper.DisableInteraction();
+        _answerController = chairController.AnswerController;
+    }
+
     private void RequestStanding()
     {
         _lookHelper.ClearLookAt();
-        _deskHelper.StartStanding();
+        _chairHelper.StartStanding();
         _interactionHelper.EnableInteraction();
+        _answerController = null;
         StopStaticInteraction();
     }
 
@@ -246,9 +258,9 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         }
 
         // Restore
-        if (_deskHelper.IsSitting)
+        if (_chairHelper.IsSitting)
         {
-            _lookHelper.SetLookAt(_deskHelper.LookAtPoint);
+            _lookHelper.SetLookAt(_chairHelper.LookAtPoint);
             _inputHandler.SetScope(EInputScope.PlayerSitting);
         }
         else
@@ -274,19 +286,19 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     {
         if (actionType == EAction.Interact)
         {
-            if (_deskHelper.IsSitting)
+            if (_chairHelper.IsSitting)
             {
                 if (_cheatHelper.TryGetRememberedAnswer(out string answerID))
                 {
-                    _deskHelper.TryStartAnswering(answerID);
+                    _answerController.TryStartAnswering(answerID);
                 }
                 else if (_interactionHelper.TryGetPickedUpInteraction(out PaperBallController paperBallController) && paperBallController.HasAnswer)
                 {
-                    _deskHelper.TryStartAnswering(paperBallController.AnswerID);
+                    _answerController.TryStartAnswering(paperBallController.AnswerID);
                 }
                 else
                 {
-                    _deskHelper.TryShowAnswersSheet();
+                    _answerController.ShowAnswerSheet();
                 }
             }
             else
@@ -314,11 +326,11 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     {
         if (actionType == EAction.Interact)
         {
-            if (_deskHelper.IsSitting)
+            if (_chairHelper.IsSitting)
             {
                 if (!isHolding)
                 {
-                    _deskHelper.HideAnswersSheet();
+                    _answerController.HideAnswerSheet();
                 }
             }
             else if (_cheatHelper.IsCheating)
@@ -370,9 +382,9 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
         _lookHelper.UpdateRotation(transform);
         _interactionHelper.UpdateBestInteraction();
-        if (_deskHelper.IsAnswering)
+        if (IsAnswering)
         {
-            _deskHelper.TryUpdateAnswering(out bool finishedAnswering);
+            _answerController.UpdateAnswering(out bool finishedAnswering);
             if (finishedAnswering)
             {
                 if (_cheatHelper.TryGetRememberedAnswer(out string answerID))
@@ -404,7 +416,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
                 StopCheating();
             }
         }
-        if (_cheatHelper.IsRemembering && !_deskHelper.IsAnswering)
+        if (_cheatHelper.IsRemembering && !IsAnswering)
         {
             _cheatHelper.UpdateMemory(out _);
         }

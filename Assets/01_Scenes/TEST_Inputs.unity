@@ -676,6 +676,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 11547498}
     m_Modifications:
     - target: {fileID: 2944479032006777661, guid: 649a52eb9be1e38488822554b4dc6fc6, type: 3}
+      propertyPath: _lookAtPoint
+      value: 
+      objectReference: {fileID: 1218540389}
+    - target: {fileID: 2944479032006777661, guid: 649a52eb9be1e38488822554b4dc6fc6, type: 3}
       propertyPath: _deskController
       value: 
       objectReference: {fileID: 1009516978}
@@ -1499,6 +1503,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _answerManager: {fileID: 2037006001}
+  _studentManager: {fileID: 2037431358}
   _victoryFeedback: {fileID: 1236636714}
   _timeUI: {fileID: 2148367333320432987}
   _timesUpFeedback: {fileID: 1940684079}
@@ -2909,6 +2914,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Asset: {fileID: -944628639613478452, guid: e257d6f87f26a7f4e89afffd1b4afe90, type: 3}
   m_ActionId: 078690e3-2ebc-40be-9575-3a2f766c3c78
+--- !u!4 &716899321 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4773489411899792547, guid: f1107de062e953747a87d956cc6647dd, type: 3}
+  m_PrefabInstance: {fileID: 7433987398633019892}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &727964613
 GameObject:
   m_ObjectHideFlags: 0
@@ -3014,6 +3024,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 365723418938546978, guid: ad9006417494d994081c9e11b544b17e, type: 3}
   m_PrefabInstance: {fileID: 1490536878}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &773188573 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2714926263242964865, guid: ad9006417494d994081c9e11b544b17e, type: 3}
+  m_PrefabInstance: {fileID: 1490536878}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 491b1f9330a7d3f45928ca99ccff2f41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &808323539
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4745,6 +4766,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b0186338df16fc4bba9d2d4e37a4c03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &1218540389 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4773489411899792547, guid: f1107de062e953747a87d956cc6647dd, type: 3}
+  m_PrefabInstance: {fileID: 1009516977}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1230153942
 GameObject:
   m_ObjectHideFlags: 0
@@ -5625,6 +5651,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 1387585525}
     m_Modifications:
     - target: {fileID: 2944479032006777661, guid: 649a52eb9be1e38488822554b4dc6fc6, type: 3}
+      propertyPath: _lookAtPoint
+      value: 
+      objectReference: {fileID: 716899321}
+    - target: {fileID: 2944479032006777661, guid: 649a52eb9be1e38488822554b4dc6fc6, type: 3}
       propertyPath: _deskController
       value: 
       objectReference: {fileID: 633258582}
@@ -5817,6 +5847,7 @@ Transform:
   m_Children:
   - {fileID: 1670684843}
   - {fileID: 2037006000}
+  - {fileID: 2037431357}
   - {fileID: 285321559}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -6668,10 +6699,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1431940521}
     m_Modifications:
-    - target: {fileID: 165944274530947382, guid: ad9006417494d994081c9e11b544b17e, type: 3}
-      propertyPath: m_Constraints
-      value: 80
-      objectReference: {fileID: 0}
     - target: {fileID: 365723418938546978, guid: ad9006417494d994081c9e11b544b17e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -6716,6 +6743,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: StudentNpc
       objectReference: {fileID: 0}
+    - target: {fileID: 2714926263242964865, guid: ad9006417494d994081c9e11b544b17e, type: 3}
+      propertyPath: _answerController
+      value: 
+      objectReference: {fileID: 1483827385}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -7995,6 +8026,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1862083136}
   m_CullTransparentMesh: 1
+--- !u!4 &1879308916 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4773489411899792547, guid: f1107de062e953747a87d956cc6647dd, type: 3}
+  m_PrefabInstance: {fileID: 1483827384}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1898609634
 GameObject:
   m_ObjectHideFlags: 0
@@ -8887,6 +8923,54 @@ MonoBehaviour:
   - {fileID: 1145062963}
   - {fileID: 2135692740}
   _globalDefinition: {fileID: 11400000, guid: 2b0875648e78a8e45b08a646836071ca, type: 2}
+--- !u!1 &2037431356
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2037431357}
+  - component: {fileID: 2037431358}
+  m_Layer: 0
+  m_Name: StudentManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2037431357
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2037431356}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1430136132}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2037431358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2037431356}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6c78f2204b5c50408f4311800e8f610, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _answerManager: {fileID: 2037006001}
+  _students:
+  - {fileID: 773188573}
+  _globalDefinition: {fileID: 11400000, guid: 2b0875648e78a8e45b08a646836071ca, type: 2}
 --- !u!1 &2077142835
 GameObject:
   m_ObjectHideFlags: 0
@@ -9109,6 +9193,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1431940521}
     m_Modifications:
+    - target: {fileID: 2944479032006777661, guid: 649a52eb9be1e38488822554b4dc6fc6, type: 3}
+      propertyPath: _lookAtPoint
+      value: 
+      objectReference: {fileID: 1879308916}
     - target: {fileID: 2944479032006777661, guid: 649a52eb9be1e38488822554b4dc6fc6, type: 3}
       propertyPath: _deskController
       value: 

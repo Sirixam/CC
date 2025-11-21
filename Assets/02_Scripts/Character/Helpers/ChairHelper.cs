@@ -1,22 +1,25 @@
 
 using UnityEngine;
 
-public class PlayerDeskHelper
+public interface IChairView
+{
+    void OnStanding();
+    void OnSitting();
+}
+
+public class ChairHelper
 {
     private PlayerInputHandler _inputHandler;
     private ChairController _chairController;
-    private AnswerController _answerController;
-    private PlayerView _actorView;
+    private IChairView _actorView;
     private PlayerPhysics _actorPhysics;
 
     public bool IsTransitioning { get; private set; }
     public bool IsSitting { get; private set; }
-    public bool IsAnswering => _answerController != null && _answerController.IsAnswering;
-    public bool IsCheckingAnswer => _answerController != null && _answerController.IsCheckingAnswer;
 
-    public Transform LookAtPoint => _answerController != null ? _answerController.LookAtPoint : null;
+    public Transform LookAtPoint => _chairController != null ? _chairController.LookAtPoint : null;
 
-    public PlayerDeskHelper(PlayerInputHandler inputHandler, PlayerView actorView, PlayerPhysics actorPhysics)
+    public ChairHelper(PlayerInputHandler inputHandler, IChairView actorView, PlayerPhysics actorPhysics)
     {
         _inputHandler = inputHandler;
         _actorView = actorView;
@@ -26,7 +29,6 @@ public class PlayerDeskHelper
     public void StartSitting(ChairController chairController)
     {
         _chairController = chairController;
-        _answerController = chairController.AnswerController;
         IsTransitioning = true;
         IsSitting = true;
         _actorPhysics.OnArriveEvent -= OnArrive;
@@ -39,9 +41,7 @@ public class PlayerDeskHelper
 
     public void StartStanding()
     {
-        _answerController?.HideAnswerSheet();
         Transform standingPoint = GetBestStandingPoint(_chairController);
-        _answerController = null;
         IsTransitioning = true;
         IsSitting = false;
 
@@ -69,33 +69,6 @@ public class PlayerDeskHelper
         _actorPhysics.OnArriveEvent -= OnArrive;
         IsTransitioning = false;
         _actorPhysics.SetTargetPoint(null); // Clear
-    }
-
-    public void TryShowAnswersSheet()
-    {
-        if (!IsSitting) return;
-        _answerController.ShowAnswerSheet();
-    }
-
-    public void TryStartAnswering(string answerID)
-    {
-        if (!IsSitting) return;
-        _answerController.TryStartAnswering(answerID);
-    }
-
-    public void TryUpdateAnswering(out bool finishedAnswering)
-    {
-        if (!IsSitting)
-        {
-            finishedAnswering = false;
-            return;
-        }
-        _answerController.UpdateAnswering(out finishedAnswering);
-    }
-
-    public void HideAnswersSheet()
-    {
-        _answerController?.HideAnswerSheet();
     }
 }
 

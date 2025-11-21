@@ -5,6 +5,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private AnswersManager _answerManager;
+    [SerializeField] private StudentManager _studentManager;
 
     [SerializeField] private GameObject _victoryFeedback;
     [SerializeField] private TimeUI _timeUI;
@@ -67,7 +68,7 @@ public class GameManager : MonoBehaviour
     {
         _gameCancellationSource = new CancellationTokenSource();
         StartTimer();
-        _answerManager.StartStimulation(_gameCancellationSource.Token);
+        _studentManager.StartStimulation(_gameCancellationSource.Token);
     }
 
     private void StopGame()

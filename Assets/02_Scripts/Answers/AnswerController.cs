@@ -7,7 +7,6 @@ public class AnswerController : MonoBehaviour
     [SerializeField] private Transform _lookAtPoint;
     [SerializeField] private AnswerSheetUI _answerSheetUI;
     [SerializeField] private InteractionController _interactionController;
-    [SerializeField] private TMP_Text _stateText;
 
     public AnswerSheet AnswerSheet { get; private set; }
     public string ActiveAnswerID { get; private set; }
@@ -40,12 +39,7 @@ public class AnswerController : MonoBehaviour
         }
         if (IsPlayer)
         {
-            _stateText.text = string.Empty;
             _interactionController.Disable();
-        }
-        else
-        {
-            _stateText.text = "Idle";
         }
     }
 
@@ -66,7 +60,7 @@ public class AnswerController : MonoBehaviour
         }
         else if (!IsPlayer)
         {
-            _stateText.text = "Thinking";
+            
         }
         return true;
     }
@@ -89,7 +83,7 @@ public class AnswerController : MonoBehaviour
         }
         else
         {
-            _stateText.text = "Answering";
+            
         }
     }
 
@@ -110,7 +104,7 @@ public class AnswerController : MonoBehaviour
             }
             else
             {
-                _stateText.text = "Checking";
+                
             }
             LastFinishedAnswerID = answerID;
             ActiveAnswerID = null;

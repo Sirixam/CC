@@ -137,6 +137,7 @@ public class AnswersManager : MonoBehaviour
     private List<AnswerController> _answerControllers = new();
     private List<AnswerPeek> _activePeeks = new();
 
+    public AnswerController[] StudentNpcDesks => _npcDesks;
     public int RequiredPlayersCount => _playerDesks.Length;
 
     public event Action<string> OnAllPlayersFinishedAnswer;
@@ -204,47 +205,6 @@ public class AnswersManager : MonoBehaviour
         }
     }
 
-    public void StartStimulation(CancellationToken cancellationToken)
-    {
-        foreach (var answerController in _npcDesks)
-        {
-            SimulateNPCAnswering(answerController, cancellationToken).Forget();
-        }
-    }
-
-    private async UniTask SimulateNPCAnswering(AnswerController answerController, CancellationToken cancellationToken)
-    {
-        int answerIndex = UnityEngine.Random.Range(0, _npcAnswersDefinitions.Length);
-        while (!cancellationToken.IsCancellationRequested)
-        {
-            AnswerDefinition answerDef = _npcAnswersDefinitions[answerIndex];
-            bool startedThinking = answerController.TryRestartAnswering(answerDef.ID, isThinking: true);
-            if (startedThinking)
-            {
-                await UniTask.WaitForSeconds(UnityEngine.Random.Range(_globalDefinition.PreAnsweringDelay.x, _globalDefinition.PreAnsweringDelay.y), cancellationToken: cancellationToken);
-
-                answerController.StartAnswering(progress: 0);
-
-                bool finishedAnswering = false;
-                while (!finishedAnswering)
-                {
-                    answerController.UpdateAnswering(out finishedAnswering);
-                    await UniTask.Yield(cancellationToken);
-                }
-
-                await UniTask.WaitForSeconds(UnityEngine.Random.Range(_globalDefinition.PostAnsweringDelay.x, _globalDefinition.PostAnsweringDelay.y), cancellationToken: cancellationToken);
-            }
-
-            int newAnswerIndex;
-            do
-            {
-                newAnswerIndex = UnityEngine.Random.Range(0, _npcAnswersDefinitions.Length);
-            } while (newAnswerIndex == answerIndex);
-            answerIndex = newAnswerIndex;
-            await UniTask.Yield(cancellationToken); // Prevent blocking if failed to start answering.
-        }
-    }
-
     private void OnFinishAnswering(AnswerController answerController, string answerID)
     {
         if (!answerController.IsPlayer) return;
@@ -284,6 +244,17 @@ public class AnswersManager : MonoBehaviour
         Sprite answerTypeIcon = GetAnswerTypeIcon(answerID);
         peekUI.Setup(peek, null, answerTypeIcon);
         peekUI.Show();
+    }
+
+    public AnswerDefinition GetNewStudentAnswer(AnswerDefinition lastAnswerDef)
+    {
+        AnswerDefinition newAnswerDef;
+        do
+        {
+            int answerIndex = UnityEngine.Random.Range(0, _npcAnswersDefinitions.Length);
+            newAnswerDef = _npcAnswersDefinitions[answerIndex];
+        } while (newAnswerDef == lastAnswerDef);
+        return newAnswerDef;
     }
 
     public Sprite GetAnswerTypeIcon(string answerID)
