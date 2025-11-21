@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private AnswersManager _answerManager;
     [SerializeField] private StudentManager _studentManager;
 
+    [SerializeField] private GameObject _defeatFeedback;
     [SerializeField] private GameObject _victoryFeedback;
     [SerializeField] private TimeUI _timeUI;
     [SerializeField] private GameObject _timesUpFeedback;
@@ -22,6 +23,10 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        if (_defeatFeedback != null)
+        {
+            _defeatFeedback.SetActive(false);
+        }
         if (_victoryFeedback != null)
         {
             _victoryFeedback.SetActive(false);
@@ -45,12 +50,14 @@ public class GameManager : MonoBehaviour
     {
         _timeHelper.OnTimesUp += OnTimesUp;
         _answerManager.OnAllPlayersFinishedAllAnswers += OnAllPlayersFinishedAllAnswers;
+        _studentManager.OnPlayerDetected += OnPlayerDetected;
     }
 
     private void OnDisable()
     {
         _timeHelper.OnTimesUp -= OnTimesUp;
         _answerManager.OnAllPlayersFinishedAllAnswers -= OnAllPlayersFinishedAllAnswers;
+        _studentManager.OnPlayerDetected -= OnPlayerDetected;
     }
 
     // Triggere externallyd when a player joins the game
@@ -79,6 +86,10 @@ public class GameManager : MonoBehaviour
     private void RestartGame()
     {
         _answerManager.ResetProgress();
+        if (_defeatFeedback != null)
+        {
+            _defeatFeedback.SetActive(false);
+        }
         if (_victoryFeedback != null)
         {
             _victoryFeedback.SetActive(false);
@@ -112,6 +123,15 @@ public class GameManager : MonoBehaviour
         if (_timesUpFeedback != null)
         {
             _timesUpFeedback.SetActive(true);
+        }
+    }
+
+    private void OnPlayerDetected(PlayerController playerController)
+    {
+        StopGame();
+        if (_defeatFeedback != null)
+        {
+            _defeatFeedback.SetActive(true);
         }
     }
 }

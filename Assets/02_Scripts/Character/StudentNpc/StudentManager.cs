@@ -9,11 +9,14 @@ public class StudentManager : MonoBehaviour
     [SerializeField] private StudentNpcController[] _students;
     [SerializeField] private GlobalDefinition _globalDefinition;
 
+    public Action<PlayerController> OnPlayerDetected;
+
     private void Start()
     {
         for (int i = 0; i < _students.Length; i++)
         {
             string actorID = IActor.GetStudentNpcID(i);
+            _students[i].OnPlayerDetected += OnPlayerDetected.Invoke;
             _answerManager.AddStudentNpc(actorID, _students[i].AnswerController);
         }
     }

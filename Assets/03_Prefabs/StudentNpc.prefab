@@ -108,7 +108,9 @@ MonoBehaviour:
   _stateText: {fileID: 7892339153719555269}
   _lookData:
     LookSpeed: 1080
-  _distractedDuration: 5
+  _distractionDuration: 5
+  _distractionRotationDelay: 1
+  _playerTag: Player
   _distractionTag: Distraction
 --- !u!54 &165944274530947382
 Rigidbody:
@@ -356,7 +358,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 5bb1c6cd5ea5f8a4b8ccef8acac639d8, type: 2}
+  - {fileID: 2100000, guid: b3efabeb9abb5a1439c13b109f0c537f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

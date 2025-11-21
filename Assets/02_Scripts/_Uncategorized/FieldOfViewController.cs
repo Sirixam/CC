@@ -30,7 +30,7 @@ public class FieldOfViewController : MonoBehaviour
     [Button("Update Mesh")]
     private void UpdateMesh()
     {
-        Mesh[] meshes = CreateFieldOfViewMeshes(transform.position, Vector2.up, _maxDistance, _fieldOfView, _fieldOfViewWidth);
+        Mesh[] meshes = CreateFieldOfViewMeshes(transform.localPosition, Vector2.up, _maxDistance, _fieldOfView, _fieldOfViewWidth);
         Mesh mesh = MeshUtils.MergeMeshes(meshes);
         _meshFilter.mesh = mesh;
         _meshCollider.sharedMesh = mesh;
