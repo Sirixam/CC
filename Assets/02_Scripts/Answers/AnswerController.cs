@@ -1,5 +1,4 @@
 using System;
-using TMPro;
 using UnityEngine;
 
 public class AnswerController : MonoBehaviour
@@ -8,15 +7,18 @@ public class AnswerController : MonoBehaviour
     [SerializeField] private AnswerSheetUI _answerSheetUI;
     [SerializeField] private InteractionController _interactionController;
 
+    private int _cheatBlockCount;
+
     public AnswerSheet AnswerSheet { get; private set; }
     public string ActiveAnswerID { get; private set; }
     public string LastFinishedAnswerID { get; private set; }
     public string ActorID { get; private set; }
     public bool IsPlayer { get; private set; }
+    public bool IsCheatBlocked => _cheatBlockCount <= 0;
 
     private bool HasAnswerSheet => AnswerSheet != null;
     public bool IsAnswering => !string.IsNullOrWhiteSpace(ActiveAnswerID);
-    public bool IsCheckingAnswer => !IsAnswering && AnswerSheet.IsAnswerFull(LastFinishedAnswerID, out _);
+    public bool IsValidatingAnswer => !IsAnswering && AnswerSheet.IsAnswerFull(LastFinishedAnswerID, out _);
 
     public Transform LookAtPoint => _lookAtPoint;
 
@@ -58,10 +60,6 @@ public class AnswerController : MonoBehaviour
         {
             StartAnswering(progress: 0);
         }
-        else if (!IsPlayer)
-        {
-            
-        }
         return true;
     }
 
@@ -81,10 +79,6 @@ public class AnswerController : MonoBehaviour
             _answerSheetUI.ShowProgress(progress);
             _answerSheetUI.Show();
         }
-        else
-        {
-            
-        }
     }
 
     public void UpdateAnswering(out bool finishedAnswering)
@@ -101,10 +95,6 @@ public class AnswerController : MonoBehaviour
             {
                 _answerSheetUI.SetAnswerState(answerID, true);
                 _answerSheetUI.HideProgress();
-            }
-            else
-            {
-                
             }
             LastFinishedAnswerID = answerID;
             ActiveAnswerID = null;
@@ -147,5 +137,15 @@ public class AnswerController : MonoBehaviour
             _answerSheetUI.HideProgress();
             _answerSheetUI.ResetAnswerStates();
         }
+    }
+
+    public void BlockCheat()
+    {
+        _cheatBlockCount++;
+    }
+
+    public void UnblockCheat()
+    {
+        _cheatBlockCount--;
     }
 }

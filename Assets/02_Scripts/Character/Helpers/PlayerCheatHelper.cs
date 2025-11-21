@@ -32,12 +32,12 @@ public class PlayerCheatHelper
 
     public bool CanStartPeeking(AnswerController answerController)
     {
-        return answerController.IsAnswering || answerController.IsCheckingAnswer;
+        return answerController.IsAnswering || answerController.IsValidatingAnswer;
     }
 
     public bool CanStartCheating(AnswerController answerController)
     {
-        return answerController.IsCheckingAnswer;
+        return answerController.IsValidatingAnswer && answerController.IsCheatBlocked;
     }
 
     public void StartPeeking(AnswerController answerController)

@@ -36,22 +36,34 @@ public class StudentManager : MonoBehaviour
             if (startedThinking)
             {
                 student.StartThinking();
-                await UniTask.WaitForSeconds(UnityEngine.Random.Range(_globalDefinition.PreAnsweringDelay.x, _globalDefinition.PreAnsweringDelay.y), cancellationToken: cancellationToken);
+                await WaitWhileNotDistracted(student, UnityEngine.Random.Range(_globalDefinition.PreAnsweringDelay.x, _globalDefinition.PreAnsweringDelay.y), cancellationToken: cancellationToken);
 
                 student.StartAnswering();
 
                 bool finishedAnswering = false;
-                while (!finishedAnswering)
+                while (!finishedAnswering && !student.IsDistracted)
                 {
                     student.AnswerController.UpdateAnswering(out finishedAnswering);
                     await UniTask.Yield(cancellationToken);
                 }
 
                 student?.StartValidating();
-                await UniTask.WaitForSeconds(UnityEngine.Random.Range(_globalDefinition.PostAnsweringDelay.x, _globalDefinition.PostAnsweringDelay.y), cancellationToken: cancellationToken);
+                await WaitWhileNotDistracted(student, UnityEngine.Random.Range(_globalDefinition.PostAnsweringDelay.x, _globalDefinition.PostAnsweringDelay.y), cancellationToken: cancellationToken);
             }
 
             await UniTask.Yield(cancellationToken); // Prevent blocking if failed to start answering.
+        }
+    }
+
+    private async UniTask WaitWhileNotDistracted(StudentNpcController student, float timer, CancellationToken cancellationToken)
+    {
+        while (timer > 0 && !cancellationToken.IsCancellationRequested)
+        {
+            if (!student.IsDistracted)
+            {
+                timer -= Time.deltaTime;
+            }
+            await UniTask.Yield(cancellationToken);
         }
     }
 }

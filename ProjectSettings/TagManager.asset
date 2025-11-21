@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Environment
   - Interaction
+  - Distraction
   layers:
   - Default
   - TransparentFX
