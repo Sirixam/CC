@@ -436,6 +436,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private void OnTriggerEnter(Collider other)
     {
+        //Debug.LogError("OnTriggerEnter: " + other.name + ", parent: " + other.transform.parent.name, other);
         if (!_interactionHelper.TryAddInteraction(other, out InteractionController interaction)) return;
         if (_inputHandler.ScopeType != EInputScope.PlayerPeeking) return;
 
@@ -448,10 +449,11 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private void OnTriggerExit(Collider other)
     {
+        //Debug.LogError("OnTriggerExit: " + other.name + ", parent: " + other.transform.parent.name, other);
         if (!_interactionHelper.TryRemoveInteraction(other, out InteractionController interaction)) return;
         if (_inputHandler.ScopeType != EInputScope.PlayerPeeking) return;
 
-        if (interaction.TryGetComponent(out AnswerController answerController))
+        if (interaction.TryGetComponent(out AnswerController answerController) && _cheatHelper.CanStopPeeking(answerController))
         {
             _cheatHelper.StopPeeking();
             _interactionHelper.TryStopInteraction(interaction);

@@ -35,6 +35,11 @@ public class PlayerCheatHelper
         return answerController.IsAnswering || answerController.IsValidatingAnswer;
     }
 
+    public bool CanStopPeeking(AnswerController answerController)
+    {
+        return IsPeeking && _answerController == answerController;
+    }
+
     public bool CanStartCheating(AnswerController answerController)
     {
         return answerController.IsValidatingAnswer && answerController.IsCheatBlocked;
