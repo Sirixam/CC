@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: DEF_Answer_CircleB
   m_EditorClassIdentifier: 
   ID: CB
-  Icon: {fileID: 21300000, guid: fba3f8b4e31fd1c47b771c9bea630dac, type: 3}
+  Icon: {fileID: 21300000, guid: 5aab98fc5ba9abe418c140e77d2e1ca9, type: 3}
   Color: {r: 1, g: 0, b: 0, a: 1}
   BaseAnswerDuration: 2
