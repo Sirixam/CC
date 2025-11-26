@@ -18,7 +18,7 @@ public class AnswerController : MonoBehaviour
 
     private bool HasAnswerSheet => AnswerSheet != null;
     public bool IsAnswering => !string.IsNullOrWhiteSpace(ActiveAnswerID);
-    public bool IsValidatingAnswer => !IsAnswering && AnswerSheet.IsAnswerFull(LastFinishedAnswerID, out _);
+    public bool IsValidatingAnswer => HasAnswerSheet && !IsAnswering && AnswerSheet.IsAnswerFull(LastFinishedAnswerID, out _);
 
     public Transform LookAtPoint => _lookAtPoint;
 
