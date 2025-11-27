@@ -42,7 +42,7 @@ public class PlayerCheatHelper
 
     public bool CanStartCheating(AnswerController answerController)
     {
-        return answerController.IsValidatingAnswer && answerController.IsCheatBlocked;
+        return answerController.IsValidatingAnswer && !answerController.IsCheatBlocked;
     }
 
     public void StartPeeking(AnswerController answerController)

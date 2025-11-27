@@ -14,7 +14,7 @@ public class AnswerController : MonoBehaviour
     public string LastFinishedAnswerID { get; private set; }
     public string ActorID { get; private set; }
     public bool IsPlayer { get; private set; }
-    public bool IsCheatBlocked => _cheatBlockCount <= 0;
+    public bool IsCheatBlocked => _cheatBlockCount > 0;
 
     private bool HasAnswerSheet => AnswerSheet != null;
     public bool IsAnswering => !string.IsNullOrWhiteSpace(ActiveAnswerID);
