@@ -582,6 +582,7 @@ MonoBehaviour:
     LookSpeed: 400
   _answerPrefab: {fileID: 7322142745343497653, guid: 1a918e96e086428419e3a9e7e1c16e9d, type: 3}
   _dropByHoldingInteract: 0
+  _toggleToPeek: 0
 --- !u!114 &1863892939415744151
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -18,10 +18,12 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     [Header("TO BE REMOVED")]
     [SerializeField] private PaperBallController _answerPrefab;
     [SerializeField] private bool _dropByHoldingInteract; // Once we decide on the final input scheme, this can be removed
+    [SerializeField] private bool _toggleToPeek;
 
     // Runtime
     private AnswerController _answerController;
 
+    private bool IsPeeking => _inputHandler.ScopeType == EInputScope.PlayerPeeking;
     private bool IsAnswering => _answerController != null && _answerController.IsAnswering;
 
     // Helpers
@@ -117,7 +119,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         }
         else if (actionType == EAction.Peek)
         {
-            if (_inputHandler.ScopeType == EInputScope.PlayerPeeking)
+            if (!_toggleToPeek && IsPeeking)
             {
                 RestoreInputScope();
                 _inputHandler.CancelPeekHold();
@@ -207,6 +209,13 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
         Debug.LogError("Static interaction is not being handled: " + interaction.name);
         return false;
+    }
+
+    private void StartPeeking()
+    {
+        _lookHelper.ClearLookAt();
+        _inputHandler.SetScope(EInputScope.PlayerPeeking);
+        _fieldOfViewController.Show();
     }
 
     private void StopPeeking()
@@ -316,9 +325,15 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         }
         else if (actionType == EAction.Peek)
         {
-            _lookHelper.ClearLookAt();
-            _inputHandler.SetScope(EInputScope.PlayerPeeking);
-            _fieldOfViewController.Show();
+            if (IsPeeking)
+            {
+                RestoreInputScope();
+                _inputHandler.CancelPeekHold();
+            }
+            else
+            {
+                StartPeeking();
+            }
         }
     }
 
@@ -355,7 +370,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         }
         else if (actionType == EAction.Peek)
         {
-            if (!isHolding)
+            if (!isHolding && !_toggleToPeek)
             {
                 RestoreInputScope();
             }
