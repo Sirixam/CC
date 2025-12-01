@@ -1,5 +1,6 @@
 using UnityEngine;
 using PrimeTween;
+using AKGaming.Game;
 
 public class PlayerView : MonoBehaviour, IStunView, IChairView
 {
@@ -11,6 +12,7 @@ public class PlayerView : MonoBehaviour, IStunView, IChairView
     [SerializeField] private CheatUI _peekUI;
     [SerializeField] private CheatUI _cheatUI;
     [SerializeField] private MemoryUI _memoryUI;
+    [SerializeField] private ThrowPreviewComponent _throwPreview;
     [SerializeField] private TweenSettings<float> _startStunTweenSettings = new();
     [SerializeField] private TweenSettings<float> _stopStunTweenSettings = new();
     [SerializeField] private TweenSettings<float> _sittingTweenSettings = new();
@@ -107,8 +109,19 @@ public class PlayerView : MonoBehaviour, IStunView, IChairView
         _positionTween.Stop();
     }
 
+    public void ShowThrowPreview()
+    {
+        _throwPreview.Show();
+    }
+
+    public void HideThrowPreview()
+    {
+        _throwPreview.Hide();
+    }
+
     public void OnThrow(Transform item)
     {
+        _throwPreview.Hide();
         item.SetParent(null, worldPositionStays: true);
         _positionTween.Stop();
     }

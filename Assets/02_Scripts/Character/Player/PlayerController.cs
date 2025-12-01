@@ -41,7 +41,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     Vector3 IInteractionActor.Position => transform.position;
     Vector3 IInteractionActor.Forward => transform.forward;
     // IThrowActor
-    Vector3 IThrowActor.LookDirection => _lookHelper.LookDirection;
+    Vector3 IThrowActor.LookDirection => _view.transform.forward;
     Collider[] IThrowActor.Colliders => _physics.Colliders;
 
     private void Awake()
@@ -111,6 +111,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             {
                 RestoreInputScope();
                 _inputHandler.CancelActionHold();
+                _view.HideThrowPreview();
             }
             else if (_inputHandler.ScopeType == EInputScope.PlayerSitting)
             {
@@ -321,6 +322,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             {
                 _lookHelper.ClearLookAt();
                 _inputHandler.SetScope(EInputScope.PlayerAiming);
+                _view.ShowThrowPreview();
             }
         }
         else if (actionType == EAction.Peek)

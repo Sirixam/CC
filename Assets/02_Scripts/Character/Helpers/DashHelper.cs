@@ -30,7 +30,7 @@ public class DashHelper
         if (_dashCooldownTimer <= 0)
         {
             _view.OnStartDash();
-            _physics.StartDashing(_lookHelper.LookDirection);
+            _physics.StartDashing(_view.transform.forward);
             _dashCooldownTimer = _data.DashCooldown;
         }
     }

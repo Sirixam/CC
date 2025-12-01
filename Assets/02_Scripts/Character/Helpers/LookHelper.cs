@@ -15,8 +15,6 @@ public class LookHelper
     private Vector3 _lookDirection;
     private Transform _lookAtPoint;
 
-    public Vector3 LookDirection => _lookDirection;
-
     public LookHelper(Data data)
     {
         _data = data;
