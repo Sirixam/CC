@@ -34,10 +34,7 @@ public class LookHelper
 
     public void SetLookInput(Vector2 input)
     {
-        if (input != Vector2.zero)
-        {
-            _lookDirection = new Vector3(input.x, 0, input.y);
-        }
+        _lookDirection = new Vector3(input.x, 0, input.y);
     }
 
     public void UpdateRotation(Transform transform)

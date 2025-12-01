@@ -1,6 +1,5 @@
 using Cysharp.Threading.Tasks;
 using System;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -46,7 +45,6 @@ public class StudentNpcController : MonoBehaviour
     private void OnDestroy()
     {
         _chairController.OnCollisionEnterEvent = OnCollisionEnter;
-
     }
 
     private void Update()
