@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class ChairController : MonoBehaviour
@@ -16,6 +17,8 @@ public class ChairController : MonoBehaviour
     public Transform LookAtPoint => _lookAtPoint;
 
     public bool CanPlayerSit => !_isBlocked && AnswerController != null && AnswerController.IsPlayer;
+
+    public Action<Collision> OnCollisionEnterEvent;
 
     private void Awake()
     {
@@ -42,5 +45,10 @@ public class ChairController : MonoBehaviour
     public void Unblock()
     {
         _isBlocked = false;
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        OnCollisionEnterEvent?.Invoke(collision);
     }
 }

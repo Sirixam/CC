@@ -19,6 +19,7 @@ public class StudentNpcController : MonoBehaviour
     // Runtime    
     public bool IsDistracted { get; private set; }
     public bool IsDetecting { get; private set; }
+    private ChairController _chairController;
     public AnswerController AnswerController { get; private set; }
 
     // Helpers
@@ -29,6 +30,7 @@ public class StudentNpcController : MonoBehaviour
     private void Awake()
     {
         AnswerController = transform.parent.GetComponentInChildren<AnswerController>();
+        _chairController = transform.parent.GetComponentInChildren<ChairController>();
 
         // Helpers
         _lookHelper = new LookHelper(_lookData);
@@ -38,6 +40,13 @@ public class StudentNpcController : MonoBehaviour
         _lookHelper.Initialize(transform.forward);
         AnswerController.BlockCheat();
         _fieldOfViewController.Hide();
+        _chairController.OnCollisionEnterEvent += OnCollisionEnter;
+    }
+
+    private void OnDestroy()
+    {
+        _chairController.OnCollisionEnterEvent = OnCollisionEnter;
+
     }
 
     private void Update()
