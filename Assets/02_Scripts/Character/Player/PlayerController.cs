@@ -385,6 +385,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         {
             _interactionHelper.TryStopInteraction(stoppedInteraction);
             _view.OnDrop(stoppedInteraction.transform);
+            _view.HideThrowPreview();
         }
     }
 

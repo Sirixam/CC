@@ -9,15 +9,12 @@ namespace AKGaming.Game
         [SerializeField] Transform _initialPoint;
         [Header("Configurations")]
         [SerializeField] private float _initialSpeed = 12f;
-        [SerializeField] private float _initialAngularSpeed = 30f;
         [SerializeField] private float maxPredictionTime_ = 2f;
         [SerializeField] private int maxPointsCount_ = 100;
         [SerializeField] private float sphereCastRadius_ = 0.05f;
         [SerializeField] private LayerMask collisionMask_;
         [SerializeField] private float _lineAnimationSpeed = -1;
         [SerializeField] private float _particleFrecuency = 0.5f;
-        [SerializeField] private float _initialPointSpeed = 2f;
-        [SerializeField] private float _initialPointAngularSpeed = 60f;
         //[SerializeField] private IdentifiableReference _particleIdRef = new(IdentifiableReference.EType.ID);
 
         private Vector3[] _points;
