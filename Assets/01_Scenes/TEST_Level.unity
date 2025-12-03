@@ -9170,6 +9170,10 @@ MonoBehaviour:
   _playerAnswersDefinitions:
   - {fileID: 11400000, guid: 688d70872986a7848a8364babff9f90d, type: 2}
   - {fileID: 11400000, guid: 9f67efe7b42baa2448cdc123a36988cb, type: 2}
+  - {fileID: 11400000, guid: 506ce7810c85be34aaa2ecd4571f5faf, type: 2}
+  - {fileID: 11400000, guid: 7d9e8d81f2c6b3b4ab63797a91605dc6, type: 2}
+  - {fileID: 11400000, guid: 27362b46e3cce524ab9e00b199c4cf5b, type: 2}
+  - {fileID: 11400000, guid: b953172722e381c419901feffbd23a9a, type: 2}
   _npcAnswersDefinitions:
   - {fileID: 11400000, guid: 688d70872986a7848a8364babff9f90d, type: 2}
   - {fileID: 11400000, guid: 9f67efe7b42baa2448cdc123a36988cb, type: 2}
@@ -17448,6 +17452,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2886443638316792416, guid: f1107de062e953747a87d956cc6647dd, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3333224229237808080, guid: f1107de062e953747a87d956cc6647dd, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -19146,6 +19154,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2258431190545907445, guid: f1107de062e953747a87d956cc6647dd, type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2886443638316792416, guid: f1107de062e953747a87d956cc6647dd, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3333224229237808080, guid: f1107de062e953747a87d956cc6647dd, type: 3}
