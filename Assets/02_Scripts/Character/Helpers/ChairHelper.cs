@@ -28,10 +28,18 @@ public class ChairHelper
 
     public void TeleportToSitting(ChairController chairController)
     {
+        if (IsSitting)
+        {
+            _chairController.Unblock();
+            _actorPhysics.OnArriveEvent -= OnArrive;
+            _actorPhysics.SetTargetPoint(null); // Clear
+        }
+
         _chairController = chairController;
         IsTransitioning = false;
         IsSitting = true;
 
+        _actorView.OnSitting();
         _chairController.Block();
         _actorPhysics.TeleportToPoint(chairController.SittingPoint);
         _inputHandler.SetScope(EInputScope.PlayerSitting);
