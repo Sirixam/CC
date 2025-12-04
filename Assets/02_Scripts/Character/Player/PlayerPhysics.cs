@@ -133,6 +133,14 @@ public class PlayerPhysics
         _rigidbody.MovePosition(newPosition);
     }
 
+    public void TeleportToPoint(Transform point)
+    {
+        if (point == null) return;
+        _rigidbody.position = point.position;
+        _rigidbody.velocity = Vector3.zero;
+        _targetPoint = null;
+    }
+
     public void SetTargetPoint(Transform point)
     {
         _targetPoint = point;

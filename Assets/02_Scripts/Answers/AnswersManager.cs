@@ -283,4 +283,9 @@ public class AnswersManager : MonoBehaviour
         }
         return true;
     }
+
+    public AnswerController GetPlayerDesk(int index)
+    {
+        return _playerDesks[index];
+    }
 }

@@ -9,14 +9,13 @@ public class ChairController : MonoBehaviour
     [SerializeField] private Transform _lookAtPoint;
     [SerializeField] private GlobalDefinition _globalDefinition;
 
-    private bool _isBlocked;
-
     public AnswerController AnswerController { get; private set; }
     public Transform SittingPoint => _sittingPoint;
     public Transform[] StandingPoints => _standingPoints;
     public Transform LookAtPoint => _lookAtPoint;
 
-    public bool CanPlayerSit => !_isBlocked && AnswerController != null && AnswerController.IsPlayer;
+    public bool IsBlocked { get; private set; }
+    public bool CanPlayerSit => !IsBlocked && AnswerController != null && AnswerController.IsPlayer;
 
     public Action<Collision> OnCollisionEnterEvent;
 
@@ -39,12 +38,12 @@ public class ChairController : MonoBehaviour
 
     public void Block()
     {
-        _isBlocked = true;
+        IsBlocked = true;
     }
 
     public void Unblock()
     {
-        _isBlocked = false;
+        IsBlocked = false;
     }
 
     private void OnCollisionEnter(Collision collision)

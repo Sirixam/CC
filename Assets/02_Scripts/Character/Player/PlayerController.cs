@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     // Runtime
     private AnswerController _answerController;
+    private ChairController _initialChairController;
 
     private bool IsPeeking => _inputHandler.ScopeType == EInputScope.PlayerPeeking;
     private bool IsAnswering => _answerController != null && _answerController.IsAnswering;
@@ -59,6 +60,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         // Initialize
         _lookHelper.Initialize(transform.forward);
         _fieldOfViewController.Hide();
+        TeleportToInitialChair();
     }
 
     private void OnEnable()
@@ -246,6 +248,32 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _lookHelper.ClearLookAt();
         _cheatHelper.StopCheating();
         StopStaticInteraction();
+    }
+
+    public void SetInitialChairController(ChairController value)
+    {
+        _initialChairController = value;
+    }
+
+    public void TeleportToInitialChair()
+    {
+        if (_initialChairController == null) return;
+
+        if (_initialChairController.IsBlocked)
+        {
+            Debug.LogError("Initial chair controller is blocked");
+            return;
+        }
+
+        TeleportToChair(_initialChairController);
+    }
+
+    private void TeleportToChair(ChairController chairController)
+    {
+        _lookHelper.SetLookAt(chairController.LookAtPoint);
+        _chairHelper.TeleportToSitting(chairController);
+        _interactionHelper.DisableInteraction();
+        _answerController = chairController.AnswerController;
     }
 
     private void RequestSitting(ChairController chairController)

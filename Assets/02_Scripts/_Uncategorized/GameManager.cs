@@ -1,6 +1,8 @@
 using Cysharp.Threading.Tasks;
+using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class GameManager : MonoBehaviour
 {
@@ -17,9 +19,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GlobalDefinition _globalDefinition;
     [SerializeField] private float _maxTimeInSeconds = 30;
 
-    private int _playersCount;
     private TimeHelper _timeHelper;
     private CancellationTokenSource _gameCancellationSource;
+    private List<PlayerController> _players = new();
 
     private void Awake()
     {
@@ -61,11 +63,16 @@ public class GameManager : MonoBehaviour
     }
 
     // Triggere externallyd when a player joins the game
-    public void OnPlayerJoined()
+    public void OnPlayerJoined(PlayerInput playerInput)
     {
+        PlayerController playerController = playerInput.GetComponent<PlayerController>();
+        ChairController chairController = _answerManager.GetPlayerDesk(playerInput.playerIndex).transform.parent.GetComponentInChildren<ChairController>();
+        playerController.SetInitialChairController(chairController);
+        _players.Add(playerController);
+
         if (_gameCancellationSource != null) return; // Game already started
 
-        if (++_playersCount >= _answerManager.RequiredPlayersCount || !_globalDefinition.StartGameWhenAllPlayersJoined)
+        if (_players.Count >= _answerManager.RequiredPlayersCount || !_globalDefinition.StartGameWhenAllPlayersJoined)
         {
             StartGame();
         }
@@ -97,6 +104,10 @@ public class GameManager : MonoBehaviour
         if (_timesUpFeedback != null)
         {
             _timesUpFeedback.SetActive(false);
+        }
+        foreach (var player in _players)
+        {
+            player.TeleportToInitialChair();
         }
         StopGame();
         StartGame();

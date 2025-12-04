@@ -26,6 +26,17 @@ public class ChairHelper
         _actorPhysics = actorPhysics;
     }
 
+    public void TeleportToSitting(ChairController chairController)
+    {
+        _chairController = chairController;
+        IsTransitioning = false;
+        IsSitting = true;
+
+        _chairController.Block();
+        _actorPhysics.TeleportToPoint(chairController.SittingPoint);
+        _inputHandler.SetScope(EInputScope.PlayerSitting);
+    }
+
     public void StartSitting(ChairController chairController)
     {
         _chairController = chairController;
