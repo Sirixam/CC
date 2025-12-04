@@ -5,6 +5,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     [SerializeField] private PlayerView _view;
     [SerializeField] private PlayerInputHandler _inputHandler;
     [SerializeField] private PlayerPhysics _physics;
+    [SerializeField] private PlayerAudio _audio;
     [SerializeField] private FieldOfViewController _fieldOfViewController;
 
     [Header("Data")]
@@ -90,7 +91,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             }
             else if (_chairHelper.IsSitting)
             {
-                _answerController.HideAnswerSheet();
+                HideAnswerSheet();
             }
             else
             {
@@ -226,6 +227,20 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         StopStaticInteraction();
     }
 
+    private void StartAnswering(string answerID)
+    {
+        if (_answerController.TryStartAnswering(answerID))
+        {
+            _audio.StartAnswering();
+        }
+    }
+
+    private void HideAnswerSheet()
+    {
+        _answerController.HideAnswerSheet();
+        _audio.TryStopAnswering();
+    }
+
     private void StopCheating()
     {
         _lookHelper.ClearLookAt();
@@ -300,11 +315,11 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             {
                 if (_cheatHelper.TryGetRememberedAnswer(out string answerID))
                 {
-                    _answerController.TryStartAnswering(answerID);
+                    StartAnswering(answerID);
                 }
                 else if (_interactionHelper.TryGetPickedUpInteraction(out PaperBallController paperBallController) && paperBallController.HasAnswer)
                 {
-                    _answerController.TryStartAnswering(paperBallController.AnswerID);
+                    StartAnswering(paperBallController.AnswerID);
                 }
                 else
                 {
@@ -347,7 +362,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             {
                 if (!isHolding)
                 {
-                    _answerController.HideAnswerSheet();
+                    HideAnswerSheet();
                 }
             }
             else if (_cheatHelper.IsCheating)

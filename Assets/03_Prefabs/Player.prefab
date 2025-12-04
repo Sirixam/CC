@@ -483,6 +483,51 @@ Transform:
   m_Children: []
   m_Father: {fileID: 3049514376903125607}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1920539885340485317
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3461231142863770293}
+  - component: {fileID: 4943727907219644011}
+  m_Layer: 0
+  m_Name: Audio
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3461231142863770293
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1920539885340485317}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 365723418938546978}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4943727907219644011
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1920539885340485317}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fcf4dfbc9ab95d49b2c04aecb5f59ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _answeringAudio: {fileID: 11400000, guid: 73357f2797f4fc347b249d39f046fc5f, type: 2}
 --- !u!1 &2028980368172026476
 GameObject:
   m_ObjectHideFlags: 0
@@ -527,6 +572,7 @@ Transform:
   - {fileID: 5211738519952994070}
   - {fileID: 5604358380448060157}
   - {fileID: 2778112393418716491}
+  - {fileID: 3461231142863770293}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8799704102317268165
@@ -551,6 +597,7 @@ MonoBehaviour:
     _dashSpeed: 15
     _dashDuration: 0.2
     _frontalCollisionAngle: 30
+  _audio: {fileID: 4943727907219644011}
   _fieldOfViewController: {fileID: 6954222443602317400}
   _interactionData:
     FacingScores:
@@ -1527,7 +1574,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _initialPoint: {fileID: 9197537246829724969}
   _initialSpeed: 12
-  _initialAngularSpeed: 30
   maxPredictionTime_: 2
   maxPointsCount_: 100
   sphereCastRadius_: 0.05
@@ -1536,8 +1582,6 @@ MonoBehaviour:
     m_Bits: 9
   _lineAnimationSpeed: -1
   _particleFrecuency: 0.75
-  _initialPointSpeed: 2.5
-  _initialPointAngularSpeed: 60
 --- !u!120 &3361659025060047718
 LineRenderer:
   serializedVersion: 2
