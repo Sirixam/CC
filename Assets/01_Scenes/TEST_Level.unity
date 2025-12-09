@@ -16730,7 +16730,7 @@ GameObject:
   - component: {fileID: 627507101}
   - component: {fileID: 627507100}
   m_Layer: 0
-  m_Name: Test Camera
+  m_Name: FrontCamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
