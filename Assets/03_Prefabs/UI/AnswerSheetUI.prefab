@@ -87,7 +87,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 2.0170975, y: 6.300003}
+  m_AnchoredPosition: {x: 2.0170898, y: 6.299988}
   m_SizeDelta: {x: -25.817703, y: -3.1157074}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5571037972036215817
@@ -120,7 +120,7 @@ MonoBehaviour:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: cd0f50f785478a548b548680a5de0d83, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -162,8 +162,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 1.39, y: 6}
-  m_SizeDelta: {x: -48.28213, y: -26.727207}
+  m_AnchoredPosition: {x: 0.960022, y: 17.48999}
+  m_SizeDelta: {x: -69.57, y: -68.44}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4766662745090479415
 CanvasRenderer:
@@ -188,13 +188,13 @@ MonoBehaviour:
   m_Padding:
     m_Left: 0
     m_Right: 0
-    m_Top: 10
+    m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 1
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 50, y: 40}
-  m_Spacing: {x: 0, y: 10}
+  m_CellSize: {x: 57.46, y: 40}
+  m_Spacing: {x: 15, y: 25}
   m_Constraint: 0
   m_ConstraintCount: 2
 --- !u!1 &7961516426064815433
@@ -231,8 +231,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.0000076293945, y: -0.0000076293945}
-  m_SizeDelta: {x: -190.4877, y: -222.2357}
+  m_AnchoredPosition: {x: 0.0012207031, y: 419.99}
+  m_SizeDelta: {x: -1717.68, y: -839.98}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &4096092861984974006
 PrefabInstance:
@@ -242,18 +242,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8328862650133269005}
     m_Modifications:
-    - target: {fileID: 214239888454819588, guid: 420aefd4db4a1c84a9a88a3f5f8f90a4, type: 3}
-      propertyPath: m_Material
-      value: 
-      objectReference: {fileID: 2100000, guid: cc61440558b35fe4fbba2455df980c89, type: 2}
     - target: {fileID: 1975240016454296874, guid: 420aefd4db4a1c84a9a88a3f5f8f90a4, type: 3}
       propertyPath: m_Name
       value: ProgressUI
       objectReference: {fileID: 0}
-    - target: {fileID: 3710128117182539740, guid: 420aefd4db4a1c84a9a88a3f5f8f90a4, type: 3}
-      propertyPath: m_Material
-      value: 
-      objectReference: {fileID: 2100000, guid: cc61440558b35fe4fbba2455df980c89, type: 2}
     - target: {fileID: 4325488119999061943, guid: 420aefd4db4a1c84a9a88a3f5f8f90a4, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -334,10 +326,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7458219370593799952, guid: 420aefd4db4a1c84a9a88a3f5f8f90a4, type: 3}
-      propertyPath: m_Material
-      value: 
-      objectReference: {fileID: 2100000, guid: cc61440558b35fe4fbba2455df980c89, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

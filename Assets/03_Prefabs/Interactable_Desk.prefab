@@ -1396,6 +1396,14 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1515760786864614198, guid: 34281e9ca700cc64098a7683006c2748, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1515760786864614198, guid: 34281e9ca700cc64098a7683006c2748, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1726278960932499264, guid: 34281e9ca700cc64098a7683006c2748, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 1.3899994
@@ -1407,6 +1415,22 @@ PrefabInstance:
     - target: {fileID: 2500693749257627621, guid: 34281e9ca700cc64098a7683006c2748, type: 3}
       propertyPath: m_Name
       value: AnswerSheetUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 4558423478780047794, guid: 34281e9ca700cc64098a7683006c2748, type: 3}
+      propertyPath: m_Spacing.x
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4558423478780047794, guid: 34281e9ca700cc64098a7683006c2748, type: 3}
+      propertyPath: m_Spacing.y
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 4558423478780047794, guid: 34281e9ca700cc64098a7683006c2748, type: 3}
+      propertyPath: m_CellSize.x
+      value: 55
+      objectReference: {fileID: 0}
+    - target: {fileID: 4558423478780047794, guid: 34281e9ca700cc64098a7683006c2748, type: 3}
+      propertyPath: m_CellSize.y
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 8328862650133269005, guid: 34281e9ca700cc64098a7683006c2748, type: 3}
       propertyPath: m_Pivot.x
@@ -1470,7 +1494,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8328862650133269005, guid: 34281e9ca700cc64098a7683006c2748, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -0.000000059605
+      value: -0.01
       objectReference: {fileID: 0}
     - target: {fileID: 8328862650133269005, guid: 34281e9ca700cc64098a7683006c2748, type: 3}
       propertyPath: m_AnchoredPosition.y
