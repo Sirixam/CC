@@ -107,9 +107,9 @@ MonoBehaviour:
   _fieldOfViewController: {fileID: 6954222443602317400}
   _stateText: {fileID: 7892339153719555269}
   _lookData:
-    LookSpeed: 1080
+    LookSpeed: 200
   _distractionDuration: 5
-  _distractionRotationDelay: 1
+  _distractionRotationDelay: 0.7
   _playerTag: Player
   _distractionTag: Distraction
 --- !u!54 &165944274530947382

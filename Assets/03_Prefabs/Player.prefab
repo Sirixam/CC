@@ -477,7 +477,7 @@ Transform:
   m_GameObject: {fileID: 1591632086378275880}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.293, z: 0.747}
+  m_LocalPosition: {x: 0, y: 0.01, z: 0.665}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -627,7 +627,7 @@ MonoBehaviour:
     HardCollisionTags:
     - Environment
   _lookData:
-    LookSpeed: 400
+    LookSpeed: 3060
   _answerPrefab: {fileID: 7322142745343497653, guid: 1a918e96e086428419e3a9e7e1c16e9d, type: 3}
   _dropByHoldingInteract: 0
   _toggleToPeek: 1
@@ -1389,13 +1389,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4360808374014168473}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.13052624, y: 0, z: 0, w: 0.9914449}
-  m_LocalPosition: {x: 0, y: 0.44233257, z: 0.4673584}
+  m_LocalRotation: {x: -0.08715578, y: 0, z: 0, w: 0.9961947}
+  m_LocalPosition: {x: 0, y: 0.557, z: 0.435}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2778112393418716491}
-  m_LocalEulerAnglesHint: {x: -15, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -10, y: 0, z: 0}
 --- !u!1 &5059149654283163174
 GameObject:
   m_ObjectHideFlags: 0
