@@ -7,6 +7,7 @@ public class GlobalDefinition : ScriptableObject
     public bool CanUseAnyPlayerChair;
     public bool PersistAnswerProgress;
     public float PeekDuration;
+    public int PlayerLives;
     public Vector2 PreAnsweringDelay;
     public Vector2 PostAnsweringDelay;
 }

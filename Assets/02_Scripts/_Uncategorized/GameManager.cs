@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject _defeatFeedback;
     [SerializeField] private GameObject _victoryFeedback;
     [SerializeField] private TimeUI _timeUI;
+    [SerializeField] private LivesUI _livesUI;
     [SerializeField] private GameObject _timesUpFeedback;
     [SerializeField] private ButtonListener[] _restartButtons;
 
@@ -22,6 +23,7 @@ public class GameManager : MonoBehaviour
     private TimeHelper _timeHelper;
     private CancellationTokenSource _gameCancellationSource;
     private List<PlayerController> _players = new();
+    private int _playerLives;
 
     private void Awake()
     {
@@ -40,6 +42,10 @@ public class GameManager : MonoBehaviour
         if (_timeUI != null)
         {
             _timeUI.gameObject.SetActive(false);
+        }
+        if (_livesUI != null)
+        {
+            _livesUI.gameObject.SetActive(false);
         }
         foreach (var button in _restartButtons)
         {
@@ -80,6 +86,11 @@ public class GameManager : MonoBehaviour
 
     private void StartGame()
     {
+        if (_livesUI != null)
+        {
+            _livesUI.gameObject.SetActive(true);
+        }
+        SetLives(_globalDefinition.PlayerLives);
         _gameCancellationSource = new CancellationTokenSource();
         StartTimer();
         _studentManager.StartStimulation(_gameCancellationSource.Token);
@@ -139,10 +150,23 @@ public class GameManager : MonoBehaviour
 
     private void OnPlayerDetected(PlayerController playerController)
     {
+        SetLives(_playerLives - 1);
+        if (_playerLives > 0)
+        {
+            playerController.TeleportToInitialChair();
+            return;
+        }
+
         StopGame();
         if (_defeatFeedback != null)
         {
             _defeatFeedback.SetActive(true);
         }
+    }
+
+    private void SetLives(int value)
+    {
+        _playerLives = value;
+        _livesUI.SetLives(value);
     }
 }

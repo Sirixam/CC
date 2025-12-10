@@ -16,5 +16,6 @@ MonoBehaviour:
   CanUseAnyPlayerChair: 1
   PersistAnswerProgress: 0
   PeekDuration: 5
+  PlayerLives: 3
   PreAnsweringDelay: {x: 3, y: 3}
   PostAnsweringDelay: {x: 5, y: 5}
