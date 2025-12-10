@@ -7,6 +7,7 @@ public class StudentNpcController : MonoBehaviour
 {
     [SerializeField] private FieldOfViewController _fieldOfViewController;
     [SerializeField] private TMP_Text _stateText;
+    [SerializeField] private DistractionUI _distractionUI;
 
     [Header("Data")]
     [SerializeField] private LookHelper.Data _lookData;
@@ -39,6 +40,7 @@ public class StudentNpcController : MonoBehaviour
         _lookHelper.Initialize(transform.forward);
         AnswerController.BlockCheat();
         _fieldOfViewController.Hide();
+        _distractionUI.Hide();
         _chairController.OnCollisionEnterEvent += OnCollisionEnter;
     }
 
@@ -78,6 +80,9 @@ public class StudentNpcController : MonoBehaviour
         _stateText.text = "Distracted";
         AnswerController.UnblockCheat();
 
+        int distractionLevel = 1; // TODO
+        _distractionUI.Show(distractionLevel);
+
         await UniTask.WaitForSeconds(_distractionRotationDelay);
 
         Vector2 lookDirection = new Vector2(hitDirection.x, hitDirection.z).normalized;
@@ -89,6 +94,7 @@ public class StudentNpcController : MonoBehaviour
         IsDistracted = false;
         AnswerController.BlockCheat();
         _fieldOfViewController.Hide();
+        _distractionUI.Hide();
         _lookHelper.RestoreInitialLookDirection();
         _stateText.text = initialState;
     }
