@@ -109,10 +109,25 @@ MonoBehaviour:
   _distractionUI: {fileID: 7935385901730637187}
   _lookData:
     LookSpeed: 200
-  _distractionDuration: 5
-  _distractionRotationDelay: 0.7
+  _distractionData:
+    DistractionTag: Distraction
+    Levels:
+    - MinCounter: 1
+      DistractionDuration: 2
+      DistractionRotationDelay: 1
+      LookSpeedMultiplier: 0
+      Rotate: 0
+    - MinCounter: 2
+      DistractionDuration: 3
+      DistractionRotationDelay: 1
+      LookSpeedMultiplier: 1
+      Rotate: 1
+    - MinCounter: 3
+      DistractionDuration: 5
+      DistractionRotationDelay: 0.7
+      LookSpeedMultiplier: 1.5
+      Rotate: 1
   _playerTag: Player
-  _distractionTag: Distraction
 --- !u!54 &165944274530947382
 Rigidbody:
   m_ObjectHideFlags: 0

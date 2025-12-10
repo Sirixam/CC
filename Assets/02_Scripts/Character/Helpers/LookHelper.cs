@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class LookHelper
@@ -9,8 +10,12 @@ public class LookHelper
         public float LookSpeed = 1080f; // Degrees per second
     }
 
+    private const float FLOAT_TOLERANCE = 0.0001f;
+
     private readonly Data _data;
 
+    private float _computedLookMultiplier;
+    private List<float> _lookMultipliers = new();
     private Vector3 _initialLookDirection;
     private Vector3 _lookDirection;
     private Transform _lookAtPoint;
@@ -18,6 +23,7 @@ public class LookHelper
     public LookHelper(Data data)
     {
         _data = data;
+        _computedLookMultiplier = 1f;
     }
 
     public void Initialize(Vector3 lookDirection)
@@ -47,12 +53,40 @@ public class LookHelper
         if (_lookDirection != Vector3.zero)
         {
             Quaternion targetRotation = Quaternion.LookRotation(_lookDirection, Vector3.up);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, _data.LookSpeed * Time.deltaTime);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, _data.LookSpeed * _computedLookMultiplier * Time.deltaTime);
         }
     }
 
     public void RestoreInitialLookDirection()
     {
         _lookDirection = _initialLookDirection;
+    }
+
+    public void AddLookMultiplier(float value)
+    {
+        _lookMultipliers.Add(value);
+        ComputeLookMultiplier();
+    }
+
+    public void RemoveLookMultiplier(float value)
+    {
+        for (int i = 0; i < _lookMultipliers.Count; i++)
+        {
+            if (Mathf.Abs(_lookMultipliers[i] - value) < FLOAT_TOLERANCE)
+            {
+                _lookMultipliers.RemoveAt(i);
+                ComputeLookMultiplier();
+                return;
+            }
+        }
+    }
+
+    private void ComputeLookMultiplier()
+    {
+        _computedLookMultiplier = 1f;
+        foreach (var multiplier in _lookMultipliers)
+        {
+            _computedLookMultiplier *= multiplier;
+        }
     }
 }
