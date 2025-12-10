@@ -76,7 +76,8 @@ public class AnswerController : MonoBehaviour
     {
         if (IsPlayer)
         {
-            _answerSheetUI.ShowProgress(progress);
+            string answerID = ActiveAnswerID;
+            _answerSheetUI.ShowProgress(answerID, progress);
             _answerSheetUI.Show();
         }
     }
@@ -87,14 +88,14 @@ public class AnswerController : MonoBehaviour
         float progress = AnswerSheet.UpdateProgress(answerID, out finishedAnswering);
         if (IsPlayer)
         {
-            _answerSheetUI.SetProgress(progress);
+            _answerSheetUI.SetProgress(answerID, progress);
         }
         if (finishedAnswering)
         {
             if (IsPlayer)
             {
                 _answerSheetUI.SetAnswerState(answerID, true);
-                _answerSheetUI.HideProgress();
+                _answerSheetUI.HideProgress(answerID);
             }
             LastFinishedAnswerID = answerID;
             ActiveAnswerID = null;
@@ -112,11 +113,11 @@ public class AnswerController : MonoBehaviour
         }
         if (IsAnswering)
         {
+            string answerID = ActiveAnswerID;
             if (IsPlayer)
             {
-                _answerSheetUI.HideProgress();
+                _answerSheetUI.HideProgress(answerID);
             }
-            string answerID = ActiveAnswerID;
             ActiveAnswerID = null;
             AnswerSheet.OnStopAnswering(answerID);
         }
