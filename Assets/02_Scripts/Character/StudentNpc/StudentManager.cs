@@ -38,35 +38,20 @@ public class StudentManager : MonoBehaviour
             bool startedThinking = student.AnswerController.TryRestartAnswering(answerDef.ID, isThinking: true);
             if (startedThinking)
             {
+                student.SetRemainingTimes(thinkingTime: UnityEngine.Random.Range(_globalDefinition.PreAnsweringDelay.x, _globalDefinition.PreAnsweringDelay.y),
+                                        validatingTime: UnityEngine.Random.Range(_globalDefinition.PostAnsweringDelay.x, _globalDefinition.PostAnsweringDelay.y));
+
                 student.StartThinking();
-                await WaitWhileNotDistracted(student, UnityEngine.Random.Range(_globalDefinition.PreAnsweringDelay.x, _globalDefinition.PreAnsweringDelay.y), cancellationToken: cancellationToken);
+                await student.WaitWhileNotDistracted(student.AnswerController.ThinkingRemainingTime, cancellationToken: cancellationToken);
 
                 student.StartAnswering();
+                await student.UpdateAnsweringTask(cancellationToken);
 
-                bool finishedAnswering = false;
-                while (!finishedAnswering && !student.IsDistracted)
-                {
-                    student.AnswerController.UpdateAnswering(out finishedAnswering);
-                    await UniTask.Yield(cancellationToken);
-                }
-
-                student?.StartValidating();
-                await WaitWhileNotDistracted(student, UnityEngine.Random.Range(_globalDefinition.PostAnsweringDelay.x, _globalDefinition.PostAnsweringDelay.y), cancellationToken: cancellationToken);
+                student.StartValidating();
+                await student.WaitWhileNotDistracted(student.AnswerController.ValidatingRemainingTime, cancellationToken: cancellationToken);
             }
 
             await UniTask.Yield(cancellationToken); // Prevent blocking if failed to start answering.
-        }
-    }
-
-    private async UniTask WaitWhileNotDistracted(StudentNpcController student, float timer, CancellationToken cancellationToken)
-    {
-        while (timer > 0 && !cancellationToken.IsCancellationRequested)
-        {
-            if (!student.IsDistracted)
-            {
-                timer -= Time.deltaTime;
-            }
-            await UniTask.Yield(cancellationToken);
         }
     }
 }

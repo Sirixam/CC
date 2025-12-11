@@ -46,7 +46,14 @@ public class AnswerPeekUI : MonoBehaviour
     {
         bool isFull = AnswerPeek.AnswerSheet.IsAnswerFull(AnswerPeek.AnswerID, out float progress);
         _readyObject.anchoredPosition = isFull ? _readyTweenSettings.endValue : _notReadyTweenSettings.endValue;
-        SetProgress(progress);
+        if (!isFull)
+        {
+            SetProgress(progress);
+        }
+        else
+        {
+            SetProgress(AnswerPeek.ValidationPercent);
+        }
     }
 
     public void Clear()

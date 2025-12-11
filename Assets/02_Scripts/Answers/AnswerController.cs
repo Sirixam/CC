@@ -3,11 +3,21 @@ using UnityEngine;
 
 public class AnswerController : MonoBehaviour
 {
+    public enum EState
+    {
+        Undefined,
+        Thinking,
+        Answering,
+        Validating,
+    }
+
     [SerializeField] private Transform _lookAtPoint;
     [SerializeField] private AnswerSheetUI _answerSheetUI;
     [SerializeField] private InteractionController _interactionController;
 
     private int _cheatBlockCount;
+    private EState _state;
+    private bool HasAnswerSheet => AnswerSheet != null;
 
     public AnswerSheet AnswerSheet { get; private set; }
     public string ActiveAnswerID { get; private set; }
@@ -15,11 +25,13 @@ public class AnswerController : MonoBehaviour
     public string ActorID { get; private set; }
     public bool IsPlayer { get; private set; }
     public bool IsCheatBlocked => _cheatBlockCount > 0;
-
-    private bool HasAnswerSheet => AnswerSheet != null;
-    public bool IsAnswering => !string.IsNullOrWhiteSpace(ActiveAnswerID);
-    public bool IsValidatingAnswer => HasAnswerSheet && !IsAnswering && AnswerSheet.IsAnswerFull(LastFinishedAnswerID, out _);
-
+    public bool IsThinking => _state == EState.Thinking;
+    public bool IsAnswering => _state == EState.Answering;
+    public bool IsValidating => _state == EState.Validating;
+    public float ThinkingRemainingTime { get; private set; }
+    public float AnsweringRemainingTime { get; private set; }
+    public float ValidatingRemainingTime { get; private set; }
+    public float TotalRemainingTime => ThinkingRemainingTime + AnsweringRemainingTime + ValidatingRemainingTime;
     public Transform LookAtPoint => _lookAtPoint;
 
     public event Action<AnswerController, string> OnFinishPeekingEvent;
@@ -43,6 +55,29 @@ public class AnswerController : MonoBehaviour
         {
             _interactionController.Disable();
         }
+    }
+
+    public void UpdateRemainingTime(float deltaTime)
+    {
+        if (_state == EState.Thinking)
+        {
+            ThinkingRemainingTime = Mathf.Max(0, ThinkingRemainingTime - deltaTime);
+        }
+        else if (_state == EState.Answering)
+        {
+            AnsweringRemainingTime = Mathf.Max(0, AnsweringRemainingTime - deltaTime);
+        }
+        else if (_state == EState.Validating)
+        {
+            ValidatingRemainingTime = Mathf.Max(0, ValidatingRemainingTime - deltaTime);
+        }
+    }
+
+    public void SetRemainingTimes(float thinkingTime, float answeringTime, float validatingTime)
+    {
+        ThinkingRemainingTime = thinkingTime;
+        AnsweringRemainingTime = answeringTime;
+        ValidatingRemainingTime = validatingTime;
     }
 
     public void ShowAnswerSheet()
@@ -72,14 +107,30 @@ public class AnswerController : MonoBehaviour
         return true;
     }
 
+    public void StartThinking()
+    {
+        _state = EState.Thinking;
+    }
+
     public void StartAnswering(float progress)
     {
+        _state = EState.Answering;
         if (IsPlayer)
         {
             string answerID = ActiveAnswerID;
             _answerSheetUI.ShowProgress(answerID, progress);
             _answerSheetUI.Show();
         }
+    }
+
+    public void StartValidating()
+    {
+        _state = EState.Validating;
+    }
+
+    public float GetAnsweringDuration()
+    {
+        return AnswerSheet.GetAnsweringDuration(ActiveAnswerID);
     }
 
     public void UpdateAnswering(out bool finishedAnswering)
@@ -125,7 +176,7 @@ public class AnswerController : MonoBehaviour
 
     public void TriggerFinishedPeeking()
     {
-        string answerID = IsAnswering ? ActiveAnswerID : LastFinishedAnswerID;
+        string answerID = IsThinking || IsAnswering ? ActiveAnswerID : LastFinishedAnswerID;
         OnFinishPeekingEvent?.Invoke(this, answerID);
     }
 

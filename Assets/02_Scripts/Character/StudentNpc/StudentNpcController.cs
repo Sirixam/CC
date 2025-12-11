@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using System;
+using System.Threading;
 using TMPro;
 using UnityEngine;
 
@@ -12,7 +13,7 @@ public class StudentNpcController : MonoBehaviour
     [Header("Data")]
     [SerializeField] private LookHelper.Data _lookData;
     [SerializeField] private DistractionHelper.Data _distractionData;
-    [SerializeField][Tag] private string _playerTag = "Player";
+    [SerializeField, Tag] private string _playerTag = "Player";
 
     // Runtime    
     public bool IsDistracted => _distractionHelper.IsDistracted;
@@ -52,11 +53,19 @@ public class StudentNpcController : MonoBehaviour
     private void Update()
     {
         _lookHelper.UpdateRotation(transform);
+        AnswerController.UpdateRemainingTime(Time.deltaTime);
+    }
+
+    public void SetRemainingTimes(float thinkingTime, float validatingTime)
+    {
+        float answeringTime = AnswerController.GetAnsweringDuration();
+        AnswerController.SetRemainingTimes(thinkingTime, answeringTime, validatingTime);
     }
 
     public void StartThinking()
     {
         _stateText.text = "Thinking";
+        AnswerController.StartThinking();
     }
 
     public void StartAnswering()
@@ -68,6 +77,29 @@ public class StudentNpcController : MonoBehaviour
     public void StartValidating()
     {
         _stateText.text = "Validating";
+        AnswerController.StartValidating();
+    }
+
+    public async UniTask WaitWhileNotDistracted(float timer, CancellationToken cancellationToken)
+    {
+        while (timer > 0 && !cancellationToken.IsCancellationRequested)
+        {
+            if (!IsDistracted)
+            {
+                timer -= Time.deltaTime;
+            }
+            await UniTask.Yield(cancellationToken);
+        }
+    }
+
+    public async UniTask UpdateAnsweringTask(CancellationToken cancellationToken)
+    {
+        bool finishedAnswering = false;
+        while (!finishedAnswering && !IsDistracted)
+        {
+            AnswerController.UpdateAnswering(out finishedAnswering);
+            await UniTask.Yield(cancellationToken);
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
