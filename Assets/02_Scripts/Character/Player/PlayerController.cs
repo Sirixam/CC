@@ -84,6 +84,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         if (actionType == EAction.Dash)
         {
             _dashHelper.RequestDash();
+            _audio.StartDash();
         }
         else if (actionType == EAction.Interact)
         {
@@ -140,6 +141,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         {
             _view.OnPickUp(interaction.transform);
             _interactionHelper.StartInteraction(interaction);
+            _audio.StartCollecting();
         }
         else if (interaction.Type == EInteraction.Static)
         {
@@ -220,13 +222,16 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _lookHelper.ClearLookAt();
         _inputHandler.SetScope(EInputScope.PlayerPeeking);
         _fieldOfViewController.Show();
+        _audio.StartPeeking();
     }
 
     private void StopPeeking()
     {
         _lookHelper.ClearLookAt();
         _cheatHelper.StopPeeking();
+        _audio.TryStopPeeking();
         StopStaticInteraction();
+
     }
 
     private void StartAnswering(string answerID)
@@ -282,6 +287,8 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _chairHelper.StartSitting(chairController);
         _interactionHelper.DisableInteraction();
         _answerController = chairController.AnswerController;
+        _audio.StartSitting();
+
     }
 
     private void RequestStanding()
@@ -448,6 +455,8 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             _answerController.UpdateAnswering(out bool finishedAnswering);
             if (finishedAnswering)
             {
+                _audio.StartAnswerCorrect();
+                
                 if (_cheatHelper.TryGetRememberedAnswer(out string answerID))
                 {
                     _cheatHelper.StopRemembering();
@@ -475,6 +484,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             if (finishedCheating)
             {
                 StopCheating();
+                _audio.StartCheatingLaugh();
             }
         }
         if (_cheatHelper.IsRemembering && !IsAnswering)

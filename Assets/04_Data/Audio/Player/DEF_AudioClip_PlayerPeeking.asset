@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: DEF_AudioClip_PlayerPeeking
   m_EditorClassIdentifier: 
   _clips:
-  - {fileID: 8300000, guid: 92a22b3634e962848ad3e3f9911f6405, type: 3}
-  - {fileID: 8300000, guid: 92089329585a33940b55a9421d344555, type: 3}
-  - {fileID: 8300000, guid: cfdc517055bcaa741955431eb71398a4, type: 3}
-  - {fileID: 8300000, guid: e18ff1ae3bc337d49888b1f2454789ba, type: 3}
-  - {fileID: 8300000, guid: 130ca96915b638044a67e7d6daa8d4c1, type: 3}
+  - {fileID: 8300000, guid: b4c727b159baec34b9bae1bb1c6680c7, type: 3}
+  - {fileID: 8300000, guid: ab433153938255c40a1ccd23459c12a9, type: 3}
+  - {fileID: 8300000, guid: 7cf677b0e120bda48918d02e464b055b, type: 3}
+  - {fileID: 8300000, guid: fa7f0c92e276c4147841fa4b12892f78, type: 3}
+  - {fileID: 8300000, guid: e407fbde4bdcb504e839a31d331c073b, type: 3}
   _volume: 1
   _pitch: 1
   _loop: 0

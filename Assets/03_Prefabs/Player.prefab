@@ -528,6 +528,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _answeringAudio: {fileID: 11400000, guid: 73357f2797f4fc347b249d39f046fc5f, type: 2}
+  _answeringCorrectAudio: {fileID: 11400000, guid: e32eeddd175eb49468d03b08dbf00aef, type: 2}
+  _dashingAudio: {fileID: 11400000, guid: 75aa0940f03240145b93f8f3da01396a, type: 2}
+  _peekingAudio: {fileID: 11400000, guid: ac6c8cbb7d8da3843a725fde74c67678, type: 2}
+  _sittingAudio: {fileID: 11400000, guid: dada4c1dba3bc2644820e259b73c8f1c, type: 2}
+  _collectingAudio: {fileID: 11400000, guid: ac5893d3f09f04a45be2f695aba2fba0, type: 2}
+  _cheatingAudio: {fileID: 11400000, guid: 763f6b57428e08f4092e9372027d251d, type: 2}
 --- !u!1 &2028980368172026476
 GameObject:
   m_ObjectHideFlags: 0

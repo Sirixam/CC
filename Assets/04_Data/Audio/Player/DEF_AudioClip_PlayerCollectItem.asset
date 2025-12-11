@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: DEF_AudioClip_PlayerCollectItem
   m_EditorClassIdentifier: 
   _clips:
-  - {fileID: 8300000, guid: 14c588c3e17b02541890a86206eb1695, type: 3}
+  - {fileID: 8300000, guid: f957597d1999b91499e18b1f98fcaa20, type: 3}
+  - {fileID: 8300000, guid: 7df1a0aab8e1a914aa4a5a184480f494, type: 3}
+  - {fileID: 8300000, guid: eb93bcb097fa97341aa5dc3e932f4d19, type: 3}
   _volume: 1
   _pitch: 1
   _loop: 0
