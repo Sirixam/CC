@@ -55,7 +55,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _stunHelper = new StunHelper(_stunData, _view);
         _cheatHelper = new PlayerCheatHelper(_cheatData, _view);
         _lookHelper = new LookHelper(_lookData);
-        _dashHelper = new DashHelper(_view, _physics, _lookHelper, _dashData);
+        _dashHelper = new DashHelper(_view, _physics, _lookHelper, _dashData, _audio);
 
         // Initialize
         _lookHelper.Initialize(transform.forward);
@@ -84,7 +84,6 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         if (actionType == EAction.Dash)
         {
             _dashHelper.RequestDash();
-            _audio.StartDash();
         }
         else if (actionType == EAction.Interact)
         {

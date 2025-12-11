@@ -14,15 +14,17 @@ public class DashHelper
     private readonly PlayerPhysics _physics;
     private readonly LookHelper _lookHelper;
     private readonly Data _data;
+    private readonly PlayerAudio _audio;
 
     private float _dashCooldownTimer;
 
-    public DashHelper(PlayerView view, PlayerPhysics physics, LookHelper lookHelper, Data data)
+    public DashHelper(PlayerView view, PlayerPhysics physics, LookHelper lookHelper, Data data, PlayerAudio audio)
     {
         _view = view;
         _physics = physics;
         _lookHelper = lookHelper;
         _data = data;
+        _audio = audio;
     }
 
     public void RequestDash()
@@ -32,6 +34,7 @@ public class DashHelper
             _view.OnStartDash();
             _physics.StartDashing(_view.transform.forward);
             _dashCooldownTimer = _data.DashCooldown;
+            _audio.StartDash();
         }
     }
 
