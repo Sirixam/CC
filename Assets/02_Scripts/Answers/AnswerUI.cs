@@ -8,6 +8,7 @@ public class AnswerUI : MonoBehaviour
     [SerializeField] private Image _icon;
     [SerializeField] private GameObject _notFilledState;
     [SerializeField] private GameObject _filledState;
+    [SerializeField] private Image _fill;
 
     public string ID { get; private set; }
 
@@ -24,13 +25,30 @@ public class AnswerUI : MonoBehaviour
 
     public void SetNumber(int value, Color color)
     {
-        _numberText.text = value.ToString();
-        _numberText.color = color;
+        if (_numberText != null)
+        {
+            _numberText.text = value.ToString();
+            _numberText.color = color;
+        }
     }
 
     public void SetState(bool isFilled)
     {
-        _notFilledState.SetActive(!isFilled);
-        _filledState.SetActive(isFilled);
+        if (_notFilledState != null)
+        {
+            _notFilledState.SetActive(!isFilled);
+        }
+        if (_filledState != null)
+        {
+            _filledState.SetActive(isFilled);
+        }
+    }
+
+    public void SetProgress(float percent)
+    {
+        if (_fill != null)
+        {
+            _fill.fillAmount = percent;
+        }
     }
 }

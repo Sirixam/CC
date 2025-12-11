@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using System;
+using System.Threading;
 using TMPro;
 using UnityEngine;
 
@@ -7,22 +8,22 @@ public class StudentNpcController : MonoBehaviour
 {
     [SerializeField] private FieldOfViewController _fieldOfViewController;
     [SerializeField] private TMP_Text _stateText;
+    [SerializeField] private DistractionUI _distractionUI;
 
     [Header("Data")]
     [SerializeField] private LookHelper.Data _lookData;
-    [SerializeField] private float _distractionDuration = 5f;
-    [SerializeField] private float _distractionRotationDelay = 1f;
-    [SerializeField][Tag] private string _playerTag = "Player";
-    [SerializeField][Tag] private string _distractionTag = "Distraction";
+    [SerializeField] private DistractionHelper.Data _distractionData;
+    [SerializeField, Tag] private string _playerTag = "Player";
 
     // Runtime    
-    public bool IsDistracted { get; private set; }
+    public bool IsDistracted => _distractionHelper.IsDistracted;
     public bool IsDetecting { get; private set; }
     private ChairController _chairController;
     public AnswerController AnswerController { get; private set; }
 
     // Helpers
     private LookHelper _lookHelper;
+    private DistractionHelper _distractionHelper;
 
     public Action<PlayerController> OnPlayerDetected;
 
@@ -33,12 +34,14 @@ public class StudentNpcController : MonoBehaviour
 
         // Helpers
         _lookHelper = new LookHelper(_lookData);
+        _distractionHelper = new DistractionHelper(_distractionData, _distractionUI, _fieldOfViewController, _lookHelper, AnswerController);
 
         // Initialize
         _stateText.text = "Idle";
         _lookHelper.Initialize(transform.forward);
         AnswerController.BlockCheat();
         _fieldOfViewController.Hide();
+        _distractionUI.Hide();
         _chairController.OnCollisionEnterEvent += OnCollisionEnter;
     }
 
@@ -50,11 +53,19 @@ public class StudentNpcController : MonoBehaviour
     private void Update()
     {
         _lookHelper.UpdateRotation(transform);
+        AnswerController.UpdateRemainingTime(Time.deltaTime);
+    }
+
+    public void SetRemainingTimes(float thinkingTime, float validatingTime)
+    {
+        float answeringTime = AnswerController.GetAnsweringDuration();
+        AnswerController.SetRemainingTimes(thinkingTime, answeringTime, validatingTime);
     }
 
     public void StartThinking()
     {
         _stateText.text = "Thinking";
+        AnswerController.StartThinking();
     }
 
     public void StartAnswering()
@@ -66,36 +77,34 @@ public class StudentNpcController : MonoBehaviour
     public void StartValidating()
     {
         _stateText.text = "Validating";
+        AnswerController.StartValidating();
     }
 
-    private async UniTask OnDistracted(Vector3 hitDirection)
+    public async UniTask WaitWhileNotDistracted(float timer, CancellationToken cancellationToken)
     {
-        if (IsDistracted) return;
+        while (timer > 0 && !cancellationToken.IsCancellationRequested)
+        {
+            if (!IsDistracted)
+            {
+                timer -= Time.deltaTime;
+            }
+            await UniTask.Yield(cancellationToken);
+        }
+    }
 
-        string initialState = _stateText.text;
-
-        IsDistracted = true;
-        _stateText.text = "Distracted";
-        AnswerController.UnblockCheat();
-
-        await UniTask.WaitForSeconds(_distractionRotationDelay);
-
-        Vector2 lookDirection = new Vector2(hitDirection.x, hitDirection.z).normalized;
-        _lookHelper.SetLookInput(lookDirection);
-        _fieldOfViewController.Show();
-
-        await UniTask.WaitForSeconds(_distractionDuration - _distractionRotationDelay);
-
-        IsDistracted = false;
-        AnswerController.BlockCheat();
-        _fieldOfViewController.Hide();
-        _lookHelper.RestoreInitialLookDirection();
-        _stateText.text = initialState;
+    public async UniTask UpdateAnsweringTask(CancellationToken cancellationToken)
+    {
+        bool finishedAnswering = false;
+        while (!finishedAnswering && !IsDistracted)
+        {
+            AnswerController.UpdateAnswering(out finishedAnswering);
+            await UniTask.Yield(cancellationToken);
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.CompareTag(_distractionTag))
+        if (collision.collider.CompareTag(_distractionData.DistractionTag))
         {
             Vector3 hitDirection = Vector3.zero;
             foreach (var contact in collision.contacts)
@@ -103,7 +112,7 @@ public class StudentNpcController : MonoBehaviour
                 hitDirection = (contact.point - transform.position).normalized;
             }
 
-            OnDistracted(hitDirection).Forget();
+            _distractionHelper.OnDistracted(hitDirection).Forget();
         }
     }
 

@@ -99,6 +99,9 @@ public class PlayerInputHandler : MonoBehaviour
     private static readonly string CANCEL_ACTION = EAction.Cancel.ToString();
     private static readonly string PAUSE_ACTION = EAction.Pause.ToString();
 
+    [SerializeField] private bool _invertMovement;
+    [SerializeField] private bool _invertAim;
+
     private HoldAction _actionHoldState;
     private HoldAction _peekHoldState;
     private HoldAction _interactHoldState;
@@ -191,6 +194,7 @@ public class PlayerInputHandler : MonoBehaviour
         if (context.performed)
         {
             Vector2 input = context.ReadValue<Vector2>();
+            if (_invertMovement) input *= -1;
             RequestDirectionalAction(EDirectionalAction.Move, input);
         }
         else if (context.canceled)
@@ -217,6 +221,7 @@ public class PlayerInputHandler : MonoBehaviour
         if (context.performed)
         {
             Vector2 input = context.ReadValue<Vector2>();
+            if (_invertAim) input *= -1;
             RequestDirectionalAction(EDirectionalAction.Aim, input);
         }
         else if (context.canceled)

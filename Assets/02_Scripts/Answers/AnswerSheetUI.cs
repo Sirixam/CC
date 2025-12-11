@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,7 +11,10 @@ public class AnswerSheetUI : MonoBehaviour
 
     private void Awake()
     {
-        _progress.Hide();
+        if (_progress != null)
+        {
+            _progress.Hide();
+        }
     }
 
     public void Show()
@@ -35,20 +37,51 @@ public class AnswerSheetUI : MonoBehaviour
         }
     }
 
-    public void ShowProgress(float percent = 0)
+    public void ShowProgress(string answerID, float percent = 0)
     {
-        _progress.SetPercent(percent);
-        _progress.Show();
+        if (_progress != null)
+        {
+            _progress.SetPercent(percent);
+            _progress.Show();
+        }
+        else
+        {
+            AnswerUI answerUI = _answers.Find(x => x.ID == answerID);
+            answerUI.SetProgress(percent);
+        }
     }
 
-    public void SetProgress(float percent)
+    public void SetProgress(string answerID, float percent)
     {
-        _progress.SetPercent(percent);
+        if (_progress != null)
+        {
+            _progress.SetPercent(percent);
+        }
+        else
+        {
+            AnswerUI answerUI = _answers.Find(x => x.ID == answerID);
+            answerUI.SetProgress(percent);
+        }
     }
 
-    public void HideProgress()
+    public void HideProgress(string answerID = null)
     {
-        _progress.Hide();
+        if (_progress != null)
+        {
+            _progress.Hide();
+        }
+        else if (answerID != null)
+        {
+            AnswerUI answerUI = _answers.Find(x => x.ID == answerID);
+            answerUI.SetProgress(0);
+        }
+        else
+        {
+            foreach (var answerUI in _answers)
+            {
+                answerUI.SetProgress(0);
+            }
+        }
     }
 
     public void SetAnswerState(string answerID, bool isFilled)

@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Threading;
-using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 public class Answer
@@ -14,6 +12,8 @@ public class Answer
     public bool IsAnswerFull => Progress >= 1;
     public Sprite Icon => _definition.Icon;
     public Color Color => _definition.Color;
+
+    public float AnswerDuration => 1 / _progressPerSecond;
 
     public Answer(AnswerDefinition definition)
     {
@@ -52,6 +52,16 @@ public class AnswerSheet
             _id2Answer.Add(answersDefinitions[i].ID, answer);
             Answers[i] = answer;
         }
+    }
+
+    public float GetAnsweringDuration(string answerID)
+    {
+        if (_id2Answer.TryGetValue(answerID, out Answer answer))
+        {
+            return answer.AnswerDuration;
+        }
+        Debug.LogError("GetFinishDuration.AnswerID was not found: " + answerID);
+        return 0;
     }
 
     public float UpdateProgress(string answerID, out bool finishedAnswering)
@@ -121,6 +131,10 @@ public class AnswerPeek
     public AnswerSheet AnswerSheet;
     public string AnswerID;
     public float RemainingTime;
+    public float ValidationMaxTime;
+    public float ShowRemainingTime;
+
+    public float ValidationPercent => RemainingTime / ValidationMaxTime;
 }
 
 public class AnswersManager : MonoBehaviour
@@ -222,7 +236,9 @@ public class AnswersManager : MonoBehaviour
         AnswerPeek peek = _activePeeks.Find(x => x.AnswerSheet == answerController.AnswerSheet && x.AnswerID == answerID);
         if (peek != null)
         {
-            peek.RemainingTime = _globalDefinition.PeekDuration;
+            peek.ValidationMaxTime = answerController.ValidatingRemainingTime;
+            peek.RemainingTime = answerController.TotalRemainingTime;
+            peek.ShowRemainingTime = _globalDefinition.PeekMaxShowDuration;
             return;
         }
 
@@ -234,7 +250,9 @@ public class AnswersManager : MonoBehaviour
             ActorID = answerController.ActorID,
             AnswerSheet = answerController.AnswerSheet,
             AnswerID = answerID,
-            RemainingTime = _globalDefinition.PeekDuration
+            RemainingTime = answerController.TotalRemainingTime,
+            ValidationMaxTime = answerController.ValidatingRemainingTime,
+            ShowRemainingTime = _globalDefinition.PeekMaxShowDuration
         };
         _activePeeks.Add(peek);
 
