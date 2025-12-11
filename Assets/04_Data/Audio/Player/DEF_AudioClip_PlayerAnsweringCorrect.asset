@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: DEF_AudioClip_PlayerAnsweringCorrect
   m_EditorClassIdentifier: 
   _clips:
-  - {fileID: 8300000, guid: 14c588c3e17b02541890a86206eb1695, type: 3}
+  - {fileID: 8300000, guid: 261a677cc5b20524eaa47c8eed42117f, type: 3}
   _volume: 1
   _pitch: 1
   _loop: 0
