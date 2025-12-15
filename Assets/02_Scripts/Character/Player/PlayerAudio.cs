@@ -9,6 +9,7 @@ public class PlayerAudio : MonoBehaviour
     [SerializeField] private AudioDefinition _sittingAudio;
     [SerializeField] private AudioDefinition _collectingAudio;
     [SerializeField] private AudioDefinition _cheatingAudio;
+    [SerializeField] private AudioDefinition _throwingHitAudio;
 
     private AudioSource _answeringAudioSource;
     private AudioSource _answeringCorrectAudioSource;
@@ -17,6 +18,7 @@ public class PlayerAudio : MonoBehaviour
     private AudioSource _sittingAudioSource;
     private AudioSource _collectingAudioSource;
     private AudioSource _cheatingAudioSource;
+    private AudioSource _throwingHitAudioSource;
 
     //answering
     public void StartAnswering()
@@ -70,9 +72,9 @@ public class PlayerAudio : MonoBehaviour
         _cheatingAudioSource = _cheatingAudio.Play();
     }
 
-
-
-
-
-
+    //hit
+    public void StartThrowHit()
+    {
+        _throwingHitAudioSource = _throwingHitAudio.Play();
+    }
 }

@@ -4,6 +4,7 @@ public class PaperBallController : MonoBehaviour
 {
     [Tooltip("Use 0 if there's no answer in this paper ball")]
     [SerializeField] private AnswerDefinition _defaultAnswerDefinition;
+    [SerializeField] private ItemAudio _audio;
 
     private string _answerID;
 
@@ -51,5 +52,12 @@ public class PaperBallController : MonoBehaviour
     {
         if (AnswerID != answerID) return;
         Destroy(gameObject);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Environment") || other.CompareTag("NPC"))
+            _audio.StartThrowHit();
+
     }
 }
