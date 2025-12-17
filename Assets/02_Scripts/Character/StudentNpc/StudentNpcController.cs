@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class StudentNpcController : MonoBehaviour
 {
+    [SerializeField] private StudentAudio _audio;
     [SerializeField] private FieldOfViewController _fieldOfViewController;
     [SerializeField] private TMP_Text _stateText;
     [SerializeField] private DistractionUI _distractionUI;
@@ -34,7 +35,7 @@ public class StudentNpcController : MonoBehaviour
 
         // Helpers
         _lookHelper = new LookHelper(_lookData);
-        _distractionHelper = new DistractionHelper(_distractionData, _distractionUI, _fieldOfViewController, _lookHelper, AnswerController);
+        _distractionHelper = new DistractionHelper(_distractionData, _distractionUI, _fieldOfViewController, _lookHelper, AnswerController, _audio);
 
         // Initialize
         _stateText.text = "Idle";

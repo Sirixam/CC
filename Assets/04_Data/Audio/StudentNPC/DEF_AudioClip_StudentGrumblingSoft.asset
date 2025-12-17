@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d3719bfb8ba1ff4993b5e2c1f57f5fa, type: 3}
+  m_Name: DEF_AudioClip_StudentGrumblingSoft
+  m_EditorClassIdentifier: 
+  _clips:
+  - {fileID: 8300000, guid: f978c44778d91ed47b7f1e5141229021, type: 3}
+  - {fileID: 8300000, guid: ec04d64a66b31c34a8290bbd13a8c6c3, type: 3}
+  _volume: 1
+  _pitch: 1
+  _loop: 0
