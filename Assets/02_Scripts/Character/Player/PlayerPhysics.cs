@@ -14,6 +14,7 @@ public class PlayerPhysics
     [SerializeField] private float _frontalCollisionAngle = 30f;
 
     // Movement
+    private Vector3 _inputDirection;
     private Vector3 _moveDirection;
     private Transform _targetPoint;
     // Dash
@@ -34,15 +35,19 @@ public class PlayerPhysics
         _rigidbody.constraints = RigidbodyConstraints.FreezeRotation; // Prevent tipping over
     }
 
-    public void SetMoveDirection(Vector3 value)
+    public void SetInputDirection(Vector3 value, bool updateMoveDirection)
     {
-        _moveDirection = value;
+        _inputDirection = value;
+        if (updateMoveDirection)
+        {
+            _moveDirection = value;
+        }
     }
 
-    public void StartDashing(Vector3 direction)
+    public void StartDashing(Vector3 forward)
     {
         IsDashing = true;
-        _dashDirection = direction;
+        _dashDirection = _inputDirection != Vector3.zero ? _inputDirection : forward;
         _dashTimer = _dashDuration;
     }
 

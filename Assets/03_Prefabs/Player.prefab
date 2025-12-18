@@ -634,7 +634,7 @@ MonoBehaviour:
     HardCollisionTags:
     - Environment
   _lookData:
-    LookSpeed: 3060
+    LookSpeed: 720
   _answerPrefab: {fileID: 7322142745343497653, guid: 1a918e96e086428419e3a9e7e1c16e9d, type: 3}
   _dropByHoldingInteract: 0
   _toggleToPeek: 1

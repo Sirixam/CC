@@ -332,11 +332,12 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     {
         if (actionType == EDirectionalAction.Move)
         {
-            _physics.SetMoveDirection(new Vector3(input.x, 0, input.y));
+            _physics.SetInputDirection(new Vector3(input.x, 0, input.y), updateMoveDirection: true);
             _lookHelper.SetLookInput(input);
         }
         else if (actionType == EDirectionalAction.Aim)
         {
+            _physics.SetInputDirection(new Vector3(input.x, 0, input.y), updateMoveDirection: false);
             _lookHelper.SetLookInput(input);
         }
     }
@@ -455,7 +456,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             if (finishedAnswering)
             {
                 _audio.OnFinishedCorrectAnswer();
-                
+
                 if (_cheatHelper.TryGetRememberedAnswer(out string answerID))
                 {
                     _cheatHelper.StopRemembering();
