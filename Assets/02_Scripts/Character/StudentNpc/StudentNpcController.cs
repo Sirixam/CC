@@ -54,13 +54,12 @@ public class StudentNpcController : MonoBehaviour
     private void Update()
     {
         _lookHelper.UpdateRotation(transform);
-        AnswerController.UpdateRemainingTime(Time.deltaTime);
     }
 
-    public void SetRemainingTimes(float thinkingTime, float validatingTime)
+    public void SetDurations(float thinkingDuration, float validatingDuration)
     {
-        float answeringTime = AnswerController.GetAnsweringDuration();
-        AnswerController.SetRemainingTimes(thinkingTime, answeringTime, validatingTime);
+        float answeringDuration = AnswerController.GetAnsweringDuration();
+        AnswerController.SetDurations(thinkingDuration, answeringDuration, validatingDuration);
     }
 
     public void StartThinking()
@@ -81,13 +80,14 @@ public class StudentNpcController : MonoBehaviour
         AnswerController.StartValidating();
     }
 
-    public async UniTask WaitWhileNotDistracted(float timer, CancellationToken cancellationToken)
+    public async UniTask UpdateRemainingTimeWhileNotDistracted(CancellationToken cancellationToken)
     {
-        while (timer > 0 && !cancellationToken.IsCancellationRequested)
+        bool finished = false;
+        while (!finished && !cancellationToken.IsCancellationRequested)
         {
             if (!IsDistracted)
             {
-                timer -= Time.deltaTime;
+                AnswerController.UpdateRemainingTime(Time.deltaTime, out finished);
             }
             await UniTask.Yield(cancellationToken);
         }
@@ -95,10 +95,13 @@ public class StudentNpcController : MonoBehaviour
 
     public async UniTask UpdateAnsweringTask(CancellationToken cancellationToken)
     {
-        bool finishedAnswering = false;
-        while (!finishedAnswering && !IsDistracted)
+        bool finished = false;
+        while (!finished && !cancellationToken.IsCancellationRequested)
         {
-            AnswerController.UpdateAnswering(out finishedAnswering);
+            if (!IsDistracted)
+            {
+                AnswerController.UpdateAnswering(out finished);
+            }
             await UniTask.Yield(cancellationToken);
         }
     }

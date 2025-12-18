@@ -129,12 +129,10 @@ public class AnswerPeek
 {
     public string ActorID;
     public AnswerSheet AnswerSheet;
+    public AnswerController AnswerController;
     public string AnswerID;
     public float RemainingTime;
-    public float ValidationMaxTime;
     public float ShowRemainingTime;
-
-    public float ValidationPercent => RemainingTime / ValidationMaxTime;
 }
 
 public class AnswersManager : MonoBehaviour
@@ -236,7 +234,7 @@ public class AnswersManager : MonoBehaviour
         AnswerPeek peek = _activePeeks.Find(x => x.AnswerSheet == answerController.AnswerSheet && x.AnswerID == answerID);
         if (peek != null)
         {
-            peek.ValidationMaxTime = answerController.ValidatingRemainingTime;
+            peek.AnswerController = answerController;
             peek.RemainingTime = answerController.TotalRemainingTime;
             peek.ShowRemainingTime = _globalDefinition.PeekMaxShowDuration;
             return;
@@ -248,10 +246,10 @@ public class AnswersManager : MonoBehaviour
         peek = new AnswerPeek()
         {
             ActorID = answerController.ActorID,
+            AnswerController = answerController,
             AnswerSheet = answerController.AnswerSheet,
             AnswerID = answerID,
             RemainingTime = answerController.TotalRemainingTime,
-            ValidationMaxTime = answerController.ValidatingRemainingTime,
             ShowRemainingTime = _globalDefinition.PeekMaxShowDuration
         };
         _activePeeks.Add(peek);

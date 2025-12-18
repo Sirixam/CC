@@ -38,17 +38,17 @@ public class StudentManager : MonoBehaviour
             bool startedThinking = student.AnswerController.TryRestartAnswering(answerDef.ID, isThinking: true);
             if (startedThinking)
             {
-                student.SetRemainingTimes(thinkingTime: UnityEngine.Random.Range(_globalDefinition.PreAnsweringDelay.x, _globalDefinition.PreAnsweringDelay.y),
-                                        validatingTime: UnityEngine.Random.Range(_globalDefinition.PostAnsweringDelay.x, _globalDefinition.PostAnsweringDelay.y));
+                student.SetDurations(thinkingDuration: UnityEngine.Random.Range(_globalDefinition.PreAnsweringDelay.x, _globalDefinition.PreAnsweringDelay.y),
+                                        validatingDuration: UnityEngine.Random.Range(_globalDefinition.PostAnsweringDelay.x, _globalDefinition.PostAnsweringDelay.y));
 
                 student.StartThinking();
-                await student.WaitWhileNotDistracted(student.AnswerController.ThinkingRemainingTime, cancellationToken: cancellationToken);
+                await student.UpdateRemainingTimeWhileNotDistracted(cancellationToken: cancellationToken);
 
                 student.StartAnswering();
                 await student.UpdateAnsweringTask(cancellationToken);
 
                 student.StartValidating();
-                await student.WaitWhileNotDistracted(student.AnswerController.ValidatingRemainingTime, cancellationToken: cancellationToken);
+                await student.UpdateRemainingTimeWhileNotDistracted(cancellationToken: cancellationToken);
             }
 
             await UniTask.Yield(cancellationToken); // Prevent blocking if failed to start answering.

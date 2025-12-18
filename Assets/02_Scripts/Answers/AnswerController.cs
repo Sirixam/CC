@@ -18,6 +18,12 @@ public class AnswerController : MonoBehaviour
     private int _cheatBlockCount;
     private EState _state;
     private bool HasAnswerSheet => AnswerSheet != null;
+    private float _thinkingDuration;
+    private float _thinkingRemainingTime;
+    private float _answeringDuration;
+    private float _answeringRemainingTime;
+    private float _validatingDuration;
+    private float _validatingRemainingTime;
 
     public AnswerSheet AnswerSheet { get; private set; }
     public string ActiveAnswerID { get; private set; }
@@ -28,10 +34,10 @@ public class AnswerController : MonoBehaviour
     public bool IsThinking => _state == EState.Thinking;
     public bool IsAnswering => _state == EState.Answering;
     public bool IsValidating => _state == EState.Validating;
-    public float ThinkingRemainingTime { get; private set; }
-    public float AnsweringRemainingTime { get; private set; }
-    public float ValidatingRemainingTime { get; private set; }
-    public float TotalRemainingTime => ThinkingRemainingTime + AnsweringRemainingTime + ValidatingRemainingTime;
+    public float TotalRemainingTime => _thinkingRemainingTime + _answeringRemainingTime + _validatingRemainingTime;
+    public float ThinkingPercent => _thinkingRemainingTime / _thinkingDuration;
+    public float AnsweringPercent => _answeringRemainingTime / _answeringDuration;
+    public float ValidatingPercent => _validatingRemainingTime / _validatingDuration;
     public Transform LookAtPoint => _lookAtPoint;
 
     public event Action<AnswerController, string> OnFinishPeekingEvent;
@@ -57,27 +63,35 @@ public class AnswerController : MonoBehaviour
         }
     }
 
-    public void UpdateRemainingTime(float deltaTime)
+    public void UpdateRemainingTime(float deltaTime, out bool finished)
     {
         if (_state == EState.Thinking)
         {
-            ThinkingRemainingTime = Mathf.Max(0, ThinkingRemainingTime - deltaTime);
+            _thinkingRemainingTime = Mathf.Max(0, _thinkingRemainingTime - deltaTime);
+            finished = _thinkingRemainingTime == 0;
         }
         else if (_state == EState.Answering)
         {
-            AnsweringRemainingTime = Mathf.Max(0, AnsweringRemainingTime - deltaTime);
+            _answeringRemainingTime = Mathf.Max(0, _answeringRemainingTime - deltaTime);
+            finished = _answeringRemainingTime == 0;
         }
         else if (_state == EState.Validating)
         {
-            ValidatingRemainingTime = Mathf.Max(0, ValidatingRemainingTime - deltaTime);
+            _validatingRemainingTime = Mathf.Max(0, _validatingRemainingTime - deltaTime);
+            finished = _validatingRemainingTime == 0;
+        }
+        else
+        {
+            finished = true;
+            Debug.LogError("State is not being handled: " + _state);
         }
     }
 
-    public void SetRemainingTimes(float thinkingTime, float answeringTime, float validatingTime)
+    public void SetDurations(float thinkingDuration, float answeringDuration, float validatingDuration)
     {
-        ThinkingRemainingTime = thinkingTime;
-        AnsweringRemainingTime = answeringTime;
-        ValidatingRemainingTime = validatingTime;
+        _thinkingDuration = _thinkingRemainingTime = thinkingDuration;
+        _answeringDuration = _answeringRemainingTime = answeringDuration;
+        _validatingDuration = _validatingRemainingTime = validatingDuration;
     }
 
     public void ShowAnswerSheet()
