@@ -187,7 +187,7 @@ public class AnswersManager : MonoBehaviour
             AnswerPeekUI answerPeekUI = Array.Find(_answerPeekUIs, x => x.AnswerPeek == peek);
             if (peek.RemainingTime > 0)
             {
-                answerPeekUI.UpdateProgress();
+                answerPeekUI.UpdateProgress(setup: false);
             }
             else
             {

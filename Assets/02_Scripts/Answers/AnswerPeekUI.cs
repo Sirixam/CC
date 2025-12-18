@@ -11,16 +11,16 @@ public class AnswerPeekUI : MonoBehaviour
     [SerializeField] private Image _progressFill;
     [Header("Configurations")]
     [SerializeField] private Gradient _progressGradient;
-    [SerializeField] private TweenSettings<Vector2> _notReadyTweenSettings;
+    [SerializeField] private Vector2 _notReadyPosition;
     [SerializeField] private TweenSettings<Vector2> _readyTweenSettings;
 
     private Tween _readyTween;
+    private bool _isFull;
 
     public AnswerPeek AnswerPeek { get; private set; }
 
     private void Awake()
     {
-        _notReadyTweenSettings.startFromCurrent = true;
         _readyTweenSettings.startFromCurrent = true;
     }
 
@@ -37,15 +37,14 @@ public class AnswerPeekUI : MonoBehaviour
     public void Setup(AnswerPeek answerPeek, Sprite playerIcon, Sprite answerTypeIcon)
     {
         AnswerPeek = answerPeek;
-        _playerIcon.sprite = playerIcon;
+            _playerIcon.sprite = playerIcon;
         _answerTypeIcon.sprite = answerTypeIcon;
-        UpdateProgress();
+        UpdateProgress(setup: true);
     }
 
-    public void UpdateProgress()
+    public void UpdateProgress(bool setup)
     {
         bool isFull = AnswerPeek.AnswerSheet.IsAnswerFull(AnswerPeek.AnswerID, out float progress);
-        _readyObject.anchoredPosition = isFull ? _readyTweenSettings.endValue : _notReadyTweenSettings.endValue;
         if (!isFull)
         {
             SetProgress(progress);
@@ -54,17 +53,23 @@ public class AnswerPeekUI : MonoBehaviour
         {
             SetProgress(AnswerPeek.ValidationPercent);
         }
+        if (isFull != _isFull || setup)
+        {
+            if (setup)
+            {
+                _readyObject.anchoredPosition = isFull ? _readyTweenSettings.endValue : _notReadyPosition;
+            }
+            else
+            {
+                ShowReady();
+            }
+        }
+        _isFull = isFull;
     }
 
     public void Clear()
     {
         AnswerPeek = null;
-    }
-
-    public void ShowNotReady()
-    {
-        _readyTween.Stop();
-        _readyTween = Tween.UIAnchoredPosition(_readyObject, _notReadyTweenSettings);
     }
 
     public void ShowReady()
