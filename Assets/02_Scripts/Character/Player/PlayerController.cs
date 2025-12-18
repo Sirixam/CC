@@ -230,7 +230,6 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _cheatHelper.StopPeeking();
         _audio.OnStopPeeking();
         StopStaticInteraction();
-
     }
 
     private void StartAnswering(string answerID)
@@ -295,7 +294,11 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _lookHelper.ClearLookAt();
         _chairHelper.StartStanding();
         _interactionHelper.EnableInteraction();
-        _answerController = null;
+        if (_answerController != null)
+        {
+            _answerController.HideAnswerSheet();
+            _answerController = null;
+        }
         StopStaticInteraction();
     }
 
