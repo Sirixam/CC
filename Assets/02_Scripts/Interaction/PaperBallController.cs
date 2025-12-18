@@ -57,7 +57,8 @@ public class PaperBallController : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Environment") || other.CompareTag("NPC"))
-            _audio.StartThrowHit();
-
+        {
+            _audio.OnCollide();
+        }
     }
 }

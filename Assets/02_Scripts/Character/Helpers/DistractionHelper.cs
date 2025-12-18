@@ -55,22 +55,7 @@ public class DistractionHelper
 
         Data.Level levelData = GetLevelData(out int level);
 
-        Debug.Log("level : " + level);
-        //audio depending on level
-
-        if (level == 1)
-        {
-            _audio.StartGrumblingSoft();
-        }
-        else if (level == 2)
-        {
-            _audio.StartGrumblingMild();
-        }
-        else if (level == 3)
-        {
-            _audio.StartGrumblingStrong();
-        }
-
+        _audio.OnDistracted(level);
         _distractionUI.Show(level);
 
         await UniTask.WaitForSeconds(levelData.DistractionRotationDelay);

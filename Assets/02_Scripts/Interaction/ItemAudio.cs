@@ -7,7 +7,7 @@ public class ItemAudio : MonoBehaviour
     private AudioSource _throwingHitAudioSource;
 
     //hit any surface
-    public void StartThrowHit()
+    public void OnCollide()
     {
         _throwingHitAudioSource = _throwingHitAudio.Play();
     }

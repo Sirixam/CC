@@ -140,7 +140,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         {
             _view.OnPickUp(interaction.transform);
             _interactionHelper.StartInteraction(interaction);
-            _audio.StartCollecting();
+            _audio.OnPickUp();
         }
         else if (interaction.Type == EInteraction.Static)
         {
@@ -221,14 +221,14 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _lookHelper.ClearLookAt();
         _inputHandler.SetScope(EInputScope.PlayerPeeking);
         _fieldOfViewController.Show();
-        _audio.StartPeeking();
+        _audio.OnStartPeeking();
     }
 
     private void StopPeeking()
     {
         _lookHelper.ClearLookAt();
         _cheatHelper.StopPeeking();
-        _audio.TryStopPeeking();
+        _audio.OnStopPeeking();
         StopStaticInteraction();
 
     }
@@ -237,7 +237,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     {
         if (_answerController.TryStartAnswering(answerID))
         {
-            _audio.StartAnswering();
+            _audio.OnStartAnswering();
         }
     }
 
@@ -286,7 +286,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _chairHelper.StartSitting(chairController);
         _interactionHelper.DisableInteraction();
         _answerController = chairController.AnswerController;
-        _audio.StartSitting();
+        _audio.OnStartSitting();
 
     }
 
@@ -454,7 +454,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             _answerController.UpdateAnswering(out bool finishedAnswering);
             if (finishedAnswering)
             {
-                _audio.StartAnswerCorrect();
+                _audio.OnFinishedCorrectAnswer();
                 
                 if (_cheatHelper.TryGetRememberedAnswer(out string answerID))
                 {
@@ -483,7 +483,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             if (finishedCheating)
             {
                 StopCheating();
-                _audio.StartCheatingLaugh();
+                _audio.OnStartCheating();
             }
         }
         if (_cheatHelper.IsRemembering && !IsAnswering)

@@ -34,7 +34,7 @@ public class DashHelper
             _view.OnStartDash();
             _physics.StartDashing(_view.transform.forward);
             _dashCooldownTimer = _data.DashCooldown;
-            _audio.StartDash();
+            _audio.OnStartDash();
         }
     }
 

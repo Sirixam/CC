@@ -12,16 +12,10 @@ public class PlayerAudio : MonoBehaviour
     [SerializeField] private AudioDefinition _throwingHitAudio;
 
     private AudioSource _answeringAudioSource;
-    private AudioSource _answeringCorrectAudioSource;
-    private AudioSource _dashingAudioSource;
     private AudioSource _peekingAudioSource;
-    private AudioSource _sittingAudioSource;
-    private AudioSource _collectingAudioSource;
-    private AudioSource _cheatingAudioSource;
-    private AudioSource _throwingHitAudioSource;
 
     //answering
-    public void StartAnswering()
+    public void OnStartAnswering()
     {
         _answeringAudioSource = _answeringAudio.Play();
     }
@@ -32,49 +26,49 @@ public class PlayerAudio : MonoBehaviour
     }
 
     //correctAnswer
-    public void StartAnswerCorrect()
+    public void OnFinishedCorrectAnswer()
     {
-        _answeringCorrectAudioSource = _answeringCorrectAudio.Play();
+        _answeringCorrectAudio.Play();
     }
 
     //dash
-    public void StartDash()
+    public void OnStartDash()
     {
-        _dashingAudioSource = _dashingAudio.Play();
+        _dashingAudio.Play();
     }
 
     //peek
-    public void StartPeeking()
+    public void OnStartPeeking()
     {
         _peekingAudioSource = _peekingAudio.Play();
     }
 
-    public void TryStopPeeking()
+    public void OnStopPeeking()
     {
         _peekingAudioSource?.Stop();
     }
 
     //sit
-    public void StartSitting()
+    public void OnStartSitting()
     {
-        _sittingAudioSource = _sittingAudio.Play();
+        _sittingAudio.Play();
     }
 
     //collect
-    public void StartCollecting()
+    public void OnPickUp()
     {
-        _collectingAudioSource = _collectingAudio.Play();
+        _collectingAudio.Play();
     }
 
     //cheat
-    public void StartCheatingLaugh()
+    public void OnStartCheating()
     {
-        _cheatingAudioSource = _cheatingAudio.Play();
+        _cheatingAudio.Play();
     }
 
     //hit
     public void StartThrowHit()
     {
-        _throwingHitAudioSource = _throwingHitAudio.Play();
+        _throwingHitAudio.Play();
     }
 }

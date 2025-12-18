@@ -855,9 +855,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4d53c0e54db8dc479de0e54b4f03aaf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _grumblingSoftAudio: {fileID: 11400000, guid: abde8afe069e4ec4492223ae149e3dd9, type: 2}
-  _grumblingMildAudio: {fileID: 11400000, guid: a290f2ff313dd2f42bd044c5395899e8, type: 2}
-  _grumblingStrongAudio: {fileID: 11400000, guid: 72824e033a980e541a6e4d2fdf9f21a0, type: 2}
+  _grumblingAudiosByLevel:
+  - {fileID: 11400000, guid: abde8afe069e4ec4492223ae149e3dd9, type: 2}
+  - {fileID: 11400000, guid: a290f2ff313dd2f42bd044c5395899e8, type: 2}
+  - {fileID: 11400000, guid: 72824e033a980e541a6e4d2fdf9f21a0, type: 2}
 --- !u!1 &6486128600711383836
 GameObject:
   m_ObjectHideFlags: 0
