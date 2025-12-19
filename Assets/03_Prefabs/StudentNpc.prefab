@@ -113,18 +113,20 @@ MonoBehaviour:
     LookSpeed: 200
   _distractionData:
     DistractionTag: Distraction
+    DistractionReductionDelay: 0.5
+    DistractionReductionSpeed: 0.5
     Levels:
-    - MinCounter: 1
+    - MinDistraction: 1
       DistractionDuration: 2
       DistractionRotationDelay: 1
       LookSpeedMultiplier: 0
       Rotate: 0
-    - MinCounter: 2
+    - MinDistraction: 2
       DistractionDuration: 3
       DistractionRotationDelay: 1
       LookSpeedMultiplier: 1
       Rotate: 1
-    - MinCounter: 3
+    - MinDistraction: 3
       DistractionDuration: 5
       DistractionRotationDelay: 0.7
       LookSpeedMultiplier: 1.5

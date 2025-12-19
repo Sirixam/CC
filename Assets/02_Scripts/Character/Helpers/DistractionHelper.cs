@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
-//using System.Diagnostics;
+using System.Threading;
 
 public class DistractionHelper
 {
@@ -11,7 +11,7 @@ public class DistractionHelper
         [Serializable]
         public class Level
         {
-            public int MinCounter;
+            public int MinDistraction;
             public float DistractionDuration;
             public float DistractionRotationDelay;
             public float LookSpeedMultiplier;
@@ -20,6 +20,8 @@ public class DistractionHelper
 
         [Tag]
         public string DistractionTag = "Distraction";
+        public float DistractionReductionDelay;
+        public float DistractionReductionSpeed;
         public Level[] Levels;
     }
 
@@ -30,7 +32,8 @@ public class DistractionHelper
     private AnswerController _answerController;
     private readonly StudentAudio _audio;
 
-    private int _counter;
+    private int _accumulatedDistraction;
+    private CancellationTokenSource _cancellationTokenSource;
 
     public bool IsDistracted { get; private set; }
 
@@ -46,15 +49,21 @@ public class DistractionHelper
 
     public async UniTask OnDistracted(Vector3 hitDirection)
     {
-        if (IsDistracted) return;
+        if (IsDistracted) return; // TODO: Handle multiple simultaneous distractions.
+
+        _cancellationTokenSource?.Cancel();
+        _cancellationTokenSource = new CancellationTokenSource();
+
+        _accumulatedDistraction++; // TODO: Increased based on distraction and other factors.
+        Data.Level levelData = GetLevelData(out int level);
+        if (levelData == null)
+        {
+            Debug.Log("Accumulated distraction is too low to be distracted.");
+            return;
+        }
 
         IsDistracted = true;
         _answerController.UnblockCheat();
-
-        _counter++;
-
-        Data.Level levelData = GetLevelData(out int level);
-
         _audio.OnDistracted(level);
         _distractionUI.Show(level);
 
@@ -79,6 +88,37 @@ public class DistractionHelper
             _lookHelper.RemoveLookMultiplier(levelData.LookSpeedMultiplier);
             _lookHelper.RestoreInitialLookDirection();
         }
+
+        await ReduceDistractionLevelOverTime(_cancellationTokenSource.Token);
+    }
+
+    public async UniTask ReduceDistractionLevelOverTime(CancellationToken cancellationToken)
+    {
+        if (_accumulatedDistraction == 0) return;
+
+        await UniTask.WaitForSeconds(_data.DistractionReductionDelay, cancellationToken: cancellationToken);
+        float toReduce = 0f;
+        GetLevelData(out int lastLevel);
+        while (_accumulatedDistraction > 0 && !cancellationToken.IsCancellationRequested)
+        {
+            await UniTask.Yield();
+            toReduce += _data.DistractionReductionSpeed * Time.deltaTime;
+            if (toReduce < 1) continue;
+
+            int toReduceInt = Mathf.FloorToInt(toReduce);
+
+            _accumulatedDistraction = Mathf.Max(0, _accumulatedDistraction - toReduceInt);
+            toReduce -= toReduceInt;
+
+            GetLevelData(out int level);
+            if (lastLevel != level)
+            {
+                // TODO: Show some feedback of level reduction?
+                Debug.Log($"Distraction level reduced to {level}");
+            }
+
+            if (level == 0) return;
+        }
     }
 
     private Data.Level GetLevelData(out int level)
@@ -86,14 +126,15 @@ public class DistractionHelper
         level = -1;
         for (int i = 0; i < _data.Levels.Length; i++)
         {
-            if (_counter >= _data.Levels[i].MinCounter)
+            if (_accumulatedDistraction >= _data.Levels[i].MinDistraction)
             {
                 level = i + 1;
             }
         }
         if (level == -1)
         {
-            level = _data.Levels.Length;
+            level = 0;
+            return null;
         }
         return _data.Levels[level - 1];
     }
