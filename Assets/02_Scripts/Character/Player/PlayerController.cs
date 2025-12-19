@@ -375,7 +375,6 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             {
                 _lookHelper.ClearLookAt();
                 _inputHandler.SetScope(EInputScope.PlayerAiming);
-                _view.ShowThrowPreview();
             }
         }
         else if (actionType == EAction.Peek)
@@ -421,6 +420,10 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             {
                 RestoreInputScope();
                 _throwHelper.TryTriggerThrow();
+            }
+            else if (_throwHelper.CanShowPreview())
+            {
+                _view.ShowThrowPreview();
             }
         }
         else if (actionType == EAction.Peek)

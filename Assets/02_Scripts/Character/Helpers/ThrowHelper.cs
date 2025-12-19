@@ -30,6 +30,11 @@ public class ThrowHelper
         _interactionHelper = interactionHelper;
     }
 
+    public bool CanShowPreview()
+    {
+        return _interactionHelper.TryGetPickedUpInteraction(out _);
+    }
+
     public bool TryTriggerThrow()
     {
         if (_interactionHelper.TryGetPickedUpInteraction(out InteractionController stoppedInteraction))
@@ -42,7 +47,7 @@ public class ThrowHelper
             stoppedInteraction.Rigidbody.AddForce(throwDirection * _data.Speed, ForceMode.VelocityChange);
 
             CollisionComponent collisionComponent = stoppedInteraction.GetComponentInChildren<CollisionComponent>();
-            
+
             foreach (var collider in _actor.Colliders)
             {
                 collisionComponent.IgnoreCollision(collider, ignore: true);
@@ -58,7 +63,7 @@ public class ThrowHelper
     {
         collisionComponent.OnCollisionExitEvent -= OnCollisionExit;
         collisionComponent.RestoreLayer();
- 
+
         foreach (var collider in _actor.Colliders)
         {
             collisionComponent.IgnoreCollision(collider, ignore: false);
