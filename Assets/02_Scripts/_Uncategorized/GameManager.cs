@@ -103,6 +103,7 @@ public class GameManager : MonoBehaviour
 
     private void RestartGame()
     {
+        _answerManager.CleanActivePeeks();
         _answerManager.ResetProgress();
         if (_defeatFeedback != null)
         {

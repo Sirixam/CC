@@ -131,8 +131,9 @@ public class AnswerPeek
     public AnswerSheet AnswerSheet;
     public AnswerController AnswerController;
     public string AnswerID;
-    public float RemainingTime;
     public float ShowRemainingTime;
+
+    public bool FinishedValidating => AnswerController.ValidatingPercent >= 1f;
 }
 
 public class AnswersManager : MonoBehaviour
@@ -181,9 +182,8 @@ public class AnswersManager : MonoBehaviour
         for (int i = _activePeeks.Count - 1; i >= 0; i--)
         {
             AnswerPeek peek = _activePeeks[i];
-            peek.RemainingTime -= Time.deltaTime;
             AnswerPeekUI answerPeekUI = Array.Find(_answerPeekUIs, x => x.AnswerPeek == peek);
-            if (peek.RemainingTime > 0)
+            if (!peek.FinishedValidating)
             {
                 answerPeekUI.UpdateProgress(setup: false);
             }
@@ -204,6 +204,16 @@ public class AnswersManager : MonoBehaviour
         answerController.OnFinishPeekingEvent += OnFinishPeeking;
         _actorId2AnswerSheet.Add(actorID, answerSheet);
         _answerControllers.Add(answerController);
+    }
+
+    public void CleanActivePeeks()
+    {
+        foreach (var answerPeekUI in _answerPeekUIs)
+        {
+            answerPeekUI.Clear();
+            answerPeekUI.Hide();
+        }
+        _activePeeks.Clear();
     }
 
     public void ResetProgress()
@@ -232,16 +242,10 @@ public class AnswersManager : MonoBehaviour
     private void OnFinishPeeking(AnswerController answerController, string answerID)
     {
         AnswerPeek peek = _activePeeks.Find(x => x.AnswerSheet == answerController.AnswerSheet && x.AnswerID == answerID);
-        if (peek != null)
-        {
-            peek.AnswerController = answerController;
-            peek.RemainingTime = answerController.TotalRemainingTime;
-            peek.ShowRemainingTime = _globalDefinition.PeekMaxShowDuration;
-            return;
-        }
+        if (peek != null) return; // Already showing this peek
 
         AnswerPeekUI peekUI = Array.Find(_answerPeekUIs, x => x.AnswerPeek == null);
-        if (peekUI == null) return;
+        if (peekUI == null) return; // No available peek UI, TODO: Replace one of them.
 
         peek = new AnswerPeek()
         {
@@ -249,8 +253,6 @@ public class AnswersManager : MonoBehaviour
             AnswerController = answerController,
             AnswerSheet = answerController.AnswerSheet,
             AnswerID = answerID,
-            RemainingTime = answerController.TotalRemainingTime,
-            ShowRemainingTime = _globalDefinition.PeekMaxShowDuration
         };
         _activePeeks.Add(peek);
 

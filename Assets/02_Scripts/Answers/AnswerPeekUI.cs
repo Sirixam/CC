@@ -51,7 +51,7 @@ public class AnswerPeekUI : MonoBehaviour
         }
         else
         {
-            SetProgress(AnswerPeek.AnswerController.ValidatingPercent);
+            SetProgress(1 - AnswerPeek.AnswerController.ValidatingPercent); // Go backwards
         }
         if (isFull != _isFull || setup)
         {

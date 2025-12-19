@@ -15,7 +15,6 @@ MonoBehaviour:
   StartGameWhenAllPlayersJoined: 0
   CanUseAnyPlayerChair: 1
   PersistAnswerProgress: 0
-  PeekMaxShowDuration: 5
   PlayerLives: 3
   PreAnsweringDelay: {x: 3, y: 3}
   PostAnsweringDelay: {x: 5, y: 5}

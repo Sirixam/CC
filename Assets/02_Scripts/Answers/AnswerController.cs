@@ -34,10 +34,9 @@ public class AnswerController : MonoBehaviour
     public bool IsThinking => _state == EState.Thinking;
     public bool IsAnswering => _state == EState.Answering;
     public bool IsValidating => _state == EState.Validating;
-    public float TotalRemainingTime => _thinkingRemainingTime + _answeringRemainingTime + _validatingRemainingTime;
-    public float ThinkingPercent => _thinkingRemainingTime / _thinkingDuration;
-    public float AnsweringPercent => _answeringRemainingTime / _answeringDuration;
-    public float ValidatingPercent => _validatingRemainingTime / _validatingDuration;
+    public float ThinkingPercent => 1f - _thinkingRemainingTime / _thinkingDuration;
+    public float AnsweringPercent => 1f - _answeringRemainingTime / _answeringDuration;
+    public float ValidatingPercent => 1f - _validatingRemainingTime / _validatingDuration;
     public Transform LookAtPoint => _lookAtPoint;
 
     public event Action<AnswerController, string> OnFinishPeekingEvent;
