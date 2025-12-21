@@ -628,7 +628,7 @@ MonoBehaviour:
   _cheatData:
     PeekDuration: 2
     CheatDuration: 1
-    MemoryDuration: 5
+    MemoryDuration: 99999
   _dashData:
     DashCooldown: 0.7
     HardCollisionTags:
