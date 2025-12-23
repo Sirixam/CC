@@ -114,7 +114,7 @@ MonoBehaviour:
   _distractionData:
     DistractionTag: Distraction
     DistractionReductionDelay: 1.5
-    DistractionReductionSpeed: 0.5
+    DistractionReductionSpeed: 0.2
     Levels:
     - MinDistraction: 1
       DistractionDuration: 0.5
