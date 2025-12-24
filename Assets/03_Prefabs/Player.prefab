@@ -589,7 +589,6 @@ MonoBehaviour:
     SittingAudio: {fileID: 11400000, guid: dada4c1dba3bc2644820e259b73c8f1c, type: 2}
     CollectingAudio: {fileID: 11400000, guid: ac5893d3f09f04a45be2f695aba2fba0, type: 2}
     CheatingAudio: {fileID: 11400000, guid: 763f6b57428e08f4092e9372027d251d, type: 2}
-  _answerPrefab: {fileID: 7322142745343497653, guid: 1a918e96e086428419e3a9e7e1c16e9d, type: 3}
   _dropByHoldingInteract: 0
   _toggleToPeek: 1
 --- !u!114 &1863892939415744151

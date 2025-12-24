@@ -4,7 +4,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 {
     [SerializeField] private PlayerView _view;
     [SerializeField] private PlayerInputHandler _inputHandler;
-    [SerializeField] private PlayerPhysics _physics;    
+    [SerializeField] private PlayerPhysics _physics;
     [SerializeField] private FieldOfViewController _fieldOfViewController;
 
     [Header("Data")]
@@ -17,7 +17,6 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     [SerializeField] private LookHelper.Data _lookData;
     [SerializeField] private PlayerAudioHelper.Data _audioData;
     [Header("TO BE REMOVED")]
-    [SerializeField] private PaperBallController _answerPrefab;
     [SerializeField] private bool _dropByHoldingInteract; // Once we decide on the final input scheme, this can be removed
     [SerializeField] private bool _toggleToPeek;
 
@@ -470,7 +469,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
                     _cheatHelper.StopRemembering();
 
                     // Create answer
-                    PaperBallController answerInstance = Instantiate(_answerPrefab, _view.PickUpPosition + Vector3.up, Quaternion.identity); // Slightly above to highlight briefly.
+                    PaperBallController answerInstance = ItemsManager.GetInstance().InstantiateAnswer(_view.PickUpPosition + Vector3.up, Quaternion.identity, parent: null); // Slightly above to highlight briefly.
                     answerInstance.SetAnswer(answerID);
                     _view.OnPickUp(answerInstance.transform);
                     _interactionHelper.AddInteraction(answerInstance.InteractionController);
