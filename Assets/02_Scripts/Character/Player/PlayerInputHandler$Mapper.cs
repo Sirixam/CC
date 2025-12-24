@@ -29,6 +29,7 @@ public partial class PlayerInputHandler
         private static readonly string NAVIGATE_ACTION = EDirectionalAction.Navigate.ToString();
         private static readonly string ACTION_ACTION = EAction.Action.ToString();
         private static readonly string INTERACT_ACTION = EAction.Interact.ToString();
+        private static readonly string UTILITY_ACTION = EAction.Utility.ToString();
         private static readonly string DASH_ACTION = EAction.Dash.ToString();
         private static readonly string PEEK_ACTION = EAction.Peek.ToString();
         private static readonly string CANCEL_ACTION = EAction.Cancel.ToString();
@@ -204,6 +205,10 @@ public partial class PlayerInputHandler
             actions[INTERACT_ACTION].performed += _inputHandler.OnInteract;
             actions[INTERACT_ACTION].canceled += _inputHandler.OnInteract;
 
+            actions[UTILITY_ACTION].started += _inputHandler.OnUtility;
+            actions[UTILITY_ACTION].performed += _inputHandler.OnUtility;
+            actions[UTILITY_ACTION].canceled += _inputHandler.OnUtility;
+
             actions[CANCEL_ACTION].performed += _inputHandler.OnCancel;
             actions[PAUSE_ACTION].performed += _inputHandler.OnPause;
         }
@@ -223,6 +228,10 @@ public partial class PlayerInputHandler
             actions[INTERACT_ACTION].started -= _inputHandler.OnInteract;
             actions[INTERACT_ACTION].performed -= _inputHandler.OnInteract;
             actions[INTERACT_ACTION].canceled -= _inputHandler.OnInteract;
+
+            actions[UTILITY_ACTION].started -= _inputHandler.OnUtility;
+            actions[UTILITY_ACTION].performed -= _inputHandler.OnUtility;
+            actions[UTILITY_ACTION].canceled -= _inputHandler.OnUtility;
 
             actions[CANCEL_ACTION].performed -= _inputHandler.OnCancel;
             actions[PAUSE_ACTION].performed -= _inputHandler.OnPause;

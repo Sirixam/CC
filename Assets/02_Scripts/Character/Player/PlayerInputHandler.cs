@@ -19,6 +19,7 @@ public enum EAction
     Peek,
     Cancel,
     Pause,
+    Utility,
 }
 
 /// <summary>
@@ -82,6 +83,7 @@ public partial class PlayerInputHandler : MonoBehaviour
     private HoldState _actionHoldState;
     private HoldState _peekHoldState;
     private HoldState _interactHoldState;
+    private HoldState _utilityHoldState;
 
     private Mapper _mapper;
     public PlayerInput PlayerInput { get; private set; }
@@ -123,6 +125,12 @@ public partial class PlayerInputHandler : MonoBehaviour
         if (beginHoldPeek)
         {
             RequestHoldAction(EAction.Peek, true);
+        }
+
+        _utilityHoldState.OnUpdate(out bool beginHoldUtility);
+        if (beginHoldUtility)
+        {
+            RequestHoldAction(EAction.Utility, true);
         }
     }
 
@@ -256,6 +264,31 @@ public partial class PlayerInputHandler : MonoBehaviour
             else
             {
                 RequestAction(EAction.Peek);
+            }
+        }
+    }
+
+    private void OnUtility(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            _utilityHoldState.OnPressInput(out bool canProcessInput);
+            if (!canProcessInput) return;
+
+            PreHoldActionEvent?.Invoke(EAction.Utility);
+        }
+        else if (context.canceled)
+        {
+            _utilityHoldState.OnReleaseInput(out bool wasHolding, out bool canProcessInput);
+            if (!canProcessInput) return;
+
+            if (wasHolding)
+            {
+                RequestHoldAction(EAction.Utility, false);
+            }
+            else
+            {
+                RequestAction(EAction.Utility);
             }
         }
     }

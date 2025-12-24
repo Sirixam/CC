@@ -35,6 +35,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     private LookHelper _lookHelper;
     private DashHelper _dashHelper;
     private ChairHelper _chairHelper;
+    private CraftHelper _craftHelper;
     private PlayerAudioHelper _audioHelper;
 
     // IActor
@@ -57,6 +58,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _lookHelper = new LookHelper(_lookData);
         _audioHelper = new PlayerAudioHelper(_audioData);
         _dashHelper = new DashHelper(_dashData, _view, _physics, _lookHelper, _audioHelper);
+        _craftHelper = new CraftHelper(_view, _interactionHelper);
 
         // Initialize
         _lookHelper.Initialize(transform.forward);
@@ -129,6 +131,10 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
                 RestoreInputScope();
                 _inputHandler.CancelPeekHold();
             }
+        }
+        else if (actionType == EAction.Utility)
+        {
+            // TODO: Hide inventory
         }
     }
 
@@ -390,6 +396,10 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
                 StartPeeking();
             }
         }
+        else if (actionType == EAction.Utility)
+        {
+            // TODO: Show inventory
+        }
     }
 
     private void OnHoldActionRequested(EAction actionType, bool isHolding)
@@ -434,6 +444,13 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
                 RestoreInputScope();
             }
         }
+        else if (actionType == EAction.Utility)
+        {
+            if (!isHolding)
+            {
+                // TODO: Hide inventory
+            }
+        }
     }
 
     private void TryDropItem()
@@ -463,17 +480,10 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             if (finishedAnswering)
             {
                 _audioHelper.OnFinishedCorrectAnswer();
-
                 if (_cheatHelper.TryGetRememberedAnswer(out string answerID))
                 {
                     _cheatHelper.StopRemembering();
-
-                    // Create answer
-                    PaperBallController answerInstance = ItemsManager.GetInstance().InstantiateAnswer(_view.PickUpPosition + Vector3.up, Quaternion.identity, parent: null); // Slightly above to highlight briefly.
-                    answerInstance.SetAnswer(answerID);
-                    _view.OnPickUp(answerInstance.transform);
-                    _interactionHelper.AddInteraction(answerInstance.InteractionController);
-                    _interactionHelper.StartInteraction(answerInstance.InteractionController);
+                    _craftHelper.CraftAnswer(answerID);
                 }
             }
         }
