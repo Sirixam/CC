@@ -10,21 +10,21 @@ public class DashHelper
         [Tag] public string[] HardCollisionTags;
     }
 
+    private readonly Data _data;
     private readonly PlayerView _view;
     private readonly PlayerPhysics _physics;
     private readonly LookHelper _lookHelper;
-    private readonly Data _data;
-    private readonly PlayerAudio _audio;
+    private readonly PlayerAudioHelper _audioHelper;
 
     private float _dashCooldownTimer;
 
-    public DashHelper(PlayerView view, PlayerPhysics physics, LookHelper lookHelper, Data data, PlayerAudio audio)
+    public DashHelper(Data data, PlayerView view, PlayerPhysics physics, LookHelper lookHelper, PlayerAudioHelper audioHelper)
     {
+        _data = data;
         _view = view;
         _physics = physics;
-        _lookHelper = lookHelper;
-        _data = data;
-        _audio = audio;
+        _lookHelper = lookHelper;        
+        _audioHelper = audioHelper;
     }
 
     public void RequestDash()
@@ -34,7 +34,7 @@ public class DashHelper
             _view.OnStartDash();
             _physics.StartDashing(_view.transform.forward);
             _dashCooldownTimer = _data.DashCooldown;
-            _audio.OnStartDash();
+            _audioHelper.OnStartDash();
         }
     }
 

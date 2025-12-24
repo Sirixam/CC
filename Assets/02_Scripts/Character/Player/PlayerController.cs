@@ -4,8 +4,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 {
     [SerializeField] private PlayerView _view;
     [SerializeField] private PlayerInputHandler _inputHandler;
-    [SerializeField] private PlayerPhysics _physics;
-    [SerializeField] private PlayerAudio _audio;
+    [SerializeField] private PlayerPhysics _physics;    
     [SerializeField] private FieldOfViewController _fieldOfViewController;
 
     [Header("Data")]
@@ -16,6 +15,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     [UnityEngine.Serialization.FormerlySerializedAs("_movementData")]
     [SerializeField] private DashHelper.Data _dashData;
     [SerializeField] private LookHelper.Data _lookData;
+    [SerializeField] private PlayerAudioHelper.Data _audioData;
     [Header("TO BE REMOVED")]
     [SerializeField] private PaperBallController _answerPrefab;
     [SerializeField] private bool _dropByHoldingInteract; // Once we decide on the final input scheme, this can be removed
@@ -36,6 +36,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     private LookHelper _lookHelper;
     private DashHelper _dashHelper;
     private ChairHelper _chairHelper;
+    private PlayerAudioHelper _audioHelper;
 
     // IActor
     string IActor.ID => IActor.GetPlayerID(_inputHandler.PlayerInput.playerIndex);
@@ -49,13 +50,14 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     private void Awake()
     {
         _physics.Initialize();
-        _interactionHelper = new InteractionHelper(this, _interactionData, isEnabled: true);
-        _throwHelper = new ThrowHelper(this, _throwData, _interactionHelper);
+        _interactionHelper = new InteractionHelper(_interactionData, this, isEnabled: true);
+        _throwHelper = new ThrowHelper(_throwData, this, _interactionHelper);
         _chairHelper = new ChairHelper(_inputHandler, _view, _physics);
         _stunHelper = new StunHelper(_stunData, _view);
         _cheatHelper = new PlayerCheatHelper(_cheatData, _view);
         _lookHelper = new LookHelper(_lookData);
-        _dashHelper = new DashHelper(_view, _physics, _lookHelper, _dashData, _audio);
+        _audioHelper = new PlayerAudioHelper(_audioData);
+        _dashHelper = new DashHelper(_dashData, _view, _physics, _lookHelper, _audioHelper);
 
         // Initialize
         _lookHelper.Initialize(transform.forward);
@@ -140,7 +142,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         {
             _view.OnPickUp(interaction.transform);
             _interactionHelper.StartInteraction(interaction);
-            _audio.OnPickUp();
+            _audioHelper.OnPickUp();
         }
         else if (interaction.Type == EInteraction.Static)
         {
@@ -221,14 +223,14 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _lookHelper.ClearLookAt();
         _inputHandler.SetScope(EInputScope.PlayerPeeking);
         _fieldOfViewController.Show();
-        _audio.OnStartPeeking();
+        _audioHelper.OnStartPeeking();
     }
 
     private void StopPeeking()
     {
         _lookHelper.ClearLookAt();
         _cheatHelper.StopPeeking();
-        _audio.OnStopPeeking();
+        _audioHelper.OnStopPeeking();
         StopStaticInteraction();
     }
 
@@ -236,14 +238,14 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     {
         if (_answerController.TryStartAnswering(answerID))
         {
-            _audio.OnStartAnswering();
+            _audioHelper.OnStartAnswering();
         }
     }
 
     private void HideAnswerSheet()
     {
         _answerController.HideAnswerSheet();
-        _audio.TryStopAnswering();
+        _audioHelper.TryStopAnswering();
     }
 
     private void StopCheating()
@@ -285,7 +287,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _chairHelper.StartSitting(chairController);
         _interactionHelper.DisableInteraction();
         _answerController = chairController.AnswerController;
-        _audio.OnStartSitting();
+        _audioHelper.OnStartSitting();
 
     }
 
@@ -461,7 +463,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             _answerController.UpdateAnswering(out bool finishedAnswering);
             if (finishedAnswering)
             {
-                _audio.OnFinishedCorrectAnswer();
+                _audioHelper.OnFinishedCorrectAnswer();
 
                 if (_cheatHelper.TryGetRememberedAnswer(out string answerID))
                 {
@@ -490,7 +492,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             if (finishedCheating)
             {
                 StopCheating();
-                _audio.OnStartCheating();
+                _audioHelper.OnStartCheating();
             }
         }
         if (_cheatHelper.IsRemembering && !IsAnswering)

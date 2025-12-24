@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7d3719bfb8ba1ff4993b5e2c1f57f5fa, type: 3}
-  m_Name: DEF_AudioClip_PaperballHit
+  m_Name: DEF_AudioClip_PaperBallHit
   m_EditorClassIdentifier: 
   _clips:
   - {fileID: 8300000, guid: 5c5a24e2dde33da489ad42cbf26f919d, type: 3}

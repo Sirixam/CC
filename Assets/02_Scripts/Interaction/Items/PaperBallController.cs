@@ -4,14 +4,20 @@ public class PaperBallController : MonoBehaviour
 {
     [Tooltip("Use 0 if there's no answer in this paper ball")]
     [SerializeField] private AnswerDefinition _defaultAnswerDefinition;
-    [SerializeField] private ItemAudio _audio;
+    [SerializeField] private ItemAudioHelper.Data _audioData;
 
+    private ItemAudioHelper _audioHelper;
     private string _answerID;
 
     public bool HasAnswer => !string.IsNullOrWhiteSpace(_answerID) || _defaultAnswerDefinition != null;
     public string AnswerID => !string.IsNullOrWhiteSpace(_answerID) ? _answerID : _defaultAnswerDefinition != null ? _defaultAnswerDefinition.ID : null;
 
     public InteractionController InteractionController => GetComponentInChildren<InteractionController>();
+
+    private void Awake()
+    {
+        _audioHelper = new ItemAudioHelper(_audioData);
+    }
 
     private void Start()
     {
@@ -58,7 +64,7 @@ public class PaperBallController : MonoBehaviour
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Environment") || other.CompareTag("NPC"))
         {
-            _audio.OnCollide();
+            _audioHelper.OnCollide();
         }
     }
 }

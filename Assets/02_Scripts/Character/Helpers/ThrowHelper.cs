@@ -20,13 +20,13 @@ public class ThrowHelper
     }
 
     private Data _data;
-    private InteractionHelper _interactionHelper;
     private IThrowActor _actor;
+    private InteractionHelper _interactionHelper;    
 
-    public ThrowHelper(IThrowActor actor, Data data, InteractionHelper interactionHelper)
+    public ThrowHelper(Data data, IThrowActor actor, InteractionHelper interactionHelper)
     {
-        _actor = actor;
         _data = data;
+        _actor = actor;        
         _interactionHelper = interactionHelper;
     }
 
