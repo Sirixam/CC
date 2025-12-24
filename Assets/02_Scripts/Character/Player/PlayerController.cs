@@ -399,6 +399,10 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         else if (actionType == EAction.Utility)
         {
             // TODO: Show inventory
+            if (!_interactionHelper.TryGetPickedUpInteraction(out _))
+            {
+                _craftHelper.CraftItem("Paper Ball");
+            }
         }
     }
 

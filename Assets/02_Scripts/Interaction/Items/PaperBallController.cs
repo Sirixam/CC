@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PaperBallController : MonoBehaviour
+public class PaperBallController : MonoBehaviour, IInteractionOwner
 {
     [Tooltip("Use 0 if there's no answer in this paper ball")]
     [SerializeField] private AnswerDefinition _defaultAnswerDefinition;

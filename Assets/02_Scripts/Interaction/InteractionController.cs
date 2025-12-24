@@ -10,6 +10,11 @@ public enum EInteraction
     Static,
 }
 
+public interface IInteractionOwner
+{
+    InteractionController InteractionController { get; }
+}
+
 public class InteractionController : MonoBehaviour
 {
     [Serializable]
