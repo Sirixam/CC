@@ -6885,7 +6885,7 @@ GameObject:
   - component: {fileID: 232472329}
   - component: {fileID: 232472328}
   - component: {fileID: 232472327}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Wall2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6901,7 +6901,7 @@ Transform:
   m_GameObject: {fileID: 232472325}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.47, y: -1.57, z: -11.89}
+  m_LocalPosition: {x: -1.47, y: -3.31, z: -11.89}
   m_LocalScale: {x: 21.35544, y: 7.996936, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -16444,7 +16444,7 @@ GameObject:
   - component: {fileID: 541495724}
   - component: {fileID: 541495727}
   m_Layer: 0
-  m_Name: Main Camera
+  m_Name: Orthographic Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -16492,8 +16492,8 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 0
-  orthographic size: 5
+  orthographic: 1
+  orthographic size: 7
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -16517,13 +16517,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 541495723}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.47837093, y: -0, z: -0, w: 0.8781579}
-  m_LocalPosition: {x: -1.56, y: 9.58, z: -11.73}
+  m_LocalRotation: {x: 0.5, y: 0, z: 0, w: 0.8660254}
+  m_LocalPosition: {x: -1.64, y: 11.26, z: -9.47}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 57.158, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 60, y: 0, z: 0}
 --- !u!114 &541495727
 MonoBehaviour:
   m_ObjectHideFlags: 0
