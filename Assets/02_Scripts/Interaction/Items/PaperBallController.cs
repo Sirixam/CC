@@ -1,13 +1,24 @@
 using UnityEngine;
 
-public class PaperBallController : MonoBehaviour, IInteractionOwner
+public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner
 {
+    public enum EState
+    {
+        Undefined,
+        Idle,
+        MidAir,
+        PickedUp,
+    }
+
     [Tooltip("Use 0 if there's no answer in this paper ball")]
     [SerializeField] private AnswerDefinition _defaultAnswerDefinition;
     [SerializeField] private ItemAudioHelper.Data _audioData;
+    [SerializeField] private float _timeToDestroyOnIdle = 5f;
 
     private ItemAudioHelper _audioHelper;
     private string _answerID;
+    private float _remainingTimeToDestroyOnIdle;
+    private EState _state;
 
     public bool HasAnswer => !string.IsNullOrWhiteSpace(_answerID) || _defaultAnswerDefinition != null;
     public string AnswerID => !string.IsNullOrWhiteSpace(_answerID) ? _answerID : _defaultAnswerDefinition != null ? _defaultAnswerDefinition.ID : null;
@@ -33,6 +44,18 @@ public class PaperBallController : MonoBehaviour, IInteractionOwner
         if (answersManager != null)
         {
             answersManager.OnAllPlayersFinishedAnswer -= OnAllPlayersAnsweredFullyEvent;
+        }
+    }
+
+    private void Update()
+    {
+        if (_state == EState.Idle)
+        {
+            _remainingTimeToDestroyOnIdle -= Time.deltaTime;
+            if (_remainingTimeToDestroyOnIdle <= 0f)
+            {
+                Destroy(gameObject);
+            }
         }
     }
 
@@ -65,6 +88,30 @@ public class PaperBallController : MonoBehaviour, IInteractionOwner
         if (collision.gameObject.layer == LayerMask.NameToLayer("Environment") || collision.gameObject.CompareTag("NPC"))
         {
             _audioHelper.OnCollide(collision);
+            if (_state == EState.MidAir)
+            {
+                SetIdleState();
+            }
         }
+    }
+
+    private void SetIdleState()
+    {
+        _state = EState.Idle;
+        _remainingTimeToDestroyOnIdle = _timeToDestroyOnIdle;
+    }
+
+    // IPickUpInteractionOwner
+    void IPickUpInteractionOwner.OnPickedUp()
+    {
+        _state = EState.PickedUp;
+    }
+    void IPickUpInteractionOwner.OnDropped()
+    {
+        SetIdleState();
+    }
+    void IPickUpInteractionOwner.OnThrowed()
+    {
+        _state = EState.MidAir;
     }
 }

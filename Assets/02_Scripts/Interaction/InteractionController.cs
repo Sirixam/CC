@@ -10,6 +10,13 @@ public enum EInteraction
     Static,
 }
 
+public interface IPickUpInteractionOwner : IInteractionOwner
+{
+    void OnPickedUp();
+    void OnDropped();
+    void OnThrowed();
+}
+
 public interface IInteractionOwner
 {
     InteractionController InteractionController { get; }

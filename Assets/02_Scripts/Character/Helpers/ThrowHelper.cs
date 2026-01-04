@@ -21,12 +21,12 @@ public class ThrowHelper
 
     private Data _data;
     private IThrowActor _actor;
-    private InteractionHelper _interactionHelper;    
+    private InteractionHelper _interactionHelper;
 
     public ThrowHelper(Data data, IThrowActor actor, InteractionHelper interactionHelper)
     {
         _data = data;
-        _actor = actor;        
+        _actor = actor;
         _interactionHelper = interactionHelper;
     }
 
@@ -40,6 +40,11 @@ public class ThrowHelper
         if (_interactionHelper.TryGetPickedUpInteraction(out InteractionController stoppedInteraction))
         {
             _interactionHelper.TryStopInteraction(stoppedInteraction);
+            if (stoppedInteraction.TryGetComponent(out IPickUpInteractionOwner interactionOwner))
+            {
+                interactionOwner.OnThrowed();
+            }
+
             _actor.OnThrow(stoppedInteraction.transform);
 
             Vector3 throwDirection = _actor.LookDirection;

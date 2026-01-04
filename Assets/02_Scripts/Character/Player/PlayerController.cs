@@ -148,6 +148,10 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             _view.OnPickUp(interaction.transform);
             _interactionHelper.StartInteraction(interaction);
             _audioHelper.OnPickUp();
+            if (interaction.TryGetComponent(out IPickUpInteractionOwner interactionOwner))
+            {
+                interactionOwner.OnPickedUp();
+            }
         }
         else if (interaction.Type == EInteraction.Static)
         {
@@ -478,6 +482,10 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             _interactionHelper.TryStopInteraction(stoppedInteraction);
             _view.OnDrop(stoppedInteraction.transform);
             _view.HideThrowPreview();
+            if (stoppedInteraction.TryGetComponent(out IPickUpInteractionOwner interactionOwner))
+            {
+                interactionOwner.OnDropped();
+            }
         }
     }
 
