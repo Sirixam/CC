@@ -875,7 +875,7 @@
                 {
                     "name": "",
                     "id": "49c21fbc-8c3e-4f33-963a-7a45c14aebf9",
-                    "path": "<Mouse>/delta",
+                    "path": "<Mouse>/position",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
