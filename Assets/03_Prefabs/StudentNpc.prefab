@@ -121,16 +121,19 @@ MonoBehaviour:
       DistractionRotationDelay: 0
       LookSpeedMultiplier: 0
       Rotate: 0
+      ShowFOV: 0
     - MinDistraction: 2
       DistractionDuration: 1
       DistractionRotationDelay: 0
       LookSpeedMultiplier: 0
       Rotate: 0
+      ShowFOV: 1
     - MinDistraction: 3
       DistractionDuration: 5
       DistractionRotationDelay: 1
       LookSpeedMultiplier: 1.5
       Rotate: 1
+      ShowFOV: 1
   _playerTag: Player
 --- !u!54 &165944274530947382
 Rigidbody:
@@ -423,6 +426,46 @@ MonoBehaviour:
   _meshFilter: {fileID: 368862458362584757}
   _meshRenderer: {fileID: 6967629285112109257}
   _meshCollider: {fileID: 7138881696294834915}
+  _showTweenSettings:
+    startFromCurrent: 0
+    startValue: {x: 0, y: 0, z: 0}
+    endValue: {x: 1, y: 1, z: 1}
+    settings:
+      duration: 0.5
+      ease: 0
+      customEase:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      cycles: 1
+      cycleMode: 0
+      startDelay: 0
+      endDelay: 0
+      useUnscaledTime: 0
+      _useFixedUpdate: 0
+      _updateType: 0
+  _hideTweenSettings:
+    startFromCurrent: 0
+    startValue: {x: 0, y: 0, z: 0}
+    endValue: {x: 0.25, y: 1, z: 0.25}
+    settings:
+      duration: 0.5
+      ease: 0
+      customEase:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      cycles: 1
+      cycleMode: 0
+      startDelay: 0
+      endDelay: 0
+      useUnscaledTime: 0
+      _useFixedUpdate: 0
+      _updateType: 0
   _maxDistance: 3
   _fieldOfView: 60
   _fieldOfViewWidth: 0.5

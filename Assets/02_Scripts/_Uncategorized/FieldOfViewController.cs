@@ -1,3 +1,4 @@
+using PrimeTween;
 using UnityEngine;
 
 public class FieldOfViewController : MonoBehaviour
@@ -6,12 +7,18 @@ public class FieldOfViewController : MonoBehaviour
     [SerializeField] private MeshRenderer _meshRenderer;
     [SerializeField] private MeshCollider _meshCollider;
     [Header("Configuration")]
+    [SerializeField] private TweenSettings<Vector3> _showTweenSettings;
+    [SerializeField] private TweenSettings<Vector3> _hideTweenSettings;
     [SerializeField] private float _maxDistance = 5f;
     [SerializeField] private float _fieldOfView = 90f;
     [SerializeField] private float _fieldOfViewWidth = 0.5f;
 
+    private Tween _scaleTween;
+
     private void Awake()
     {
+        _showTweenSettings.startFromCurrent = true;
+        _hideTweenSettings.startFromCurrent = true;
         UpdateMesh();
     }
 
@@ -19,9 +26,24 @@ public class FieldOfViewController : MonoBehaviour
     {
         _meshRenderer.enabled = true;
         _meshCollider.transform.localPosition = Vector3.zero;
+
+        _scaleTween.Stop();
+        _scaleTween = Tween.Scale(_meshRenderer.transform, _showTweenSettings);
+    }
+
+    public void HideInstant()
+    {
+        _meshRenderer.transform.localScale = _hideTweenSettings.endValue;
+        OnHidden();
     }
 
     public void Hide()
+    {
+        _scaleTween.Stop();
+        _scaleTween = Tween.Scale(_meshRenderer.transform, _hideTweenSettings).OnComplete(OnHidden);
+    }
+
+    private void OnHidden()
     {
         _meshRenderer.enabled = false;
         _meshCollider.transform.localPosition = new Vector3(0, -1000, 0);

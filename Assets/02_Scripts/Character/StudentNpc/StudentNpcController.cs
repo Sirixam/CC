@@ -41,7 +41,7 @@ public class StudentNpcController : MonoBehaviour
         _stateText.text = "Idle";
         _lookHelper.Initialize(transform.forward);
         AnswerController.BlockCheat();
-        _fieldOfViewController.Hide();
+        _fieldOfViewController.HideInstant();
         _distractionUI.Hide();
         _chairController.OnCollisionEnterEvent += OnCollisionEnter;
     }

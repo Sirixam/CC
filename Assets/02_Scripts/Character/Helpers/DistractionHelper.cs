@@ -16,6 +16,7 @@ public class DistractionHelper
             public float DistractionRotationDelay;
             public float LookSpeedMultiplier;
             public bool Rotate;
+            public bool ShowFOV;
         }
 
         [Tag]
@@ -75,14 +76,20 @@ public class DistractionHelper
             _lookHelper.AddLookMultiplier(levelData.LookSpeedMultiplier);
             _lookHelper.SetLookInput(lookDirection);
         }
-        _fovController.Show();
+        if (levelData.ShowFOV)
+        {
+            _fovController.Show();
+        }
 
         await UniTask.WaitForSeconds(levelData.DistractionDuration - levelData.DistractionRotationDelay);
 
         IsDistracted = false;
         _answerController.BlockCheat();
-        _fovController.Hide();
         _distractionUI.Hide();
+        if (levelData.ShowFOV)
+        {
+            _fovController.Hide();
+        }
         if (levelData.Rotate)
         {
             _lookHelper.RemoveLookMultiplier(levelData.LookSpeedMultiplier);

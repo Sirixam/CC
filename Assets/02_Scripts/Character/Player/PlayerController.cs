@@ -62,7 +62,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
         // Initialize
         _lookHelper.Initialize(transform.forward);
-        _fieldOfViewController.Hide();
+        _fieldOfViewController.HideInstant();
         TeleportToInitialChair();
     }
 
