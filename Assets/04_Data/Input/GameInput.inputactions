@@ -59,6 +59,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "Help",
+                    "type": "Button",
+                    "id": "702d1f66-6ff0-411a-9f46-70e57157d4a5",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -314,6 +323,28 @@
                     "action": "Peek",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ee9804b9-d652-4215-9276-d20313aaa6f5",
+                    "path": "<Gamepad>/select",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "Help",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9dbe2c3d-ea9f-46d8-82e6-289a29129340",
+                    "path": "<Keyboard>/alt",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Help",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
@@ -370,6 +401,15 @@
                     "name": "Pause",
                     "type": "Button",
                     "id": "d7f78368-27f1-4a7b-af84-d6ef7c81e9f8",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Help",
+                    "type": "Button",
+                    "id": "c7957350-0052-4f69-a962-d24e68a61e09",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -629,6 +669,28 @@
                     "action": "Pause",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "97200a92-5c5c-4b7e-b430-fa4bba2c9014",
+                    "path": "<Gamepad>/select",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "Help",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1eadac04-ec87-42d4-8ac3-5d4c6fa9e032",
+                    "path": "<Keyboard>/alt",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Help",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
@@ -667,6 +729,15 @@
                     "name": "Pause",
                     "type": "Button",
                     "id": "06eb52f0-e9d7-4fed-a5bd-8d2cb86c1d78",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Help",
+                    "type": "Button",
+                    "id": "029501a7-e4e8-4b2f-9d60-3bb63bfea464",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -794,6 +865,28 @@
                     "action": "Pause",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "535da713-09e7-43ab-a9d0-edf120d48afe",
+                    "path": "<Gamepad>/select",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "Help",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cc09b9c4-a2be-43b2-9196-26de3df7a606",
+                    "path": "<Keyboard>/alt",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Help",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
@@ -832,6 +925,15 @@
                     "name": "Pause",
                     "type": "Button",
                     "id": "b3467b45-3cce-4156-ba6e-fcdfd53fdab8",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Help",
+                    "type": "Button",
+                    "id": "700c2d15-ce3d-43f2-bb00-b30318c0fd73",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -946,6 +1048,28 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d929f2de-019c-48ab-b6bb-508f45a10026",
+                    "path": "<Gamepad>/select",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "Help",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0ac16c9c-e93d-4ad3-bb87-238379731cc2",
+                    "path": "<Keyboard>/alt",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Help",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

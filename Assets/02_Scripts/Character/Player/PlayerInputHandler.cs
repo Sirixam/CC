@@ -21,6 +21,7 @@ public enum EAction
     Cancel,
     Pause,
     Utility,
+    Help,
 }
 
 /// <summary>
@@ -29,7 +30,7 @@ public enum EAction
 /// </summary>
 public partial class PlayerInputHandler : MonoBehaviour
 {
-    private struct HoldState
+    private class HoldState
     {
         private const float HOLD_THRESHOLD = 0.3f; // Time in seconds to consider "hold" instead of "tap"
 
@@ -81,10 +82,11 @@ public partial class PlayerInputHandler : MonoBehaviour
     [SerializeField] private bool _invertMovement;
     [SerializeField] private bool _invertAim;
 
-    private HoldState _actionHoldState;
-    private HoldState _peekHoldState;
-    private HoldState _interactHoldState;
-    private HoldState _utilityHoldState;
+    private HoldState _actionHoldState = new();
+    private HoldState _peekHoldState = new();
+    private HoldState _interactHoldState = new();
+    private HoldState _utilityHoldState = new();
+    private HoldState _helpHoldState = new();
 
     private Mapper _mapper;
     public PlayerInput PlayerInput { get; private set; }
@@ -132,6 +134,12 @@ public partial class PlayerInputHandler : MonoBehaviour
         if (beginHoldUtility)
         {
             RequestHoldAction(EAction.Utility, true);
+        }
+
+        _helpHoldState.OnUpdate(out bool beginHoldHelp);
+        if (beginHoldHelp)
+        {
+            RequestHoldAction(EAction.Help, true);
         }
     }
 
@@ -196,52 +204,13 @@ public partial class PlayerInputHandler : MonoBehaviour
 
     private void OnAction(InputAction.CallbackContext context)
     {
-        if (context.started)
-        {
-            _actionHoldState.OnPressInput(out bool canProcessInput);
-            if (!canProcessInput) return;
-
-            PreHoldActionEvent?.Invoke(EAction.Action);
-        }
-        else if (context.canceled && !_mapper.SupressCancelOnScopeChange(EAction.Action))
-        {
-            _actionHoldState.OnReleaseInput(out bool wasHolding, out bool canProcessInput);
-            if (!canProcessInput) return;
-
-            if (wasHolding)
-            {
-                RequestHoldAction(EAction.Action, false);
-            }
-            else
-            {
-                RequestAction(EAction.Action);
-            }
-        }
+        HandleHoldAction(context, _actionHoldState, EAction.Action);
     }
 
     private void OnInteract(InputAction.CallbackContext context)
     {
-        if (context.started)
-        {
-            _interactHoldState.OnPressInput(out bool canProcessInput);
-            if (!canProcessInput) return;
+        HandleHoldAction(context, _interactHoldState, EAction.Interact);
 
-            PreHoldActionEvent?.Invoke(EAction.Interact);
-        }
-        else if (context.canceled)
-        {
-            _interactHoldState.OnReleaseInput(out bool wasHolding, out bool canProcessInput);
-            if (!canProcessInput) return;
-
-            if (wasHolding)
-            {
-                RequestHoldAction(EAction.Interact, false);
-            }
-            else
-            {
-                RequestAction(EAction.Interact);
-            }
-        }
     }
 
     private void OnDash(InputAction.CallbackContext context)
@@ -251,52 +220,12 @@ public partial class PlayerInputHandler : MonoBehaviour
 
     private void OnPeek(InputAction.CallbackContext context)
     {
-        if (context.started)
-        {
-            _peekHoldState.OnPressInput(out bool canProcessInput);
-            if (!canProcessInput) return;
-
-            PreHoldActionEvent?.Invoke(EAction.Peek);
-        }
-        else if (context.canceled && !_mapper.SupressCancelOnScopeChange(EAction.Peek))
-        {
-            _peekHoldState.OnReleaseInput(out bool wasHolding, out bool canProcessInput);
-            if (!canProcessInput) return;
-
-            if (wasHolding)
-            {
-                RequestHoldAction(EAction.Peek, false);
-            }
-            else
-            {
-                RequestAction(EAction.Peek);
-            }
-        }
+        HandleHoldAction(context, _peekHoldState, EAction.Peek);
     }
 
     private void OnUtility(InputAction.CallbackContext context)
     {
-        if (context.started)
-        {
-            _utilityHoldState.OnPressInput(out bool canProcessInput);
-            if (!canProcessInput) return;
-
-            PreHoldActionEvent?.Invoke(EAction.Utility);
-        }
-        else if (context.canceled)
-        {
-            _utilityHoldState.OnReleaseInput(out bool wasHolding, out bool canProcessInput);
-            if (!canProcessInput) return;
-
-            if (wasHolding)
-            {
-                RequestHoldAction(EAction.Utility, false);
-            }
-            else
-            {
-                RequestAction(EAction.Utility);
-            }
-        }
+        HandleHoldAction(context, _utilityHoldState, EAction.Utility);
     }
 
     private void OnCancel(InputAction.CallbackContext context)
@@ -309,12 +238,42 @@ public partial class PlayerInputHandler : MonoBehaviour
         RequestAction(EAction.Pause);
     }
 
+    private void OnHelp(InputAction.CallbackContext context)
+    {
+        HandleHoldAction(context, _helpHoldState, EAction.Help);
+    }
+
     private void RequestDirectionalAction(EDirectionalAction actionType, Vector2 input)
     {
         DirectionalActionEvent?.Invoke(actionType, input);
 #if LOG_ACTIONS
         Debug.Log($"{actionType} requested with input: {input}");
 #endif
+    }
+
+    private void HandleHoldAction(InputAction.CallbackContext context, HoldState holdState, EAction actionType)
+    {
+        if (context.started)
+        {
+            holdState.OnPressInput(out bool canProcessInput);
+            if (!canProcessInput) return;
+
+            PreHoldActionEvent?.Invoke(actionType);
+        }
+        else if (context.canceled && !_mapper.SupressCancelOnScopeChange(actionType))
+        {
+            holdState.OnReleaseInput(out bool wasHolding, out bool canProcessInput);
+            if (!canProcessInput) return;
+
+            if (wasHolding)
+            {
+                RequestHoldAction(actionType, false);
+            }
+            else
+            {
+                RequestAction(actionType);
+            }
+        }
     }
 
     private void RequestHoldAction(EAction actionType, bool isHolding)

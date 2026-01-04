@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
@@ -12,7 +13,6 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     [SerializeField] private ThrowHelper.Data _throwData;
     [SerializeField] private StunHelper.Data _stunData;
     [SerializeField] private PlayerCheatHelper.Data _cheatData;
-    [UnityEngine.Serialization.FormerlySerializedAs("_movementData")]
     [SerializeField] private DashHelper.Data _dashData;
     [SerializeField] private LookHelper.Data _lookData;
     [SerializeField] private PlayerAudioHelper.Data _audioData;
@@ -46,6 +46,8 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     // IThrowActor
     Vector3 IThrowActor.LookDirection => _view.transform.forward;
     Collider[] IThrowActor.Colliders => _physics.Colliders;
+
+    public event Action<bool> OnToggleHelp;
 
     private void Awake()
     {
@@ -135,6 +137,10 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         else if (actionType == EAction.Utility)
         {
             // TODO: Hide inventory
+        }
+        else if (actionType == EAction.Help)
+        {
+            OnToggleHelp.Invoke(false);
         }
     }
 
@@ -422,6 +428,10 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
                 _craftHelper.CraftItem("Paper Ball");
             }
         }
+        else if (actionType == EAction.Help)
+        {
+            OnToggleHelp.Invoke(true);
+        }
     }
 
     private void OnHoldActionRequested(EAction actionType, bool isHolding)
@@ -471,6 +481,13 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             if (!isHolding)
             {
                 // TODO: Hide inventory
+            }
+        }
+        else if (actionType == EAction.Help)
+        {
+            if (!isHolding)
+            {
+                OnToggleHelp.Invoke(false);
             }
         }
     }

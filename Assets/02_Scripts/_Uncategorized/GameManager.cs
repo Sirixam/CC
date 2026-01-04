@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject _victoryFeedback;
     [SerializeField] private TimeUI _timeUI;
     [SerializeField] private LivesUI _livesUI;
+    [SerializeField] private GameObject _helpUI;
     [SerializeField] private GameObject _timesUpFeedback;
     [SerializeField] private ButtonListener[] _restartButtons;
 
@@ -47,6 +48,10 @@ public class GameManager : MonoBehaviour
         {
             _livesUI.gameObject.SetActive(false);
         }
+        if (_helpUI != null)
+        {
+            _helpUI.SetActive(false);
+        }
         foreach (var button in _restartButtons)
         {
             button.OnClickEvent += RestartGame;
@@ -74,6 +79,7 @@ public class GameManager : MonoBehaviour
         PlayerController playerController = playerInput.GetComponent<PlayerController>();
         ChairController chairController = _answerManager.GetPlayerDesk(playerInput.playerIndex).transform.parent.GetComponentInChildren<ChairController>();
         playerController.SetInitialChairController(chairController);
+        playerController.OnToggleHelp += OnToggleHelp;
         _players.Add(playerController);
 
         if (_gameCancellationSource != null) return; // Game already started
@@ -169,5 +175,13 @@ public class GameManager : MonoBehaviour
     {
         _playerLives = value;
         _livesUI.SetLives(value);
+    }
+
+    private void OnToggleHelp(bool show)
+    {
+        if (_helpUI != null)
+        {
+            _helpUI.SetActive(show);
+        }
     }
 }

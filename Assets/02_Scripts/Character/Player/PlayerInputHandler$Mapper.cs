@@ -34,6 +34,7 @@ public partial class PlayerInputHandler
         private static readonly string PEEK_ACTION = EAction.Peek.ToString();
         private static readonly string CANCEL_ACTION = EAction.Cancel.ToString();
         private static readonly string PAUSE_ACTION = EAction.Pause.ToString();
+        private static readonly string HELP_ACTION = EAction.Help.ToString();
 
         private PlayerInputHandler _inputHandler;
         private EInputScope _nextScopeType; // Used when changing scope.
@@ -162,6 +163,10 @@ public partial class PlayerInputHandler
 
             actions[DASH_ACTION].performed += _inputHandler.OnDash;
             actions[PAUSE_ACTION].performed += _inputHandler.OnPause;
+
+            actions[HELP_ACTION].started += _inputHandler.OnHelp;
+            actions[HELP_ACTION].performed += _inputHandler.OnHelp;
+            actions[HELP_ACTION].canceled += _inputHandler.OnHelp;
         }
 
         private void UnsubscribePlayerStandingActions()
@@ -187,6 +192,10 @@ public partial class PlayerInputHandler
 
             actions[DASH_ACTION].performed -= _inputHandler.OnDash;
             actions[PAUSE_ACTION].performed -= _inputHandler.OnPause;
+
+            actions[HELP_ACTION].started -= _inputHandler.OnHelp;
+            actions[HELP_ACTION].performed -= _inputHandler.OnHelp;
+            actions[HELP_ACTION].canceled -= _inputHandler.OnHelp;
         }
 
         private void SubscribePlayerSittingActions()
@@ -211,6 +220,10 @@ public partial class PlayerInputHandler
 
             actions[CANCEL_ACTION].performed += _inputHandler.OnCancel;
             actions[PAUSE_ACTION].performed += _inputHandler.OnPause;
+
+            actions[HELP_ACTION].started += _inputHandler.OnHelp;
+            actions[HELP_ACTION].performed += _inputHandler.OnHelp;
+            actions[HELP_ACTION].canceled += _inputHandler.OnHelp;
         }
 
         private void UnsubscribePlayerSittingActions()
@@ -235,6 +248,10 @@ public partial class PlayerInputHandler
 
             actions[CANCEL_ACTION].performed -= _inputHandler.OnCancel;
             actions[PAUSE_ACTION].performed -= _inputHandler.OnPause;
+
+            actions[HELP_ACTION].started -= _inputHandler.OnHelp;
+            actions[HELP_ACTION].performed -= _inputHandler.OnHelp;
+            actions[HELP_ACTION].canceled -= _inputHandler.OnHelp;
         }
 
         private void SubscribePlayerAimingActions()
@@ -250,6 +267,10 @@ public partial class PlayerInputHandler
 
             actions[CANCEL_ACTION].performed += _inputHandler.OnCancel;
             actions[PAUSE_ACTION].performed += _inputHandler.OnPause;
+
+            actions[HELP_ACTION].started += _inputHandler.OnHelp;
+            actions[HELP_ACTION].performed += _inputHandler.OnHelp;
+            actions[HELP_ACTION].canceled += _inputHandler.OnHelp;
         }
 
         private void UnsubscribePlayerAimingActions()
@@ -265,6 +286,10 @@ public partial class PlayerInputHandler
 
             actions[CANCEL_ACTION].performed -= _inputHandler.OnCancel;
             actions[PAUSE_ACTION].performed -= _inputHandler.OnPause;
+
+            actions[HELP_ACTION].started -= _inputHandler.OnHelp;
+            actions[HELP_ACTION].performed -= _inputHandler.OnHelp;
+            actions[HELP_ACTION].canceled -= _inputHandler.OnHelp;
         }
 
         private void SubscribePlayerPeekingActions()
@@ -281,6 +306,10 @@ public partial class PlayerInputHandler
 
             actions[DASH_ACTION].performed += _inputHandler.OnDash;
             actions[PAUSE_ACTION].performed += _inputHandler.OnPause;
+
+            actions[HELP_ACTION].started += _inputHandler.OnHelp;
+            actions[HELP_ACTION].performed += _inputHandler.OnHelp;
+            actions[HELP_ACTION].canceled += _inputHandler.OnHelp;
         }
 
         private void UnsubscribePlayerPeekingActions()
@@ -297,6 +326,10 @@ public partial class PlayerInputHandler
 
             actions[DASH_ACTION].performed -= _inputHandler.OnDash;
             actions[PAUSE_ACTION].performed -= _inputHandler.OnPause;
+
+            actions[HELP_ACTION].started -= _inputHandler.OnHelp;
+            actions[HELP_ACTION].performed -= _inputHandler.OnHelp;
+            actions[HELP_ACTION].canceled -= _inputHandler.OnHelp;
         }
 
         private void SubscribeMenuActions()
