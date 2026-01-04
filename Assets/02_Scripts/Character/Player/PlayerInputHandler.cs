@@ -8,7 +8,8 @@ public enum EDirectionalAction
 {
     Move,
     Navigate,
-    Aim
+    Aim,
+    Aim_WithMouse,
 }
 
 public enum EAction
@@ -176,15 +177,20 @@ public partial class PlayerInputHandler : MonoBehaviour
 
     private void OnAim(InputAction.CallbackContext context)
     {
+        bool isMouse = context.control.device is Mouse;
+        EDirectionalAction actionType = isMouse ? EDirectionalAction.Aim_WithMouse : EDirectionalAction.Aim;
         if (context.performed)
         {
             Vector2 input = context.ReadValue<Vector2>();
-            if (_invertAim) input *= -1;
-            RequestDirectionalAction(EDirectionalAction.Aim, input);
+            if (!isMouse && _invertAim)
+            {
+                input *= -1;
+            }
+            RequestDirectionalAction(actionType, input);
         }
         else if (context.canceled)
         {
-            RequestDirectionalAction(EDirectionalAction.Aim, Vector2.zero);
+            RequestDirectionalAction(actionType, Vector2.zero);
         }
     }
 

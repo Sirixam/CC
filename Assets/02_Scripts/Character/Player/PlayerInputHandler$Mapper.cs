@@ -24,7 +24,7 @@ public partial class PlayerInputHandler
         private const string PLAYER_PEEKING_MAP = "Player - Peeking";
         //private const string MENU_MAP = "Menu";
 
-        private static readonly string AIM_ACTION = EDirectionalAction.Aim.ToString();
+        private static readonly string AIM_ACTION = EDirectionalAction.Aim.ToString(); // AimMouse use the same Action
         private static readonly string MOVE_ACTION = EDirectionalAction.Move.ToString();
         private static readonly string NAVIGATE_ACTION = EDirectionalAction.Navigate.ToString();
         private static readonly string ACTION_ACTION = EAction.Action.ToString();

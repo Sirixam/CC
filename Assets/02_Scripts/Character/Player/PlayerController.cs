@@ -350,6 +350,20 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             _physics.SetInputDirection(new Vector3(input.x, 0, input.y), updateMoveDirection: false);
             _lookHelper.SetLookInput(input);
         }
+        else if (actionType == EDirectionalAction.Aim_WithMouse)
+        {
+            Ray ray = Camera.main.ScreenPointToRay(input);
+            if (Physics.Raycast(ray, out RaycastHit hit))
+            {
+                Vector2 direction = new Vector3(hit.point.x - transform.position.x, hit.point.z - transform.position.z);
+                _physics.SetInputDirection(direction, updateMoveDirection: false);
+                _lookHelper.SetLookInput(direction);
+            }
+            else
+            {
+                Debug.LogError("Failed to get position from mouse input");
+            }
+        }
     }
 
     private void OnPreHoldActionDetected(EAction actionType)
