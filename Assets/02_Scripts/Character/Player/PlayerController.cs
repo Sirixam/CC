@@ -47,7 +47,8 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     Vector3 IThrowActor.LookDirection => _view.transform.forward;
     Collider[] IThrowActor.Colliders => _physics.Colliders;
 
-    public event Action<bool> OnToggleHelp;
+    public event Action<EDevice> OnShowHelp;
+    public event Action OnHideHelp;
 
     private void Awake()
     {
@@ -140,7 +141,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         }
         else if (actionType == EAction.Help)
         {
-            OnToggleHelp.Invoke(false);
+            OnHideHelp.Invoke();
         }
     }
 
@@ -430,7 +431,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         }
         else if (actionType == EAction.Help)
         {
-            OnToggleHelp.Invoke(true);
+            OnShowHelp.Invoke(_inputHandler.LastKnownDeviceType);
         }
     }
 
@@ -487,7 +488,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         {
             if (!isHolding)
             {
-                OnToggleHelp.Invoke(false);
+                OnHideHelp.Invoke();
             }
         }
     }

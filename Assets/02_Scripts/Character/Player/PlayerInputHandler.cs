@@ -24,6 +24,13 @@ public enum EAction
     Help,
 }
 
+public enum EDevice
+{
+    Undefined,
+    Gamepad,
+    KeyboardAndMouse,
+}
+
 /// <summary>
 /// This class handles what input the player is doing.
 /// It support different type of actions: normal actions (tap), hold actions (press and hold) and directional actions (with a Vector2 input)
@@ -79,6 +86,30 @@ public partial class PlayerInputHandler : MonoBehaviour
         }
     }
 
+    private class DeviceManager
+    {
+        public EDevice LastKnownDeviceType { get; private set; }
+
+        public void UpdateLastKnownDevice(InputDevice device)
+        {
+            LastKnownDeviceType = GetDeviceFromContext(device);
+        }
+
+        public EDevice GetDeviceFromContext(InputDevice device)
+        {
+            if (device is Keyboard || device is Mouse)
+            {
+                return EDevice.KeyboardAndMouse;
+            }
+            if (device is Gamepad)
+            {
+                return EDevice.Gamepad;
+            }
+            Debug.LogError("Last device is not being handled: " + device.GetType());
+            return EDevice.Undefined;
+        }
+    }
+
     [SerializeField] private bool _invertMovement;
     [SerializeField] private bool _invertAim;
 
@@ -88,9 +119,11 @@ public partial class PlayerInputHandler : MonoBehaviour
     private HoldState _utilityHoldState = new();
     private HoldState _helpHoldState = new();
 
+    private DeviceManager _deviceManager;
     private Mapper _mapper;
     public PlayerInput PlayerInput { get; private set; }
     public EInputScope ScopeType => _mapper.ScopeType;
+    public EDevice LastKnownDeviceType => _deviceManager.LastKnownDeviceType;
 
     public Action<EAction> ActionEvent;
     public Action<EAction> PreHoldActionEvent;
@@ -101,6 +134,7 @@ public partial class PlayerInputHandler : MonoBehaviour
     {
         PlayerInput = GetComponent<PlayerInput>();
         _mapper = new Mapper(this);
+        _deviceManager = new DeviceManager();
         Debug.Log("Current control scheme: " + PlayerInput.currentControlScheme);
     }
 
@@ -240,6 +274,7 @@ public partial class PlayerInputHandler : MonoBehaviour
 
     private void OnHelp(InputAction.CallbackContext context)
     {
+        _deviceManager.UpdateLastKnownDevice(context.control.device);
         HandleHoldAction(context, _helpHoldState, EAction.Help);
     }
 

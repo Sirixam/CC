@@ -1504,7 +1504,7 @@ MonoBehaviour:
   _victoryFeedback: {fileID: 1236636714}
   _timeUI: {fileID: 2148367333320432987}
   _livesUI: {fileID: 5183543718913658895}
-  _helpUI: {fileID: 1578063190}
+  _helpUI: {fileID: 1578063192}
   _timesUpFeedback: {fileID: 1940684079}
   _restartButtons:
   - {fileID: 1940684080}
@@ -7164,16 +7164,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b0186338df16fc4bba9d2d4e37a4c03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &1578063190 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 939741644825122982, guid: 925549c50334532448ad80a37fcf2809, type: 3}
-  m_PrefabInstance: {fileID: 8461739854861493401}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &1578063191 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 866811655235455406, guid: 925549c50334532448ad80a37fcf2809, type: 3}
   m_PrefabInstance: {fileID: 8461739854861493401}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1578063192 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8944990931711083007, guid: 925549c50334532448ad80a37fcf2809, type: 3}
+  m_PrefabInstance: {fileID: 8461739854861493401}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 034847cea72b65648bf1e66fd67105f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1596304170
 GameObject:
   m_ObjectHideFlags: 0

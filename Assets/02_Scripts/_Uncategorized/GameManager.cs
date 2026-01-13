@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject _victoryFeedback;
     [SerializeField] private TimeUI _timeUI;
     [SerializeField] private LivesUI _livesUI;
-    [SerializeField] private GameObject _helpUI;
+    [SerializeField] private HelpUI _helpUI;
     [SerializeField] private GameObject _timesUpFeedback;
     [SerializeField] private ButtonListener[] _restartButtons;
 
@@ -50,7 +50,7 @@ public class GameManager : MonoBehaviour
         }
         if (_helpUI != null)
         {
-            _helpUI.SetActive(false);
+            _helpUI.Hide();
         }
         foreach (var button in _restartButtons)
         {
@@ -79,7 +79,8 @@ public class GameManager : MonoBehaviour
         PlayerController playerController = playerInput.GetComponent<PlayerController>();
         ChairController chairController = _answerManager.GetPlayerDesk(playerInput.playerIndex).transform.parent.GetComponentInChildren<ChairController>();
         playerController.SetInitialChairController(chairController);
-        playerController.OnToggleHelp += OnToggleHelp;
+        playerController.OnShowHelp += OnShowHelp;
+        playerController.OnHideHelp += OnHideHelp;
         _players.Add(playerController);
 
         if (_gameCancellationSource != null) return; // Game already started
@@ -177,11 +178,19 @@ public class GameManager : MonoBehaviour
         _livesUI.SetLives(value);
     }
 
-    private void OnToggleHelp(bool show)
+    private void OnShowHelp(EDevice deviceType)
     {
         if (_helpUI != null)
         {
-            _helpUI.SetActive(show);
+            _helpUI.Show(deviceType);
+        }
+    }
+
+    private void OnHideHelp()
+    {
+        if (_helpUI != null)
+        {
+            _helpUI.Hide();
         }
     }
 }

@@ -338,7 +338,7 @@
                 {
                     "name": "",
                     "id": "9dbe2c3d-ea9f-46d8-82e6-289a29129340",
-                    "path": "<Keyboard>/alt",
+                    "path": "<Keyboard>/h",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
@@ -684,7 +684,7 @@
                 {
                     "name": "",
                     "id": "1eadac04-ec87-42d4-8ac3-5d4c6fa9e032",
-                    "path": "<Keyboard>/alt",
+                    "path": "<Keyboard>/h",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
@@ -880,7 +880,7 @@
                 {
                     "name": "",
                     "id": "cc09b9c4-a2be-43b2-9196-26de3df7a606",
-                    "path": "<Keyboard>/alt",
+                    "path": "<Keyboard>/h",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
@@ -1065,7 +1065,7 @@
                 {
                     "name": "",
                     "id": "0ac16c9c-e93d-4ad3-bb87-238379731cc2",
-                    "path": "<Keyboard>/alt",
+                    "path": "<Keyboard>/h",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
