@@ -11,6 +11,7 @@ public class PlayerView : MonoBehaviour, IStunView, IChairView
     [SerializeField] private TrailRenderer[] _dashTrails;
     [SerializeField] private CheatUI _peekUI;
     [SerializeField] private CheatUI _cheatUI;
+    [SerializeField] private CraftingUI _craftingUI;
     [SerializeField] private MemoryUI _memoryUI;
     [SerializeField] private ThrowPreviewComponent _throwPreview;
     [SerializeField] private TweenSettings<float> _startStunTweenSettings = new();
@@ -30,12 +31,14 @@ public class PlayerView : MonoBehaviour, IStunView, IChairView
     public Vector3 PickUpPosition => _itemContainer.position + _pickUpTweenSettings.endValue;
     public CheatUI PeekUI => _peekUI;
     public CheatUI CheatUI => _cheatUI;
+    public CraftingUI CraftingUI => _craftingUI;
     public MemoryUI MemoryUI => _memoryUI;
 
     private void Awake()
     {
         _peekUI.Hide();
         _cheatUI.Hide();
+        _craftingUI.Hide();
         _memoryUI.Hide();
         _startStunTweenSettings.startFromCurrent = true;
         _stopStunTweenSettings.startFromCurrent = true;

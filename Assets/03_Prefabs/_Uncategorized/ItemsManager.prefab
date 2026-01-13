@@ -49,6 +49,8 @@ MonoBehaviour:
   - Name: Answer
     Icon: {fileID: 0}
     Prefab: {fileID: 5219355494168577670, guid: 1a918e96e086428419e3a9e7e1c16e9d, type: 3}
+    CraftDuration: 3
   - Name: Paper Ball
     Icon: {fileID: 0}
     Prefab: {fileID: 5219355494168577670, guid: 0e2fd31554e12e34c85e6608faae33a4, type: 3}
+    CraftDuration: 1
