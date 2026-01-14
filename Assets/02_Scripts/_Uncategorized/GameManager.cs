@@ -64,6 +64,7 @@ public class GameManager : MonoBehaviour
         _timeHelper.OnTimesUp += OnTimesUp;
         _answerManager.OnAllPlayersFinishedAllAnswers += OnAllPlayersFinishedAllAnswers;
         _studentManager.OnPlayerDetected += OnPlayerDetected;
+        _studentManager.OnItemDetected += OnItemDetected;
     }
 
     private void OnDisable()
@@ -71,6 +72,7 @@ public class GameManager : MonoBehaviour
         _timeHelper.OnTimesUp -= OnTimesUp;
         _answerManager.OnAllPlayersFinishedAllAnswers -= OnAllPlayersFinishedAllAnswers;
         _studentManager.OnPlayerDetected -= OnPlayerDetected;
+        _studentManager.OnItemDetected -= OnItemDetected;
     }
 
     // Triggere externallyd when a player joins the game
@@ -172,6 +174,14 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void OnItemDetected(IItemController itemController)
+    {
+        if (TryGetPlayerController(itemController.LastOwnerID, out PlayerController playerController))
+        {
+            OnPlayerDetected(playerController);
+        }
+    }
+
     private void SetLives(int value)
     {
         _playerLives = value;
@@ -192,5 +202,19 @@ public class GameManager : MonoBehaviour
         {
             _helpUI.Hide();
         }
+    }
+
+    private bool TryGetPlayerController(string id, out PlayerController playerController)
+    {
+        foreach (var player in _players)
+        {
+            if (player.ID == id)
+            {
+                playerController = player;
+                return true;
+            }
+        }
+        playerController = null;
+        return false;
     }
 }

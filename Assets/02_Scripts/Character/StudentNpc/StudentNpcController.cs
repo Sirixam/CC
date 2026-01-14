@@ -15,6 +15,7 @@ public class StudentNpcController : MonoBehaviour
     [SerializeField] private LookHelper.Data _lookData;
     [SerializeField] private DistractionHelper.Data _distractionData;
     [SerializeField, Tag] private string _playerTag = "Player";
+    [SerializeField, Tag] private string _itemTag = "";
 
     // Runtime    
     public bool IsDistracted => _distractionHelper.IsDistracted;
@@ -27,6 +28,7 @@ public class StudentNpcController : MonoBehaviour
     private DistractionHelper _distractionHelper;
 
     public Action<PlayerController> OnPlayerDetected;
+    public Action<IItemController> OnItemDetected;
 
     private void Awake()
     {
@@ -126,6 +128,18 @@ public class StudentNpcController : MonoBehaviour
         {
             PlayerController playerController = other.GetComponentInParent<PlayerController>();
             OnPlayerDetected?.Invoke(playerController);
+        }
+        else if (_itemTag != "Untagged" && other.CompareTag(_itemTag))
+        {
+            IItemController itemController = other.GetComponentInParent<IItemController>();
+            if (itemController == null)
+            {
+                Debug.LogError("Other collider has item tag, but has not implemented item controller. Name: " + other.name);
+            }
+            else
+            {
+                OnItemDetected?.Invoke(itemController);
+            }
         }
     }
 }

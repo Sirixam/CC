@@ -12,6 +12,8 @@ public class FieldOfViewController : MonoBehaviour
     [SerializeField] private float _maxDistance = 5f;
     [SerializeField] private float _fieldOfView = 90f;
     [SerializeField] private float _fieldOfViewWidth = 0.5f;
+    [SerializeField] private float _visualThickness = 0.01f;
+    [SerializeField] private float _physicsThickness = 0.1f;
 
     private Tween _scaleTween;
 
@@ -52,13 +54,17 @@ public class FieldOfViewController : MonoBehaviour
     [Button("Update Mesh")]
     private void UpdateMesh()
     {
-        Mesh[] meshes = CreateFieldOfViewMeshes(transform.localPosition, Vector2.up, _maxDistance, _fieldOfView, _fieldOfViewWidth);
-        Mesh mesh = MeshUtils.MergeMeshes(meshes);
-        _meshFilter.mesh = mesh;
-        _meshCollider.sharedMesh = mesh;
+        _meshFilter.mesh = GetMesh(_visualThickness);
+        _meshCollider.sharedMesh = GetMesh(_physicsThickness);
     }
 
-    private Mesh[] CreateFieldOfViewMeshes(Vector3 origin, Vector2 forward, float maxDistance, float fieldOfView, float fieldOfViewWidth)
+    private Mesh GetMesh(float thickness)
+    {
+        Mesh[] meshes = CreateFieldOfViewMeshes(transform.localPosition, Vector2.up, _maxDistance, _fieldOfView, _fieldOfViewWidth, thickness);
+        return MeshUtils.MergeMeshes(meshes);
+    }
+
+    private Mesh[] CreateFieldOfViewMeshes(Vector3 origin, Vector2 forward, float maxDistance, float fieldOfView, float fieldOfViewWidth, float thickness)
     {
         Vector3 forwardX0Z = new Vector3(forward.x, 0, forward.y);
         Vector3 forwardLeftX0Z = new Vector3(-forward.y, 0, forward.x);
@@ -77,11 +83,11 @@ public class FieldOfViewController : MonoBehaviour
         Vector3 leftLimit = leftOrigin + rotation * left * maxDistance;
         Vector3 rightLimit = rightOrigin + rotation * right * maxDistance;
 
-        Mesh leftMesh = MeshUtils.CreateCircularTriangleMesh3D(leftOrigin, leftLimit, leftForward, forward, invertDrawOrder: true);
-        Mesh rightMesh = MeshUtils.CreateCircularTriangleMesh3D(rightOrigin, rightLimit, rightForward, forward, invertDrawOrder: false);
+        Mesh leftMesh = MeshUtils.CreateCircularTriangleMesh3D(leftOrigin, leftLimit, leftForward, forward, invertDrawOrder: true, thickness: thickness);
+        Mesh rightMesh = MeshUtils.CreateCircularTriangleMesh3D(rightOrigin, rightLimit, rightForward, forward, invertDrawOrder: false, thickness: thickness);
         if (fieldOfViewWidth > 0)
         {
-            Vector3 offset = Vector3.up * 0.01f; // 0.01 = thickness
+            Vector3 offset = Vector3.up * thickness;
             Mesh centerMesh = MeshUtils.CreateRectangleMesh2D(leftOrigin + offset, rightOrigin + offset, leftForward + offset, rightForward + offset);
             return new Mesh[] { leftMesh, centerMesh, rightMesh };
         }

@@ -12,7 +12,7 @@ public enum EInteraction
 
 public interface IPickUpInteractionOwner : IInteractionOwner
 {
-    void OnPickedUp();
+    void OnPickedUp(string actorID);
     void OnDropped();
     void OnThrowed();
 }

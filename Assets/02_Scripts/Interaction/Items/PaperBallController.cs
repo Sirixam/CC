@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner
+public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItemController
 {
     public enum EState
     {
@@ -19,11 +19,14 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner
     private string _answerID;
     private float _remainingTimeToDestroyOnIdle;
     private EState _state;
+    private string _lastOwnerID;
 
     public bool HasAnswer => !string.IsNullOrWhiteSpace(_answerID) || _defaultAnswerDefinition != null;
     public string AnswerID => !string.IsNullOrWhiteSpace(_answerID) ? _answerID : _defaultAnswerDefinition != null ? _defaultAnswerDefinition.ID : null;
 
     public InteractionController InteractionController => GetComponentInChildren<InteractionController>();
+
+    string IItemController.LastOwnerID => _lastOwnerID;
 
     private void Awake()
     {
@@ -102,8 +105,9 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner
     }
 
     // IPickUpInteractionOwner
-    void IPickUpInteractionOwner.OnPickedUp()
+    void IPickUpInteractionOwner.OnPickedUp(string actorID)
     {
+        _lastOwnerID = actorID;
         _state = EState.PickedUp;
     }
     void IPickUpInteractionOwner.OnDropped()

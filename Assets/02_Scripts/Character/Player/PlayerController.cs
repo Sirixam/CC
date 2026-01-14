@@ -39,13 +39,15 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     private PlayerAudioHelper _audioHelper;
 
     // IActor
-    string IActor.ID => IActor.GetPlayerID(_inputHandler.PlayerInput.playerIndex);
+    public string ID => IActor.GetPlayerID(_inputHandler.PlayerInput.playerIndex);
     // IInteractionActor
     Vector3 IInteractionActor.Position => transform.position;
     Vector3 IInteractionActor.Forward => transform.forward;
     // IThrowActor
     Vector3 IThrowActor.LookDirection => _view.transform.forward;
     Collider[] IThrowActor.Colliders => _physics.Colliders;
+
+    public PlayerController LastOwner => throw new NotImplementedException();
 
     public event Action<EDevice> OnShowHelp;
     public event Action OnHideHelp;
@@ -158,7 +160,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             _audioHelper.OnPickUp();
             if (interaction.TryGetComponent(out IPickUpInteractionOwner interactionOwner))
             {
-                interactionOwner.OnPickedUp();
+                interactionOwner.OnPickedUp(ID);
             }
         }
         else if (interaction.Type == EInteraction.Static)
