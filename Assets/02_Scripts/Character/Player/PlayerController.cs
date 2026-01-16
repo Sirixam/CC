@@ -528,6 +528,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             _answerController.UpdateAnswering(out bool finishedAnswering);
             if (finishedAnswering)
             {
+                _answerController.StartIdle();
                 _audioHelper.OnFinishedCorrectAnswer();
                 if (_cheatHelper.TryGetRememberedAnswer(out string answerID))
                 {
