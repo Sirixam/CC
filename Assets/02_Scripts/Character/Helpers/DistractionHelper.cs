@@ -19,8 +19,6 @@ public class DistractionHelper
             public bool ShowFOV;
         }
 
-        [Tag]
-        public string DistractionTag = "Distraction";
         public float DistractionReductionDelay;
         public float DistractionReductionSpeed;
         public Level[] Levels;

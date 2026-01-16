@@ -14,9 +14,7 @@ public class StudentNpcController : MonoBehaviour
     [Header("Data")]
     [SerializeField] private LookHelper.Data _lookData;
     [SerializeField] private DistractionHelper.Data _distractionData;
-    [SerializeField, Tag] private string _playerTag = "Player";
-    [SerializeField, Layer] private int _itemLayer;
-    [SerializeField, Layer] private int _flyingLayer;
+    [SerializeField] private GlobalDefinition _globalDefinition;
     [SerializeField] private bool _canDetectItems;
     [SerializeField] private bool _canDetectFlyingItems;
 
@@ -113,7 +111,7 @@ public class StudentNpcController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.CompareTag(_distractionData.DistractionTag))
+        if (collision.collider.CompareTag(_globalDefinition.DistractionTag))
         {
             Vector3 hitDirection = Vector3.zero;
             foreach (var contact in collision.contacts)
@@ -127,12 +125,12 @@ public class StudentNpcController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag(_playerTag))
+        if (other.CompareTag(_globalDefinition.PlayerTag))
         {
             PlayerController playerController = other.GetComponentInParent<PlayerController>();
             OnPlayerDetected?.Invoke(playerController);
         }
-        else if ((_canDetectItems && other.gameObject.layer == _itemLayer) || (_canDetectFlyingItems && other.gameObject.layer == _flyingLayer))
+        else if ((_canDetectItems && other.gameObject.layer == _globalDefinition.ItemLayer) || (_canDetectFlyingItems && other.gameObject.layer == _globalDefinition.FlyingLayer))
         {
             IItemController itemController = other.GetComponentInParent<IItemController>();
             if (itemController == null)

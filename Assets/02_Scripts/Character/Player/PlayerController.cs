@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     [SerializeField] private DashHelper.Data _dashData;
     [SerializeField] private LookHelper.Data _lookData;
     [SerializeField] private PlayerAudioHelper.Data _audioData;
+    [SerializeField] private GlobalDefinition _globalDefinition;
     [Header("TO BE REMOVED")]
     [SerializeField] private bool _dropByHoldingInteract; // Once we decide on the final input scheme, this can be removed
     [SerializeField] private bool _toggleToPeek;
@@ -56,7 +57,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     {
         _physics.Initialize();
         _interactionHelper = new InteractionHelper(_interactionData, this, isEnabled: true);
-        _throwHelper = new ThrowHelper(_throwData, this, _interactionHelper);
+        _throwHelper = new ThrowHelper(_throwData, this, _interactionHelper, _globalDefinition.FlyingLayer);
         _chairHelper = new ChairHelper(_inputHandler, _view, _physics);
         _stunHelper = new StunHelper(_stunData, _view);
         _cheatHelper = new PlayerCheatHelper(_cheatData, _view);

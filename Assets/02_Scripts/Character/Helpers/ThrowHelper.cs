@@ -15,19 +15,19 @@ public class ThrowHelper
     {
         public float Speed = 10f; // Meters per second
         public float PitchAngle = 15f; // Degrees
-        [Layer]
-        public int FlyingLayer;
     }
 
     private Data _data;
     private IThrowActor _actor;
     private InteractionHelper _interactionHelper;
+    private int _flyingLayer;
 
-    public ThrowHelper(Data data, IThrowActor actor, InteractionHelper interactionHelper)
+    public ThrowHelper(Data data, IThrowActor actor, InteractionHelper interactionHelper, int flyingLayer)
     {
         _data = data;
         _actor = actor;
         _interactionHelper = interactionHelper;
+        _flyingLayer = flyingLayer;
     }
 
     public bool CanShowPreview()
@@ -57,7 +57,7 @@ public class ThrowHelper
             {
                 collisionComponent.IgnoreCollision(collider, ignore: true);
             }
-            collisionComponent.SetLayer(_data.FlyingLayer);
+            collisionComponent.SetLayer(_flyingLayer);
             collisionComponent.OnCollisionExitEvent += OnCollisionExit;
             return true;
         }

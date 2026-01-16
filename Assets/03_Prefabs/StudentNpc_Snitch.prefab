@@ -112,7 +112,6 @@ MonoBehaviour:
   _lookData:
     LookSpeed: 200
   _distractionData:
-    DistractionTag: Distraction
     DistractionReductionDelay: 1.5
     DistractionReductionSpeed: 0.2
     Levels:
@@ -134,9 +133,7 @@ MonoBehaviour:
       LookSpeedMultiplier: 1.5
       Rotate: 1
       ShowFOV: 1
-  _playerTag: Player
-  _itemLayer: 7
-  _flyingLayer: 8
+  _globalDefinition: {fileID: 11400000, guid: 2b0875648e78a8e45b08a646836071ca, type: 2}
   _canDetectItems: 1
   _canDetectFlyingItems: 1
 --- !u!54 &165944274530947382
