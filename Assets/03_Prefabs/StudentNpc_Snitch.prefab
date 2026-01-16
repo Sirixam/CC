@@ -135,7 +135,10 @@ MonoBehaviour:
       Rotate: 1
       ShowFOV: 1
   _playerTag: Player
-  _itemTag: Distraction
+  _itemLayer: 7
+  _flyingLayer: 8
+  _canDetectItems: 1
+  _canDetectFlyingItems: 1
 --- !u!54 &165944274530947382
 Rigidbody:
   m_ObjectHideFlags: 0

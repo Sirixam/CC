@@ -15,7 +15,10 @@ public class StudentNpcController : MonoBehaviour
     [SerializeField] private LookHelper.Data _lookData;
     [SerializeField] private DistractionHelper.Data _distractionData;
     [SerializeField, Tag] private string _playerTag = "Player";
-    [SerializeField, Tag] private string _itemTag = "";
+    [SerializeField, Layer] private int _itemLayer;
+    [SerializeField, Layer] private int _flyingLayer;
+    [SerializeField] private bool _canDetectItems;
+    [SerializeField] private bool _canDetectFlyingItems;
 
     // Runtime    
     public bool IsDistracted => _distractionHelper.IsDistracted;
@@ -129,7 +132,7 @@ public class StudentNpcController : MonoBehaviour
             PlayerController playerController = other.GetComponentInParent<PlayerController>();
             OnPlayerDetected?.Invoke(playerController);
         }
-        else if (_itemTag != "Untagged" && other.CompareTag(_itemTag))
+        else if ((_canDetectItems && other.gameObject.layer == _itemLayer) || (_canDetectFlyingItems && other.gameObject.layer == _flyingLayer))
         {
             IItemController itemController = other.GetComponentInParent<IItemController>();
             if (itemController == null)

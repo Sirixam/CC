@@ -135,7 +135,10 @@ MonoBehaviour:
       Rotate: 1
       ShowFOV: 1
   _playerTag: Player
-  _itemTag: Untagged
+  _itemLayer: 7
+  _flyingLayer: 8
+  _canDetectItems: 0
+  _canDetectFlyingItems: 0
 --- !u!54 &165944274530947382
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -470,6 +473,8 @@ MonoBehaviour:
   _maxDistance: 3
   _fieldOfView: 60
   _fieldOfViewWidth: 0.5
+  _visualThickness: 0.01
+  _physicsThickness: 0.1
 --- !u!33 &368862458362584757
 MeshFilter:
   m_ObjectHideFlags: 0
