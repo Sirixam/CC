@@ -1319,6 +1319,8 @@ MonoBehaviour:
   _maxDistance: 3
   _fieldOfView: 60
   _fieldOfViewWidth: 0.5
+  _visualThickness: 0.01
+  _physicsThickness: 0.1
 --- !u!33 &368862458362584757
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -1748,7 +1750,7 @@ MonoBehaviour:
   sphereCastRadius_: 0.05
   collisionMask_:
     serializedVersion: 2
-    m_Bits: 9
+    m_Bits: 712
   _lineAnimationSpeed: -1
   _particleFrecuency: 0.75
 --- !u!120 &3361659025060047718
