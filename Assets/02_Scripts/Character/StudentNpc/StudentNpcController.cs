@@ -10,6 +10,7 @@ public class StudentNpcController : MonoBehaviour
     [SerializeField] private FieldOfViewController _fieldOfViewController;
     [SerializeField] private TMP_Text _stateText;
     [SerializeField] private DistractionUI _distractionUI;
+    [SerializeField] private LightbulbUI _lightbulbUI;
 
     [Header("Data")]
     [SerializeField] private LookHelper.Data _lookData;
@@ -30,6 +31,8 @@ public class StudentNpcController : MonoBehaviour
 
     public Action<PlayerController> OnPlayerDetected;
     public Action<IItemController> OnItemDetected;
+    public event Action OnAnsweringStarted;
+    public event Action OnAnsweringEnded;
 
     private void Awake()
     {
@@ -75,10 +78,13 @@ public class StudentNpcController : MonoBehaviour
     {
         _stateText.text = "Answering";
         AnswerController.StartAnswering(progress: 0);
+        _lightbulbUI.Show();
     }
 
     public void StartValidating()
     {
+        // _lightbulbUI.Hide();
+        // OnAnsweringEnded?.Invoke();
         _stateText.text = "Validating";
         AnswerController.StartValidating();
     }
@@ -107,6 +113,13 @@ public class StudentNpcController : MonoBehaviour
             }
             await UniTask.Yield(cancellationToken);
         }
+
+        if (!cancellationToken.IsCancellationRequested)
+        {
+            _lightbulbUI.Hide();
+            OnAnsweringEnded?.Invoke();
+        }
+        
     }
 
     private void OnCollisionEnter(Collision collision)

@@ -46,8 +46,12 @@ public class StudentManager : MonoBehaviour
                 student.StartThinking();
                 await student.UpdateRemainingTimeWhileNotDistracted(cancellationToken: cancellationToken);
 
+                
+                
                 student.StartAnswering();
                 await student.UpdateAnsweringTask(cancellationToken);
+                
+                
 
                 student.StartValidating();
                 await student.UpdateRemainingTimeWhileNotDistracted(cancellationToken: cancellationToken);
