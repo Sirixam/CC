@@ -2,7 +2,9 @@ using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -25,9 +27,15 @@ public class GameManager : MonoBehaviour
     private CancellationTokenSource _gameCancellationSource;
     private List<PlayerController> _players = new();
     private int _playerLives;
+    
+    public static GameManager Instance { get; private set; }
+    public bool GameplayActive { get; private set; }
+    
+    [SerializeField] private MultiplayerEventSystem _eventSystem;
 
     private void Awake()
     {
+        Instance = this;
         if (_defeatFeedback != null)
         {
             _defeatFeedback.SetActive(false);
@@ -78,6 +86,12 @@ public class GameManager : MonoBehaviour
     // Triggere externallyd when a player joins the game
     public void OnPlayerJoined(PlayerInput playerInput)
     {
+        var inputHandler = playerInput.GetComponent<PlayerInputHandler>();
+        if (inputHandler == null)
+        {
+            return;
+        }
+        
         PlayerController playerController = playerInput.GetComponent<PlayerController>();
         ChairController chairController = _answerManager.GetPlayerDesk(playerInput.playerIndex).transform.parent.GetComponentInChildren<ChairController>();
         playerController.SetInitialChairController(chairController);
@@ -85,7 +99,8 @@ public class GameManager : MonoBehaviour
         playerController.OnHideHelp += OnHideHelp;
         _players.Add(playerController);
 
-        if (_gameCancellationSource != null) return; // Game already started
+        if (GameplayActive)
+            return; // Game already started
 
         if (_players.Count >= _answerManager.RequiredPlayersCount || !_globalDefinition.StartGameWhenAllPlayersJoined)
         {
@@ -95,6 +110,7 @@ public class GameManager : MonoBehaviour
 
     private void StartGame()
     {
+        GameplayActive = true;
         if (_livesUI != null)
         {
             _livesUI.gameObject.SetActive(true);
@@ -107,7 +123,9 @@ public class GameManager : MonoBehaviour
 
     private void StopGame()
     {
-        _gameCancellationSource.Cancel();
+        GameplayActive = false;
+        _gameCancellationSource?.Cancel();
+        _gameCancellationSource = null;
     }
 
     private void RestartGame()
@@ -132,6 +150,7 @@ public class GameManager : MonoBehaviour
         }
         StopGame();
         StartGame();
+        EnableGameplayInput();
     }
 
     private void StartTimer()
@@ -142,20 +161,12 @@ public class GameManager : MonoBehaviour
 
     private void OnAllPlayersFinishedAllAnswers()
     {
-        StopGame();
-        if (_victoryFeedback != null)
-        {
-            _victoryFeedback.SetActive(true);
-        }
+       ShowEndMenu(_victoryFeedback);
     }
 
     private void OnTimesUp()
     {
-        StopGame();
-        if (_timesUpFeedback != null)
-        {
-            _timesUpFeedback.SetActive(true);
-        }
+        ShowEndMenu(_timesUpFeedback);
     }
 
     private void OnPlayerDetected(PlayerController playerController)
@@ -167,11 +178,7 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        StopGame();
-        if (_defeatFeedback != null)
-        {
-            _defeatFeedback.SetActive(true);
-        }
+        ShowEndMenu(_defeatFeedback);
     }
 
     private void OnItemDetected(IItemController itemController)
@@ -216,5 +223,64 @@ public class GameManager : MonoBehaviour
         }
         playerController = null;
         return false;
+    }
+    
+    private void FocusFirstRestartButton()
+    {
+        if (_eventSystem == null)
+        {
+            Debug.LogWarning("No MultiplayerEventSystem in scene.");
+            return;
+        }
+
+        _eventSystem.SetSelectedGameObject(null);
+
+        foreach (var button in _restartButtons)
+        {
+            if (button != null && button.gameObject.activeInHierarchy)
+            {
+                _eventSystem.SetSelectedGameObject(button.gameObject);
+                return;
+            }
+        }
+    }
+    
+    private void DisableGameplayInput()
+    {
+
+        foreach (var playerInput in PlayerInput.all)
+        {
+            var handler = playerInput.GetComponent<PlayerInputHandler>();
+            
+            if (handler == null)
+                continue;
+
+            playerInput.DeactivateInput();
+            playerInput.GetComponent<PlayerController>()?.ResetInputState();
+
+        }
+    }
+    
+    private void EnableGameplayInput()
+    {
+        foreach (var playerInput in PlayerInput.all)
+        {
+            if (playerInput.GetComponent<PlayerInputHandler>() == null)
+                continue;
+
+            playerInput.ActivateInput();
+        }
+    }
+    
+    private void ShowEndMenu(GameObject menu)
+    {
+        StopGame();
+        DisableGameplayInput();
+
+        if (menu != null)
+        {
+            menu.SetActive(true);
+            FocusFirstRestartButton();
+        }
     }
 }

@@ -514,6 +514,9 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private void Update()
     {
+        if (!GameManager.Instance.GameplayActive)
+            return;
+        
         _dashHelper.UpdateCooldown();
         if (_stunHelper.IsStunned)
         {
@@ -566,6 +569,9 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private void FixedUpdate()
     {
+        if (!GameManager.Instance.GameplayActive)
+            return;
+        
         _physics.OnFixedUpdate(Time.fixedDeltaTime, canMove: !_stunHelper.IsStunned, out bool stoppedDashing);
         if (stoppedDashing)
         {
@@ -604,4 +610,10 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     void IThrowActor.OnThrow(Transform thrownTransform)
         => _view.OnThrow(thrownTransform);
+    
+    public void ResetInputState()
+    {
+        _physics.SetInputDirection(Vector3.zero, updateMoveDirection: true);
+        _lookHelper.SetLookInput(Vector2.zero);
+    }
 }

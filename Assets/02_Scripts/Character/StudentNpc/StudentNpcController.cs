@@ -31,7 +31,6 @@ public class StudentNpcController : MonoBehaviour
 
     public Action<PlayerController> OnPlayerDetected;
     public Action<IItemController> OnItemDetected;
-    public event Action OnAnsweringStarted;
     public event Action OnAnsweringEnded;
 
     private void Awake()
@@ -83,8 +82,6 @@ public class StudentNpcController : MonoBehaviour
 
     public void StartValidating()
     {
-        // _lightbulbUI.Hide();
-        // OnAnsweringEnded?.Invoke();
         _stateText.text = "Validating";
         AnswerController.StartValidating();
     }

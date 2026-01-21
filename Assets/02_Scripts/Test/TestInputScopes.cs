@@ -28,7 +28,6 @@ public class TestInputScopes : MonoBehaviour
 
     [SerializeField] private int _playersCount;
     [SerializeField] private PlayerData[] _playersInputData;
-    [SerializeField] private InputSystemUIInputModule _uiInputModule;
     [SerializeField] private Camera _camera;
     [SerializeField] private EInputScope _initialScopeType;
 
@@ -54,16 +53,24 @@ public class TestInputScopes : MonoBehaviour
 
     public void PlayerJoined(PlayerInput playerInput)
     {
+       
+        //Prevent overflow
+        if (_playersCount >= _playersInputData.Length)
+        {
+            Debug.LogWarning("More PlayerInputs joined than PlayerData slots.");
+            return;
+        }
+
+        PlayerInputHandler inputHandler =
+            playerInput.GetComponent<PlayerInputHandler>();
         PlayerData playerData = _playersInputData[_playersCount++];
-        playerInput.uiInputModule = _uiInputModule;
         playerInput.camera = _camera;
 
         // Initialize Input Handler
-        PlayerInputHandler inputHandler = playerInput.GetComponent<PlayerInputHandler>();
         inputHandler.Initialize();
         inputHandler.ActionEvent += actionType => playerData.Feedback.text = $"{actionType} requested";
         inputHandler.DirectionalActionEvent += (actionType, input) => playerData.Feedback.text = $"{actionType} requested with input: {input}";
-        inputHandler.HoldActionEvent += (actionType, isHolding) => playerData.Feedback.text = playerData.Feedback.text = isHolding ? $"{actionType} hold begin" : $"{actionType} hold end";
+        inputHandler.HoldActionEvent += (actionType, isHolding) => playerData.Feedback.text = isHolding ? $"{actionType} hold begin" : $"{actionType} hold end";
         playerData.InputHandler = inputHandler;
 
         // Set initial scope type
