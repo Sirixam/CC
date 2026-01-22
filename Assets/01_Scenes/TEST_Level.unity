@@ -29258,6 +29258,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 3362433694018170449}
     - target: {fileID: 6167287117492572752, guid: 0ad07dedf987bb2439d07df5bc57dc3a, type: 3}
+      propertyPath: _teacherManager
+      value: 
+      objectReference: {fileID: 3362433694018170449}
+    - target: {fileID: 6167287117492572752, guid: 0ad07dedf987bb2439d07df5bc57dc3a, type: 3}
+      propertyPath: _navigationManager
+      value: 
+      objectReference: {fileID: 3362433694018170449}
+    - target: {fileID: 6167287117492572752, guid: 0ad07dedf987bb2439d07df5bc57dc3a, type: 3}
       propertyPath: _routesHelperData.AllowRepeatRoutes
       value: 1
       objectReference: {fileID: 0}
@@ -30263,8 +30271,8 @@ MonoBehaviour:
   m_Center: {x: 0, y: 2, z: 0}
   m_LayerMask:
     serializedVersion: 2
-    m_Bits: 4294967295
-  m_UseGeometry: 0
+    m_Bits: 574
+  m_UseGeometry: 1
   m_DefaultArea: 0
   m_GenerateLinks: 0
   m_IgnoreNavMeshAgent: 1
@@ -30272,7 +30280,7 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.16666667
+  m_VoxelSize: 0.13333334
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: 1e495941459f8054f9257bc6ea69a484, type: 2}
   m_BuildHeightMesh: 0
@@ -41277,7 +41285,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0.05, z: 0}
-  m_LocalScale: {x: 0.5, y: 2.2514, z: 5}
+  m_LocalScale: {x: 0.2, y: 2.2514, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 797174076}
@@ -54367,7 +54375,7 @@ GameObject:
   - component: {fileID: 8765621584682148821}
   - component: {fileID: 1816480537913136937}
   - component: {fileID: 3896174915437944713}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Leg (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -54384,7 +54392,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1614013689732415158, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}
       propertyPath: m_Name
-      value: TeacherManager
+      value: NavigationManager
       objectReference: {fileID: 0}
     - target: {fileID: 6866377822182471695, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}
       propertyPath: m_LocalPosition.x
@@ -54458,7 +54466,7 @@ GameObject:
   - component: {fileID: 3505740390632305120}
   - component: {fileID: 8782031702277256803}
   - component: {fileID: 7123981939929628282}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Table
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -54541,7 +54549,7 @@ GameObject:
   - component: {fileID: 1590076671237378424}
   - component: {fileID: 8188328090890577565}
   - component: {fileID: 8535864338045684192}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Leg (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -54557,7 +54565,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1219068628437332606}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Renderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -54617,7 +54625,7 @@ GameObject:
   - component: {fileID: 8846586161582991127}
   - component: {fileID: 8734811709755852922}
   - component: {fileID: 8344279780829544021}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Leg (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -54823,7 +54831,7 @@ GameObject:
   - component: {fileID: 2249002709416843354}
   - component: {fileID: 3582206747666188050}
   - component: {fileID: 6635309479547956964}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Leg (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

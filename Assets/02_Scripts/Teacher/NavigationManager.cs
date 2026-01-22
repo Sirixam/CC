@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TeacherManager : MonoBehaviour
+public class NavigationManager : MonoBehaviour
 {
     public enum ERoute
     {
@@ -15,9 +15,11 @@ public class TeacherManager : MonoBehaviour
     {
         public ERoute Type;
         public Transform[] Points;
+        public bool ShowOnGizmos;
     }
 
     [SerializeField] private List<RouteData> _routesData;
+    [SerializeField] private bool _allowGizmos;
 
     public Transform[] GetRandomRoute()
     {
@@ -49,5 +51,21 @@ public class TeacherManager : MonoBehaviour
 
         Debug.LogError("Type is not being handled: " + routeData.Type);
         return new Transform[0];
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (!_allowGizmos) return;
+
+        Gizmos.color = Color.red;
+        foreach (var routeData in _routesData)
+        {
+            if (!routeData.ShowOnGizmos) continue;
+
+            foreach (var point in routeData.Points)
+            {
+                Gizmos.DrawSphere(point.position, 0.5f);
+            }
+        }
     }
 }
