@@ -2,6 +2,10 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 public class NavigationManager : MonoBehaviour
 {
     public enum ERoute
@@ -68,4 +72,16 @@ public class NavigationManager : MonoBehaviour
             }
         }
     }
+
+#if UNITY_EDITOR
+    [Button("Disable All Gizmos Flags")]
+    private void DisableAllGizmosFlags()
+    {
+        foreach (var routeData in _routesData)
+        {
+            routeData.ShowOnGizmos = false;
+        }
+        EditorUtility.SetDirty(this);
+    }
+#endif
 }
