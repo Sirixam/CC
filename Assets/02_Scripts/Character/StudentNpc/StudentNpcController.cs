@@ -48,6 +48,7 @@ public class StudentNpcController : MonoBehaviour
         AnswerController.BlockCheat();
         _fieldOfViewController.HideInstant();
         _distractionUI.Hide();
+        _lightbulbUI.Hide();
         _chairController.OnCollisionEnterEvent += OnCollisionEnter;
     }
 
@@ -71,13 +72,16 @@ public class StudentNpcController : MonoBehaviour
     {
         _stateText.text = "Thinking";
         AnswerController.StartThinking();
+        _lightbulbUI.Show();
+        _lightbulbUI.SetState(isOn: false);
     }
 
     public void StartAnswering()
     {
         _stateText.text = "Answering";
         AnswerController.StartAnswering(progress: 0);
-        _lightbulbUI.Show();
+        _lightbulbUI.SetState(isOn: true);
+        _lightbulbUI.HideDelayed();
     }
 
     public void StartValidating()
@@ -116,7 +120,7 @@ public class StudentNpcController : MonoBehaviour
             _lightbulbUI.Hide();
             OnAnsweringEnded?.Invoke();
         }
-        
+
     }
 
     private void OnCollisionEnter(Collision collision)
