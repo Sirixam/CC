@@ -10,6 +10,7 @@ public class StudentManager : MonoBehaviour
     [SerializeField] private GlobalDefinition _globalDefinition;
 
     public Action<PlayerController> OnPlayerDetected;
+    public Action<IItemController> OnItemDetected;
 
     private void Start()
     {
@@ -17,6 +18,7 @@ public class StudentManager : MonoBehaviour
         {
             string actorID = IActor.GetStudentNpcID(i);
             _students[i].OnPlayerDetected += OnPlayerDetected.Invoke;
+            _students[i].OnItemDetected += OnItemDetected.Invoke;
             _answerManager.AddStudentNpc(actorID, _students[i].AnswerController);
         }
     }
@@ -44,8 +46,12 @@ public class StudentManager : MonoBehaviour
                 student.StartThinking();
                 await student.UpdateRemainingTimeWhileNotDistracted(cancellationToken: cancellationToken);
 
+                
+                
                 student.StartAnswering();
                 await student.UpdateAnsweringTask(cancellationToken);
+                
+                
 
                 student.StartValidating();
                 await student.UpdateRemainingTimeWhileNotDistracted(cancellationToken: cancellationToken);

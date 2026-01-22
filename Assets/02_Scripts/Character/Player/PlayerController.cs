@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
@@ -12,10 +13,10 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     [SerializeField] private ThrowHelper.Data _throwData;
     [SerializeField] private StunHelper.Data _stunData;
     [SerializeField] private PlayerCheatHelper.Data _cheatData;
-    [UnityEngine.Serialization.FormerlySerializedAs("_movementData")]
     [SerializeField] private DashHelper.Data _dashData;
     [SerializeField] private LookHelper.Data _lookData;
     [SerializeField] private PlayerAudioHelper.Data _audioData;
+    [SerializeField] private GlobalDefinition _globalDefinition;
     [Header("TO BE REMOVED")]
     [SerializeField] private bool _dropByHoldingInteract; // Once we decide on the final input scheme, this can be removed
     [SerializeField] private bool _toggleToPeek;
@@ -39,7 +40,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     private PlayerAudioHelper _audioHelper;
 
     // IActor
-    string IActor.ID => IActor.GetPlayerID(_inputHandler.PlayerInput.playerIndex);
+    public string ID => IActor.GetPlayerID(_inputHandler.PlayerInput.playerIndex);
     // IInteractionActor
     Vector3 IInteractionActor.Position => transform.position;
     Vector3 IInteractionActor.Forward => transform.forward;
@@ -47,11 +48,16 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     Vector3 IThrowActor.LookDirection => _view.transform.forward;
     Collider[] IThrowActor.Colliders => _physics.Colliders;
 
+    public PlayerController LastOwner => throw new NotImplementedException();
+
+    public event Action<EDevice> OnShowHelp;
+    public event Action OnHideHelp;
+
     private void Awake()
     {
         _physics.Initialize();
         _interactionHelper = new InteractionHelper(_interactionData, this, isEnabled: true);
-        _throwHelper = new ThrowHelper(_throwData, this, _interactionHelper);
+        _throwHelper = new ThrowHelper(_throwData, this, _interactionHelper, _globalDefinition.FlyingLayer);
         _chairHelper = new ChairHelper(_inputHandler, _view, _physics);
         _stunHelper = new StunHelper(_stunData, _view);
         _cheatHelper = new PlayerCheatHelper(_cheatData, _view);
@@ -62,7 +68,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
         // Initialize
         _lookHelper.Initialize(transform.forward);
-        _fieldOfViewController.Hide();
+        _fieldOfViewController.HideInstant();
         TeleportToInitialChair();
     }
 
@@ -135,6 +141,11 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         else if (actionType == EAction.Utility)
         {
             // TODO: Hide inventory
+            _craftHelper.TryStopCraftingItem();
+        }
+        else if (actionType == EAction.Help)
+        {
+            OnHideHelp.Invoke();
         }
     }
 
@@ -148,6 +159,10 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             _view.OnPickUp(interaction.transform);
             _interactionHelper.StartInteraction(interaction);
             _audioHelper.OnPickUp();
+            if (interaction.TryGetComponent(out IPickUpInteractionOwner interactionOwner))
+            {
+                interactionOwner.OnPickedUp(ID);
+            }
         }
         else if (interaction.Type == EInteraction.Static)
         {
@@ -350,6 +365,20 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             _physics.SetInputDirection(new Vector3(input.x, 0, input.y), updateMoveDirection: false);
             _lookHelper.SetLookInput(input);
         }
+        else if (actionType == EDirectionalAction.Aim_WithMouse)
+        {
+            Ray ray = Camera.main.ScreenPointToRay(input);
+            if (Physics.Raycast(ray, out RaycastHit hit))
+            {
+                Vector2 direction = new Vector3(hit.point.x - transform.position.x, hit.point.z - transform.position.z);
+                _physics.SetInputDirection(direction, updateMoveDirection: false);
+                _lookHelper.SetLookInput(direction);
+            }
+            else
+            {
+                Debug.LogError("Failed to get position from mouse input");
+            }
+        }
     }
 
     private void OnPreHoldActionDetected(EAction actionType)
@@ -401,8 +430,12 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             // TODO: Show inventory
             if (!_interactionHelper.TryGetPickedUpInteraction(out _))
             {
-                _craftHelper.CraftItem("Paper Ball");
+                _craftHelper.TryStartCraftingItem("Paper Ball");
             }
+        }
+        else if (actionType == EAction.Help)
+        {
+            OnShowHelp.Invoke(_inputHandler.LastKnownDeviceType);
         }
     }
 
@@ -453,6 +486,14 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             if (!isHolding)
             {
                 // TODO: Hide inventory
+                _craftHelper.TryStopCraftingItem();
+            }
+        }
+        else if (actionType == EAction.Help)
+        {
+            if (!isHolding)
+            {
+                OnHideHelp.Invoke();
             }
         }
     }
@@ -464,11 +505,18 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             _interactionHelper.TryStopInteraction(stoppedInteraction);
             _view.OnDrop(stoppedInteraction.transform);
             _view.HideThrowPreview();
+            if (stoppedInteraction.TryGetComponent(out IPickUpInteractionOwner interactionOwner))
+            {
+                interactionOwner.OnDropped();
+            }
         }
     }
 
     private void Update()
     {
+        if (!GameManager.Instance.GameplayActive)
+            return;
+        
         _dashHelper.UpdateCooldown();
         if (_stunHelper.IsStunned)
         {
@@ -483,6 +531,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             _answerController.UpdateAnswering(out bool finishedAnswering);
             if (finishedAnswering)
             {
+                _answerController.StartIdle();
                 _audioHelper.OnFinishedCorrectAnswer();
                 if (_cheatHelper.TryGetRememberedAnswer(out string answerID))
                 {
@@ -512,10 +561,17 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         {
             _cheatHelper.UpdateMemory(out _);
         }
+        if (_craftHelper.IsCrafting)
+        {
+            _craftHelper.UpdateCrafting(Time.deltaTime);
+        }
     }
 
     private void FixedUpdate()
     {
+        if (!GameManager.Instance.GameplayActive)
+            return;
+        
         _physics.OnFixedUpdate(Time.fixedDeltaTime, canMove: !_stunHelper.IsStunned, out bool stoppedDashing);
         if (stoppedDashing)
         {
@@ -554,4 +610,10 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     void IThrowActor.OnThrow(Transform thrownTransform)
         => _view.OnThrow(thrownTransform);
+    
+    public void ResetInputState()
+    {
+        _physics.SetInputDirection(Vector3.zero, updateMoveDirection: true);
+        _lookHelper.SetLookInput(Vector2.zero);
+    }
 }

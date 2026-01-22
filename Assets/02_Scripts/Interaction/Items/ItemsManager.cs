@@ -9,12 +9,24 @@ public class ItemsManager : MonoBehaviour
         public string Name;
         public Sprite Icon;
         public GameObject Prefab;
+        public float CraftDuration;
     }
 
     [SerializeField] private string _answerItemName = "Answer";
     [SerializeField] private ItemData[] _itemsData;
 
     public static ItemsManager GetInstance() => FindObjectOfType<ItemsManager>(); // TODO: Remove
+
+    public bool TryGetCraftData(string itemName, out float craftDuration)
+    {
+        if (TryGetItemDataByName(itemName, out ItemData itemData, verbose: true))
+        {
+            craftDuration = itemData.CraftDuration;
+            return true;
+        }
+        craftDuration = 0;
+        return false;
+    }
 
     public PaperBallController InstantiateAnswer(Vector3 position, Quaternion rotation, Transform parent)
     {

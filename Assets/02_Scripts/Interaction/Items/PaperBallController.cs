@@ -1,18 +1,32 @@
 using UnityEngine;
 
-public class PaperBallController : MonoBehaviour, IInteractionOwner
+public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItemController
 {
+    public enum EState
+    {
+        Undefined,
+        Idle,
+        MidAir,
+        PickedUp,
+    }
+
     [Tooltip("Use 0 if there's no answer in this paper ball")]
     [SerializeField] private AnswerDefinition _defaultAnswerDefinition;
     [SerializeField] private ItemAudioHelper.Data _audioData;
+    [SerializeField] private float _timeToDestroyOnIdle = 5f;
 
     private ItemAudioHelper _audioHelper;
     private string _answerID;
+    private float _remainingTimeToDestroyOnIdle;
+    private EState _state;
+    private string _lastOwnerID;
 
     public bool HasAnswer => !string.IsNullOrWhiteSpace(_answerID) || _defaultAnswerDefinition != null;
     public string AnswerID => !string.IsNullOrWhiteSpace(_answerID) ? _answerID : _defaultAnswerDefinition != null ? _defaultAnswerDefinition.ID : null;
 
     public InteractionController InteractionController => GetComponentInChildren<InteractionController>();
+
+    string IItemController.LastOwnerID => _lastOwnerID;
 
     private void Awake()
     {
@@ -33,6 +47,18 @@ public class PaperBallController : MonoBehaviour, IInteractionOwner
         if (answersManager != null)
         {
             answersManager.OnAllPlayersFinishedAnswer -= OnAllPlayersAnsweredFullyEvent;
+        }
+    }
+
+    private void Update()
+    {
+        if (_state == EState.Idle)
+        {
+            _remainingTimeToDestroyOnIdle -= Time.deltaTime;
+            if (_remainingTimeToDestroyOnIdle <= 0f)
+            {
+                Destroy(gameObject);
+            }
         }
     }
 
@@ -60,11 +86,36 @@ public class PaperBallController : MonoBehaviour, IInteractionOwner
         Destroy(gameObject);
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision collision)
     {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Environment") || other.CompareTag("NPC"))
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Environment") || collision.gameObject.CompareTag("NPC"))
         {
-            _audioHelper.OnCollide();
+            _audioHelper.OnCollide(collision);
+            if (_state == EState.MidAir)
+            {
+                SetIdleState();
+            }
         }
+    }
+
+    private void SetIdleState()
+    {
+        _state = EState.Idle;
+        _remainingTimeToDestroyOnIdle = _timeToDestroyOnIdle;
+    }
+
+    // IPickUpInteractionOwner
+    void IPickUpInteractionOwner.OnPickedUp(string actorID)
+    {
+        _lastOwnerID = actorID;
+        _state = EState.PickedUp;
+    }
+    void IPickUpInteractionOwner.OnDropped()
+    {
+        SetIdleState();
+    }
+    void IPickUpInteractionOwner.OnThrowed()
+    {
+        _state = EState.MidAir;
     }
 }
