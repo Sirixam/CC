@@ -18,20 +18,27 @@ public class NavigationManager : MonoBehaviour
     public class RouteData
     {
         public ERoute Type;
-        public Transform[] Points;
+        public WaypointData[] Waitpoints;
         public bool ShowOnGizmos;
+    }
+
+    [Serializable]
+    public class WaypointData
+    {
+        public Transform Point;
+        public float WaitTime;
     }
 
     [SerializeField] private List<RouteData> _routesData;
     [SerializeField] private bool _allowGizmos;
 
-    public Transform[] GetRandomRoute()
+    public WaypointData[] GetRandomRoute()
     {
         int index = UnityEngine.Random.Range(0, _routesData.Count);
         return GetRouteAt(index);
     }
 
-    public Transform[] GetRandomRouteNoRepeat(ref int lastRouteIndex)
+    public WaypointData[] GetRandomRouteNoRepeat(ref int lastRouteIndex)
     {
         int index = UnityEngine.Random.Range(0, _routesData.Count);
         if (_routesData.Count > 1)
@@ -45,16 +52,16 @@ public class NavigationManager : MonoBehaviour
         return GetRouteAt(index);
     }
 
-    private Transform[] GetRouteAt(int index)
+    private WaypointData[] GetRouteAt(int index)
     {
         RouteData routeData = _routesData[index];
         if (routeData.Type == ERoute.Sequence)
         {
-            return routeData.Points;
+            return routeData.Waitpoints;
         }
 
         Debug.LogError("Type is not being handled: " + routeData.Type);
-        return new Transform[0];
+        return new WaypointData[0];
     }
 
     private void OnDrawGizmos()
@@ -66,9 +73,9 @@ public class NavigationManager : MonoBehaviour
         {
             if (!routeData.ShowOnGizmos) continue;
 
-            foreach (var point in routeData.Points)
+            foreach (var stepData in routeData.Waitpoints)
             {
-                Gizmos.DrawSphere(point.position, 0.5f);
+                Gizmos.DrawSphere(stepData.Point.position, 0.5f);
             }
         }
     }

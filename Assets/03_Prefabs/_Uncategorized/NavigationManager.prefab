@@ -359,14 +359,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _routesData:
   - Type: 1
-    Points:
-    - {fileID: 1188086898427177233}
-    - {fileID: 7400198902431061556}
-    - {fileID: 5922070255300294666}
+    Waitpoints:
+    - Point: {fileID: 1188086898427177233}
+      WaitTime: 0
+    - Point: {fileID: 7400198902431061556}
+      WaitTime: 1
+    - Point: {fileID: 5922070255300294666}
+      WaitTime: 0
     ShowOnGizmos: 0
   - Type: 1
-    Points:
-    - {fileID: 1188086898427177233}
+    Waitpoints:
+    - Point: {fileID: 5922070255300294666}
+      WaitTime: 0
     ShowOnGizmos: 0
   _allowGizmos: 1
 --- !u!1 &1798562341932344093

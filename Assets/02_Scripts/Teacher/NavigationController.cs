@@ -2,8 +2,15 @@ using UnityEngine;
 using UnityEngine.AI;
 
 // TODO: Rename and refactor into NavigationHelper.
-public class TeacherController : MonoBehaviour
+public class NavigationController : MonoBehaviour
 {
+    private enum EState
+    {
+        Idle,
+        Moving,
+        Wait,
+    }
+
     [SerializeField] private NavigationManager _navigationManager;
     [SerializeField] private NavMeshAgent _navMeshAgent;
 
@@ -11,10 +18,11 @@ public class TeacherController : MonoBehaviour
     [SerializeField] private bool _allowRepeatRoutes;
 
     private int _lastRouteIndex = -1;
-    private Transform[] _currentRoute;
+    private NavigationManager.WaypointData[] _currentRoute;
     private int _currentWaypointIndex;
 
-    private bool _isMoving;
+    private EState _state;
+    private float _remainingWaitTime;
 
     private void Start()
     {
@@ -23,7 +31,18 @@ public class TeacherController : MonoBehaviour
 
     private void Update()
     {
-        CheckArrival();
+        if (_state == EState.Moving)
+        {
+            CheckArrival();
+        }
+        else if (_state == EState.Wait)
+        {
+            _remainingWaitTime -= Time.deltaTime;
+            if (_remainingWaitTime <= 0)
+            {
+                NextWaypoint();
+            }
+        }
     }
 
     [Button("Go To Destination")]
@@ -40,15 +59,12 @@ public class TeacherController : MonoBehaviour
         if (_currentRoute == null || _currentWaypointIndex >= _currentRoute.Length)
             return;
 
-        _isMoving = true;
-        _navMeshAgent.SetDestination(_currentRoute[_currentWaypointIndex].position);
+        _state = EState.Moving;
+        _navMeshAgent.SetDestination(_currentRoute[_currentWaypointIndex].Point.position);
     }
 
     private void CheckArrival()
     {
-        if (!_isMoving)
-            return;
-
         if (_navMeshAgent.pathPending)
             return;
 
@@ -56,7 +72,6 @@ public class TeacherController : MonoBehaviour
         {
             if (!_navMeshAgent.hasPath || _navMeshAgent.velocity.sqrMagnitude == 0f)
             {
-                _isMoving = false;
                 OnArriveAtWaypoint();
             }
         }
@@ -64,8 +79,20 @@ public class TeacherController : MonoBehaviour
 
     private void OnArriveAtWaypoint()
     {
-        _currentWaypointIndex++;
+        float waitTime = _currentRoute[_currentWaypointIndex].WaitTime;
+        if (waitTime > 0)
+        {
+            _state = EState.Wait;
+            _remainingWaitTime = waitTime;
+            return;
+        }
 
+        NextWaypoint();
+    }
+
+    private void NextWaypoint()
+    {
+        _currentWaypointIndex++;
         if (_currentWaypointIndex < _currentRoute.Length)
         {
             MoveToCurrentWaypoint();
@@ -78,6 +105,7 @@ public class TeacherController : MonoBehaviour
 
     private void OnArriveAtDestination()
     {
+        _state = EState.Idle;
         GoToNewDestination(); // TODO: Throw event instead and handle logic inside real teacher controller.
     }
 }
