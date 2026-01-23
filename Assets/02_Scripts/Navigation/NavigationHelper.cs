@@ -1,22 +1,27 @@
+using System;
 using UnityEngine;
 using UnityEngine.AI;
 
-// TODO: Rename and refactor into NavigationHelper.
-public class NavigationController : MonoBehaviour
+public class NavigationHelper
 {
     private enum EState
     {
         Idle,
         Moving,
-        Wait,
+        WaitingDelay,
     }
 
-    [SerializeField] private NavigationManager _navigationManager;
-    [SerializeField] private NavMeshAgent _navMeshAgent;
+    [Serializable]
+    public class Data
+    {
+        public bool AllowRepeatRoutes;
+    }
 
-    [Header("Configurations")]
-    [SerializeField] private bool _allowRepeatRoutes;
+    private Data _data;
+    private NavigationManager _navigationManager;
+    private NavMeshAgent _navMeshAgent;
 
+    private IActor _actor;
     private int _lastRouteIndex = -1;
     private NavigationManager.WaypointData[] _currentRoute;
     private int _currentWaypointIndex;
@@ -24,18 +29,26 @@ public class NavigationController : MonoBehaviour
     private EState _state;
     private float _remainingWaitTime;
 
-    private void Start()
+    public NavigationHelper(IActor actor, Data data, NavMeshAgent navMeshAgent, NavigationManager navigationManager)
+    {
+        _actor = actor;
+        _data = data;
+        _navMeshAgent = navMeshAgent;
+        _navigationManager = navigationManager;
+    }
+
+    public void Start()
     {
         GoToNewDestination();
     }
 
-    private void Update()
+    public void Update()
     {
         if (_state == EState.Moving)
         {
             CheckArrival();
         }
-        else if (_state == EState.Wait)
+        else if (_state == EState.WaitingDelay)
         {
             _remainingWaitTime -= Time.deltaTime;
             if (_remainingWaitTime <= 0)
@@ -79,11 +92,17 @@ public class NavigationController : MonoBehaviour
 
     private void OnArriveAtWaypoint()
     {
-        float waitTime = _currentRoute[_currentWaypointIndex].WaitTime;
-        if (waitTime > 0)
+        NavigationManager.WaypointData waypoint = _currentRoute[_currentWaypointIndex];
+        if (waypoint.ArriveEvent != null)
         {
-            _state = EState.Wait;
-            _remainingWaitTime = waitTime;
+            waypoint.ArriveEvent.Execute(_actor);
+        }
+
+        float nextDelay = waypoint.NextDelay;
+        if (nextDelay > 0)
+        {
+            _state = EState.WaitingDelay;
+            _remainingWaitTime = nextDelay;
             return;
         }
 
@@ -99,13 +118,8 @@ public class NavigationController : MonoBehaviour
         }
         else
         {
-            OnArriveAtDestination();
+            _state = EState.Idle;
+            GoToNewDestination();
         }
-    }
-
-    private void OnArriveAtDestination()
-    {
-        _state = EState.Idle;
-        GoToNewDestination(); // TODO: Throw event instead and handle logic inside real teacher controller.
     }
 }

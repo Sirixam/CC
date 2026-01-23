@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5025262427557913485}
-  - component: {fileID: 6167287117492572752}
+  - component: {fileID: 2994896442341047896}
   - component: {fileID: 837891386267205533}
   - component: {fileID: 3172580570902581395}
   m_Layer: 0
@@ -36,7 +36,7 @@ Transform:
   - {fileID: 2800609614013780048}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6167287117492572752
+--- !u!114 &2994896442341047896
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -45,11 +45,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1293420975260992881}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c6c50241d06f0634baa05a7cc21b861e, type: 3}
+  m_Script: {fileID: 11500000, guid: c93e102fbb50b1e43b48a29a65760e75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _navigationManager: {fileID: 0}
   _navMeshAgent: {fileID: 837891386267205533}
-  _destinationPoint: {fileID: 0}
+  _navigationData:
+    AllowRepeatRoutes: 0
 --- !u!195 &837891386267205533
 NavMeshAgent:
   m_ObjectHideFlags: 0

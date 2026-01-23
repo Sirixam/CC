@@ -26,7 +26,8 @@ public class NavigationManager : MonoBehaviour
     public class WaypointData
     {
         public Transform Point;
-        public float WaitTime;
+        public float NextDelay;
+        public NavigationEventDefinition ArriveEvent;
     }
 
     [SerializeField] private List<RouteData> _routesData;
