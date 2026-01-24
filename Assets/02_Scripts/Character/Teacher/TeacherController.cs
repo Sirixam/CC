@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -11,10 +12,10 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
     }
 
     [SerializeField] private FieldOfViewController _fieldOfViewController;
-    [SerializeField] private NavigationManager _navigationManager;
     [SerializeField] private NavMeshAgent _navMeshAgent;
     [SerializeField] private NavigationHelper.Data _navigationData;
     [SerializeField] private TeacherAudioHelper.Data _audioData;
+    [SerializeField] private GlobalDefinition _globalDefinition;
     [Header("Configurations")]
     [SerializeField] private Vector2 _timeToStandRange = new Vector2(5, 5);
     [SerializeField] private Vector2 _timeToSitRange = new Vector2(10, 10);
@@ -30,12 +31,19 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
     private NavigationHelper _navigationHelper;
     private TeacherAudioHelper _audioHelper;
 
+    public Action<PlayerController> OnPlayerDetected;
+    public Action<IItemController> OnItemDetected;
+
     private void Awake()
     {
         _audioHelper = new TeacherAudioHelper(_audioData);
-        _navigationHelper = new NavigationHelper(this, _navigationData, _navMeshAgent, _navigationManager);
-        _navigationHelper.OnArriveAtDestination += OnArriveAtDestination;
         _fieldOfViewController.HideInstant();
+    }
+
+    public void Inject(NavigationManager navigationManager)
+    {
+        _navigationHelper = new NavigationHelper(this, _navigationData, _navMeshAgent, navigationManager);
+        _navigationHelper.OnArriveAtDestination += OnArriveAtDestination;
     }
 
     private void Start()
@@ -90,12 +98,33 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
     {
         _state = EState.Sit;
         _fieldOfViewController.Hide();
-        _remainingTime = Random.Range(_timeToStandRange.x, _timeToStandRange.y);
+        _remainingTime = UnityEngine.Random.Range(_timeToStandRange.x, _timeToStandRange.y);
     }
 
     private void Stand()
     {
         _fieldOfViewController.Show();
-        _remainingTime = Random.Range(_timeToSitRange.x, _timeToSitRange.y);
+        _remainingTime = UnityEngine.Random.Range(_timeToSitRange.x, _timeToSitRange.y);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag(_globalDefinition.PlayerTag))
+        {
+            PlayerController playerController = other.GetComponentInParent<PlayerController>();
+            OnPlayerDetected?.Invoke(playerController);
+        }
+        else if (other.gameObject.layer == _globalDefinition.ItemLayer || other.gameObject.layer == _globalDefinition.FlyingLayer)
+        {
+            IItemController itemController = other.GetComponentInParent<IItemController>();
+            if (itemController == null)
+            {
+                Debug.LogError("Other collider has item tag, but has not implemented item controller. Name: " + other.name);
+            }
+            else
+            {
+                OnItemDetected?.Invoke(itemController);
+            }
+        }
     }
 }

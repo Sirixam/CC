@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] private AnswersManager _answerManager;
     [SerializeField] private StudentManager _studentManager;
+    [SerializeField] private TeacherManager _teacherManager;
 
     [SerializeField] private GameObject _defeatFeedback;
     [SerializeField] private GameObject _victoryFeedback;
@@ -27,10 +28,10 @@ public class GameManager : MonoBehaviour
     private CancellationTokenSource _gameCancellationSource;
     private List<PlayerController> _players = new();
     private int _playerLives;
-    
+
     public static GameManager Instance { get; private set; }
     public bool GameplayActive { get; private set; }
-    
+
     [SerializeField] private MultiplayerEventSystem _eventSystem;
 
     private void Awake()
@@ -73,6 +74,8 @@ public class GameManager : MonoBehaviour
         _answerManager.OnAllPlayersFinishedAllAnswers += OnAllPlayersFinishedAllAnswers;
         _studentManager.OnPlayerDetected += OnPlayerDetected;
         _studentManager.OnItemDetected += OnItemDetected;
+        _teacherManager.OnPlayerDetected += OnPlayerDetected;
+        _teacherManager.OnItemDetected += OnItemDetected;
     }
 
     private void OnDisable()
@@ -81,6 +84,8 @@ public class GameManager : MonoBehaviour
         _answerManager.OnAllPlayersFinishedAllAnswers -= OnAllPlayersFinishedAllAnswers;
         _studentManager.OnPlayerDetected -= OnPlayerDetected;
         _studentManager.OnItemDetected -= OnItemDetected;
+        _teacherManager.OnPlayerDetected -= OnPlayerDetected;
+        _teacherManager.OnItemDetected -= OnItemDetected;
     }
 
     // Triggere externallyd when a player joins the game
@@ -91,7 +96,7 @@ public class GameManager : MonoBehaviour
         {
             return;
         }
-        
+
         PlayerController playerController = playerInput.GetComponent<PlayerController>();
         ChairController chairController = _answerManager.GetPlayerDesk(playerInput.playerIndex).transform.parent.GetComponentInChildren<ChairController>();
         playerController.SetInitialChairController(chairController);
@@ -161,7 +166,7 @@ public class GameManager : MonoBehaviour
 
     private void OnAllPlayersFinishedAllAnswers()
     {
-       ShowEndMenu(_victoryFeedback);
+        ShowEndMenu(_victoryFeedback);
     }
 
     private void OnTimesUp()
@@ -224,7 +229,7 @@ public class GameManager : MonoBehaviour
         playerController = null;
         return false;
     }
-    
+
     private void FocusFirstRestartButton()
     {
         if (_eventSystem == null)
@@ -244,14 +249,14 @@ public class GameManager : MonoBehaviour
             }
         }
     }
-    
+
     private void DisableGameplayInput()
     {
 
         foreach (var playerInput in PlayerInput.all)
         {
             var handler = playerInput.GetComponent<PlayerInputHandler>();
-            
+
             if (handler == null)
                 continue;
 
@@ -260,7 +265,7 @@ public class GameManager : MonoBehaviour
 
         }
     }
-    
+
     private void EnableGameplayInput()
     {
         foreach (var playerInput in PlayerInput.all)
@@ -271,7 +276,7 @@ public class GameManager : MonoBehaviour
             playerInput.ActivateInput();
         }
     }
-    
+
     private void ShowEndMenu(GameObject menu)
     {
         StopGame();

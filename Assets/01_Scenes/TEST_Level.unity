@@ -1203,6 +1203,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _answerManager: {fileID: 844122163}
   _studentManager: {fileID: 1850831638}
+  _teacherManager: {fileID: 1348037578}
   _defeatFeedback: {fileID: 894644630}
   _victoryFeedback: {fileID: 1900106230}
   _timeUI: {fileID: 1208151559}
@@ -16432,6 +16433,17 @@ Transform:
   - {fileID: 117098730}
   m_Father: {fileID: 966900658}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &510951472 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2994896442341047896, guid: 0ad07dedf987bb2439d07df5bc57dc3a, type: 3}
+  m_PrefabInstance: {fileID: 1080502217}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c93e102fbb50b1e43b48a29a65760e75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &541495723
 GameObject:
   m_ObjectHideFlags: 0
@@ -30887,6 +30899,53 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1343877970}
   m_CullTransparentMesh: 1
+--- !u!1 &1348037576
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1348037577}
+  - component: {fileID: 1348037578}
+  m_Layer: 0
+  m_Name: TeacherManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1348037577
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1348037576}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2087049571}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1348037578
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1348037576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e94de8470f5f934cb0631cf0a463a7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _navigationManager: {fileID: 3362433694018170449}
+  _teachers:
+  - {fileID: 510951472}
 --- !u!1 &1360044893
 GameObject:
   m_ObjectHideFlags: 0
@@ -53833,6 +53892,7 @@ Transform:
   - {fileID: 20894892}
   - {fileID: 1039779046}
   - {fileID: 3362433694018170448}
+  - {fileID: 1348037577}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2098177094

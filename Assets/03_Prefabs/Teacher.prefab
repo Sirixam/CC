@@ -109,6 +109,9 @@ MonoBehaviour:
   _navMeshAgent: {fileID: 837891386267205533}
   _navigationData:
     AllowRepeatRoutes: 0
+  _globalDefinition: {fileID: 11400000, guid: 2b0875648e78a8e45b08a646836071ca, type: 2}
+  _timeToStandRange: {x: 5, y: 5}
+  _timeToSitRange: {x: 10, y: 10}
   _seatRouteName: TeacherSeat
 --- !u!195 &837891386267205533
 NavMeshAgent:
