@@ -13,6 +13,7 @@ public class NavigationEventDefinition : ScriptableObject
     }
 
     [SerializeField] private ETypes _type;
+    [SerializeField] private LookAroundEventUtils.Data _lookAroundData;
 
     public void Execute(IActor actor)
     {
@@ -28,7 +29,7 @@ public class NavigationEventDefinition : ScriptableObject
         if (_type.HasFlag(ETypes.LookAround))
         {
             isHandled = true;
-            ExecuteLookAroundEvent(teacherController);
+            LookAroundEventUtils.Execute(teacherController, _lookAroundData);
         }
         else if (_type.HasFlag(ETypes.OnComplete))
         {
@@ -40,11 +41,6 @@ public class NavigationEventDefinition : ScriptableObject
         {
             Debug.LogError("Navigation event type is not being handled: " + name);
         }
-    }
-
-    private void ExecuteLookAroundEvent(IActor actor)
-    {
-        Debug.Log("Execute Look Around Event for Actor: " + actor.ID); // TODO
     }
 
     private void ExecuteOnComplete(IActor actor)

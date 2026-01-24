@@ -13,3 +13,8 @@ MonoBehaviour:
   m_Name: DEF_NavigationEvent_LookAround
   m_EditorClassIdentifier: 
   _type: 1
+  _lookAroundData:
+    Angles:
+    - 40
+    - -20
+    - 0
