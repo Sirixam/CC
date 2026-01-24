@@ -29,21 +29,21 @@ public class DistractionHelper
     private FieldOfViewController _fovController;
     private LookHelper _lookHelper;
     private AnswerController _answerController;
-    private readonly StudentAudio _audio;
+    private StudentAudioHelper _audioHelper;
 
     private int _accumulatedDistraction;
     private CancellationTokenSource _cancellationTokenSource;
 
     public bool IsDistracted { get; private set; }
 
-    public DistractionHelper(Data data, DistractionUI distractionUI, FieldOfViewController fovController, LookHelper lookHelper, AnswerController answerController, StudentAudio audio)
+    public DistractionHelper(Data data, DistractionUI distractionUI, FieldOfViewController fovController, LookHelper lookHelper, AnswerController answerController, StudentAudioHelper audioHelper)
     {
         _data = data;
         _distractionUI = distractionUI;
         _fovController = fovController;
         _lookHelper = lookHelper;
         _answerController = answerController;
-        _audio = audio;
+        _audioHelper = audioHelper;
     }
 
     public async UniTask OnDistracted(Vector3 hitDirection)
@@ -63,7 +63,7 @@ public class DistractionHelper
 
         IsDistracted = true;
         _answerController.UnblockCheat();
-        _audio.OnDistracted(level);
+        _audioHelper.OnDistracted(level);
         _distractionUI.Show(level);
 
         await UniTask.WaitForSeconds(levelData.DistractionRotationDelay);

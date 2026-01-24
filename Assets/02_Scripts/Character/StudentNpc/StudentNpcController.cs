@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class StudentNpcController : MonoBehaviour
 {
-    [SerializeField] private StudentAudio _audio;
     [SerializeField] private FieldOfViewController _fieldOfViewController;
     [SerializeField] private TMP_Text _stateText;
     [SerializeField] private DistractionUI _distractionUI;
@@ -15,6 +14,7 @@ public class StudentNpcController : MonoBehaviour
     [Header("Data")]
     [SerializeField] private LookHelper.Data _lookData;
     [SerializeField] private DistractionHelper.Data _distractionData;
+    [SerializeField] private StudentAudioHelper.Data _audioData;
     [SerializeField] private GlobalDefinition _globalDefinition;
     [SerializeField] private bool _canDetectItems;
     [SerializeField] private bool _canDetectFlyingItems;
@@ -28,6 +28,7 @@ public class StudentNpcController : MonoBehaviour
     // Helpers
     private LookHelper _lookHelper;
     private DistractionHelper _distractionHelper;
+    private StudentAudioHelper _audioHelper;
 
     public Action<PlayerController> OnPlayerDetected;
     public Action<IItemController> OnItemDetected;
@@ -40,7 +41,8 @@ public class StudentNpcController : MonoBehaviour
 
         // Helpers
         _lookHelper = new LookHelper(_lookData);
-        _distractionHelper = new DistractionHelper(_distractionData, _distractionUI, _fieldOfViewController, _lookHelper, AnswerController, _audio);
+        _audioHelper = new StudentAudioHelper(_audioData);
+        _distractionHelper = new DistractionHelper(_distractionData, _distractionUI, _fieldOfViewController, _lookHelper, AnswerController, _audioHelper);
 
         // Initialize
         _stateText.text = "Idle";
