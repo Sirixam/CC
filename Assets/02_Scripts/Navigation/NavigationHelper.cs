@@ -61,7 +61,14 @@ public class NavigationHelper
     [Button("Go To Destination")]
     public void GoToNewDestination()
     {
-        _currentRoute = _navigationManager.GetRandomRouteNoRepeat(ref _lastRouteIndex);
+        if (_data.AllowRepeatRoutes)
+        {
+            _currentRoute = _navigationManager.GetRandomRoute();
+        }
+        else
+        {
+            _currentRoute = _navigationManager.GetRandomRouteNoRepeat(ref _lastRouteIndex);
+        }
         _currentWaypointIndex = 0;
 
         MoveToCurrentWaypoint();
