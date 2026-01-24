@@ -14,25 +14,29 @@ public static class LookAroundEventUtils
     public class Data
     {
         public float[] Angles;
+        public Vector2 IntervalDelayThreshold = new Vector2(0.2f, 0.5f);
+        public float RotateDuration = 0.25f;
+
+        public float GetRandomIntervalDelay() => UnityEngine.Random.Range(IntervalDelayThreshold.x, IntervalDelayThreshold.y);
     }
 
     public static void Execute(ILookAroundActor actor, Data data)
     {
-        actor.StartCoroutine(LookAroundRoutine(actor, data.Angles));
+        actor.StartCoroutine(LookAroundRoutine(actor, data));
     }
 
-    private static IEnumerator LookAroundRoutine(ILookAroundActor actor, params float[] angles)
+    private static IEnumerator LookAroundRoutine(ILookAroundActor actor, Data data)
     {
         Transform pivot = actor.Pivot;
         Quaternion originalRotation = pivot.localRotation;
 
-        foreach (float angle in angles)
+        foreach (float angle in data.Angles)
         {
-            yield return RotateTo(pivot, originalRotation * Quaternion.Euler(0f, angle, 0f), 0.25f);
-            yield return new WaitForSeconds(UnityEngine.Random.Range(0.2f, 0.5f));
+            yield return RotateTo(pivot, originalRotation * Quaternion.Euler(0f, angle, 0f), data.RotateDuration);
+            yield return new WaitForSeconds(data.GetRandomIntervalDelay());
         }
 
-        yield return RotateTo(pivot, originalRotation, 0.3f);
+        yield return RotateTo(pivot, originalRotation, data.RotateDuration);
     }
 
     private static IEnumerator RotateTo(Transform target, Quaternion targetRotation, float duration)
