@@ -29,6 +29,8 @@ public class NavigationHelper
     private EState _state;
     private float _remainingWaitTime;
 
+    public event Action OnArriveAtDestination;
+
     public NavigationHelper(IActor actor, Data data, NavMeshAgent navMeshAgent, NavigationManager navigationManager)
     {
         _actor = actor;
@@ -58,7 +60,7 @@ public class NavigationHelper
             _remainingWaitTime -= Time.deltaTime;
             if (_remainingWaitTime <= 0)
             {
-                NextWaypoint();
+                MoveToCurrentWaypoint();
             }
         }
     }
@@ -117,28 +119,35 @@ public class NavigationHelper
             waypoint.ArriveEvent.Execute(_actor);
         }
 
-        float nextDelay = waypoint.NextDelay;
-        if (nextDelay > 0)
+        if (HasNextWaypoint())
         {
-            _state = EState.WaitingDelay;
-            _remainingWaitTime = nextDelay;
-            return;
-        }
+            _currentWaypointIndex++;
+            float nextDelay = waypoint.NextDelay;
+            if (nextDelay > 0)
+            {
+                _state = EState.WaitingDelay;
+                _remainingWaitTime = nextDelay;
+                return;
+            }
 
-        NextWaypoint();
-    }
-
-    private void NextWaypoint()
-    {
-        _currentWaypointIndex++;
-        if (_currentWaypointIndex < _currentRoute.Length)
-        {
             MoveToCurrentWaypoint();
         }
         else
         {
             _state = EState.Idle;
-            GoToRandomDestination();
+            if (OnArriveAtDestination != null)
+            {
+                OnArriveAtDestination.Invoke();
+            }
+            else
+            {
+                GoToRandomDestination();
+            }
         }
+    }
+
+    private bool HasNextWaypoint()
+    {
+        return _currentWaypointIndex + 1 < _currentRoute.Length;
     }
 }
