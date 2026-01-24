@@ -7,13 +7,16 @@ public class NavigationEventDefinition : ScriptableObject
     [Flags]
     public enum ETypes
     {
-        Undefined,
-        LookAround,
-        OnComplete,
+        None = 0,
+        LookAround = 1 << 0,
+        OnComplete = 1 << 1,
     }
 
     [SerializeField] private ETypes _type;
+    [HideIf("HideLookAroundData")]
     [SerializeField] private LookAroundEventUtils.Data _lookAroundData;
+
+    private bool HideLookAroundData => !_type.HasFlag(ETypes.LookAround);
 
     public void Execute(IActor actor)
     {
@@ -31,7 +34,7 @@ public class NavigationEventDefinition : ScriptableObject
             isHandled = true;
             LookAroundEventUtils.Execute(teacherController, _lookAroundData);
         }
-        else if (_type.HasFlag(ETypes.OnComplete))
+        if (_type.HasFlag(ETypes.OnComplete))
         {
             isHandled = true;
             ExecuteOnComplete(teacherController);
