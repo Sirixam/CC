@@ -16,9 +16,11 @@ public class FieldOfViewController : MonoBehaviour
     [SerializeField] private float _physicsThickness = 0.1f;
 
     private Tween _scaleTween;
+    private Vector3 _meshColliderOriginalPosition;
 
     private void Awake()
     {
+        _meshColliderOriginalPosition = _meshCollider.transform.localPosition;
         _showTweenSettings.startFromCurrent = true;
         _hideTweenSettings.startFromCurrent = true;
         UpdateMesh();
@@ -27,7 +29,7 @@ public class FieldOfViewController : MonoBehaviour
     public void Show()
     {
         _meshRenderer.enabled = true;
-        _meshCollider.transform.localPosition = Vector3.zero;
+        _meshCollider.transform.localPosition = _meshColliderOriginalPosition;
 
         _scaleTween.Stop();
         _scaleTween = Tween.Scale(_meshRenderer.transform, _showTweenSettings);

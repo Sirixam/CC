@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 1146082431786732388}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -105,7 +105,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _fieldOfViewController: {fileID: 8460483364678813329}
-  _navigationManager: {fileID: 0}
   _navMeshAgent: {fileID: 837891386267205533}
   _navigationData:
     AllowRepeatRoutes: 0
@@ -256,7 +255,7 @@ MonoBehaviour:
   _fieldOfView: 60
   _fieldOfViewWidth: 0.5
   _visualThickness: 0.01
-  _physicsThickness: 0.1
+  _physicsThickness: 2
 --- !u!33 &6965761521721660108
 MeshFilter:
   m_ObjectHideFlags: 0
