@@ -16,10 +16,9 @@ public class DistractionHelper
             public float DistractionRotationDelay;
             public float LookSpeedMultiplier;
             public bool Rotate;
+            public bool ShowFOV;
         }
 
-        [Tag]
-        public string DistractionTag = "Distraction";
         public float DistractionReductionDelay;
         public float DistractionReductionSpeed;
         public Level[] Levels;
@@ -30,21 +29,21 @@ public class DistractionHelper
     private FieldOfViewController _fovController;
     private LookHelper _lookHelper;
     private AnswerController _answerController;
-    private readonly StudentAudio _audio;
+    private StudentAudioHelper _audioHelper;
 
     private int _accumulatedDistraction;
     private CancellationTokenSource _cancellationTokenSource;
 
     public bool IsDistracted { get; private set; }
 
-    public DistractionHelper(Data data, DistractionUI distractionUI, FieldOfViewController fovController, LookHelper lookHelper, AnswerController answerController, StudentAudio audio)
+    public DistractionHelper(Data data, DistractionUI distractionUI, FieldOfViewController fovController, LookHelper lookHelper, AnswerController answerController, StudentAudioHelper audioHelper)
     {
         _data = data;
         _distractionUI = distractionUI;
         _fovController = fovController;
         _lookHelper = lookHelper;
         _answerController = answerController;
-        _audio = audio;
+        _audioHelper = audioHelper;
     }
 
     public async UniTask OnDistracted(Vector3 hitDirection)
@@ -64,7 +63,7 @@ public class DistractionHelper
 
         IsDistracted = true;
         _answerController.UnblockCheat();
-        _audio.OnDistracted(level);
+        _audioHelper.OnDistracted(level);
         _distractionUI.Show(level);
 
         await UniTask.WaitForSeconds(levelData.DistractionRotationDelay);
@@ -75,14 +74,20 @@ public class DistractionHelper
             _lookHelper.AddLookMultiplier(levelData.LookSpeedMultiplier);
             _lookHelper.SetLookInput(lookDirection);
         }
-        _fovController.Show();
+        if (levelData.ShowFOV)
+        {
+            _fovController.Show();
+        }
 
         await UniTask.WaitForSeconds(levelData.DistractionDuration - levelData.DistractionRotationDelay);
 
         IsDistracted = false;
         _answerController.BlockCheat();
-        _fovController.Hide();
         _distractionUI.Hide();
+        if (levelData.ShowFOV)
+        {
+            _fovController.Hide();
+        }
         if (levelData.Rotate)
         {
             _lookHelper.RemoveLookMultiplier(levelData.LookSpeedMultiplier);

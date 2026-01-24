@@ -12,4 +12,9 @@ public interface IActor
     {
         return "StudentNpc_" + index;
     }
+
+    public static string GetTeacherID(int index)
+    {
+        return "Teacher_" + index;
+    }
 }

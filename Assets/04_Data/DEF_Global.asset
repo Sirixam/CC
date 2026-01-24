@@ -17,4 +17,8 @@ MonoBehaviour:
   PersistAnswerProgress: 0
   PlayerLives: 3
   PreAnsweringDelay: {x: 3, y: 3}
-  PostAnsweringDelay: {x: 5, y: 5}
+  PostAnsweringDelay: {x: 15, y: 25}
+  PlayerTag: Player
+  DistractionTag: Distraction
+  ItemLayer: 7
+  FlyingLayer: 8

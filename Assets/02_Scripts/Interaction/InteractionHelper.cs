@@ -33,19 +33,19 @@ public class InteractionHelper
         public string[] InteractionTags;
         public ELog ScoreLogType = ELog.None;
     }
-
-    private IInteractionActor _actor;
+    
     private Data _data;
+    private IInteractionActor _actor;
     private bool _isEnabled;
     private List<InteractionController> _interactions = new();
     private List<InteractionController> _activeInteractions = new();
 
     public InteractionController BestInteraction { get; private set; }
 
-    public InteractionHelper(IInteractionActor actor, Data configurations, bool isEnabled)
+    public InteractionHelper(Data data, IInteractionActor actor, bool isEnabled)
     {
-        _actor = actor;
-        _data = configurations;
+        _data = data;
+        _actor = actor;        
         _isEnabled = isEnabled;
         _data.FacingScores.Sort((a, b) => a.MaxAngle.CompareTo(b.MaxAngle)); // Ensure ascending order
     }

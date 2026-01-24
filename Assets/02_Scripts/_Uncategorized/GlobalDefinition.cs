@@ -9,4 +9,12 @@ public class GlobalDefinition : ScriptableObject
     public int PlayerLives;
     public Vector2 PreAnsweringDelay;
     public Vector2 PostAnsweringDelay;
+
+    [Header("TAGS")]
+    [Tag] public string PlayerTag;
+    [Tag] public string DistractionTag;
+
+    [Header("LAYERS")]
+    [Layer] public int ItemLayer;
+    [Layer] public int FlyingLayer;
 }

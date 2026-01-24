@@ -6,15 +6,18 @@ using UnityEngine;
 
 public class StudentNpcController : MonoBehaviour
 {
-    [SerializeField] private StudentAudio _audio;
     [SerializeField] private FieldOfViewController _fieldOfViewController;
     [SerializeField] private TMP_Text _stateText;
     [SerializeField] private DistractionUI _distractionUI;
+    [SerializeField] private LightbulbUI _lightbulbUI;
 
     [Header("Data")]
     [SerializeField] private LookHelper.Data _lookData;
     [SerializeField] private DistractionHelper.Data _distractionData;
-    [SerializeField, Tag] private string _playerTag = "Player";
+    [SerializeField] private StudentAudioHelper.Data _audioData;
+    [SerializeField] private GlobalDefinition _globalDefinition;
+    [SerializeField] private bool _canDetectItems;
+    [SerializeField] private bool _canDetectFlyingItems;
 
     // Runtime    
     public bool IsDistracted => _distractionHelper.IsDistracted;
@@ -25,8 +28,11 @@ public class StudentNpcController : MonoBehaviour
     // Helpers
     private LookHelper _lookHelper;
     private DistractionHelper _distractionHelper;
+    private StudentAudioHelper _audioHelper;
 
     public Action<PlayerController> OnPlayerDetected;
+    public Action<IItemController> OnItemDetected;
+    public event Action OnAnsweringEnded;
 
     private void Awake()
     {
@@ -35,14 +41,16 @@ public class StudentNpcController : MonoBehaviour
 
         // Helpers
         _lookHelper = new LookHelper(_lookData);
-        _distractionHelper = new DistractionHelper(_distractionData, _distractionUI, _fieldOfViewController, _lookHelper, AnswerController, _audio);
+        _audioHelper = new StudentAudioHelper(_audioData);
+        _distractionHelper = new DistractionHelper(_distractionData, _distractionUI, _fieldOfViewController, _lookHelper, AnswerController, _audioHelper);
 
         // Initialize
         _stateText.text = "Idle";
         _lookHelper.Initialize(transform.forward);
         AnswerController.BlockCheat();
-        _fieldOfViewController.Hide();
+        _fieldOfViewController.HideInstant();
         _distractionUI.Hide();
+        _lightbulbUI.Hide();
         _chairController.OnCollisionEnterEvent += OnCollisionEnter;
     }
 
@@ -66,12 +74,16 @@ public class StudentNpcController : MonoBehaviour
     {
         _stateText.text = "Thinking";
         AnswerController.StartThinking();
+        _lightbulbUI.Show();
+        _lightbulbUI.SetState(isOn: false);
     }
 
     public void StartAnswering()
     {
         _stateText.text = "Answering";
         AnswerController.StartAnswering(progress: 0);
+        _lightbulbUI.SetState(isOn: true);
+        _lightbulbUI.HideDelayed();
     }
 
     public void StartValidating()
@@ -104,11 +116,18 @@ public class StudentNpcController : MonoBehaviour
             }
             await UniTask.Yield(cancellationToken);
         }
+
+        if (!cancellationToken.IsCancellationRequested)
+        {
+            _lightbulbUI.Hide();
+            OnAnsweringEnded?.Invoke();
+        }
+
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.CompareTag(_distractionData.DistractionTag))
+        if (collision.collider.CompareTag(_globalDefinition.DistractionTag))
         {
             Vector3 hitDirection = Vector3.zero;
             foreach (var contact in collision.contacts)
@@ -122,10 +141,22 @@ public class StudentNpcController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag(_playerTag))
+        if (other.CompareTag(_globalDefinition.PlayerTag))
         {
             PlayerController playerController = other.GetComponentInParent<PlayerController>();
             OnPlayerDetected?.Invoke(playerController);
+        }
+        else if ((_canDetectItems && other.gameObject.layer == _globalDefinition.ItemLayer) || (_canDetectFlyingItems && other.gameObject.layer == _globalDefinition.FlyingLayer))
+        {
+            IItemController itemController = other.GetComponentInParent<IItemController>();
+            if (itemController == null)
+            {
+                Debug.LogError("Other collider has item tag, but has not implemented item controller. Name: " + other.name);
+            }
+            else
+            {
+                OnItemDetected?.Invoke(itemController);
+            }
         }
     }
 }

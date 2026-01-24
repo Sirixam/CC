@@ -5,7 +5,7 @@ public class AnswerController : MonoBehaviour
 {
     public enum EState
     {
-        Undefined,
+        Idle,
         Thinking,
         Answering,
         Validating,
@@ -139,6 +139,11 @@ public class AnswerController : MonoBehaviour
     public void StartValidating()
     {
         _state = EState.Validating;
+    }
+
+    public void StartIdle()
+    {
+        _state = EState.Idle;
     }
 
     public float GetAnsweringDuration()

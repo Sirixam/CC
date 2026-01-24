@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
@@ -5,7 +6,6 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     [SerializeField] private PlayerView _view;
     [SerializeField] private PlayerInputHandler _inputHandler;
     [SerializeField] private PlayerPhysics _physics;
-    [SerializeField] private PlayerAudio _audio;
     [SerializeField] private FieldOfViewController _fieldOfViewController;
 
     [Header("Data")]
@@ -13,11 +13,11 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     [SerializeField] private ThrowHelper.Data _throwData;
     [SerializeField] private StunHelper.Data _stunData;
     [SerializeField] private PlayerCheatHelper.Data _cheatData;
-    [UnityEngine.Serialization.FormerlySerializedAs("_movementData")]
     [SerializeField] private DashHelper.Data _dashData;
     [SerializeField] private LookHelper.Data _lookData;
+    [SerializeField] private PlayerAudioHelper.Data _audioData;
+    [SerializeField] private GlobalDefinition _globalDefinition;
     [Header("TO BE REMOVED")]
-    [SerializeField] private PaperBallController _answerPrefab;
     [SerializeField] private bool _dropByHoldingInteract; // Once we decide on the final input scheme, this can be removed
     [SerializeField] private bool _toggleToPeek;
 
@@ -27,6 +27,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private bool IsPeeking => _inputHandler.ScopeType == EInputScope.PlayerPeeking;
     private bool IsAnswering => _answerController != null && _answerController.IsAnswering;
+    public bool IsSitting => _chairHelper.IsSitting;
 
     // Helpers
     private InteractionHelper _interactionHelper;
@@ -36,9 +37,11 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     private LookHelper _lookHelper;
     private DashHelper _dashHelper;
     private ChairHelper _chairHelper;
+    private CraftHelper _craftHelper;
+    private PlayerAudioHelper _audioHelper;
 
     // IActor
-    string IActor.ID => IActor.GetPlayerID(_inputHandler.PlayerInput.playerIndex);
+    public string ID => IActor.GetPlayerID(_inputHandler.PlayerInput.playerIndex);
     // IInteractionActor
     Vector3 IInteractionActor.Position => transform.position;
     Vector3 IInteractionActor.Forward => transform.forward;
@@ -46,20 +49,27 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     Vector3 IThrowActor.LookDirection => _view.transform.forward;
     Collider[] IThrowActor.Colliders => _physics.Colliders;
 
+    public PlayerController LastOwner => throw new NotImplementedException();
+
+    public event Action<EDevice> OnShowHelp;
+    public event Action OnHideHelp;
+
     private void Awake()
     {
         _physics.Initialize();
-        _interactionHelper = new InteractionHelper(this, _interactionData, isEnabled: true);
-        _throwHelper = new ThrowHelper(this, _throwData, _interactionHelper);
+        _interactionHelper = new InteractionHelper(_interactionData, this, isEnabled: true);
+        _throwHelper = new ThrowHelper(_throwData, this, _interactionHelper, _globalDefinition.FlyingLayer);
         _chairHelper = new ChairHelper(_inputHandler, _view, _physics);
         _stunHelper = new StunHelper(_stunData, _view);
         _cheatHelper = new PlayerCheatHelper(_cheatData, _view);
         _lookHelper = new LookHelper(_lookData);
-        _dashHelper = new DashHelper(_view, _physics, _lookHelper, _dashData, _audio);
+        _audioHelper = new PlayerAudioHelper(_audioData);
+        _dashHelper = new DashHelper(_dashData, _view, _physics, _lookHelper, _audioHelper);
+        _craftHelper = new CraftHelper(_view, _interactionHelper);
 
         // Initialize
         _lookHelper.Initialize(transform.forward);
-        _fieldOfViewController.Hide();
+        _fieldOfViewController.HideInstant();
         TeleportToInitialChair();
     }
 
@@ -129,6 +139,15 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
                 _inputHandler.CancelPeekHold();
             }
         }
+        else if (actionType == EAction.Utility)
+        {
+            // TODO: Hide inventory
+            _craftHelper.TryStopCraftingItem();
+        }
+        else if (actionType == EAction.Help)
+        {
+            OnHideHelp.Invoke();
+        }
     }
 
     private void TryStartInteraction()
@@ -140,7 +159,11 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         {
             _view.OnPickUp(interaction.transform);
             _interactionHelper.StartInteraction(interaction);
-            _audio.OnPickUp();
+            _audioHelper.OnPickUp();
+            if (interaction.TryGetComponent(out IPickUpInteractionOwner interactionOwner))
+            {
+                interactionOwner.OnPickedUp(ID);
+            }
         }
         else if (interaction.Type == EInteraction.Static)
         {
@@ -221,14 +244,14 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _lookHelper.ClearLookAt();
         _inputHandler.SetScope(EInputScope.PlayerPeeking);
         _fieldOfViewController.Show();
-        _audio.OnStartPeeking();
+        _audioHelper.OnStartPeeking();
     }
 
     private void StopPeeking()
     {
         _lookHelper.ClearLookAt();
         _cheatHelper.StopPeeking();
-        _audio.OnStopPeeking();
+        _audioHelper.OnStopPeeking();
         StopStaticInteraction();
     }
 
@@ -236,14 +259,14 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     {
         if (_answerController.TryStartAnswering(answerID))
         {
-            _audio.OnStartAnswering();
+            _audioHelper.OnStartAnswering();
         }
     }
 
     private void HideAnswerSheet()
     {
         _answerController.HideAnswerSheet();
-        _audio.TryStopAnswering();
+        _audioHelper.TryStopAnswering();
     }
 
     private void StopCheating()
@@ -285,7 +308,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _chairHelper.StartSitting(chairController);
         _interactionHelper.DisableInteraction();
         _answerController = chairController.AnswerController;
-        _audio.OnStartSitting();
+        _audioHelper.OnStartSitting();
 
     }
 
@@ -343,6 +366,20 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             _physics.SetInputDirection(new Vector3(input.x, 0, input.y), updateMoveDirection: false);
             _lookHelper.SetLookInput(input);
         }
+        else if (actionType == EDirectionalAction.Aim_WithMouse)
+        {
+            Ray ray = Camera.main.ScreenPointToRay(input);
+            if (Physics.Raycast(ray, out RaycastHit hit))
+            {
+                Vector2 direction = new Vector3(hit.point.x - transform.position.x, hit.point.z - transform.position.z);
+                _physics.SetInputDirection(direction, updateMoveDirection: false);
+                _lookHelper.SetLookInput(direction);
+            }
+            else
+            {
+                Debug.LogError("Failed to get position from mouse input");
+            }
+        }
     }
 
     private void OnPreHoldActionDetected(EAction actionType)
@@ -389,6 +426,18 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
                 StartPeeking();
             }
         }
+        else if (actionType == EAction.Utility)
+        {
+            // TODO: Show inventory
+            if (!_interactionHelper.TryGetPickedUpInteraction(out _))
+            {
+                _craftHelper.TryStartCraftingItem("Paper Ball");
+            }
+        }
+        else if (actionType == EAction.Help)
+        {
+            OnShowHelp.Invoke(_inputHandler.LastKnownDeviceType);
+        }
     }
 
     private void OnHoldActionRequested(EAction actionType, bool isHolding)
@@ -433,6 +482,21 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
                 RestoreInputScope();
             }
         }
+        else if (actionType == EAction.Utility)
+        {
+            if (!isHolding)
+            {
+                // TODO: Hide inventory
+                _craftHelper.TryStopCraftingItem();
+            }
+        }
+        else if (actionType == EAction.Help)
+        {
+            if (!isHolding)
+            {
+                OnHideHelp.Invoke();
+            }
+        }
     }
 
     private void TryDropItem()
@@ -442,11 +506,18 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             _interactionHelper.TryStopInteraction(stoppedInteraction);
             _view.OnDrop(stoppedInteraction.transform);
             _view.HideThrowPreview();
+            if (stoppedInteraction.TryGetComponent(out IPickUpInteractionOwner interactionOwner))
+            {
+                interactionOwner.OnDropped();
+            }
         }
     }
 
     private void Update()
     {
+        if (!GameManager.Instance.GameplayActive)
+            return;
+
         _dashHelper.UpdateCooldown();
         if (_stunHelper.IsStunned)
         {
@@ -461,18 +532,12 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             _answerController.UpdateAnswering(out bool finishedAnswering);
             if (finishedAnswering)
             {
-                _audio.OnFinishedCorrectAnswer();
-
+                _answerController.StartIdle();
+                _audioHelper.OnFinishedCorrectAnswer();
                 if (_cheatHelper.TryGetRememberedAnswer(out string answerID))
                 {
                     _cheatHelper.StopRemembering();
-
-                    // Create answer
-                    PaperBallController answerInstance = Instantiate(_answerPrefab, _view.PickUpPosition + Vector3.up, Quaternion.identity); // Slightly above to highlight briefly.
-                    answerInstance.SetAnswer(answerID);
-                    _view.OnPickUp(answerInstance.transform);
-                    _interactionHelper.AddInteraction(answerInstance.InteractionController);
-                    _interactionHelper.StartInteraction(answerInstance.InteractionController);
+                    _craftHelper.CraftAnswer(answerID);
                 }
             }
         }
@@ -490,17 +555,24 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             if (finishedCheating)
             {
                 StopCheating();
-                _audio.OnStartCheating();
+                _audioHelper.OnStartCheating();
             }
         }
         if (_cheatHelper.IsRemembering && !IsAnswering)
         {
             _cheatHelper.UpdateMemory(out _);
         }
+        if (_craftHelper.IsCrafting)
+        {
+            _craftHelper.UpdateCrafting(Time.deltaTime);
+        }
     }
 
     private void FixedUpdate()
     {
+        if (!GameManager.Instance.GameplayActive)
+            return;
+
         _physics.OnFixedUpdate(Time.fixedDeltaTime, canMove: !_stunHelper.IsStunned, out bool stoppedDashing);
         if (stoppedDashing)
         {
@@ -539,4 +611,10 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     void IThrowActor.OnThrow(Transform thrownTransform)
         => _view.OnThrow(thrownTransform);
+
+    public void ResetInputState()
+    {
+        _physics.SetInputDirection(Vector3.zero, updateMoveDirection: true);
+        _lookHelper.SetLookInput(Vector2.zero);
+    }
 }

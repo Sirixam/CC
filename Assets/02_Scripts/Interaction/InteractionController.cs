@@ -10,6 +10,18 @@ public enum EInteraction
     Static,
 }
 
+public interface IPickUpInteractionOwner : IInteractionOwner
+{
+    void OnPickedUp(string actorID);
+    void OnDropped();
+    void OnThrowed();
+}
+
+public interface IInteractionOwner
+{
+    InteractionController InteractionController { get; }
+}
+
 public class InteractionController : MonoBehaviour
 {
     [Serializable]
