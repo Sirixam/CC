@@ -176,6 +176,20 @@ public class GameManager : MonoBehaviour
 
     private void OnPlayerDetected(PlayerController playerController)
     {
+        if (playerController.IsSitting) return; // Cannot lose life while 
+        LoseLife(playerController);
+    }
+
+    private void OnItemDetected(IItemController itemController)
+    {
+        if (TryGetPlayerController(itemController.LastOwnerID, out PlayerController playerController))
+        {
+            LoseLife(playerController);
+        }
+    }
+
+    private void LoseLife(PlayerController playerController)
+    {
         SetLives(_playerLives - 1);
         if (_playerLives > 0)
         {
@@ -184,14 +198,6 @@ public class GameManager : MonoBehaviour
         }
 
         ShowEndMenu(_defeatFeedback);
-    }
-
-    private void OnItemDetected(IItemController itemController)
-    {
-        if (TryGetPlayerController(itemController.LastOwnerID, out PlayerController playerController))
-        {
-            OnPlayerDetected(playerController);
-        }
     }
 
     private void SetLives(int value)

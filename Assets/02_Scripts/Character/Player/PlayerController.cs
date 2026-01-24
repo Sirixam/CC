@@ -27,6 +27,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private bool IsPeeking => _inputHandler.ScopeType == EInputScope.PlayerPeeking;
     private bool IsAnswering => _answerController != null && _answerController.IsAnswering;
+    public bool IsSitting => _chairHelper.IsSitting;
 
     // Helpers
     private InteractionHelper _interactionHelper;
@@ -516,7 +517,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     {
         if (!GameManager.Instance.GameplayActive)
             return;
-        
+
         _dashHelper.UpdateCooldown();
         if (_stunHelper.IsStunned)
         {
@@ -571,7 +572,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     {
         if (!GameManager.Instance.GameplayActive)
             return;
-        
+
         _physics.OnFixedUpdate(Time.fixedDeltaTime, canMove: !_stunHelper.IsStunned, out bool stoppedDashing);
         if (stoppedDashing)
         {
@@ -610,7 +611,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     void IThrowActor.OnThrow(Transform thrownTransform)
         => _view.OnThrow(thrownTransform);
-    
+
     public void ResetInputState()
     {
         _physics.SetInputDirection(Vector3.zero, updateMoveDirection: true);
