@@ -8,7 +8,7 @@ public interface ILookAroundActor
     Coroutine StartCoroutine(IEnumerator routine);
 }
 
-public static class LookAroundEventUtils
+public static class LookAroundEvent
 {
     [Serializable]
     public class Data

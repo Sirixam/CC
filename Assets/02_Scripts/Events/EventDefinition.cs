@@ -1,8 +1,8 @@
 using System;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "DEF_NavigationEvent", menuName = "Definitions/Navigation Event")]
-public class NavigationEventDefinition : ScriptableObject
+[CreateAssetMenu(fileName = "DEF_Event", menuName = "Definitions/Event")]
+public class EventDefinition : ScriptableObject
 {
     [Flags]
     public enum ETypes
@@ -10,11 +10,12 @@ public class NavigationEventDefinition : ScriptableObject
         None = 0,
         LookAround = 1 << 0,
         OnComplete = 1 << 1,
+        Sit = 1 << 2,
     }
 
     [SerializeField] private ETypes _type;
     [HideIf("HideLookAroundData")]
-    [SerializeField] private LookAroundEventUtils.Data _lookAroundData;
+    [SerializeField] private LookAroundEvent.Data _lookAroundData;
 
     private bool HideLookAroundData => !_type.HasFlag(ETypes.LookAround);
 
@@ -32,7 +33,12 @@ public class NavigationEventDefinition : ScriptableObject
         if (_type.HasFlag(ETypes.LookAround))
         {
             isHandled = true;
-            LookAroundEventUtils.Execute(teacherController, _lookAroundData);
+            LookAroundEvent.Execute(teacherController, _lookAroundData);
+        }
+        if (_type.HasFlag(ETypes.Sit))
+        {
+            isHandled = true;
+            SitEvent.Execute(teacherController);
         }
         if (_type.HasFlag(ETypes.OnComplete))
         {
@@ -42,7 +48,7 @@ public class NavigationEventDefinition : ScriptableObject
 
         if (!isHandled)
         {
-            Debug.LogError("Navigation event type is not being handled: " + name);
+            Debug.LogError("Event type is not being handled: " + name);
         }
     }
 

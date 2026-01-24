@@ -398,7 +398,7 @@ MonoBehaviour:
       ArriveEvent: {fileID: 0}
     - Point: {fileID: 5391851334298706166}
       NextDelay: 2
-      ArriveEvent: {fileID: 11400000, guid: d2713f49caa15a9438905b6e28cdfdd9, type: 2}
+      ArriveEvent: {fileID: 11400000, guid: 3bb449c48edd5884197b5d904d5d7ca2, type: 2}
     ShowOnGizmos: 0
     Name: TeacherSeat
   _routesData:

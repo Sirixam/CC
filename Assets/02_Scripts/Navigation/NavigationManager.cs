@@ -33,7 +33,7 @@ public class NavigationManager : MonoBehaviour
     {
         public Transform Point;
         public float NextDelay;
-        public NavigationEventDefinition ArriveEvent;
+        public EventDefinition ArriveEvent;
     }
 
     [SerializeField] private List<IdentifiableRouteData> _identifiableRoutesData;

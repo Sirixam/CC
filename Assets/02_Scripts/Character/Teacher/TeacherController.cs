@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public class TeacherController : MonoBehaviour, IActor, ILookAroundActor
+public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitActor
 {
     [SerializeField] private FieldOfViewController _fieldOfViewController;
     [SerializeField] private NavigationManager _navigationManager;
@@ -21,7 +21,7 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor
     {
         _audioHelper = new TeacherAudioHelper(_audioData);
         _navigationHelper = new NavigationHelper(this, _navigationData, _navMeshAgent, _navigationManager);
-        _fieldOfViewController.HideInstant();
+        //_fieldOfViewController.HideInstant();
     }
 
     private void Start()
@@ -32,5 +32,10 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor
     private void Update()
     {
         _navigationHelper.Update();
+    }
+
+    void ISitActor.ExecuteSit()
+    {
+        _fieldOfViewController.Hide();
     }
 }
