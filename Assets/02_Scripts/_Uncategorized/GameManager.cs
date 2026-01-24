@@ -74,8 +74,11 @@ public class GameManager : MonoBehaviour
         _answerManager.OnAllPlayersFinishedAllAnswers += OnAllPlayersFinishedAllAnswers;
         _studentManager.OnPlayerDetected += OnPlayerDetected;
         _studentManager.OnItemDetected += OnItemDetected;
-        _teacherManager.OnPlayerDetected += OnPlayerDetected;
-        _teacherManager.OnItemDetected += OnItemDetected;
+        if (_teacherManager != null)
+        {
+            _teacherManager.OnPlayerDetected += OnPlayerDetected;
+            _teacherManager.OnItemDetected += OnItemDetected;
+        }
     }
 
     private void OnDisable()
@@ -84,8 +87,11 @@ public class GameManager : MonoBehaviour
         _answerManager.OnAllPlayersFinishedAllAnswers -= OnAllPlayersFinishedAllAnswers;
         _studentManager.OnPlayerDetected -= OnPlayerDetected;
         _studentManager.OnItemDetected -= OnItemDetected;
-        _teacherManager.OnPlayerDetected -= OnPlayerDetected;
-        _teacherManager.OnItemDetected -= OnItemDetected;
+        if (_teacherManager != null)
+        {
+            _teacherManager.OnPlayerDetected -= OnPlayerDetected;
+            _teacherManager.OnItemDetected -= OnItemDetected;
+        }
     }
 
     // Triggere externallyd when a player joins the game

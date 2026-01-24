@@ -9,7 +9,7 @@ public class TeacherManager : MonoBehaviour
     public Action<PlayerController> OnPlayerDetected;
     public Action<IItemController> OnItemDetected;
 
-    private void Start()
+    private void Awake()
     {
         for (int i = 0; i < _teachers.Length; i++)
         {
