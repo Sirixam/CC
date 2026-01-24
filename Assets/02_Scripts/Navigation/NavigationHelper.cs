@@ -39,7 +39,12 @@ public class NavigationHelper
 
     public void Start()
     {
-        GoToNewDestination();
+        GoToRandomDestination();
+    }
+
+    public void Start(string routeName)
+    {
+        GoToDestination(routeName);
     }
 
     public void Update()
@@ -58,8 +63,8 @@ public class NavigationHelper
         }
     }
 
-    [Button("Go To Destination")]
-    public void GoToNewDestination()
+    [Button("Go To Random Destination")]
+    public void GoToRandomDestination()
     {
         if (_data.AllowRepeatRoutes)
         {
@@ -71,6 +76,13 @@ public class NavigationHelper
         }
         _currentWaypointIndex = 0;
 
+        MoveToCurrentWaypoint();
+    }
+
+    public void GoToDestination(string routeName)
+    {
+        _currentRoute = _navigationManager.GetRoute(routeName);
+        _currentWaypointIndex = 0;
         MoveToCurrentWaypoint();
     }
 
@@ -126,7 +138,7 @@ public class NavigationHelper
         else
         {
             _state = EState.Idle;
-            GoToNewDestination();
+            GoToRandomDestination();
         }
     }
 }

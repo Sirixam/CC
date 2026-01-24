@@ -227,9 +227,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1796385483822482560}
   m_Layer: 0
-  m_Name: Teacher_SitPoint
+  m_Name: TeacherSeat_Points
   m_TagString: Untagged
-  m_Icon: {fileID: -5442936267250999957, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -245,8 +245,41 @@ Transform:
   m_LocalPosition: {x: -7.59, y: 0.477, z: 1.09}
   m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 7370824736978582945}
+  - {fileID: 5391851334298706166}
   m_Father: {fileID: 6866377822182471695}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &948723607182240192
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7370824736978582945}
+  m_Layer: 0
+  m_Name: SitPoint_1
+  m_TagString: Untagged
+  m_Icon: {fileID: -5442936267250999957, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7370824736978582945
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 948723607182240192}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 10.75, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1796385483822482560}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &958229040864378974
 GameObject:
@@ -357,6 +390,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c8557d200156eb4ca8706acd85d0c6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _identifiableRoutesData:
+  - Type: 1
+    Waitpoints:
+    - Point: {fileID: 7370824736978582945}
+      NextDelay: 0
+      ArriveEvent: {fileID: 0}
+    - Point: {fileID: 5391851334298706166}
+      NextDelay: 2
+      ArriveEvent: {fileID: 11400000, guid: d2713f49caa15a9438905b6e28cdfdd9, type: 2}
+    ShowOnGizmos: 0
+    Name: TeacherSeat
   _routesData:
   - Type: 1
     Waitpoints:
@@ -364,8 +408,8 @@ MonoBehaviour:
       NextDelay: 0
       ArriveEvent: {fileID: 0}
     - Point: {fileID: 7400198902431061556}
-      NextDelay: 1
-      ArriveEvent: {fileID: 0}
+      NextDelay: 2
+      ArriveEvent: {fileID: 11400000, guid: d19a17b110bc88f4690c5337e1b70018, type: 2}
     - Point: {fileID: 5922070255300294666}
       NextDelay: 0
       ArriveEvent: {fileID: 11400000, guid: d2713f49caa15a9438905b6e28cdfdd9, type: 2}
@@ -407,6 +451,37 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7349898457977681037}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2048606055517960190
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5391851334298706166}
+  m_Layer: 0
+  m_Name: SitPoint_2
+  m_TagString: Untagged
+  m_Icon: {fileID: -5442936267250999957, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5391851334298706166
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2048606055517960190}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1796385483822482560}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2380334478394838476
 GameObject:

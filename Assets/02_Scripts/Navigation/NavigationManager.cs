@@ -15,6 +15,12 @@ public class NavigationManager : MonoBehaviour
     }
 
     [Serializable]
+    public class IdentifiableRouteData : RouteData
+    {
+        public string Name;
+    }
+
+    [Serializable]
     public class RouteData
     {
         public ERoute Type;
@@ -30,8 +36,22 @@ public class NavigationManager : MonoBehaviour
         public NavigationEventDefinition ArriveEvent;
     }
 
+    [SerializeField] private List<IdentifiableRouteData> _identifiableRoutesData;
     [SerializeField] private List<RouteData> _routesData;
     [SerializeField] private bool _allowGizmos;
+
+    public WaypointData[] GetRoute(string routeName)
+    {
+        foreach (var identifiableRouteData in _identifiableRoutesData)
+        {
+            if (identifiableRouteData.Name == routeName)
+            {
+                return identifiableRouteData.Waitpoints;
+            }
+        }
+        Debug.LogError("Route not found: " + routeName);
+        return new WaypointData[0];
+    }
 
     public WaypointData[] GetRandomRoute()
     {

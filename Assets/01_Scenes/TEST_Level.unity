@@ -54398,14 +54398,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: NavigationManager
       objectReference: {fileID: 0}
-    - target: {fileID: 5694824683282462777, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}
-      propertyPath: _routesData.Array.data[0].Waitpoints.Array.data[1].NextDelay
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5694824683282462777, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}
-      propertyPath: _routesData.Array.data[0].Waitpoints.Array.data[1].ArriveEvent
-      value: 
-      objectReference: {fileID: 11400000, guid: d19a17b110bc88f4690c5337e1b70018, type: 2}
     - target: {fileID: 6866377822182471695, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
