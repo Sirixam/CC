@@ -17,10 +17,15 @@ public class FieldOfViewController : MonoBehaviour
 
     private Tween _scaleTween;
     private Vector3 _meshColliderOriginalPosition;
+    private bool _isOriginalPositionInitialized;
 
     private void Awake()
     {
-        _meshColliderOriginalPosition = _meshCollider.transform.localPosition;
+        if (!_isOriginalPositionInitialized)
+        {
+            _isOriginalPositionInitialized = true;
+            _meshColliderOriginalPosition = _meshCollider.transform.localPosition;
+        }
         _showTweenSettings.startFromCurrent = true;
         _hideTweenSettings.startFromCurrent = true;
         UpdateMesh();
@@ -37,6 +42,11 @@ public class FieldOfViewController : MonoBehaviour
 
     public void HideInstant()
     {
+        if (!_isOriginalPositionInitialized)
+        {
+            _isOriginalPositionInitialized = true;
+            _meshColliderOriginalPosition = _meshCollider.transform.localPosition;
+        }
         _meshRenderer.transform.localScale = _hideTweenSettings.endValue;
         OnHidden();
     }
