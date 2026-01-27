@@ -265,6 +265,9 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private void HideAnswerSheet()
     {
+        if (_answerController == null)
+            return;
+
         _answerController.HideAnswerSheet();
         _audioHelper.TryStopAnswering();
     }
@@ -616,5 +619,13 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     {
         _physics.SetInputDirection(Vector3.zero, updateMoveDirection: true);
         _lookHelper.SetLookInput(Vector2.zero);
+    }
+    
+    public void ForceClearInteractionState()
+    {
+        _answerController = null;
+        _interactionHelper?.DisableInteraction();
+        _inputHandler.CancelActionHold();
+        _inputHandler.CancelPeekHold();
     }
 }

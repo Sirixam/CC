@@ -33,6 +33,7 @@ public class GameManager : MonoBehaviour
     public bool GameplayActive { get; private set; }
 
     [SerializeField] private MultiplayerEventSystem _eventSystem;
+    [SerializeField] private PlayerInputManager _playerInputManager;
 
     private void Awake()
     {
@@ -97,6 +98,12 @@ public class GameManager : MonoBehaviour
     // Triggere externallyd when a player joins the game
     public void OnPlayerJoined(PlayerInput playerInput)
     {
+        if (GameplayActive)
+        {
+            playerInput.DeactivateInput();
+            return;
+        }
+        
         var inputHandler = playerInput.GetComponent<PlayerInputHandler>();
         if (inputHandler == null)
         {
@@ -110,10 +117,8 @@ public class GameManager : MonoBehaviour
         playerController.OnHideHelp += OnHideHelp;
         _players.Add(playerController);
 
-        if (GameplayActive)
-            return; // Game already started
-
-        if (_players.Count >= _answerManager.RequiredPlayersCount || !_globalDefinition.StartGameWhenAllPlayersJoined)
+        if (_players.Count >= _answerManager.RequiredPlayersCount ||
+            !_globalDefinition.StartGameWhenAllPlayersJoined)
         {
             StartGame();
         }
@@ -122,14 +127,21 @@ public class GameManager : MonoBehaviour
     private void StartGame()
     {
         GameplayActive = true;
+        
+        DisablePlayerJoining();
+
         if (_livesUI != null)
         {
             _livesUI.gameObject.SetActive(true);
         }
+
         SetLives(_globalDefinition.PlayerLives);
+
         _gameCancellationSource = new CancellationTokenSource();
         StartTimer();
         _studentManager.StartStimulation(_gameCancellationSource.Token);
+
+        EnableGameplayInput();
     }
 
     private void StopGame()
@@ -143,6 +155,7 @@ public class GameManager : MonoBehaviour
     {
         _answerManager.CleanActivePeeks();
         _answerManager.ResetProgress();
+        
         if (_defeatFeedback != null)
         {
             _defeatFeedback.SetActive(false);
@@ -155,13 +168,14 @@ public class GameManager : MonoBehaviour
         {
             _timesUpFeedback.SetActive(false);
         }
+        
         foreach (var player in _players)
         {
+            player.ForceClearInteractionState();
             player.TeleportToInitialChair();
         }
-        StopGame();
+
         StartGame();
-        EnableGameplayInput();
     }
 
     private void StartTimer()
@@ -291,13 +305,30 @@ public class GameManager : MonoBehaviour
 
     private void ShowEndMenu(GameObject menu)
     {
-        StopGame();
-        DisableGameplayInput();
+        GameplayActive = false;
+
+        DisableGameplayInput(); // STOP PLAYERS
+        DisablePlayerJoining(); // STOP NEW PLAYERS
+
+        _gameCancellationSource?.Cancel();
+        _gameCancellationSource = null;
 
         if (menu != null)
         {
             menu.SetActive(true);
             FocusFirstRestartButton();
         }
+    }
+    
+    private void EnablePlayerJoining()
+    {
+        if (_playerInputManager != null)
+            _playerInputManager.enabled = true;
+    }
+
+    private void DisablePlayerJoining()
+    {
+        if (_playerInputManager != null)
+            _playerInputManager.enabled = false;
     }
 }
