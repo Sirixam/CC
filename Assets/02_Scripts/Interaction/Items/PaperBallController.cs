@@ -14,6 +14,7 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     [SerializeField] private AnswerDefinition _defaultAnswerDefinition;
     [SerializeField] private ItemAudioHelper.Data _audioData;
     [SerializeField] private float _timeToDestroyOnIdle = 5f;
+    [SerializeField] private bool _destroyOnIdle = true;
 
     private ItemAudioHelper _audioHelper;
     private string _answerID;
@@ -52,7 +53,7 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
 
     private void Update()
     {
-        if (_state == EState.Idle)
+        if (_state == EState.Idle && _destroyOnIdle)
         {
             _remainingTimeToDestroyOnIdle -= Time.deltaTime;
             if (_remainingTimeToDestroyOnIdle <= 0f)
@@ -117,5 +118,13 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     void IPickUpInteractionOwner.OnThrowed()
     {
         _state = EState.MidAir;
+    }
+    
+    public void OnDetectedByTeacher()
+    {
+        if (!_destroyOnIdle)
+        {
+            Destroy(gameObject);
+        }
     }
 }

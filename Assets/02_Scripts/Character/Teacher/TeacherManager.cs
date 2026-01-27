@@ -13,10 +13,40 @@ public class TeacherManager : MonoBehaviour
     {
         for (int i = 0; i < _teachers.Length; i++)
         {
-            string actorID = IActor.GetTeacherID(i);
             _teachers[i].Inject(_navigationManager);
-            _teachers[i].OnPlayerDetected += OnPlayerDetected.Invoke;
-            _teachers[i].OnItemDetected += OnItemDetected.Invoke;
+        }
+    }
+
+    private void OnEnable()
+    {
+        for (int i = 0; i < _teachers.Length; i++)
+        {
+            _teachers[i].OnPlayerDetected += HandlePlayerDetected;
+            _teachers[i].OnItemDetected += HandleItemDetected;
+        }
+    }
+
+    private void OnDisable()
+    {
+        for (int i = 0; i < _teachers.Length; i++)
+        {
+            _teachers[i].OnPlayerDetected -= HandlePlayerDetected;
+            _teachers[i].OnItemDetected -= HandleItemDetected;
+        }
+    }
+
+    private void HandlePlayerDetected(PlayerController player)
+    {
+        OnPlayerDetected?.Invoke(player);
+    }
+
+    private void HandleItemDetected(IItemController item)
+    {
+        OnItemDetected?.Invoke(item);
+
+        if (item is PaperBallController paperBall)
+        {
+            paperBall.OnDetectedByTeacher();
         }
     }
 }

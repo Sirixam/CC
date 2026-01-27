@@ -617,6 +617,8 @@ MonoBehaviour:
     CollisionAudio: {fileID: 11400000, guid: 691b696b4208e11459828f866ab794ca, type: 2}
     MinVelocityOnCollide: 5
     CollisionCooldown: 1
+  _timeToDestroyOnIdle: 5
+  _destroyOnIdle: 0
 --- !u!114 &3311442955737208034
 MonoBehaviour:
   m_ObjectHideFlags: 0
