@@ -110,6 +110,7 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        inputHandler.Initialize();
         PlayerController playerController = playerInput.GetComponent<PlayerController>();
         ChairController chairController = _answerManager.GetPlayerDesk(playerInput.playerIndex).transform.parent.GetComponentInChildren<ChairController>();
         playerController.SetInitialChairController(chairController);
