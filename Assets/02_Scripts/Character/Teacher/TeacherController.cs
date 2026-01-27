@@ -113,6 +113,8 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
         {
             PlayerController playerController = other.GetComponentInParent<PlayerController>();
             OnPlayerDetected?.Invoke(playerController);
+            _audioHelper.OnGettingCaught();
+
         }
         else if (other.gameObject.layer == _globalDefinition.ItemLayer || other.gameObject.layer == _globalDefinition.FlyingLayer)
         {

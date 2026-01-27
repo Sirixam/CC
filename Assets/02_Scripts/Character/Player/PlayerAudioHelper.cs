@@ -13,6 +13,7 @@ public class PlayerAudioHelper
         public AudioDefinition SittingAudio;
         public AudioDefinition CollectingAudio;
         public AudioDefinition CheatingAudio;
+        public AudioDefinition StunnedAudio;
     }
 
     private Data _data;
@@ -74,5 +75,10 @@ public class PlayerAudioHelper
     public void OnStartCheating()
     {
         _data.CheatingAudio.Play();
+    }
+
+    public void OnStun()
+    {
+        _data.StunnedAudio.Play();
     }
 }

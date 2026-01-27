@@ -15,7 +15,6 @@ public class DashHelper
     private readonly PlayerPhysics _physics;
     private readonly LookHelper _lookHelper;
     private readonly PlayerAudioHelper _audioHelper;
-
     private float _dashCooldownTimer;
 
     public DashHelper(Data data, PlayerView view, PlayerPhysics physics, LookHelper lookHelper, PlayerAudioHelper audioHelper)

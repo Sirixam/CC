@@ -5,7 +5,7 @@ public class TeacherAudioHelper
     [Serializable]
     public class Data
     {
-        // Empty for now
+        public AudioDefinition CaughtAudio;
     }
 
     private Data _data;
@@ -14,4 +14,10 @@ public class TeacherAudioHelper
     {
         _data = data;
     }
+
+    public void OnGettingCaught()
+    {
+        _data.CaughtAudio.Play();
+    }
+
 }
