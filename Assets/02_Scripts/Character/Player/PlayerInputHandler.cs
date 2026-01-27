@@ -281,9 +281,9 @@ public partial class PlayerInputHandler : MonoBehaviour
     private void RequestDirectionalAction(EDirectionalAction actionType, Vector2 input)
     {
         DirectionalActionEvent?.Invoke(actionType, input);
-// #if LOG_ACTIONS
-//         Debug.Log($"{actionType} requested with input: {input}");
-// #endif
+#if LOG_ACTIONS
+         Debug.Log($"{actionType} requested with input: {input}");
+#endif
     }
 
     private void HandleHoldAction(InputAction.CallbackContext context, HoldState holdState, EAction actionType)
@@ -314,23 +314,23 @@ public partial class PlayerInputHandler : MonoBehaviour
     private void RequestHoldAction(EAction actionType, bool isHolding)
     {
         HoldActionEvent?.Invoke(actionType, isHolding);
-// #if LOG_ACTIONS
-//         if (isHolding)
-//         {
-//             Debug.Log($"{actionType} hold begin");
-//         }
-//         else
-//         {
-//             Debug.Log($"{actionType} hold end");
-//         }
-// #endif
+#if LOG_ACTIONS
+        if (isHolding)
+        {
+            Debug.Log($"{actionType} hold begin");
+        }
+        else
+        {
+            Debug.Log($"{actionType} hold end");
+        }
+#endif
     }
 
     private void RequestAction(EAction actionType)
     {
         ActionEvent?.Invoke(actionType);
-// #if LOG_ACTIONS
-//         Debug.Log($"{actionType} requested");
-// #endif
+#if LOG_ACTIONS
+        Debug.Log($"{actionType} requested");
+#endif
     }
 }
