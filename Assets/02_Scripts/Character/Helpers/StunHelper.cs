@@ -18,15 +18,13 @@ public class StunHelper
 
     private Data _data;
     private IStunView _ownerView;
-    private readonly PlayerAudioHelper _audioHelper;
     private float _stunTimer;
     public bool IsStunned { get; private set; }
 
-    public StunHelper(Data data, IStunView ownerView, PlayerAudioHelper audioHelper)
+    public StunHelper(Data data, IStunView ownerView)
     {
         _data = data;
         _ownerView = ownerView;
-        _audioHelper = audioHelper;
     }
 
     public void StartStun(bool isSoftStun)

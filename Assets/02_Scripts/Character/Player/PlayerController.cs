@@ -60,7 +60,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _interactionHelper = new InteractionHelper(_interactionData, this, isEnabled: true);
         _throwHelper = new ThrowHelper(_throwData, this, _interactionHelper, _globalDefinition.FlyingLayer);
         _chairHelper = new ChairHelper(_inputHandler, _view, _physics);
-        _stunHelper = new StunHelper(_stunData, _view, _audioHelper);
+        _stunHelper = new StunHelper(_stunData, _view);
         _cheatHelper = new PlayerCheatHelper(_cheatData, _view);
         _lookHelper = new LookHelper(_lookData);
         _audioHelper = new PlayerAudioHelper(_audioData);
@@ -583,19 +583,14 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         }
     }
 
-    private void OnCollisionStay(Collision collision)
-        => _dashHelper.OnCollisionStay(collision, OnStopDash: _stunHelper.StartStun);
-    //_audioHelper.OnStun();´
+    //Old Klagges function
     //private void OnCollisionStay(Collision collision)
-    //    => _dashHelper.OnCollisionStay(
-    //collision, 
-    //OnStopDash: () => 
-    //        {
-    //_view.OnStopDash();
-    //_stunHelper.StartStun);
-    //_audioHelper.OnStun();
-    //}
-    //);
+    //    => _dashHelper.OnCollisionStay(collision, OnStopDash: _stunHelper.StartStun);
+
+    private void OnCollisionStay(Collision collision)
+    {
+        _dashHelper.OnCollisionStay(collision, OnStopDash: _stunHelper.StartStun, _audioHelper);
+    }
 
     private void OnTriggerEnter(Collider other)
     {

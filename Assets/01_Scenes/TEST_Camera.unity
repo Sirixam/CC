@@ -790,6 +790,8 @@ MonoBehaviour:
   _maxTimeInSeconds: 240
   _eventSystem: {fileID: 366332586}
   _playerInputManager: {fileID: 1683781321}
+  _audioData:
+    GameEnd: {fileID: 11400000, guid: 691b696b4208e11459828f866ab794ca, type: 2}
 --- !u!1 &160446707
 GameObject:
   m_ObjectHideFlags: 0
@@ -12811,6 +12813,10 @@ PrefabInstance:
       propertyPath: _navigationManager
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 2994896442341047896, guid: 0ad07dedf987bb2439d07df5bc57dc3a, type: 3}
+      propertyPath: _audioData.CaughtAudio
+      value: 
+      objectReference: {fileID: 11400000, guid: c5a9f7c67793deb45847d65f973ff710, type: 2}
     - target: {fileID: 5025262427557913485, guid: 0ad07dedf987bb2439d07df5bc57dc3a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 7.23

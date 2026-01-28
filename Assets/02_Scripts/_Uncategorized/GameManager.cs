@@ -34,6 +34,10 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private MultiplayerEventSystem _eventSystem;
     [SerializeField] private PlayerInputManager _playerInputManager;
+    [SerializeField] private GameAudioHelper.Data _audioData;
+
+    private GameAudioHelper _audioHelper;
+
 
     private void Awake()
     {
@@ -67,6 +71,7 @@ public class GameManager : MonoBehaviour
             button.OnClickEvent += RestartGame;
         }
         _timeHelper = new TimeHelper(_timeUI);
+        _audioHelper = new GameAudioHelper(_audioData);
     }
 
     private void OnEnable()
@@ -313,6 +318,7 @@ public class GameManager : MonoBehaviour
 
         _gameCancellationSource?.Cancel();
         _gameCancellationSource = null;
+        _audioHelper.OnGameEnd();
 
         if (menu != null)
         {
