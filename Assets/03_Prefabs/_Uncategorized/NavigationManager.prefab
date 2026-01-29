@@ -397,23 +397,32 @@ MonoBehaviour:
       NextDelay: 0
       ArriveEvent: {fileID: 0}
     - Point: {fileID: 5391851334298706166}
-      NextDelay: 2
-      ArriveEvent: {fileID: 11400000, guid: 3bb449c48edd5884197b5d904d5d7ca2, type: 2}
+      NextDelay: 0
+      ArriveEvent: {fileID: 11400000, guid: d2713f49caa15a9438905b6e28cdfdd9, type: 2}
+    - Point: {fileID: 5391851334298706166}
+      NextDelay: 0
+      ArriveEvent: {fileID: 11400000, guid: 754edb10a35a80b4c98f018ce6d75ced, type: 2}
     ShowOnGizmos: 0
     Name: TeacherSeat
   _routesData:
   - Type: 1
     Waitpoints:
     - Point: {fileID: 1188086898427177233}
+      NextDelay: 3
+      ArriveEvent: {fileID: 11400000, guid: df82d66524468e346ba3e8ce22eab4cf, type: 2}
+    - Point: {fileID: 7400198902431061556}
+      NextDelay: 1
+      ArriveEvent: {fileID: 11400000, guid: ac69533c39e535f40ad88f0a18b02b0e, type: 2}
+    - Point: {fileID: 6949845694862210747}
       NextDelay: 0
       ArriveEvent: {fileID: 0}
-    - Point: {fileID: 7400198902431061556}
-      NextDelay: 2
-      ArriveEvent: {fileID: 11400000, guid: d19a17b110bc88f4690c5337e1b70018, type: 2}
+    - Point: {fileID: 7590292659005738222}
+      NextDelay: 0
+      ArriveEvent: {fileID: 0}
     - Point: {fileID: 5922070255300294666}
       NextDelay: 0
       ArriveEvent: {fileID: 11400000, guid: d2713f49caa15a9438905b6e28cdfdd9, type: 2}
-    ShowOnGizmos: 0
+    ShowOnGizmos: 1
   _allowGizmos: 1
 --- !u!1 &1798562341932344093
 GameObject:

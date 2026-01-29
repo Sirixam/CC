@@ -614,7 +614,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _defaultAnswerDefinition: {fileID: 0}
   _audioData:
-    CollisionAudio: {fileID: 11400000, guid: 691b696b4208e11459828f866ab794ca, type: 2}
+    CollisionAudio: {fileID: 0}
     MinVelocityOnCollide: 5
     CollisionCooldown: 1
   _timeToDestroyOnIdle: 5
