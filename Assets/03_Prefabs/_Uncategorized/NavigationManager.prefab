@@ -423,6 +423,12 @@ MonoBehaviour:
       NextDelay: 0
       ArriveEvent: {fileID: 11400000, guid: d2713f49caa15a9438905b6e28cdfdd9, type: 2}
     ShowOnGizmos: 1
+  - Type: 1
+    Waitpoints:
+    - Point: {fileID: 1379604803618998413}
+      NextDelay: 0
+      ArriveEvent: {fileID: 0}
+    ShowOnGizmos: 1
   _allowGizmos: 1
 --- !u!1 &1798562341932344093
 GameObject:
@@ -782,13 +788,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6332738513941355923}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 7.41, y: 0.477, z: 0.06999999}
+  m_LocalRotation: {x: -0.000061043494, y: 0.0019982287, z: 0.0084957285, w: 0.9999619}
+  m_LocalPosition: {x: -3.66, y: 0.477, z: 0.06999999}
   m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6866377822182471695}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -0.009, y: 0.229, z: 0.974}
 --- !u!1 &6570191123232053675
 GameObject:
   m_ObjectHideFlags: 0

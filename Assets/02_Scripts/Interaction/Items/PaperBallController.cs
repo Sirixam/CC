@@ -119,12 +119,21 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     {
         _state = EState.MidAir;
     }
-    
+
     public void OnDetectedByTeacher()
     {
-        if (!_destroyOnIdle)
-        {
-            Destroy(gameObject);
-        }
+        bool isHeld =
+            InteractionController != null &&
+            !InteractionController.enabled;
+
+        Debug.Log(
+            $"[PaperBall] OnDetectedByTeacher | Held={isHeld} | State={_state} | Owner={_lastOwnerID}",
+            this
+        );
+
+        if (isHeld)
+            return;
+
+        Destroy(gameObject);
     }
 }

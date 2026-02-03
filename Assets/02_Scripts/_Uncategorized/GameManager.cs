@@ -161,7 +161,11 @@ public class GameManager : MonoBehaviour
     {
         _answerManager.CleanActivePeeks();
         _answerManager.ResetProgress();
-        
+
+        if (_teacherManager != null)
+        {
+           _teacherManager.ResetTeachers(); 
+        }
         if (_defeatFeedback != null)
         {
             _defeatFeedback.SetActive(false);
@@ -208,10 +212,20 @@ public class GameManager : MonoBehaviour
 
     private void OnItemDetected(IItemController itemController)
     {
-        if (TryGetPlayerController(itemController.LastOwnerID, out PlayerController playerController))
+        if (!TryGetPlayerController(itemController.LastOwnerID, out PlayerController playerController))
+            return;
+        
+        // Sitting players are safe
+        if (playerController.IsSitting)
+            return;
+        
+        // Confiscate paperballs
+        if (itemController is PaperBallController paperBall)
         {
-            LoseLife(playerController);
+            paperBall.OnDetectedByTeacher();
         }
+        
+        LoseLife(playerController);
     }
 
     private void LoseLife(PlayerController playerController)

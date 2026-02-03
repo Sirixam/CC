@@ -33,9 +33,15 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
 
     public Action<PlayerController> OnPlayerDetected;
     public Action<IItemController> OnItemDetected;
+    
+    private Vector3 _initialPosition;
+    private Quaternion _initialRotation;
 
     private void Awake()
     {
+        _initialPosition = transform.position;
+        _initialRotation = transform.rotation;
+        
         _audioHelper = new TeacherAudioHelper(_audioData);
         _fieldOfViewController.HideInstant();
     }
@@ -128,5 +134,32 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
                 OnItemDetected?.Invoke(itemController);
             }
         }
+    }
+    
+    public void ResetTeacher()
+    {
+        // Stop movement immediately
+        if (_navMeshAgent != null)
+        {
+            _navMeshAgent.isStopped = true;
+            _navMeshAgent.ResetPath();
+        }
+
+        // Reset transform
+        transform.position = _initialPosition;
+        transform.rotation = _initialRotation;
+
+        // Reset state machine
+        _state = EState.GoToSeat;
+        _goToSeatOnArrive = false;
+
+        // Reset timers
+        _remainingTime = 0f;
+
+        // Reset vision
+        _fieldOfViewController.HideInstant();
+
+        // Restart navigation cleanly
+        GoToSeat();
     }
 }

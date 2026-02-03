@@ -43,10 +43,14 @@ public class TeacherManager : MonoBehaviour
     private void HandleItemDetected(IItemController item)
     {
         OnItemDetected?.Invoke(item);
-
-        if (item is PaperBallController paperBall)
+        
+    }
+    
+    public void ResetTeachers()
+    {
+        for (int i = 0; i < _teachers.Length; i++)
         {
-            paperBall.OnDetectedByTeacher();
+            _teachers[i].ResetTeacher();
         }
     }
 }
