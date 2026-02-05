@@ -533,6 +533,11 @@ Transform:
   - {fileID: 1822474922}
   m_Father: {fileID: 1831003684}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &35344784 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5391851334298706166, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}
+  m_PrefabInstance: {fileID: 235689804}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &53102882 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4034086857187575338, guid: 649a52eb9be1e38488822554b4dc6fc6, type: 3}
@@ -6466,6 +6471,30 @@ PrefabInstance:
     - target: {fileID: 1614013689732415158, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}
       propertyPath: m_Name
       value: NavigationManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 5694824683282462777, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}
+      propertyPath: _identifiableRoutesData.Array.data[0].Waitpoints.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5694824683282462777, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}
+      propertyPath: _identifiableRoutesData.Array.data[0].Waitpoints.Array.data[0].Point
+      value: 
+      objectReference: {fileID: 35344784}
+    - target: {fileID: 5694824683282462777, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}
+      propertyPath: _identifiableRoutesData.Array.data[0].Waitpoints.Array.data[2].Point
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5694824683282462777, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}
+      propertyPath: _identifiableRoutesData.Array.data[0].Waitpoints.Array.data[0].ArriveEvent
+      value: 
+      objectReference: {fileID: 11400000, guid: 754edb10a35a80b4c98f018ce6d75ced, type: 2}
+    - target: {fileID: 5694824683282462777, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}
+      propertyPath: _identifiableRoutesData.Array.data[0].Waitpoints.Array.data[1].ArriveEvent
+      value: 
+      objectReference: {fileID: 11400000, guid: d2713f49caa15a9438905b6e28cdfdd9, type: 2}
+    - target: {fileID: 5694824683282462777, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}
+      propertyPath: _identifiableRoutesData.Array.data[0].Waitpoints.Array.data[2].ArriveEvent
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 6866377822182471695, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}
       propertyPath: m_LocalPosition.x
