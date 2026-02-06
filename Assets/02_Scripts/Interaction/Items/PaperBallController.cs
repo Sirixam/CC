@@ -12,11 +12,11 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
 
     [Tooltip("Use 0 if there's no answer in this paper ball")]
     [SerializeField] private AnswerDefinition _defaultAnswerDefinition;
-    [SerializeField] private ItemAudioHelper.Data _audioData;
+    //[SerializeField] private ItemAudioHelper.Data _audioData;
     [SerializeField] private float _timeToDestroyOnIdle = 5f;
     [SerializeField] private bool _destroyOnIdle = true;
 
-    private ItemAudioHelper _audioHelper;
+    //private ItemAudioHelper _audioHelper;
     private string _answerID;
     private float _remainingTimeToDestroyOnIdle;
     private EState _state;
@@ -31,7 +31,7 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
 
     private void Awake()
     {
-        _audioHelper = new ItemAudioHelper(_audioData);
+        //_audioHelper = new ItemAudioHelper(_audioData);
     }
 
     private void Start()
@@ -91,7 +91,7 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Environment") || collision.gameObject.CompareTag("NPC"))
         {
-            _audioHelper.OnCollide(collision);
+            //_audioHelper.OnCollide(collision);
             if (_state == EState.MidAir)
             {
                 SetIdleState();
