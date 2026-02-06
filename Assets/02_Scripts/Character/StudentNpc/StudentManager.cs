@@ -25,9 +25,16 @@ public class StudentManager : MonoBehaviour
 
     public void StartStimulation(CancellationToken cancellationToken)
     {
-        foreach (var student in _students)
+        if (_globalDefinition.SimulateStudentsIndividually)
         {
-            SimulateNPCAnswering(student, cancellationToken).Forget();
+            foreach (var student in _students)
+            {
+                SimulateNPCAnswering(student, cancellationToken).Forget();
+            }
+        }
+        else
+        {
+            SimulateNPCsAnswering(cancellationToken).Forget();
         }
     }
 
@@ -46,18 +53,76 @@ public class StudentManager : MonoBehaviour
                 student.StartThinking();
                 await student.UpdateRemainingTimeWhileNotDistracted(cancellationToken: cancellationToken);
 
-                
-                
                 student.StartAnswering();
-                await student.UpdateAnsweringTask(cancellationToken);
-                
-                
+                await student.UpdateAnsweringTaskWhileNotDistracted(cancellationToken);
 
                 student.StartValidating();
                 await student.UpdateRemainingTimeWhileNotDistracted(cancellationToken: cancellationToken);
             }
 
             await UniTask.Yield(cancellationToken); // Prevent blocking if failed to start answering.
+        }
+    }
+
+    private async UniTask SimulateNPCsAnswering(CancellationToken cancellationToken)
+    {
+        AnswerDefinition answerDef = null;
+        while (!cancellationToken.IsCancellationRequested)
+        {
+            float thinkingDuration = UnityEngine.Random.Range(_globalDefinition.PreAnsweringDelay.x, _globalDefinition.PreAnsweringDelay.y);
+            float validatingDuration = UnityEngine.Random.Range(_globalDefinition.PostAnsweringDelay.x, _globalDefinition.PostAnsweringDelay.y);
+            foreach (var student in _students)
+            {
+                answerDef = _answerManager.GetNewStudentAnswer(answerDef);
+                bool startedThinking = student.AnswerController.TryRestartAnswering(answerDef.ID, isThinking: true);
+                if (startedThinking)
+                {
+                    student.SetDurations(thinkingDuration, validatingDuration);
+                    student.StartThinking();
+                }
+            }
+
+            await UpdateRemainingTimeOnAllStudents(cancellationToken);
+
+            foreach (var student in _students)
+            {
+                student.StartAnswering();
+            }
+
+            await UpdateAnsweringOnAllStudents(cancellationToken);
+
+            foreach (var student in _students)
+            {
+                student.StartValidating();
+            }
+
+            await UpdateRemainingTimeOnAllStudents(cancellationToken);
+        }
+    }
+
+    private async UniTask UpdateRemainingTimeOnAllStudents(CancellationToken cancellationToken)
+    {
+        bool finished = false;
+        while (!finished && !cancellationToken.IsCancellationRequested)
+        {
+            foreach (var student in _students)
+            {
+                student.AnswerController.UpdateRemainingTime(Time.deltaTime, out finished);
+            }
+            await UniTask.Yield(cancellationToken);
+        }
+    }
+
+    private async UniTask UpdateAnsweringOnAllStudents(CancellationToken cancellationToken)
+    {
+        bool finished = false;
+        while (!finished && !cancellationToken.IsCancellationRequested)
+        {
+            foreach (var student in _students)
+            {
+                student.AnswerController.UpdateAnswering(Time.deltaTime, out finished);
+            }
+            await UniTask.Yield(cancellationToken);
         }
     }
 }

@@ -105,14 +105,14 @@ public class StudentNpcController : MonoBehaviour
         }
     }
 
-    public async UniTask UpdateAnsweringTask(CancellationToken cancellationToken)
+    public async UniTask UpdateAnsweringTaskWhileNotDistracted(CancellationToken cancellationToken)
     {
         bool finished = false;
         while (!finished && !cancellationToken.IsCancellationRequested)
         {
             if (!IsDistracted)
             {
-                AnswerController.UpdateAnswering(out finished);
+                AnswerController.UpdateAnswering(Time.deltaTime, out finished);
             }
             await UniTask.Yield(cancellationToken);
         }
@@ -122,7 +122,6 @@ public class StudentNpcController : MonoBehaviour
             _lightbulbUI.Hide();
             OnAnsweringEnded?.Invoke();
         }
-
     }
 
     private void OnCollisionEnter(Collision collision)

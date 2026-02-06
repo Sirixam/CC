@@ -532,7 +532,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _interactionHelper.UpdateBestInteraction();
         if (IsAnswering)
         {
-            _answerController.UpdateAnswering(out bool finishedAnswering);
+            _answerController.UpdateAnswering(Time.deltaTime, out bool finishedAnswering);
             if (finishedAnswering)
             {
                 _answerController.StartIdle();

@@ -21,9 +21,9 @@ public class Answer
         _progressPerSecond = 1 / _definition.BaseAnswerDuration;
     }
 
-    public float UpdateProgress(out bool finishedAnswering)
+    public float UpdateProgress(float deltaTime, out bool finishedAnswering)
     {
-        Progress = Mathf.Clamp01(Progress + Time.deltaTime * _progressPerSecond);
+        Progress = Mathf.Clamp01(Progress + deltaTime * _progressPerSecond);
         finishedAnswering = Progress >= 1;
         return Progress;
     }
@@ -64,11 +64,11 @@ public class AnswerSheet
         return 0;
     }
 
-    public float UpdateProgress(string answerID, out bool finishedAnswering)
+    public float UpdateProgress(string answerID, float deltaTime, out bool finishedAnswering)
     {
         if (_id2Answer.TryGetValue(answerID, out Answer answer))
         {
-            return answer.UpdateProgress(out finishedAnswering);
+            return answer.UpdateProgress(deltaTime, out finishedAnswering);
         }
         Debug.LogError("UpdateProgress.AnswerID was not found: " + answerID);
         finishedAnswering = false;

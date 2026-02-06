@@ -151,10 +151,10 @@ public class AnswerController : MonoBehaviour
         return AnswerSheet.GetAnsweringDuration(ActiveAnswerID);
     }
 
-    public void UpdateAnswering(out bool finishedAnswering)
+    public void UpdateAnswering(float deltaTime, out bool finishedAnswering)
     {
         string answerID = ActiveAnswerID;
-        float progress = AnswerSheet.UpdateProgress(answerID, out finishedAnswering);
+        float progress = AnswerSheet.UpdateProgress(answerID, deltaTime, out finishedAnswering);
         if (IsPlayer)
         {
             _answerSheetUI.SetProgress(answerID, progress);
