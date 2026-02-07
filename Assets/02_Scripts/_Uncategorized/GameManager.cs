@@ -212,20 +212,24 @@ public class GameManager : MonoBehaviour
 
     private void OnItemDetected(IItemController itemController)
     {
-        if (!TryGetPlayerController(itemController.LastOwnerID, out PlayerController playerController))
+        if (itemController is not PaperBallController paperBall)
             return;
-        
-        // Sitting players are safe
-        if (playerController.IsSitting)
-            return;
-        
-        // Confiscate paperballs
-        if (itemController is PaperBallController paperBall)
+
+        //Sitting players are safe ONLY if the ball was NOT thrown
+        foreach (var player in _players)
         {
-            paperBall.OnDetectedByTeacher();
+            if (player.IsSitting && !paperBall.HasBeenThrown())
+                return;
         }
-        
-        LoseLife(playerController);
+
+        //Confiscate thrown paperballs
+        paperBall.OnDetectedByTeacher();
+
+        //Punish owner if known
+        if (!TryGetPlayerController(itemController.LastOwnerID, out PlayerController owner))
+            return;
+
+        LoseLife(owner);
     }
 
     private void LoseLife(PlayerController playerController)
@@ -352,4 +356,5 @@ public class GameManager : MonoBehaviour
         if (_playerInputManager != null)
             _playerInputManager.enabled = false;
     }
+    
 }

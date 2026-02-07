@@ -136,4 +136,9 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
 
         Destroy(gameObject);
     }
+    
+    public bool HasBeenThrown()
+    {
+        return _state == EState.MidAir || _state == EState.Idle;
+    }
 }
