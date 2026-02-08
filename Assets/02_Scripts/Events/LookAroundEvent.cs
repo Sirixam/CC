@@ -16,6 +16,7 @@ public static class LookAroundEvent
         public float[] Angles;
         public Vector2 IntervalDelayThreshold = new Vector2(0.2f, 0.5f);
         public float RotateDuration = 0.25f;
+        public bool ReturnToOriginalRotation;
 
         public float GetRandomIntervalDelay() => UnityEngine.Random.Range(IntervalDelayThreshold.x, IntervalDelayThreshold.y);
     }
@@ -36,7 +37,10 @@ public static class LookAroundEvent
             yield return new WaitForSeconds(data.GetRandomIntervalDelay());
         }
 
-        yield return RotateTo(pivot, originalRotation, data.RotateDuration);
+        if (data.ReturnToOriginalRotation)
+        {
+            yield return RotateTo(pivot, originalRotation, data.RotateDuration);
+        }
     }
 
     private static IEnumerator RotateTo(Transform target, Quaternion targetRotation, float duration)
