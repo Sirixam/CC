@@ -11,6 +11,12 @@ public class PlayerCheatHelper
         public float MemoryDuration;
     }
 
+    public class RememberedAnswer
+    {
+        public string ID;
+        public float Correctness;
+    }
+
     private Data _data;
     private PlayerView _playerView;
     private AnswerController _answerController;
@@ -18,7 +24,7 @@ public class PlayerCheatHelper
     private float _peekingProgress;
     private float _cheatingProgress;
     private float _memoryProgress;
-    private string _rememberedAnswerID;
+    private RememberedAnswer _rememberedAnswer;
 
     public bool IsPeeking { get; private set; }
     public bool IsCheating { get; private set; }
@@ -63,10 +69,10 @@ public class PlayerCheatHelper
         _playerView.CheatUI.SetPercent(_cheatingProgress);
     }
 
-    public void StartRemembering(string answerID, Sprite answerTypeIcon)
+    public void StartRemembering(string answerID, float correctness, Sprite answerTypeIcon)
     {
         _memoryProgress = 1;
-        _rememberedAnswerID = answerID;
+        _rememberedAnswer = new RememberedAnswer() { ID = answerID, Correctness = correctness };
         _playerView.MemoryUI.Show();
         _playerView.MemoryUI.SetAnswerTypeIcon(answerTypeIcon);
         _playerView.MemoryUI.SetAnswerID(answerID);
@@ -92,7 +98,7 @@ public class PlayerCheatHelper
     public void StopRemembering()
     {
         _memoryProgress = 0;
-        _rememberedAnswerID = null;
+        _rememberedAnswer = null;
         _playerView.MemoryUI.Hide();
     }
 
@@ -118,8 +124,9 @@ public class PlayerCheatHelper
 
         if (finished)
         {
-            Sprite answerTypeIcon = AnswersManager.GetInstance().GetAnswerTypeIcon(_answerController.LastFinishedAnswerID);
-            StartRemembering(answerID: _answerController.LastFinishedAnswerID, answerTypeIcon);
+            string answerID = _answerController.LastFinishedAnswerID;
+            Sprite answerTypeIcon = AnswersManager.GetInstance().GetAnswerTypeIcon(answerID);
+            StartRemembering(answerID, _answerController.GetCorrectness(answerID), answerTypeIcon);
         }
     }
 
@@ -135,14 +142,16 @@ public class PlayerCheatHelper
         }
     }
 
-    public bool TryGetRememberedAnswer(out string answerID)
+    public bool TryGetRememberedAnswer(out string answerID, out float correctness)
     {
         if (IsRemembering)
         {
-            answerID = _rememberedAnswerID;
+            answerID = _rememberedAnswer.ID;
+            correctness = _rememberedAnswer.Correctness;
             return true;
         }
         answerID = null;
+        correctness = 0;
         return false;
     }
 }

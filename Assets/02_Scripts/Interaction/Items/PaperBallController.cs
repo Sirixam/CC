@@ -18,12 +18,14 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
 
     //private ItemAudioHelper _audioHelper;
     private string _answerID;
+    private float _correctness;
     private float _remainingTimeToDestroyOnIdle;
     private EState _state;
     private string _lastOwnerID;
 
     public bool HasAnswer => !string.IsNullOrWhiteSpace(_answerID) || _defaultAnswerDefinition != null;
     public string AnswerID => !string.IsNullOrWhiteSpace(_answerID) ? _answerID : _defaultAnswerDefinition != null ? _defaultAnswerDefinition.ID : null;
+    public float Correctness => !string.IsNullOrWhiteSpace(_answerID) ? _correctness : 0;
 
     public InteractionController InteractionController => GetComponentInChildren<InteractionController>();
 
@@ -63,10 +65,11 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
         }
     }
 
-    public void SetAnswer(string answerID)
+    public void SetAnswer(string answerID, float correctness)
     {
         bool hadAnswer = HasAnswer;
         _answerID = answerID;
+        _correctness = correctness;
 
         if (hadAnswer != HasAnswer)
         {
@@ -136,7 +139,7 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
 
         Destroy(gameObject);
     }
-    
+
     public bool HasBeenThrown()
     {
         return _state == EState.MidAir || _state == EState.Idle;

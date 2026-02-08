@@ -42058,6 +42058,7 @@ MonoBehaviour:
   - {fileID: 931442537}
   - {fileID: 2024150791}
   _globalDefinition: {fileID: 11400000, guid: 2b0875648e78a8e45b08a646836071ca, type: 2}
+  _halfCorrectChance: 0.5
 --- !u!114 &1870520444 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3401357592815470036, guid: f1107de062e953747a87d956cc6647dd, type: 3}

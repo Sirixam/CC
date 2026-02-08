@@ -60,13 +60,23 @@ public class AnswerSheet
         }
     }
 
+    public float GetCorrectness(string answerID)
+    {
+        if (_id2Answer.TryGetValue(answerID, out Answer answer))
+        {
+            return answer.Correctness;
+        }
+        Debug.LogError("GetCorrectness.AnswerID was not found: " + answerID);
+        return 0;
+    }
+
     public float GetAnsweringDuration(string answerID)
     {
         if (_id2Answer.TryGetValue(answerID, out Answer answer))
         {
             return answer.AnswerDuration;
         }
-        Debug.LogError("GetFinishDuration.AnswerID was not found: " + answerID);
+        Debug.LogError("GetAnsweringDuration.AnswerID was not found: " + answerID);
         return 0;
     }
 

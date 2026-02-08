@@ -27,6 +27,7 @@ public class AnswerController : MonoBehaviour
 
     public AnswerSheet AnswerSheet { get; private set; }
     public string ActiveAnswerID { get; private set; }
+    public float ActiveAnswerCorrectness { get; private set; }
     public string LastFinishedAnswerID { get; private set; }
     public string ActorID { get; private set; }
     public bool IsPlayer { get; private set; }
@@ -117,11 +118,12 @@ public class AnswerController : MonoBehaviour
         return true;
     }
 
-    public bool TryStartAnswering(string answerID)
+    public bool TryStartAnswering(string answerID, float correctness)
     {
         if (!HasAnswerSheet || !AnswerSheet.HasAnswer(answerID)) return false; // No answer sheet in this desk
         if (AnswerSheet.IsAnswerFull(answerID, out float progress)) return false; // Already answered
         ActiveAnswerID = answerID;
+        ActiveAnswerCorrectness = correctness;
         StartAnswering(progress);
         return true;
     }
@@ -152,6 +154,11 @@ public class AnswerController : MonoBehaviour
         _state = EState.Idle;
     }
 
+    public float GetCorrectness(string answerID)
+    {
+        return AnswerSheet.GetCorrectness(answerID);
+    }
+
     public float GetAnsweringDuration()
     {
         return AnswerSheet.GetAnsweringDuration(ActiveAnswerID);
@@ -169,6 +176,8 @@ public class AnswerController : MonoBehaviour
         {
             if (IsPlayer)
             {
+                float correctness = Mathf.Clamp01(ActiveAnswerCorrectness + AnswerSheet.GetCorrectness(answerID));
+                AnswerSheet.SetCorrectness(answerID, correctness);
                 _answerSheetUI.SetAnswerState(answerID, true);
                 _answerSheetUI.HideProgress(answerID);
             }

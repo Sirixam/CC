@@ -255,9 +255,9 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         StopStaticInteraction();
     }
 
-    private void StartAnswering(string answerID)
+    private void StartAnswering(string answerID, float correctness)
     {
-        if (_answerController.TryStartAnswering(answerID))
+        if (_answerController.TryStartAnswering(answerID, correctness))
         {
             _audioHelper.OnStartAnswering();
         }
@@ -391,13 +391,13 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         {
             if (_chairHelper.IsSitting)
             {
-                if (_cheatHelper.TryGetRememberedAnswer(out string answerID))
+                if (_cheatHelper.TryGetRememberedAnswer(out string answerID, out float correctness))
                 {
-                    StartAnswering(answerID);
+                    StartAnswering(answerID, correctness);
                 }
                 else if (_interactionHelper.TryGetPickedUpInteraction(out PaperBallController paperBallController) && paperBallController.HasAnswer)
                 {
-                    StartAnswering(paperBallController.AnswerID);
+                    StartAnswering(paperBallController.AnswerID, paperBallController.Correctness);
                 }
                 else
                 {
@@ -537,10 +537,10 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             {
                 _answerController.StartIdle();
                 _audioHelper.OnFinishedCorrectAnswer();
-                if (_cheatHelper.TryGetRememberedAnswer(out string answerID))
+                if (_cheatHelper.TryGetRememberedAnswer(out string answerID, out float correctness))
                 {
                     _cheatHelper.StopRemembering();
-                    _craftHelper.CraftAnswer(answerID);
+                    _craftHelper.CraftAnswer(answerID, correctness);
                 }
             }
         }
@@ -626,7 +626,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _physics.SetInputDirection(Vector3.zero, updateMoveDirection: true);
         _lookHelper.SetLookInput(Vector2.zero);
     }
-    
+
     public void ForceClearInteractionState()
     {
         _answerController = null;

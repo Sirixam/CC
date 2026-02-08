@@ -80,10 +80,10 @@ public class CraftHelper
         }
     }
 
-    public void CraftAnswer(string answerID)
+    public void CraftAnswer(string answerID, float correctness)
     {
         PaperBallController answerInstance = _itemsManager.InstantiateAnswer(PickUpPosition, Quaternion.identity, parent: null);
-        answerInstance.SetAnswer(answerID);
+        answerInstance.SetAnswer(answerID, correctness);
         _actorView.OnPickUp(answerInstance.transform);
         _interactionHelper.AddInteraction(answerInstance.InteractionController);
         _interactionHelper.StartInteraction(answerInstance.InteractionController);
