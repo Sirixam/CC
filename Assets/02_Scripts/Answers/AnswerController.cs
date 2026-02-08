@@ -93,6 +93,12 @@ public class AnswerController : MonoBehaviour
         _validatingDuration = _validatingRemainingTime = validatingDuration;
     }
 
+    public void SetCorrectness(string answerID, float value)
+    {
+        if (!HasAnswerSheet || !AnswerSheet.HasAnswer(answerID)) return; // No answer sheet in this desk
+        AnswerSheet.SetCorrectness(answerID, value);
+    }
+
     public void ShowAnswerSheet()
     {
         if (!HasAnswerSheet || !IsPlayer) return;

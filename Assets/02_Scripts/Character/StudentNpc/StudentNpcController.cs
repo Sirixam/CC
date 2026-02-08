@@ -70,6 +70,11 @@ public class StudentNpcController : MonoBehaviour
         AnswerController.SetDurations(thinkingDuration, answeringDuration, validatingDuration);
     }
 
+    public void SetCorrectness(string answerID, float value)
+    {
+        AnswerController.SetCorrectness(answerID, value);
+    }
+
     public void StartThinking()
     {
         _stateText.text = "Thinking";

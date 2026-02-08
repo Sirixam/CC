@@ -9,6 +9,7 @@ public class Answer
 
     public string ID => _definition.ID;
     public float Progress { get; private set; }
+    public float Correctness { get; private set; }
     public bool IsAnswerFull => Progress >= 1;
     public Sprite Icon => _definition.Icon;
     public Color Color => _definition.Color;
@@ -19,6 +20,11 @@ public class Answer
     {
         _definition = definition;
         _progressPerSecond = 1 / _definition.BaseAnswerDuration;
+    }
+
+    public void SetCorrectness(float value)
+    {
+        Correctness = value;
     }
 
     public float UpdateProgress(float deltaTime, out bool finishedAnswering)
@@ -62,6 +68,17 @@ public class AnswerSheet
         }
         Debug.LogError("GetFinishDuration.AnswerID was not found: " + answerID);
         return 0;
+    }
+
+    public void SetCorrectness(string answerID, float value)
+    {
+        if (_id2Answer.TryGetValue(answerID, out Answer answer))
+        {
+            //Debug.Log("SetCorrectness, answerID: " + answerID + ", value: " + value);
+            answer.SetCorrectness(value);
+            return;
+        }
+        Debug.LogError("SetCorrectness.AnswerID was not found: " + answerID);
     }
 
     public float UpdateProgress(string answerID, float deltaTime, out bool finishedAnswering)

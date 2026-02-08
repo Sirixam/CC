@@ -3,11 +3,20 @@ using System;
 using System.Threading;
 using UnityEngine;
 
+using Random = UnityEngine.Random;
+
 public class StudentManager : MonoBehaviour
 {
+    private const float HALF_CORRECTNESS = 0.5f;
+
     [SerializeField] private AnswersManager _answerManager;
     [SerializeField] private StudentNpcController[] _students;
     [SerializeField] private GlobalDefinition _globalDefinition;
+    [Header("Configurations")]
+    [Range(0, 1f), Tooltip("What's the chance of getting a half correct answer versus a wrong answer.")]
+    [SerializeField] private float _halfCorrectChance = 0.5f;
+
+    private StudentNpcController _smartStudent;
 
     public Action<PlayerController> OnPlayerDetected;
     public Action<IItemController> OnItemDetected;
@@ -44,11 +53,13 @@ public class StudentManager : MonoBehaviour
         while (!cancellationToken.IsCancellationRequested)
         {
             answerDef = _answerManager.GetNewStudentAnswer(answerDef);
-            bool startedThinking = student.AnswerController.TryRestartAnswering(answerDef.ID, isThinking: true);
+            string answerID = answerDef.ID;
+            bool startedThinking = student.AnswerController.TryRestartAnswering(answerID, isThinking: true);
             if (startedThinking)
             {
-                student.SetDurations(thinkingDuration: UnityEngine.Random.Range(_globalDefinition.PreAnsweringDelay.x, _globalDefinition.PreAnsweringDelay.y),
-                                        validatingDuration: UnityEngine.Random.Range(_globalDefinition.PostAnsweringDelay.x, _globalDefinition.PostAnsweringDelay.y));
+                student.SetCorrectness(answerID, 1); // TODO: Dynamic correctness algorithm.
+                student.SetDurations(thinkingDuration: Random.Range(_globalDefinition.PreAnsweringDelay.x, _globalDefinition.PreAnsweringDelay.y),
+                                        validatingDuration: Random.Range(_globalDefinition.PostAnsweringDelay.x, _globalDefinition.PostAnsweringDelay.y));
 
                 student.StartThinking();
                 await student.UpdateRemainingTimeWhileNotDistracted(cancellationToken: cancellationToken);
@@ -69,14 +80,19 @@ public class StudentManager : MonoBehaviour
         AnswerDefinition answerDef = null;
         while (!cancellationToken.IsCancellationRequested)
         {
-            float thinkingDuration = UnityEngine.Random.Range(_globalDefinition.PreAnsweringDelay.x, _globalDefinition.PreAnsweringDelay.y);
-            float validatingDuration = UnityEngine.Random.Range(_globalDefinition.PostAnsweringDelay.x, _globalDefinition.PostAnsweringDelay.y);
+            float thinkingDuration = Random.Range(_globalDefinition.PreAnsweringDelay.x, _globalDefinition.PreAnsweringDelay.y);
+            float validatingDuration = Random.Range(_globalDefinition.PostAnsweringDelay.x, _globalDefinition.PostAnsweringDelay.y);
+
+            StudentNpcController smartStudent = GetNewSmartStudent();
             foreach (var student in _students)
             {
                 answerDef = _answerManager.GetNewStudentAnswer(answerDef);
-                bool startedThinking = student.AnswerController.TryRestartAnswering(answerDef.ID, isThinking: true);
+                string answerID = answerDef.ID;
+                bool startedThinking = student.AnswerController.TryRestartAnswering(answerID, isThinking: true);
                 if (startedThinking)
                 {
+                    float correctness = GetNewCorrectness(student == smartStudent);
+                    student.SetCorrectness(answerID, correctness);
                     student.SetDurations(thinkingDuration, validatingDuration);
                     student.StartThinking();
                 }
@@ -98,6 +114,25 @@ public class StudentManager : MonoBehaviour
 
             await UpdateRemainingTimeOnAllStudents(cancellationToken);
         }
+    }
+
+    private float GetNewCorrectness(bool isSmartStudent)
+    {
+        if (isSmartStudent) return 1;
+
+        bool isHalfCorrect = Random.Range(0, 1f) <= _halfCorrectChance;
+        return isHalfCorrect ? HALF_CORRECTNESS : 0;
+    }
+
+    private StudentNpcController GetNewSmartStudent()
+    {
+
+        int index;
+        do
+        {
+            index = Random.Range(0, _students.Length);
+        } while (_smartStudent == _students[index]);
+        return _students[index];
     }
 
     private async UniTask UpdateRemainingTimeOnAllStudents(CancellationToken cancellationToken)
