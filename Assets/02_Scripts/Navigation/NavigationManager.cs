@@ -130,6 +130,24 @@ public class NavigationManager : MonoBehaviour
         }
     }
 
+    [Button("Include All Routes", ButtonColor.Green)]
+    private void IncludeAllRoutes()
+    {
+        foreach (var routeData in _routesData)
+        {
+            routeData.Include = true;
+        }
+    }
+
+    [Button("Exclude All Routes", ButtonColor.Red)]
+    private void ExcludeAllRoutes()
+    {
+        foreach (var routeData in _routesData)
+        {
+            routeData.Include = false;
+        }
+    }
+
 #if UNITY_EDITOR
     [Button("Disable All Gizmos Flags")]
     private void DisableAllGizmosFlags()
