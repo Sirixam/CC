@@ -84,6 +84,12 @@ public class AnswerSheetUI : MonoBehaviour
         }
     }
 
+    public void SetCorrectness(string answerID, float correctness)
+    {
+        AnswerUI answerUI = _answers.Find(x => x.ID == answerID);
+        answerUI.SetCorrectness(correctness);
+    }
+
     public void SetAnswerState(string answerID, bool isFilled)
     {
         AnswerUI answerUI = _answers.Find(x => x.ID == answerID);

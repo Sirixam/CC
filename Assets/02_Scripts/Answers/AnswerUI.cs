@@ -9,6 +9,11 @@ public class AnswerUI : MonoBehaviour
     [SerializeField] private GameObject _notFilledState;
     [SerializeField] private GameObject _filledState;
     [SerializeField] private Image _fill;
+    [SerializeField] private Image _correctnessColorTarget;
+    [Header("COLORS")]
+    [SerializeField] private Color _correctColor = Color.green;
+    [SerializeField] private Color _incorrectColor = Color.red;
+    [SerializeField] private Color _halfCorrectColor = Color.yellow;
 
     public string ID { get; private set; }
 
@@ -41,6 +46,14 @@ public class AnswerUI : MonoBehaviour
         if (_filledState != null)
         {
             _filledState.SetActive(isFilled);
+        }
+    }
+
+    public void SetCorrectness(float correctness)
+    {
+        if (_correctnessColorTarget != null)
+        {
+            _correctnessColorTarget.color = correctness == 0 ? _incorrectColor : correctness == 1 ? _correctColor : _halfCorrectColor;
         }
     }
 

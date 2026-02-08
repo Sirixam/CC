@@ -179,6 +179,7 @@ public class AnswerController : MonoBehaviour
                 float correctness = Mathf.Clamp01(ActiveAnswerCorrectness + AnswerSheet.GetCorrectness(answerID));
                 AnswerSheet.SetCorrectness(answerID, correctness);
                 _answerSheetUI.SetAnswerState(answerID, true);
+                _answerSheetUI.SetCorrectness(answerID, correctness);
                 _answerSheetUI.HideProgress(answerID);
             }
             LastFinishedAnswerID = answerID;

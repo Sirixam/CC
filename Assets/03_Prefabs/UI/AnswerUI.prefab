@@ -394,6 +394,10 @@ MonoBehaviour:
   _notFilledState: {fileID: 0}
   _filledState: {fileID: 3561893983141389723}
   _fill: {fileID: 6161258608260198467}
+  _correctnessColorTarget: {fileID: 4965791961863734576}
+  _correctColor: {r: 0, g: 1, b: 0, a: 1}
+  _incorrectColor: {r: 1, g: 0, b: 0, a: 1}
+  _halfCorrectColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
 --- !u!114 &7656600343324312884
 MonoBehaviour:
   m_ObjectHideFlags: 0
