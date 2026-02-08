@@ -118,6 +118,11 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
         if (other.CompareTag(_globalDefinition.PlayerTag))
         {
             PlayerController playerController = other.GetComponentInParent<PlayerController>();
+            
+            //Audio won't play if player is sitting.
+            if (playerController != null && playerController.IsSitting)
+                return;
+            
             OnPlayerDetected?.Invoke(playerController);
             _audioHelper.OnGettingCaught();
 
