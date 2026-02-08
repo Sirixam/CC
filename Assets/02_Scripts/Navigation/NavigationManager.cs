@@ -23,6 +23,8 @@ public class NavigationManager : MonoBehaviour
     [Serializable]
     public class RouteData
     {
+        [ToggleButtons("INCLUDE", "IGNORE")]
+        public bool Include;
         public ERoute Type;
         public WaypointData[] Waitpoints;
         public bool ShowOnGizmos;
@@ -55,22 +57,49 @@ public class NavigationManager : MonoBehaviour
 
     public WaypointData[] GetRandomRoute()
     {
-        int index = UnityEngine.Random.Range(0, _routesData.Count);
+        List<int> validIndices = GetValidIndices();
+        if (validIndices.Count == 0)
+        {
+            return Array.Empty<WaypointData>();
+        }
+
+        int index = validIndices[UnityEngine.Random.Range(0, validIndices.Count)];
+        //Debug.Log("GetRandomRoute, Index: " + index);
         return GetRouteAt(index);
     }
 
     public WaypointData[] GetRandomRouteNoRepeat(ref int lastRouteIndex)
     {
-        int index = UnityEngine.Random.Range(0, _routesData.Count);
-        if (_routesData.Count > 1)
+        List<int> validIndices = GetValidIndices();
+        if (validIndices.Count == 0)
         {
-            while (index == lastRouteIndex)
+            return Array.Empty<WaypointData>();
+        }
+
+        // Remove last route if we have alternatives
+        if (validIndices.Count > 1)
+        {
+            validIndices.Remove(lastRouteIndex);
+        }
+
+        int index = validIndices[UnityEngine.Random.Range(0, validIndices.Count)];
+        lastRouteIndex = index;
+        //Debug.Log("GetRandomRouteNoRepeat, Index: " + index);
+        return GetRouteAt(index);
+    }
+
+    private List<int> GetValidIndices()
+    {
+        List<int> validIndices = new();
+        for (int i = 0; i < _routesData.Count; i++)
+        {
+            if (_routesData[i].Include)
             {
-                index = UnityEngine.Random.Range(0, _routesData.Count);
+                validIndices.Add(i);
             }
         }
-        lastRouteIndex = index;
-        return GetRouteAt(index);
+        //Debug.Log("GetValidIndices, Count: " + validIndices.Count);
+        return validIndices;
     }
 
     private WaypointData[] GetRouteAt(int index)
