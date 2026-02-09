@@ -255,6 +255,11 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         StopStaticInteraction();
     }
 
+    private bool CanStartAnswering(string answerID, float correctness)
+    {
+        return _answerController.CanStartAnswering(answerID, correctness, out _);
+    }
+
     private void StartAnswering(string answerID, float correctness)
     {
         if (_answerController.TryStartAnswering(answerID, correctness))
@@ -391,11 +396,11 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         {
             if (_chairHelper.IsSitting)
             {
-                if (_cheatHelper.TryGetRememberedAnswer(out string answerID, out float correctness))
+                if (_cheatHelper.TryGetRememberedAnswer(out string answerID, out float correctness) && CanStartAnswering(answerID, correctness))
                 {
                     StartAnswering(answerID, correctness);
                 }
-                else if (_interactionHelper.TryGetPickedUpInteraction(out PaperBallController paperBallController) && paperBallController.HasAnswer)
+                else if (_interactionHelper.TryGetPickedUpInteraction(out PaperBallController paperBallController) && paperBallController.HasAnswer && CanStartAnswering(paperBallController.AnswerID, paperBallController.Correctness))
                 {
                     StartAnswering(paperBallController.AnswerID, paperBallController.Correctness);
                 }

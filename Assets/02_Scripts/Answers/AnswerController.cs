@@ -118,10 +118,20 @@ public class AnswerController : MonoBehaviour
         return true;
     }
 
+    public bool CanStartAnswering(string answerID, float correctness, out float progress)
+    {
+        if (!HasAnswerSheet || !AnswerSheet.HasAnswer(answerID))
+        {
+            progress = 0;
+            return false; // No answer sheet in this desk
+        }
+        if (AnswerSheet.IsAnswerFull(answerID, out progress, out float oldCorrectness) && oldCorrectness == 1) return false; // Already answered correctly
+        return true;
+    }
+
     public bool TryStartAnswering(string answerID, float correctness)
     {
-        if (!HasAnswerSheet || !AnswerSheet.HasAnswer(answerID)) return false; // No answer sheet in this desk
-        if (AnswerSheet.IsAnswerFull(answerID, out float progress, out float oldCorrectness) && oldCorrectness == 1) return false; // Already answered correctly
+        if (!CanStartAnswering(answerID, correctness, out float progress)) return false;
         ActiveAnswerID = answerID;
         ActiveAnswerCorrectness = correctness;
         StartAnswering(progress);
@@ -167,6 +177,13 @@ public class AnswerController : MonoBehaviour
     public void UpdateAnswering(float deltaTime, out bool finishedAnswering)
     {
         string answerID = ActiveAnswerID;
+        if (string.IsNullOrWhiteSpace(answerID))
+        {
+            Debug.LogError("UpdateAnswering failed. Answer ID is invalid"); // [AKP] Is there valid cases where this is expected? If so, reduce this to Warning.
+            finishedAnswering = false;
+            return;
+        }
+
         float progress = AnswerSheet.UpdateProgress(answerID, deltaTime, out finishedAnswering);
         if (IsPlayer)
         {

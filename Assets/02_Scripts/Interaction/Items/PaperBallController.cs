@@ -25,6 +25,7 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     private EState _state;
     private string _lastOwnerID;
 
+    public string ID { get; private set; }
     public bool HasAnswer => !string.IsNullOrWhiteSpace(_answerID) || _defaultAnswerDefinition != null;
     public string AnswerID => !string.IsNullOrWhiteSpace(_answerID) ? _answerID : _defaultAnswerDefinition != null ? _defaultAnswerDefinition.ID : null;
     public float Correctness => !string.IsNullOrWhiteSpace(_answerID) ? _correctness : _defaultCorrectness;
@@ -40,6 +41,7 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
 
     private void Start()
     {
+        ID = ItemsManager.GetInstance().GetNewItemID();
         if (HasAnswer)
         {
             AnswersManager.GetInstance().OnAllPlayersFinishedAnswer += OnAllPlayersAnsweredFullyEvent;

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ItemsManager : MonoBehaviour
@@ -14,6 +15,8 @@ public class ItemsManager : MonoBehaviour
 
     [SerializeField] private string _answerItemName = "Answer";
     [SerializeField] private ItemData[] _itemsData;
+
+    private List<string> _allItemsIDs = new();
 
     public static ItemsManager GetInstance() => FindObjectOfType<ItemsManager>(); // TODO: Remove
 
@@ -58,5 +61,16 @@ public class ItemsManager : MonoBehaviour
         }
         itemData = default;
         return false;
+    }
+
+    public string GetNewItemID()
+    {
+        string newItemID;
+        do
+        {
+            newItemID = Guid.NewGuid().ToString();
+        } while (_allItemsIDs.Contains(newItemID));
+        _allItemsIDs.Add(newItemID);
+        return newItemID;
     }
 }
