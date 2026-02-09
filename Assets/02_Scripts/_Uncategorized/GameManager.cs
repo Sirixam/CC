@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TeacherManager _teacherManager;
 
     [SerializeField] private GameObject _defeatFeedback;
-    [SerializeField] private GameObject _victoryFeedback;
+    [SerializeField] private VictoryUI _victoryUI;
     [SerializeField] private TimeUI _timeUI;
     [SerializeField] private LivesUI _livesUI;
     [SerializeField] private HelpUI _helpUI;
@@ -46,9 +46,9 @@ public class GameManager : MonoBehaviour
         {
             _defeatFeedback.SetActive(false);
         }
-        if (_victoryFeedback != null)
+        if (_victoryUI != null)
         {
-            _victoryFeedback.SetActive(false);
+            _victoryUI.Hide();
         }
         if (_timesUpFeedback != null)
         {
@@ -108,7 +108,7 @@ public class GameManager : MonoBehaviour
             playerInput.DeactivateInput();
             return;
         }
-        
+
         var inputHandler = playerInput.GetComponent<PlayerInputHandler>();
         if (inputHandler == null)
         {
@@ -133,7 +133,7 @@ public class GameManager : MonoBehaviour
     private void StartGame()
     {
         GameplayActive = true;
-        
+
         DisablePlayerJoining();
 
         if (_livesUI != null)
@@ -164,21 +164,21 @@ public class GameManager : MonoBehaviour
 
         if (_teacherManager != null)
         {
-           _teacherManager.ResetTeachers(); 
+            _teacherManager.ResetTeachers();
         }
         if (_defeatFeedback != null)
         {
             _defeatFeedback.SetActive(false);
         }
-        if (_victoryFeedback != null)
+        if (_victoryUI != null)
         {
-            _victoryFeedback.SetActive(false);
+            _victoryUI.Hide();
         }
         if (_timesUpFeedback != null)
         {
             _timesUpFeedback.SetActive(false);
         }
-        
+
         foreach (var player in _players)
         {
             player.ForceClearInteractionState();
@@ -196,7 +196,8 @@ public class GameManager : MonoBehaviour
 
     private void OnAllPlayersFinishedAllAnswers()
     {
-        ShowEndMenu(_victoryFeedback);
+        _victoryUI.UpdateAnswerSheets();
+        ShowEndMenu(_victoryUI.gameObject);
     }
 
     private void OnTimesUp()
@@ -344,7 +345,7 @@ public class GameManager : MonoBehaviour
             FocusFirstRestartButton();
         }
     }
-    
+
     private void EnablePlayerJoining()
     {
         if (_playerInputManager != null)
@@ -356,5 +357,5 @@ public class GameManager : MonoBehaviour
         if (_playerInputManager != null)
             _playerInputManager.enabled = false;
     }
-    
+
 }

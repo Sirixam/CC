@@ -782,7 +782,7 @@ MonoBehaviour:
   _studentManager: {fileID: 1850831638}
   _teacherManager: {fileID: 1593247447}
   _defeatFeedback: {fileID: 894644630}
-  _victoryFeedback: {fileID: 1900106230}
+  _victoryUI: {fileID: 6653537252228672641}
   _timeUI: {fileID: 1208151559}
   _livesUI: {fileID: 1481233729}
   _helpUI: {fileID: 2134544375}
@@ -43209,11 +43209,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 649a52eb9be1e38488822554b4dc6fc6, type: 3}
---- !u!1 &1900106230 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7021156499925879989, guid: a02930eec20a20447885a6a47299aece, type: 3}
-  m_PrefabInstance: {fileID: 6653537252228672639}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &1900106233 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 9141299062888147040, guid: a02930eec20a20447885a6a47299aece, type: 3}
@@ -52880,7 +52875,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7021156499925879989, guid: a02930eec20a20447885a6a47299aece, type: 3}
       propertyPath: m_Name
-      value: VictoryFeedback
+      value: VictoryUI
       objectReference: {fileID: 0}
     - target: {fileID: 7021156499925879989, guid: a02930eec20a20447885a6a47299aece, type: 3}
       propertyPath: m_IsActive
@@ -52984,6 +52979,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6a29203a3b428e44fa99a3856981ec12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &6653537252228672641 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6531805367608663843, guid: a02930eec20a20447885a6a47299aece, type: 3}
+  m_PrefabInstance: {fileID: 6653537252228672639}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f1b9fd73b6d9014bbf4934f4a59feab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &6658183741260169084

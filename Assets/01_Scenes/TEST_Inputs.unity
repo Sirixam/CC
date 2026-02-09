@@ -1502,7 +1502,7 @@ MonoBehaviour:
   _studentManager: {fileID: 2037431358}
   _teacherManager: {fileID: 0}
   _defeatFeedback: {fileID: 8425917782096127211}
-  _victoryFeedback: {fileID: 1236636714}
+  _victoryUI: {fileID: 1475616247}
   _timeUI: {fileID: 2148367333320432987}
   _livesUI: {fileID: 5183543718913658895}
   _helpUI: {fileID: 1578063192}
@@ -5946,11 +5946,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 7021156499925879989, guid: a02930eec20a20447885a6a47299aece, type: 3}
       propertyPath: m_Name
-      value: VictoryFeedback
-      objectReference: {fileID: 0}
-    - target: {fileID: 7021156499925879989, guid: a02930eec20a20447885a6a47299aece, type: 3}
-      propertyPath: m_IsActive
-      value: 0
+      value: VictoryUI
       objectReference: {fileID: 0}
     - target: {fileID: 9141299062888147040, guid: a02930eec20a20447885a6a47299aece, type: 3}
       propertyPath: m_Pivot.x
@@ -6040,11 +6036,6 @@ PrefabInstance:
 --- !u!224 &1236636713 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 9141299062888147040, guid: a02930eec20a20447885a6a47299aece, type: 3}
-  m_PrefabInstance: {fileID: 1236636712}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &1236636714 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7021156499925879989, guid: a02930eec20a20447885a6a47299aece, type: 3}
   m_PrefabInstance: {fileID: 1236636712}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &1236636715 stripped
@@ -6995,6 +6986,17 @@ Transform:
   - {fileID: 773188570}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1475616247 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6531805367608663843, guid: a02930eec20a20447885a6a47299aece, type: 3}
+  m_PrefabInstance: {fileID: 1236636712}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f1b9fd73b6d9014bbf4934f4a59feab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1478123510
 PrefabInstance:
   m_ObjectHideFlags: 0

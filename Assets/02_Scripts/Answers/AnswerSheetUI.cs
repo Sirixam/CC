@@ -33,7 +33,8 @@ public class AnswerSheetUI : MonoBehaviour
         for (int i = 0; i < answers.Length; i++)
         {
             int answerNumber = i + 1;
-            _answers.Add(InstantiateAnswer(answers[i].ID, answerNumber, answers[i].Icon, answers[i].Color, isFilled: false));
+            Answer answer = answers[i];
+            _answers.Add(InstantiateAnswer(answer.ID, answerNumber, answer.Icon, answer.Color, answer.IsAnswerFull, answer.Correctness));
         }
     }
 
@@ -96,13 +97,14 @@ public class AnswerSheetUI : MonoBehaviour
         answerUI.SetState(isFilled);
     }
 
-    private AnswerUI InstantiateAnswer(string answerID, int number, Sprite icon, Color color, bool isFilled)
+    private AnswerUI InstantiateAnswer(string answerID, int number, Sprite icon, Color color, bool isFilled, float correctness)
     {
         AnswerUI instance = Instantiate(_answerPrefab, _answersParent);
         instance.SetID(answerID);
         instance.SetNumber(number, color);
         instance.SetIcon(icon, color);
         instance.SetState(isFilled);
+        instance.SetCorrectness(correctness);
         return instance;
     }
 

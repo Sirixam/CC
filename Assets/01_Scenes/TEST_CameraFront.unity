@@ -670,7 +670,7 @@ MonoBehaviour:
   _studentManager: {fileID: 1850831638}
   _teacherManager: {fileID: 0}
   _defeatFeedback: {fileID: 894644630}
-  _victoryFeedback: {fileID: 1900106230}
+  _victoryUI: {fileID: 6653537252228672641}
   _timeUI: {fileID: 1208151559}
   _livesUI: {fileID: 1481233729}
   _helpUI: {fileID: 2134544375}
@@ -681,7 +681,10 @@ MonoBehaviour:
   - {fileID: 219597136}
   _globalDefinition: {fileID: 11400000, guid: 2b0875648e78a8e45b08a646836071ca, type: 2}
   _maxTimeInSeconds: 240
-  _eventSystem: {fileID: 0}
+  _eventSystem: {fileID: 366332586}
+  _playerInputManager: {fileID: 1683781321}
+  _audioData:
+    GameEnd: {fileID: 11400000, guid: 691b696b4208e11459828f866ab794ca, type: 2}
 --- !u!1001 &151220477
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -40993,6 +40996,7 @@ MonoBehaviour:
   - {fileID: 871070245}
   - {fileID: 1538259289}
   _globalDefinition: {fileID: 11400000, guid: 2b0875648e78a8e45b08a646836071ca, type: 2}
+  _halfCorrectChance: 0.5
 --- !u!1 &1863326131
 GameObject:
   m_ObjectHideFlags: 0
@@ -42248,11 +42252,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 649a52eb9be1e38488822554b4dc6fc6, type: 3}
---- !u!1 &1900106230 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7021156499925879989, guid: a02930eec20a20447885a6a47299aece, type: 3}
-  m_PrefabInstance: {fileID: 6653537252228672639}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &1900106233 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 9141299062888147040, guid: a02930eec20a20447885a6a47299aece, type: 3}
@@ -51532,7 +51531,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 7021156499925879989, guid: a02930eec20a20447885a6a47299aece, type: 3}
       propertyPath: m_Name
-      value: VictoryFeedback
+      value: VictoryUI
       objectReference: {fileID: 0}
     - target: {fileID: 7021156499925879989, guid: a02930eec20a20447885a6a47299aece, type: 3}
       propertyPath: m_IsActive
@@ -51632,6 +51631,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6a29203a3b428e44fa99a3856981ec12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &6653537252228672641 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6531805367608663843, guid: a02930eec20a20447885a6a47299aece, type: 3}
+  m_PrefabInstance: {fileID: 6653537252228672639}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f1b9fd73b6d9014bbf4934f4a59feab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &6658183741260169084

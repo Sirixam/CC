@@ -171,7 +171,7 @@ public class AnswersManager : MonoBehaviour
     [SerializeField] private AnswerPeekUI[] _answerPeekUIs;
     [SerializeField] private GlobalDefinition _globalDefinition;
 
-    private AnswerSheet[] _playerAnswerSheets;
+    public AnswerSheet[] PlayerAnswerSheets { get; private set; }
     private Dictionary<string, AnswerSheet> _actorId2AnswerSheet;
     private List<AnswerController> _answerControllers = new();
     private List<AnswerPeek> _activePeeks = new();
@@ -186,7 +186,7 @@ public class AnswersManager : MonoBehaviour
     private void Awake()
     {
         _actorId2AnswerSheet = new();
-        _playerAnswerSheets = new AnswerSheet[_playerDesks.Length];
+        PlayerAnswerSheets = new AnswerSheet[_playerDesks.Length];
         for (int i = 0; i < _playerDesks.Length; i++)
         {
             AnswerController answerController = _playerDesks[i];
@@ -194,7 +194,7 @@ public class AnswersManager : MonoBehaviour
             AnswerSheet answerSheet = new(_playerAnswersDefinitions, _globalDefinition.PersistAnswerProgress);
             answerController.Setup(answerSheet, actorID, isPlayer: true);
             answerController.OnFinishAnsweringEvent += OnFinishAnswering;
-            _playerAnswerSheets[i] = answerSheet;
+            PlayerAnswerSheets[i] = answerSheet;
             _actorId2AnswerSheet.Add(actorID, answerSheet);
             _answerControllers.Add(answerController);
         }
@@ -307,7 +307,7 @@ public class AnswersManager : MonoBehaviour
 
     private bool HaveAllPlayersAnsweredFully()
     {
-        foreach (var answerSheet in _playerAnswerSheets)
+        foreach (var answerSheet in PlayerAnswerSheets)
         {
             if (answerSheet.GetFullAnswersCount() < _playerAnswersDefinitions.Length)
             {
@@ -319,7 +319,7 @@ public class AnswersManager : MonoBehaviour
 
     public bool HaveAllPlayersAnsweredFully(string answerID)
     {
-        foreach (var answerSheet in _playerAnswerSheets)
+        foreach (var answerSheet in PlayerAnswerSheets)
         {
             if (!answerSheet.IsAnswerFull(answerID, out _))
             {
