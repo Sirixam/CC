@@ -29,8 +29,9 @@ public class Answer
 
     public float UpdateProgress(float deltaTime, out bool finishedAnswering)
     {
+        bool wasFull = Progress >= 1;
         Progress = Mathf.Clamp01(Progress + deltaTime * _progressPerSecond);
-        finishedAnswering = Progress >= 1;
+        finishedAnswering = !wasFull && Progress >= 1;
         return Progress;
     }
 
@@ -122,15 +123,17 @@ public class AnswerSheet
         return Array.Exists(Answers, x => x.ID == answerID);
     }
 
-    public bool IsAnswerFull(string answerID, out float progress)
+    public bool IsAnswerFull(string answerID, out float progress, out float correctness)
     {
         if (_id2Answer.TryGetValue(answerID, out Answer answer))
         {
             progress = answer.Progress;
+            correctness = answer.Correctness;
             return answer.IsAnswerFull;
         }
         Debug.LogError("IsAnswerFull.AnswerID was not found: " + answerID);
         progress = 0;
+        correctness = 0;
         return false;
     }
 
@@ -188,8 +191,8 @@ public class AnswersManager : MonoBehaviour
 
     public int RequiredPlayersCount => _playerDesks.Length;
 
-    public event Action<string> OnAllPlayersFinishedAnswer;
-    public event Action<float> OnAllPlayersFinishedAllAnswers; // Parameters: float minCorrectness
+    public event Action<string, float> OnAllPlayersFinishedAnswer; // Params: float minCorrectness
+    public event Action<float> OnAllPlayersFinishedAllAnswers; // Params: float minCorrectness
 
     public static AnswersManager GetInstance() => FindObjectOfType<AnswersManager>(); // TODO: Remove
 
@@ -265,9 +268,9 @@ public class AnswersManager : MonoBehaviour
     {
         if (!answerController.IsPlayer) return;
 
-        if (HaveAllPlayersAnsweredFully(answerID))
+        if (HaveAllPlayersAnsweredFully(answerID, out float answerMinCorrectness))
         {
-            OnAllPlayersFinishedAnswer?.Invoke(answerID);
+            OnAllPlayersFinishedAnswer?.Invoke(answerID, answerMinCorrectness);
         }
 
         if (HaveAllPlayersAnsweredFully(out float minCorrectness))
@@ -320,24 +323,27 @@ public class AnswersManager : MonoBehaviour
         minCorrectness = float.MaxValue;
         foreach (var answerSheet in PlayerAnswerSheets)
         {
-            if (answerSheet.GetFullAnswersCount(out float localMinCorrectness) < _playerAnswersDefinitions.Length)
+            if (answerSheet.GetFullAnswersCount(out float sheetMinCorrectness) < _playerAnswersDefinitions.Length)
             {
                 minCorrectness = 0;
                 return false;
             }
-            minCorrectness = Mathf.Min(minCorrectness, localMinCorrectness);
+            minCorrectness = Mathf.Min(minCorrectness, sheetMinCorrectness);
         }
         return true;
     }
 
-    public bool HaveAllPlayersAnsweredFully(string answerID)
+    public bool HaveAllPlayersAnsweredFully(string answerID, out float minCorrectness)
     {
+        minCorrectness = float.MaxValue;
         foreach (var answerSheet in PlayerAnswerSheets)
         {
-            if (!answerSheet.IsAnswerFull(answerID, out _))
+            if (!answerSheet.IsAnswerFull(answerID, out _, out float correctness))
             {
+                minCorrectness = 0;
                 return false;
             }
+            minCorrectness = Mathf.Min(minCorrectness, correctness);
         }
         return true;
     }

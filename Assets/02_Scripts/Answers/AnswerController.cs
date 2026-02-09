@@ -121,7 +121,7 @@ public class AnswerController : MonoBehaviour
     public bool TryStartAnswering(string answerID, float correctness)
     {
         if (!HasAnswerSheet || !AnswerSheet.HasAnswer(answerID)) return false; // No answer sheet in this desk
-        if (AnswerSheet.IsAnswerFull(answerID, out float progress)) return false; // Already answered
+        if (AnswerSheet.IsAnswerFull(answerID, out float progress, out float oldCorrectness) && oldCorrectness == 1) return false; // Already answered correctly
         ActiveAnswerID = answerID;
         ActiveAnswerCorrectness = correctness;
         StartAnswering(progress);

@@ -9,6 +9,8 @@ public class GlobalDefinition : ScriptableObject
     public bool SimulateStudentsIndividually;
     [Range(0f, 1f)]
     public float MinCorrectnessToEarlyVictoryFlow;
+    [Range(0f, 1f)]
+    public float MinCorrectnessToDestroyItem;
     public int PlayerLives;
     public Vector2 PreAnsweringDelay;
     public Vector2 PostAnsweringDelay;

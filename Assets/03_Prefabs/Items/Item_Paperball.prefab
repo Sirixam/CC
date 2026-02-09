@@ -447,12 +447,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _defaultAnswerDefinition: {fileID: 0}
-  _audioData:
-    CollisionAudio: {fileID: 0}
-    MinVelocityOnCollide: 5
-    CollisionCooldown: 1
   _timeToDestroyOnIdle: 5
   _destroyOnIdle: 1
+  _globalDefinition: {fileID: 11400000, guid: 2b0875648e78a8e45b08a646836071ca, type: 2}
 --- !u!114 &3311442955737208034
 MonoBehaviour:
   m_ObjectHideFlags: 0

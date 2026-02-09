@@ -44,7 +44,7 @@ public class AnswerPeekUI : MonoBehaviour
 
     public void UpdateProgress(bool setup)
     {
-        bool isFull = AnswerPeek.AnswerSheet.IsAnswerFull(AnswerPeek.AnswerID, out float progress);
+        bool isFull = AnswerPeek.AnswerSheet.IsAnswerFull(AnswerPeek.AnswerID, out float progress, out _);
         if (!isFull)
         {
             SetProgress(progress);

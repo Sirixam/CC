@@ -12,9 +12,11 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
 
     [Tooltip("Use 0 if there's no answer in this paper ball")]
     [SerializeField] private AnswerDefinition _defaultAnswerDefinition;
+    [SerializeField] private float _defaultCorrectness;
     //[SerializeField] private ItemAudioHelper.Data _audioData;
     [SerializeField] private float _timeToDestroyOnIdle = 5f;
     [SerializeField] private bool _destroyOnIdle = true;
+    [SerializeField] private GlobalDefinition _globalDefinition;
 
     //private ItemAudioHelper _audioHelper;
     private string _answerID;
@@ -25,7 +27,7 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
 
     public bool HasAnswer => !string.IsNullOrWhiteSpace(_answerID) || _defaultAnswerDefinition != null;
     public string AnswerID => !string.IsNullOrWhiteSpace(_answerID) ? _answerID : _defaultAnswerDefinition != null ? _defaultAnswerDefinition.ID : null;
-    public float Correctness => !string.IsNullOrWhiteSpace(_answerID) ? _correctness : 0;
+    public float Correctness => !string.IsNullOrWhiteSpace(_answerID) ? _correctness : _defaultCorrectness;
 
     public InteractionController InteractionController => GetComponentInChildren<InteractionController>();
 
@@ -84,9 +86,10 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
         }
     }
 
-    private void OnAllPlayersAnsweredFullyEvent(string answerID)
+    private void OnAllPlayersAnsweredFullyEvent(string answerID, float minCorrectness)
     {
         if (AnswerID != answerID) return;
+        if (minCorrectness < _globalDefinition.MinCorrectnessToDestroyItem) return;
         Destroy(gameObject);
     }
 
