@@ -91,7 +91,6 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     private void OnAllPlayersAnsweredFullyEvent(string answerID, float minCorrectness)
     {
         if (AnswerID != answerID) return;
-        if (minCorrectness < _globalDefinition.MinCorrectnessToDestroyItem) return;
         Destroy(gameObject);
     }
 

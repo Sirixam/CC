@@ -16,7 +16,7 @@ MonoBehaviour:
   CanUseAnyPlayerChair: 1
   PersistAnswerProgress: 0
   SimulateStudentsIndividually: 0
-  MinCorrectnessToEarlyVictoryFlow: 0
+  MinCorrectnessToEarlyVictoryFlow: 1
   PlayerLives: 3
   PreAnsweringDelay: {x: 3, y: 3}
   PostAnsweringDelay: {x: 15, y: 25}
