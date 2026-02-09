@@ -7,6 +7,8 @@ public class GlobalDefinition : ScriptableObject
     public bool CanUseAnyPlayerChair;
     public bool PersistAnswerProgress;
     public bool SimulateStudentsIndividually;
+    [Range(0f, 1f)]
+    public float MinCorrectnessToEarlyVictoryFlow;
     public int PlayerLives;
     public Vector2 PreAnsweringDelay;
     public Vector2 PostAnsweringDelay;

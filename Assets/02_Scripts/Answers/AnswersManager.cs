@@ -102,9 +102,19 @@ public class AnswerSheet
         return 0;
     }
 
-    public int GetFullAnswersCount()
+    public int GetFullAnswersCount(out float minCorrectness)
     {
-        return Array.FindAll(Answers, x => x.IsAnswerFull).Length;
+        minCorrectness = float.MaxValue;
+        int fullAnswersCount = 0;
+        foreach (var answer in Answers)
+        {
+            if (answer.IsAnswerFull)
+            {
+                minCorrectness = Mathf.Min(minCorrectness, answer.Correctness);
+                fullAnswersCount++;
+            }
+        }
+        return fullAnswersCount;
     }
 
     public bool HasAnswer(string answerID)
@@ -179,7 +189,7 @@ public class AnswersManager : MonoBehaviour
     public int RequiredPlayersCount => _playerDesks.Length;
 
     public event Action<string> OnAllPlayersFinishedAnswer;
-    public event Action OnAllPlayersFinishedAllAnswers;
+    public event Action<float> OnAllPlayersFinishedAllAnswers; // Parameters: float minCorrectness
 
     public static AnswersManager GetInstance() => FindObjectOfType<AnswersManager>(); // TODO: Remove
 
@@ -260,9 +270,9 @@ public class AnswersManager : MonoBehaviour
             OnAllPlayersFinishedAnswer?.Invoke(answerID);
         }
 
-        if (HaveAllPlayersAnsweredFully())
+        if (HaveAllPlayersAnsweredFully(out float minCorrectness))
         {
-            OnAllPlayersFinishedAllAnswers?.Invoke();
+            OnAllPlayersFinishedAllAnswers?.Invoke(minCorrectness);
         }
     }
 
@@ -305,14 +315,17 @@ public class AnswersManager : MonoBehaviour
         return answerDefinition.Icon;
     }
 
-    private bool HaveAllPlayersAnsweredFully()
+    private bool HaveAllPlayersAnsweredFully(out float minCorrectness)
     {
+        minCorrectness = float.MaxValue;
         foreach (var answerSheet in PlayerAnswerSheets)
         {
-            if (answerSheet.GetFullAnswersCount() < _playerAnswersDefinitions.Length)
+            if (answerSheet.GetFullAnswersCount(out float localMinCorrectness) < _playerAnswersDefinitions.Length)
             {
+                minCorrectness = 0;
                 return false;
             }
+            minCorrectness = Mathf.Min(minCorrectness, localMinCorrectness);
         }
         return true;
     }

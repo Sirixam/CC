@@ -2,7 +2,6 @@ using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
 
@@ -194,8 +193,10 @@ public class GameManager : MonoBehaviour
         _timeHelper.StartTimer(_gameCancellationSource.Token).Forget();
     }
 
-    private void OnAllPlayersFinishedAllAnswers()
+    private void OnAllPlayersFinishedAllAnswers(float minCorrectness)
     {
+        if (minCorrectness < _globalDefinition.MinCorrectnessToEarlyVictoryFlow) return;
+
         _victoryUI.UpdateAnswerSheets();
         ShowEndMenu(_victoryUI.gameObject);
     }
