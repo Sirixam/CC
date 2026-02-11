@@ -9,7 +9,7 @@ public class TimeHelper
 
     private bool _isPaused;
     public bool IsRunning { get; private set; }
-    private float _remainingTime;
+    public float _remainingTime;
 
     public Action OnTimesUp;
 

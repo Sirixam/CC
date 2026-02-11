@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject _defeatFeedback;
     [SerializeField] private VictoryUI _victoryUI;
     [SerializeField] private TimeUI _timeUI;
+    [SerializeField] private RoundTimeUI _roundTimeUI;
     [SerializeField] private LivesUI _livesUI;
     [SerializeField] private HelpUI _helpUI;
     [SerializeField] private GameObject _timesUpFeedback;
@@ -22,9 +23,12 @@ public class GameManager : MonoBehaviour
     [Header("Configuratinos")]
     [SerializeField] private GlobalDefinition _globalDefinition;
     [SerializeField] private float _maxTimeInSeconds = 30;
+    [SerializeField] private float _maxRoundTimeInSeconds = 30;
 
     private TimeHelper _timeHelper;
+    private RoundTimeHelper _roundTimeHelper;
     private CancellationTokenSource _gameCancellationSource;
+    private CancellationTokenSource _roundCancellationSource;
     private List<PlayerController> _players = new();
     private int _playerLives;
 
@@ -57,6 +61,10 @@ public class GameManager : MonoBehaviour
         {
             _timeUI.gameObject.SetActive(false);
         }
+        if (_roundTimeUI != null)
+        {
+            _roundTimeUI.gameObject.SetActive(false);
+        }
         if (_livesUI != null)
         {
             _livesUI.gameObject.SetActive(false);
@@ -70,12 +78,14 @@ public class GameManager : MonoBehaviour
             button.OnClickEvent += RestartGame;
         }
         _timeHelper = new TimeHelper(_timeUI);
+        _roundTimeHelper = new RoundTimeHelper(_roundTimeUI);
         _audioHelper = new GameAudioHelper(_audioData);
     }
 
     private void OnEnable()
     {
         _timeHelper.OnTimesUp += OnTimesUp;
+        _roundTimeHelper.OnRoundTimesUp += OnRoundTimesUp;
         _answerManager.OnAllPlayersFinishedAllAnswers += OnAllPlayersFinishedAllAnswers;
         _studentManager.OnPlayerDetected += OnPlayerDetected;
         _studentManager.OnItemDetected += OnItemDetected;
@@ -89,6 +99,7 @@ public class GameManager : MonoBehaviour
     private void OnDisable()
     {
         _timeHelper.OnTimesUp -= OnTimesUp;
+        _roundTimeHelper.OnRoundTimesUp -= OnRoundTimesUp;
         _answerManager.OnAllPlayersFinishedAllAnswers -= OnAllPlayersFinishedAllAnswers;
         _studentManager.OnPlayerDetected -= OnPlayerDetected;
         _studentManager.OnItemDetected -= OnItemDetected;
@@ -144,6 +155,7 @@ public class GameManager : MonoBehaviour
 
         _gameCancellationSource = new CancellationTokenSource();
         StartTimer();
+        StartRoundTimer();
         _studentManager.StartStimulation(_gameCancellationSource.Token);
 
         EnableGameplayInput();
@@ -193,6 +205,19 @@ public class GameManager : MonoBehaviour
         _timeHelper.StartTimer(_gameCancellationSource.Token).Forget();
     }
 
+    private void StartRoundTimer()
+    {
+        Debug.Log("Timer started");
+        _roundCancellationSource?.Cancel();
+        _roundCancellationSource = new CancellationTokenSource();
+        _roundTimeHelper.Setup(_maxRoundTimeInSeconds);
+        _roundTimeHelper.StartTimer(_roundCancellationSource.Token).Forget();
+    }
+
+    private void StopRoundTimer()
+    {
+        _roundCancellationSource?.Cancel();
+    }
     private void OnAllPlayersFinishedAllAnswers(float minCorrectness)
     {
         if (minCorrectness < _globalDefinition.MinCorrectnessToEarlyVictoryFlow) return;
@@ -204,6 +229,12 @@ public class GameManager : MonoBehaviour
     private void OnTimesUp()
     {
         ShowEndMenu(_timesUpFeedback);
+        StopRoundTimer();
+    }
+    private async void OnRoundTimesUp()
+    {
+        await UniTask.Yield();
+        StartRoundTimer();
     }
 
     private void OnPlayerDetected(PlayerController playerController)
