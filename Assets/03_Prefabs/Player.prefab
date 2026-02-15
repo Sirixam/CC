@@ -592,6 +592,7 @@ MonoBehaviour:
   _globalDefinition: {fileID: 11400000, guid: 2b0875648e78a8e45b08a646836071ca, type: 2}
   _dropByHoldingInteract: 0
   _toggleToPeek: 1
+  _stopPeekOnDash: 1
 --- !u!114 &1863892939415744151
 MonoBehaviour:
   m_ObjectHideFlags: 0

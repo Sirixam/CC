@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using System;
 using UnityEngine;
 
@@ -22,19 +23,21 @@ public class DashHelper
         _data = data;
         _view = view;
         _physics = physics;
-        _lookHelper = lookHelper;        
+        _lookHelper = lookHelper;
         _audioHelper = audioHelper;
     }
 
-    public void RequestDash()
+    public bool CanDash()
     {
-        if (_dashCooldownTimer <= 0)
-        {
-            _view.OnStartDash();
-            _physics.StartDashing(_view.transform.forward);
-            _dashCooldownTimer = _data.DashCooldown;
-            _audioHelper.OnStartDash();
-        }
+        return _dashCooldownTimer <= 0;
+    }
+
+    public void StartDash()
+    {
+        _view.OnStartDash();
+        _physics.StartDashing(_view.transform.forward);
+        _dashCooldownTimer = _data.DashCooldown;
+        _audioHelper.OnStartDash();
     }
 
     public void UpdateCooldown() => _dashCooldownTimer -= Time.deltaTime;

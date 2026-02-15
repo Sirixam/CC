@@ -20,11 +20,12 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     [Header("TO BE REMOVED")]
     [SerializeField] private bool _dropByHoldingInteract; // Once we decide on the final input scheme, this can be removed
     [SerializeField] private bool _toggleToPeek;
-
+    [SerializeField] private bool _stopPeekOnDash;
     // Runtime
     private AnswerController _answerController;
     private ChairController _initialChairController;
 
+    private bool _skipNextDirectionAction;
     private bool IsPeeking => _inputHandler.ScopeType == EInputScope.PlayerPeeking;
     private bool IsAnswering => _answerController != null && _answerController.IsAnswering;
     public bool IsSitting => _chairHelper.IsSitting;
@@ -93,7 +94,12 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     {
         if (actionType == EAction.Dash)
         {
-            _dashHelper.RequestDash();
+            if (!_dashHelper.CanDash()) return;
+            _dashHelper.StartDash();
+            if (IsPeeking && _stopPeekOnDash)
+            {
+                RestoreInputScope();
+            }
         }
         else if (actionType == EAction.Interact)
         {
@@ -348,6 +354,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         {
             StopPeeking();
             _fieldOfViewController.Hide();
+            _skipNextDirectionAction = true; // [AKP] This is a HACK to prevent the directional after using or cancelling the peek. Otherwise the character is rotated in the wrong direction.
         }
 
         // Restore
@@ -364,6 +371,11 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private void OnDirectionalActionRequested(EDirectionalAction actionType, Vector2 input)
     {
+        if (_skipNextDirectionAction)
+        {
+            _skipNextDirectionAction = false;
+            return;
+        }
         if (actionType == EDirectionalAction.Move)
         {
             _physics.SetInputDirection(new Vector3(input.x, 0, input.y), updateMoveDirection: true);
@@ -379,9 +391,9 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             Ray ray = Camera.main.ScreenPointToRay(input);
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
-                Vector2 direction = new Vector3(hit.point.x - transform.position.x, hit.point.z - transform.position.z);
-                _physics.SetInputDirection(direction, updateMoveDirection: false);
-                _lookHelper.SetLookInput(direction);
+                input = new Vector3(hit.point.x - transform.position.x, hit.point.z - transform.position.z).normalized;
+                _physics.SetInputDirection(new Vector3(input.x, 0, input.y), updateMoveDirection: false);
+                _lookHelper.SetLookInput(input);
             }
             else
             {
