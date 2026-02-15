@@ -731,6 +731,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _invertMovement: 0
   _invertAim: 0
+  _mapperData:
+    AllowMovementWhilePeeking: 1
 --- !u!114 &5061849212568918116
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -3,6 +3,12 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 {
+    private struct AimInput
+    {
+        public Vector2 Input;
+        public bool IsMouse;
+    }
+
     [SerializeField] private PlayerView _view;
     [SerializeField] private PlayerInputHandler _inputHandler;
     [SerializeField] private PlayerPhysics _physics;
@@ -25,6 +31,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     private AnswerController _answerController;
     private ChairController _initialChairController;
 
+    private AimInput _lastAimInput;
     private bool _skipNextDirectionAction;
     private bool IsPeeking => _inputHandler.ScopeType == EInputScope.PlayerPeeking;
     private bool IsAnswering => _answerController != null && _answerController.IsAnswering;
@@ -369,7 +376,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         }
     }
 
-    private void OnDirectionalActionRequested(EDirectionalAction actionType, Vector2 input)
+    private void OnDirectionalActionRequested(EDirectionalAction actionType, Vector2 input, bool isMouse)
     {
         if (_skipNextDirectionAction)
         {
@@ -378,28 +385,35 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         }
         if (actionType == EDirectionalAction.Move)
         {
-            _physics.SetInputDirection(new Vector3(input.x, 0, input.y), updateMoveDirection: true);
-            _lookHelper.SetLookInput(input);
+            _physics.SetMoveDirection(new Vector3(input.x, 0, input.y));
+            if (!IsPeeking || !_lastAimInput.IsMouse)
+            {
+                _physics.SetInputDirection(new Vector3(input.x, 0, input.y));
+                _lookHelper.SetLookInput(input);
+            }
         }
         else if (actionType == EDirectionalAction.Aim)
         {
-            _physics.SetInputDirection(new Vector3(input.x, 0, input.y), updateMoveDirection: false);
-            _lookHelper.SetLookInput(input);
+            ProcessAimInput(input, isMouse);
+            _lastAimInput = new AimInput { Input = input, IsMouse = isMouse };
         }
-        else if (actionType == EDirectionalAction.Aim_WithMouse)
+    }
+
+    private void ProcessAimInput(Vector2 input, bool isMouse)
+    {
+        if (isMouse)
         {
             Ray ray = Camera.main.ScreenPointToRay(input);
-            if (Physics.Raycast(ray, out RaycastHit hit))
-            {
-                input = new Vector3(hit.point.x - transform.position.x, hit.point.z - transform.position.z).normalized;
-                _physics.SetInputDirection(new Vector3(input.x, 0, input.y), updateMoveDirection: false);
-                _lookHelper.SetLookInput(input);
-            }
-            else
+            if (!Physics.Raycast(ray, out RaycastHit hit))
             {
                 Debug.LogError("Failed to get position from mouse input");
+                return;
             }
+            input = new Vector3(hit.point.x - transform.position.x, hit.point.z - transform.position.z).normalized;
         }
+
+        _physics.SetInputDirection(new Vector3(input.x, 0, input.y));
+        _lookHelper.SetLookInput(input);
     }
 
     private void OnPreHoldActionDetected(EAction actionType)
@@ -545,6 +559,11 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             return;
         }
 
+        if (IsPeeking && _lastAimInput.IsMouse)
+        {
+            ProcessAimInput(_lastAimInput.Input, _lastAimInput.IsMouse); // [AKP] Force aim to stick on current mouse position while moving
+        }
+
         _lookHelper.UpdateRotation(transform);
         _interactionHelper.UpdateBestInteraction();
         if (IsAnswering)
@@ -640,7 +659,8 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     public void ResetInputState()
     {
-        _physics.SetInputDirection(Vector3.zero, updateMoveDirection: true);
+        _physics.SetInputDirection(Vector3.zero);
+        _physics.SetMoveDirection(Vector3.zero);
         _lookHelper.SetLookInput(Vector2.zero);
     }
 

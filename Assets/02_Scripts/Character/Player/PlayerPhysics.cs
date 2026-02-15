@@ -35,13 +35,14 @@ public class PlayerPhysics
         _rigidbody.constraints = RigidbodyConstraints.FreezeRotation; // Prevent tipping over
     }
 
-    public void SetInputDirection(Vector3 value, bool updateMoveDirection)
+    public void SetInputDirection(Vector3 value)
     {
         _inputDirection = value;
-        if (updateMoveDirection)
-        {
-            _moveDirection = value;
-        }
+    }
+
+    public void SetMoveDirection(Vector3 value)
+    {
+        _moveDirection = value;
     }
 
     public void StartDashing(Vector3 forward)

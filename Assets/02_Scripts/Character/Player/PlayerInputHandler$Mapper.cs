@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -18,6 +19,12 @@ public partial class PlayerInputHandler
     /// </summary>
     public class Mapper
     {
+        [Serializable]
+        public class Data
+        {
+            public bool AllowMovementWhilePeeking;
+        }
+
         private const string PLAYER_STANDING_MAP = "Player - Standing";
         private const string PLAYER_SITTING_MAP = "Player - Sitting";
         private const string PLAYER_AIMING_MAP = "Player - Aiming";
@@ -36,14 +43,16 @@ public partial class PlayerInputHandler
         private static readonly string PAUSE_ACTION = EAction.Pause.ToString();
         private static readonly string HELP_ACTION = EAction.Help.ToString();
 
+        private Data _data;
         private PlayerInputHandler _inputHandler;
         private EInputScope _nextScopeType; // Used when changing scope.
 
         private PlayerInput PlayerInput => _inputHandler.PlayerInput;
         public EInputScope ScopeType { get; private set; }
 
-        public Mapper(PlayerInputHandler inputHandler)
+        public Mapper(Data data, PlayerInputHandler inputHandler)
         {
+            _data = data;
             _inputHandler = inputHandler;
 
             // DO NOT iterate over all action maps, because we want to keep some enabled, eg UI
@@ -297,6 +306,13 @@ public partial class PlayerInputHandler
             PlayerInput.actions.FindActionMap(PLAYER_PEEKING_MAP).Enable();
 
             var actions = PlayerInput.actions;
+            if (_data.AllowMovementWhilePeeking)
+            {
+                actions[MOVE_ACTION].started += _inputHandler.OnMove;
+                actions[MOVE_ACTION].performed += _inputHandler.OnMove;
+                actions[MOVE_ACTION].canceled += _inputHandler.OnMove;
+            }
+
             actions[AIM_ACTION].performed += _inputHandler.OnAim;
             actions[AIM_ACTION].canceled += _inputHandler.OnAim;
 
@@ -317,6 +333,13 @@ public partial class PlayerInputHandler
             PlayerInput.actions.FindActionMap(PLAYER_PEEKING_MAP).Disable();
 
             var actions = PlayerInput.actions;
+            if (_data.AllowMovementWhilePeeking)
+            {
+                actions[MOVE_ACTION].started -= _inputHandler.OnMove;
+                actions[MOVE_ACTION].performed -= _inputHandler.OnMove;
+                actions[MOVE_ACTION].canceled -= _inputHandler.OnMove;
+            }
+
             actions[AIM_ACTION].performed -= _inputHandler.OnAim;
             actions[AIM_ACTION].canceled -= _inputHandler.OnAim;
 

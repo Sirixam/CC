@@ -9,7 +9,6 @@ public enum EDirectionalAction
     Move,
     Navigate,
     Aim,
-    Aim_WithMouse,
 }
 
 public enum EAction
@@ -112,6 +111,7 @@ public partial class PlayerInputHandler : MonoBehaviour
 
     [SerializeField] private bool _invertMovement;
     [SerializeField] private bool _invertAim;
+    [SerializeField] private Mapper.Data _mapperData;
 
     private HoldState _actionHoldState = new();
     private HoldState _peekHoldState = new();
@@ -128,12 +128,12 @@ public partial class PlayerInputHandler : MonoBehaviour
     public Action<EAction> ActionEvent;
     public Action<EAction> PreHoldActionEvent;
     public Action<EAction, bool> HoldActionEvent;
-    public Action<EDirectionalAction, Vector2> DirectionalActionEvent;
+    public Action<EDirectionalAction, Vector2, bool> DirectionalActionEvent;
 
     public void Initialize()
     {
         PlayerInput = GetComponent<PlayerInput>();
-        _mapper = new Mapper(this);
+        _mapper = new Mapper(_mapperData, this);
         _deviceManager = new DeviceManager();
         Debug.Log("Current control scheme: " + PlayerInput.currentControlScheme);
     }
@@ -196,11 +196,11 @@ public partial class PlayerInputHandler : MonoBehaviour
         {
             Vector2 input = context.ReadValue<Vector2>();
             if (_invertMovement) input *= -1;
-            RequestDirectionalAction(EDirectionalAction.Move, input);
+            RequestDirectionalAction(EDirectionalAction.Move, input, isMouse: false);
         }
         else if (context.canceled)
         {
-            RequestDirectionalAction(EDirectionalAction.Move, Vector2.zero);
+            RequestDirectionalAction(EDirectionalAction.Move, Vector2.zero, isMouse: false);
         }
     }
 
@@ -209,18 +209,17 @@ public partial class PlayerInputHandler : MonoBehaviour
         if (context.performed)
         {
             Vector2 input = context.ReadValue<Vector2>();
-            RequestDirectionalAction(EDirectionalAction.Navigate, input);
+            RequestDirectionalAction(EDirectionalAction.Navigate, input, isMouse: false);
         }
         else if (context.canceled)
         {
-            RequestDirectionalAction(EDirectionalAction.Navigate, Vector2.zero);
+            RequestDirectionalAction(EDirectionalAction.Navigate, Vector2.zero, isMouse: false);
         }
     }
 
     private void OnAim(InputAction.CallbackContext context)
     {
         bool isMouse = context.control.device is Mouse;
-        EDirectionalAction actionType = isMouse ? EDirectionalAction.Aim_WithMouse : EDirectionalAction.Aim;
         if (context.performed)
         {
             Vector2 input = context.ReadValue<Vector2>();
@@ -228,11 +227,11 @@ public partial class PlayerInputHandler : MonoBehaviour
             {
                 input *= -1;
             }
-            RequestDirectionalAction(actionType, input);
+            RequestDirectionalAction(EDirectionalAction.Aim, input, isMouse);
         }
         else if (context.canceled)
         {
-            RequestDirectionalAction(actionType, Vector2.zero);
+            RequestDirectionalAction(EDirectionalAction.Aim, Vector2.zero, isMouse);
         }
     }
 
@@ -278,11 +277,11 @@ public partial class PlayerInputHandler : MonoBehaviour
         HandleHoldAction(context, _helpHoldState, EAction.Help);
     }
 
-    private void RequestDirectionalAction(EDirectionalAction actionType, Vector2 input)
+    private void RequestDirectionalAction(EDirectionalAction actionType, Vector2 input, bool isMouse)
     {
-        DirectionalActionEvent?.Invoke(actionType, input);
+        DirectionalActionEvent?.Invoke(actionType, input, isMouse);
 #if LOG_ACTIONS
-         Debug.Log($"{actionType} requested with input: {input}");
+         Debug.Log($"{actionType} requested with input: {input}, isMouse: {isMouse}");
 #endif
     }
 

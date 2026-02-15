@@ -52,7 +52,7 @@ public class TestInputScopes : MonoBehaviour
 
     public void PlayerJoined(PlayerInput playerInput)
     {
-       
+
         //Prevent overflow
         if (_playersCount >= _playersInputData.Length)
         {
@@ -68,7 +68,7 @@ public class TestInputScopes : MonoBehaviour
         // Initialize Input Handler
         inputHandler.Initialize();
         inputHandler.ActionEvent += actionType => playerData.Feedback.text = $"{actionType} requested";
-        inputHandler.DirectionalActionEvent += (actionType, input) => playerData.Feedback.text = $"{actionType} requested with input: {input}";
+        inputHandler.DirectionalActionEvent += (actionType, input, isMouse) => playerData.Feedback.text = $"{actionType} requested with input: {input}, isMouse: {isMouse}";
         inputHandler.HoldActionEvent += (actionType, isHolding) => playerData.Feedback.text = isHolding ? $"{actionType} hold begin" : $"{actionType} hold end";
         playerData.InputHandler = inputHandler;
 
