@@ -16911,7 +16911,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1044623786533806588, guid: e6e90ba0c41129541a6f4f3af1ab36bc, type: 3}
       propertyPath: m_Name
-      value: StudentNpc_Female_Pink
+      value: StudentNpc_Female_Yellow
       objectReference: {fileID: 0}
     - target: {fileID: 1676485484969750706, guid: e6e90ba0c41129541a6f4f3af1ab36bc, type: 3}
       propertyPath: m_LocalPosition.x
@@ -33349,7 +33349,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1044623786533806588, guid: a1626112ecba9614c970c5efd57fc24b, type: 3}
       propertyPath: m_Name
-      value: StudentNpc_Female_White
+      value: StudentNpc_Female_Orange
       objectReference: {fileID: 0}
     - target: {fileID: 1676485484969750706, guid: a1626112ecba9614c970c5efd57fc24b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -41953,7 +41953,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1044623786533806588, guid: e9f460ba93fa44b42b75e34d6b65c7ff, type: 3}
       propertyPath: m_Name
-      value: StudentNpc_Female_Red
+      value: StudentNpc_Female_Black
       objectReference: {fileID: 0}
     - target: {fileID: 1676485484969750706, guid: e9f460ba93fa44b42b75e34d6b65c7ff, type: 3}
       propertyPath: m_LocalPosition.x
@@ -49112,7 +49112,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1044623786533806588, guid: 6fcdd231844e1414db2d88fa160ce535, type: 3}
       propertyPath: m_Name
-      value: StudentNpc_Male_Green
+      value: StudentNpc_Male_Yellow
       objectReference: {fileID: 0}
     - target: {fileID: 1676485484969750706, guid: 6fcdd231844e1414db2d88fa160ce535, type: 3}
       propertyPath: m_LocalPosition.x

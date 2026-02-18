@@ -64,6 +64,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: StudentNpc_Male_Purple
       objectReference: {fileID: 0}
+    - target: {fileID: 2426362767405802943, guid: ad9006417494d994081c9e11b544b17e, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3927746264195442976, guid: ad9006417494d994081c9e11b544b17e, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
