@@ -593,6 +593,7 @@ MonoBehaviour:
   _dropByHoldingInteract: 0
   _toggleToPeek: 1
   _stopPeekOnDash: 1
+  _stopPeekOnTeleport: 1
 --- !u!114 &1863892939415744151
 MonoBehaviour:
   m_ObjectHideFlags: 0

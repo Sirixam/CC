@@ -27,6 +27,8 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     [SerializeField] private bool _dropByHoldingInteract; // Once we decide on the final input scheme, this can be removed
     [SerializeField] private bool _toggleToPeek;
     [SerializeField] private bool _stopPeekOnDash;
+    [SerializeField] private bool _stopPeekOnTeleport;
+
     // Runtime
     private AnswerController _answerController;
     private ChairController _initialChairController;
@@ -317,6 +319,11 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private void TeleportToChair(ChairController chairController)
     {
+        if (_stopPeekOnTeleport)
+        {
+            RestoreInputScope(instant: true);
+        }
+
         _lookHelper.SetLookAt(chairController.LookAtPoint);
         _chairHelper.TeleportToSitting(chairController);
         _interactionHelper.DisableInteraction();
@@ -354,13 +361,20 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         }
     }
 
-    private void RestoreInputScope()
+    private void RestoreInputScope(bool instant = false)
     {
         // Handle specific cases
         if (_inputHandler.ScopeType == EInputScope.PlayerPeeking)
         {
             StopPeeking();
-            _fieldOfViewController.Hide();
+            if (instant)
+            {
+                _fieldOfViewController.HideInstant();
+            }
+            else
+            {
+                _fieldOfViewController.Hide();
+            }
             _skipNextDirectionAction = true; // [AKP] This is a HACK to prevent the directional after using or cancelling the peek. Otherwise the character is rotated in the wrong direction.
         }
 
@@ -619,14 +633,8 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         }
     }
 
-    //Old Klagges function
-    //private void OnCollisionStay(Collision collision)
-    //    => _dashHelper.OnCollisionStay(collision, OnStopDash: _stunHelper.StartStun);
-
     private void OnCollisionStay(Collision collision)
-    {
-        _dashHelper.OnCollisionStay(collision, OnStopDash: _stunHelper.StartStun, _audioHelper);
-    }
+        => _dashHelper.OnCollisionStay(collision, OnStopDash: _stunHelper.StartStun, _audioHelper);
 
     private void OnTriggerEnter(Collider other)
     {
