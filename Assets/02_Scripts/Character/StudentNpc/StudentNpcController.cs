@@ -22,6 +22,7 @@ public class StudentNpcController : MonoBehaviour
     [SerializeField] private bool _canDetectFlyingItems;
 
     // Runtime    
+    private TestDefinition _testDefinition;
     public bool IsDistracted => _distractionHelper.IsDistracted;
     public bool IsDetecting { get; private set; }
     private ChairController _chairController;
@@ -51,6 +52,7 @@ public class StudentNpcController : MonoBehaviour
 
         // Initialize
         _stateText.text = "Idle";
+        InjectTestDefinition(_testDefinition); // Reinject in case it was injected before awake
         _lookHelper.Initialize(transform.forward);
         AnswerController.BlockCheat();
         _fieldOfViewController.HideInstant();
@@ -67,6 +69,12 @@ public class StudentNpcController : MonoBehaviour
     private void Update()
     {
         _lookHelper.UpdateRotation(transform);
+    }
+
+    public void InjectTestDefinition(TestDefinition testDefinition)
+    {
+        _testDefinition = testDefinition;
+        _distractionHelper?.InjectTestDefinition(testDefinition);
     }
 
     public void SetDurations(float thinkingDuration, float validatingDuration)

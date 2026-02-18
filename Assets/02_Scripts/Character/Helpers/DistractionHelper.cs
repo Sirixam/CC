@@ -30,6 +30,7 @@ public class DistractionHelper
     private LookHelper _lookHelper;
     private AnswerController _answerController;
     private StudentAudioHelper _audioHelper;
+    private TestDefinition _testDefinition;
 
     private int _accumulatedDistraction;
     private CancellationTokenSource _cancellationTokenSource;
@@ -44,6 +45,11 @@ public class DistractionHelper
         _lookHelper = lookHelper;
         _answerController = answerController;
         _audioHelper = audioHelper;
+    }
+
+    public void InjectTestDefinition(TestDefinition testDefinition)
+    {
+        _testDefinition = testDefinition;
     }
 
     public async UniTask OnDistracted(Vector3 hitDirection)
@@ -128,6 +134,18 @@ public class DistractionHelper
 
     private Data.Level GetLevelData(out int level)
     {
+#if UNITY_EDITOR
+        if (_testDefinition != null && _testDefinition.ForcedDistractionLevel > 0)
+        {
+            level = _testDefinition.ForcedDistractionLevel;
+            if (_data.Levels.Length >= level)
+            {
+                return _data.Levels[level - 1];
+            }
+
+            Debug.LogWarning($"Forced distraction level {level} is out of bounds of defined levels.");
+        }
+#endif
         level = -1;
         for (int i = 0; i < _data.Levels.Length; i++)
         {

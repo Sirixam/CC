@@ -43,6 +43,10 @@ public class StudentManager : MonoBehaviour
     public void InjectTestDefinition(TestDefinition testDefinition)
     {
         _testDefinition = testDefinition;
+        foreach (var student in _students)
+        {
+            student.InjectTestDefinition(testDefinition);
+        }
     }
 
     public void StartStimulation(CancellationToken cancellationToken)
