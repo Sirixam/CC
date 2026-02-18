@@ -191,7 +191,8 @@ public class AnswersManager : MonoBehaviour
     [SerializeField] private AnswerController[] _playerDesks;
     [SerializeField] private AnswerPeekUI[] _answerPeekUIs;
     [SerializeField] private GlobalDefinition _globalDefinition;
-
+    
+    private TestDefinition _testDefinition;
     public AnswerSheet[] PlayerAnswerSheets { get; private set; }
     private Dictionary<string, AnswerSheet> _actorId2AnswerSheet;
     private List<AnswerController> _answerControllers = new();
@@ -244,14 +245,31 @@ public class AnswersManager : MonoBehaviour
         }
     }
 
+    public void InjectTestDefinition(TestDefinition testDefinition)
+    {
+        _testDefinition = testDefinition;
+    }
+
     public void AddStudentNpc(StudentNpcInput input)
     {
-        AnswerSheet answerSheet = new(_npcAnswersDefinitions, _globalDefinition.PersistAnswerProgress);
+        AnswerDefinition[] answerDefinitions = GetAnswerDefinitions();
+        AnswerSheet answerSheet = new(answerDefinitions, _globalDefinition.PersistAnswerProgress);
         input.AnswerController.Setup(answerSheet, input.ActorID, isPlayer: false);
         input.AnswerController.OnFinishAnsweringEvent += OnFinishAnswering;
         input.AnswerController.OnFinishPeekingEvent += (x, y) => OnFinishPeeking(x, y, input.CharacterIcon, input.ArchetypeIcon);
         _actorId2AnswerSheet.Add(input.ActorID, answerSheet);
         _answerControllers.Add(input.AnswerController);
+    }
+
+    private AnswerDefinition[] GetAnswerDefinitions()
+    {
+#if UNITY_EDITOR
+        if (_testDefinition != null && _testDefinition.ForcedNpcAnswer != null)
+        {
+            return new AnswerDefinition[] { _testDefinition.ForcedNpcAnswer };
+        }
+#endif
+        return _npcAnswersDefinitions;
     }
 
     public void CleanActivePeeks()
@@ -311,6 +329,20 @@ public class AnswersManager : MonoBehaviour
 
     public AnswerDefinition GetNewStudentAnswer(AnswerDefinition lastAnswerDef)
     {
+#if UNITY_EDITOR
+        if (_testDefinition != null && _testDefinition.ForcedNpcAnswer != null)
+        {
+            return _testDefinition.ForcedNpcAnswer;
+        }
+#endif
+        if (_npcAnswersDefinitions.Length == 0)
+        {
+            Debug.LogError("No NPC answer definitions found!");
+            return null;
+        }
+
+        if (_npcAnswersDefinitions.Length == 1) return _npcAnswersDefinitions[0];
+
         AnswerDefinition newAnswerDef;
         do
         {

@@ -12,10 +12,12 @@ public class StudentManager : MonoBehaviour
     [SerializeField] private AnswersManager _answerManager;
     [SerializeField] private StudentNpcController[] _students;
     [SerializeField] private GlobalDefinition _globalDefinition;
+
     [Header("Configurations")]
     [Range(0, 1f), Tooltip("What's the chance of getting a half correct answer versus a wrong answer.")]
     [SerializeField] private float _halfCorrectChance = 0.5f;
 
+    private TestDefinition _testDefinition;
     private StudentNpcController _smartStudent;
 
     public Action<PlayerController> OnPlayerDetected;
@@ -36,6 +38,11 @@ public class StudentManager : MonoBehaviour
                 ArchetypeIcon = _students[i].ArchetypeIcon
             });
         }
+    }
+
+    public void InjectTestDefinition(TestDefinition testDefinition)
+    {
+        _testDefinition = testDefinition;
     }
 
     public void StartStimulation(CancellationToken cancellationToken)
@@ -124,6 +131,15 @@ public class StudentManager : MonoBehaviour
 
     private float GetNewCorrectness(bool isSmartStudent)
     {
+#if UNITY_EDITOR
+        if (_testDefinition != null)
+        {
+            if (_testDefinition.ForcedCorrectAnswer) return 1;
+            if (_testDefinition.ForcedHalfCorrectAnswer) return HALF_CORRECTNESS;
+            if (_testDefinition.ForcedWrongAnswer) return 0;
+        }
+#endif
+
         if (isSmartStudent) return 1;
 
         bool isHalfCorrect = Random.Range(0, 1f) <= _halfCorrectChance;

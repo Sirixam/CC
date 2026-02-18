@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject _timesUpFeedback;
     [SerializeField] private ButtonListener[] _restartButtons;
 
-    [Header("Configuratinos")]
+    [Header("Configurations")]
     [SerializeField] private GlobalDefinition _globalDefinition;
     [SerializeField] private float _maxTimeInSeconds = 30;
     [SerializeField] private float _maxRoundTimeInSeconds = 30;
@@ -39,8 +39,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] private PlayerInputManager _playerInputManager;
     [SerializeField] private GameAudioHelper.Data _audioData;
 
-    private GameAudioHelper _audioHelper;
+    [Header("TEST ONLY")]
+    [SerializeField] private bool _useTestDefinition;
+    [SerializeField] private TestDefinition _testDefinition;
 
+    private GameAudioHelper _audioHelper;
 
     private void Awake()
     {
@@ -80,6 +83,12 @@ public class GameManager : MonoBehaviour
         _timeHelper = new TimeHelper(_timeUI);
         _roundTimeHelper = new RoundTimeHelper(_roundTimeUI);
         _audioHelper = new GameAudioHelper(_audioData);
+
+        if (_useTestDefinition)
+        {
+            _answerManager.InjectTestDefinition(_testDefinition);
+            _studentManager.InjectTestDefinition(_testDefinition);
+        }
     }
 
     private void OnEnable()

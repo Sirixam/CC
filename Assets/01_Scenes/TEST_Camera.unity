@@ -799,6 +799,8 @@ MonoBehaviour:
   _playerInputManager: {fileID: 1683781321}
   _audioData:
     GameEnd: {fileID: 11400000, guid: 691b696b4208e11459828f866ab794ca, type: 2}
+  _useTestDefinition: 0
+  _testDefinition: {fileID: 11400000, guid: 1becc6e784c11d04ab92ba342fbdd6c8, type: 2}
 --- !u!1 &160446707
 GameObject:
   m_ObjectHideFlags: 0
