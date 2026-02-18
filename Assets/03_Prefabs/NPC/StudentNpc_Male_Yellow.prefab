@@ -62,20 +62,24 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2028980368172026476, guid: ad9006417494d994081c9e11b544b17e, type: 3}
       propertyPath: m_Name
-      value: StudentNpc_Male_Green
+      value: StudentNpc_Male_Yellow
+      objectReference: {fileID: 0}
+    - target: {fileID: 2426362767405802943, guid: ad9006417494d994081c9e11b544b17e, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3927746264195442976, guid: ad9006417494d994081c9e11b544b17e, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 86f3958a558eae149951eb1d4ee51b68, type: 2}
+      objectReference: {fileID: 2100000, guid: f45b998bebe23ca4498a02d78a3b036d, type: 2}
     - target: {fileID: 3949015082302053970, guid: ad9006417494d994081c9e11b544b17e, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 86f3958a558eae149951eb1d4ee51b68, type: 2}
+      objectReference: {fileID: 2100000, guid: f45b998bebe23ca4498a02d78a3b036d, type: 2}
     - target: {fileID: 7516088646342299172, guid: ad9006417494d994081c9e11b544b17e, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 86f3958a558eae149951eb1d4ee51b68, type: 2}
+      objectReference: {fileID: 2100000, guid: f45b998bebe23ca4498a02d78a3b036d, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

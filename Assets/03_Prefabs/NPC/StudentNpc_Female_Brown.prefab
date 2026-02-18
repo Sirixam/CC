@@ -11,15 +11,19 @@ PrefabInstance:
     - target: {fileID: 261983768169370528, guid: a397c6a682fd4fb4c8e0937572e133f6, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 1c7af1f5560bee3458b02cec3da7307b, type: 2}
+      objectReference: {fileID: 2100000, guid: ae1c084b76f65524fa8e7a7f83857fd5, type: 2}
     - target: {fileID: 465666176455750685, guid: a397c6a682fd4fb4c8e0937572e133f6, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 1c7af1f5560bee3458b02cec3da7307b, type: 2}
+      objectReference: {fileID: 2100000, guid: ae1c084b76f65524fa8e7a7f83857fd5, type: 2}
     - target: {fileID: 845473357334732594, guid: a397c6a682fd4fb4c8e0937572e133f6, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 1c7af1f5560bee3458b02cec3da7307b, type: 2}
+      objectReference: {fileID: 2100000, guid: ae1c084b76f65524fa8e7a7f83857fd5, type: 2}
+    - target: {fileID: 865166032058810324, guid: a397c6a682fd4fb4c8e0937572e133f6, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 5054fc18d1527a6448e5fec6d9427dbb, type: 2}
     - target: {fileID: 2165246363611371174, guid: a397c6a682fd4fb4c8e0937572e133f6, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.5
@@ -76,6 +80,10 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6587943960552099096, guid: a397c6a682fd4fb4c8e0937572e133f6, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 5054fc18d1527a6448e5fec6d9427dbb, type: 2}
     - target: {fileID: 7330995525429809387, guid: a397c6a682fd4fb4c8e0937572e133f6, type: 3}
       propertyPath: m_Name
       value: capsule_lite_female
@@ -153,6 +161,10 @@ PrefabInstance:
     - target: {fileID: 2028980368172026476, guid: ad9006417494d994081c9e11b544b17e, type: 3}
       propertyPath: m_Name
       value: StudentNpc_Female_Brown
+      objectReference: {fileID: 0}
+    - target: {fileID: 2426362767405802943, guid: ad9006417494d994081c9e11b544b17e, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3927746264195442976, guid: ad9006417494d994081c9e11b544b17e, type: 3}
       propertyPath: m_Materials.Array.data[0]

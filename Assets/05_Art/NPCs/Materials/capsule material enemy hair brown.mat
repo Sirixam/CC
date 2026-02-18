@@ -7,9 +7,9 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: capsule material enemy skin green
+  m_Name: capsule material enemy hair brown
   m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
-  m_Parent: {fileID: 2100000, guid: ae1c084b76f65524fa8e7a7f83857fd5, type: 2}
+  m_Parent: {fileID: 2100000, guid: 01fd387bb7d817a4fb9e53eaa75198a2, type: 2}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
   m_InvalidKeywords: []
@@ -27,24 +27,16 @@ Material:
     - _BaseMap:
         m_Texture: {fileID: 2800000, guid: 5e72d75f37890da4c951a30d61a0df4f, type: 3}
         m_Scale: {x: 1, y: 1}
-        m_Offset: {x: -0.64, y: -0.53}
-    - _DetailAlbedoMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0.56, y: 1.05}
-    - _EmissionMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: -0.56, y: -1.05}
+        m_Offset: {x: 3.11, y: 0.79}
     - _MainTex:
         m_Texture: {fileID: 2800000, guid: 5e72d75f37890da4c951a30d61a0df4f, type: 3}
         m_Scale: {x: 1, y: 1}
-        m_Offset: {x: -0.64, y: -0.53}
+        m_Offset: {x: 3.11, y: 0.79}
     m_Ints: []
     m_Floats: []
     m_Colors: []
   m_BuildTextureStacks: []
---- !u!114 &2692269395042075825
+--- !u!114 &1309615949237985025
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
