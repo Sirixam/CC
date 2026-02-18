@@ -16,6 +16,8 @@ public class StudentNpcController : MonoBehaviour
     [SerializeField] private DistractionHelper.Data _distractionData;
     [SerializeField] private StudentAudioHelper.Data _audioData;
     [SerializeField] private GlobalDefinition _globalDefinition;
+    [SerializeField] private Sprite _icon;
+    [SerializeField] private Sprite _archetypeIcon;
     [SerializeField] private bool _canDetectItems;
     [SerializeField] private bool _canDetectFlyingItems;
 
@@ -24,12 +26,15 @@ public class StudentNpcController : MonoBehaviour
     public bool IsDetecting { get; private set; }
     private ChairController _chairController;
     public AnswerController AnswerController { get; private set; }
+    public Sprite CharacterIcon => _icon;
+    public Sprite ArchetypeIcon => _archetypeIcon;
 
     // Helpers
     private LookHelper _lookHelper;
     private DistractionHelper _distractionHelper;
     private StudentAudioHelper _audioHelper;
 
+    // Events
     public Action<PlayerController> OnPlayerDetected;
     public Action<IItemController> OnItemDetected;
     public event Action OnAnsweringEnded;

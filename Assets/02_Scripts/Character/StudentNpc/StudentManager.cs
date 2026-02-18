@@ -28,7 +28,13 @@ public class StudentManager : MonoBehaviour
             string actorID = IActor.GetStudentNpcID(i);
             _students[i].OnPlayerDetected += OnPlayerDetected.Invoke;
             _students[i].OnItemDetected += OnItemDetected.Invoke;
-            _answerManager.AddStudentNpc(actorID, _students[i].AnswerController);
+            _answerManager.AddStudentNpc(new AnswersManager.StudentNpcInput
+            {
+                ActorID = actorID,
+                AnswerController = _students[i].AnswerController,
+                CharacterIcon = _students[i].CharacterIcon,
+                ArchetypeIcon = _students[i].ArchetypeIcon
+            });
         }
     }
 

@@ -178,6 +178,14 @@ public class AnswerPeek
 
 public class AnswersManager : MonoBehaviour
 {
+    public struct StudentNpcInput
+    {
+        public string ActorID;
+        public AnswerController AnswerController;
+        public Sprite CharacterIcon;
+        public Sprite ArchetypeIcon;
+    }
+
     [SerializeField] private AnswerDefinition[] _playerAnswersDefinitions;
     [SerializeField] private AnswerDefinition[] _npcAnswersDefinitions;
     [SerializeField] private AnswerController[] _playerDesks;
@@ -236,14 +244,14 @@ public class AnswersManager : MonoBehaviour
         }
     }
 
-    public void AddStudentNpc(string actorID, AnswerController answerController)
+    public void AddStudentNpc(StudentNpcInput input)
     {
         AnswerSheet answerSheet = new(_npcAnswersDefinitions, _globalDefinition.PersistAnswerProgress);
-        answerController.Setup(answerSheet, actorID, isPlayer: false);
-        answerController.OnFinishAnsweringEvent += OnFinishAnswering;
-        answerController.OnFinishPeekingEvent += OnFinishPeeking;
-        _actorId2AnswerSheet.Add(actorID, answerSheet);
-        _answerControllers.Add(answerController);
+        input.AnswerController.Setup(answerSheet, input.ActorID, isPlayer: false);
+        input.AnswerController.OnFinishAnsweringEvent += OnFinishAnswering;
+        input.AnswerController.OnFinishPeekingEvent += (x, y) => OnFinishPeeking(x, y, input.CharacterIcon, input.ArchetypeIcon);
+        _actorId2AnswerSheet.Add(input.ActorID, answerSheet);
+        _answerControllers.Add(input.AnswerController);
     }
 
     public void CleanActivePeeks()
@@ -279,7 +287,7 @@ public class AnswersManager : MonoBehaviour
         }
     }
 
-    private void OnFinishPeeking(AnswerController answerController, string answerID)
+    private void OnFinishPeeking(AnswerController answerController, string answerID, Sprite characterIcon, Sprite archetypeIcon)
     {
         AnswerPeek peek = _activePeeks.Find(x => x.AnswerSheet == answerController.AnswerSheet && x.AnswerID == answerID);
         if (peek != null) return; // Already showing this peek
@@ -297,7 +305,7 @@ public class AnswersManager : MonoBehaviour
         _activePeeks.Add(peek);
 
         Sprite answerTypeIcon = GetAnswerTypeIcon(answerID);
-        peekUI.Setup(peek, null, answerTypeIcon);
+        peekUI.Setup(peek, characterIcon, archetypeIcon, answerTypeIcon);
         peekUI.Show();
     }
 

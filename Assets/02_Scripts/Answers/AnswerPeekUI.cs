@@ -4,7 +4,8 @@ using UnityEngine.UI;
 
 public class AnswerPeekUI : MonoBehaviour
 {
-    [SerializeField] private Image _playerIcon;
+    [SerializeField] private Image _characterIcon;
+    [SerializeField] private Image _archetypeIcon;
     [SerializeField] private Image _answerTypeIcon;
     [SerializeField] private RectTransform _readyObject;
     [SerializeField] private Image _progressMask;
@@ -34,10 +35,11 @@ public class AnswerPeekUI : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void Setup(AnswerPeek answerPeek, Sprite playerIcon, Sprite answerTypeIcon)
+    public void Setup(AnswerPeek answerPeek, Sprite characterIcon, Sprite archetypeIcon, Sprite answerTypeIcon)
     {
         AnswerPeek = answerPeek;
-            _playerIcon.sprite = playerIcon;
+        _characterIcon.sprite = characterIcon;
+        _archetypeIcon.sprite = archetypeIcon;
         _answerTypeIcon.sprite = answerTypeIcon;
         UpdateProgress(setup: true);
     }
