@@ -138,6 +138,8 @@ MonoBehaviour:
     - {fileID: 11400000, guid: a290f2ff313dd2f42bd044c5395899e8, type: 2}
     - {fileID: 11400000, guid: 72824e033a980e541a6e4d2fdf9f21a0, type: 2}
   _globalDefinition: {fileID: 11400000, guid: 2b0875648e78a8e45b08a646836071ca, type: 2}
+  _icon: {fileID: 21300000, guid: 445f914bffe526e4d9c67e5ea23f8924, type: 3}
+  _archetypeIcon: {fileID: 21300000, guid: 3528cca18f771b84c8590c96ee49d06f, type: 3}
   _canDetectItems: 1
   _canDetectFlyingItems: 1
 --- !u!54 &165944274530947382
