@@ -5,13 +5,13 @@ using UnityEngine.UI;
 public class AnswerPeekUI : MonoBehaviour
 {
     [SerializeField] private Image _characterIcon;
-    [SerializeField] private Image _archetypeIcon;
+    //[SerializeField] private Image _archetypeIcon;
     [SerializeField] private Image _answerTypeIcon;
     [SerializeField] private RectTransform _readyObject;
-    [SerializeField] private Image _progressMask;
-    [SerializeField] private Image _progressFill;
+    //[SerializeField] private Image _progressMask;
+    //[SerializeField] private Image _progressFill;
     [Header("Configurations")]
-    [SerializeField] private Gradient _progressGradient;
+    //[SerializeField] private Gradient _progressGradient;
     [SerializeField] private Vector2 _notReadyPosition;
     [SerializeField] private TweenSettings<Vector2> _readyTweenSettings;
 
@@ -39,7 +39,7 @@ public class AnswerPeekUI : MonoBehaviour
     {
         AnswerPeek = answerPeek;
         _characterIcon.sprite = characterIcon;
-        _archetypeIcon.sprite = archetypeIcon;
+        //_archetypeIcon.sprite = archetypeIcon;
         _answerTypeIcon.sprite = answerTypeIcon;
         UpdateProgress(setup: true);
     }
@@ -49,11 +49,11 @@ public class AnswerPeekUI : MonoBehaviour
         bool isFull = AnswerPeek.AnswerSheet.IsAnswerFull(AnswerPeek.AnswerID, out float progress, out _);
         if (!isFull)
         {
-            SetProgress(progress);
+            //SetProgress(progress);
         }
         else
         {
-            SetProgress(1 - AnswerPeek.AnswerController.ValidatingPercent); // Go backwards
+            //SetProgress(1 - AnswerPeek.AnswerController.ValidatingPercent); // Go backwards
         }
         if (isFull != _isFull || setup)
         {
@@ -80,9 +80,9 @@ public class AnswerPeekUI : MonoBehaviour
         _readyTween = Tween.UIAnchoredPosition(_readyObject, _readyTweenSettings);
     }
 
-    private void SetProgress(float percent)
-    {
-        _progressMask.fillAmount = percent;
-        _progressFill.color = _progressGradient.Evaluate(percent);
-    }
+    // private void SetProgress(float percent)
+    // {
+    //     _progressMask.fillAmount = percent;
+    //     _progressFill.color = _progressGradient.Evaluate(percent);
+    // }
 }
