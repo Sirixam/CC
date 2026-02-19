@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Drawing;
+using System;
 using Color = UnityEngine.Color;
 
 public class TimeUI : MonoBehaviour
@@ -30,7 +31,9 @@ public class TimeUI : MonoBehaviour
 
         // Update the UI text and format to seconds
         _timerText.color = EvaluateColor(percent);
-        _timerText.text = seconds.ToString("000");
+        //_timerText.text = seconds.ToString("000");
+        TimeSpan time = TimeSpan.FromSeconds(seconds);
+        _timerText.text = time.ToString(@"mm\:ss");
     }
 
     private Color EvaluateColor(float percent)
