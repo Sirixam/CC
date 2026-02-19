@@ -176,7 +176,7 @@ public class AnswerPeek
     public bool FinishedValidating => AnswerController.ValidatingPercent >= 1f;
 }
 
-public class AnswersManager : MonoBehaviour
+public class AnswersManager : MonoBehaviour, IAnswerIconProvider
 {
     public struct StudentNpcInput
     {
@@ -191,7 +191,7 @@ public class AnswersManager : MonoBehaviour
     [SerializeField] private AnswerController[] _playerDesks;
     [SerializeField] private AnswerPeekUI[] _answerPeekUIs;
     [SerializeField] private GlobalDefinition _globalDefinition;
-    
+
     private TestDefinition _testDefinition;
     public AnswerSheet[] PlayerAnswerSheets { get; private set; }
     private Dictionary<string, AnswerSheet> _actorId2AnswerSheet;

@@ -8,14 +8,21 @@ public class MemoryUI : MonoBehaviour
     [SerializeField] private Image _answerTypeIcon;
     [SerializeField] private TMP_Text _answerID;
 
-    public void SetAnswerTypeIcon(Sprite icon)
+    private IAnswerIconProvider _iconProvider;
+
+    public void Inject(IAnswerIconProvider iconProvider)
     {
-        _answerTypeIcon.sprite = icon;
+        _iconProvider = iconProvider;
     }
 
     public void SetAnswerID(string value)
     {
         _answerID.text = value;
+
+        if (_iconProvider != null)
+        {
+            _answerTypeIcon.sprite = _iconProvider.GetAnswerTypeIcon(value);
+        }
     }
 
     public void SetPercent(float value)

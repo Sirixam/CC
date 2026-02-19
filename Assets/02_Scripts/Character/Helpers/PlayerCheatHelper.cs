@@ -69,12 +69,11 @@ public class PlayerCheatHelper
         _playerView.CheatUI.SetPercent(_cheatingProgress);
     }
 
-    public void StartRemembering(string answerID, float correctness, Sprite answerTypeIcon)
+    public void StartRemembering(string answerID, float correctness)
     {
         _memoryProgress = 1;
         _rememberedAnswer = new RememberedAnswer() { ID = answerID, Correctness = correctness };
         _playerView.MemoryUI.Show();
-        _playerView.MemoryUI.SetAnswerTypeIcon(answerTypeIcon);
         _playerView.MemoryUI.SetAnswerID(answerID);
         _playerView.MemoryUI.SetPercent(_memoryProgress);
     }
@@ -125,14 +124,8 @@ public class PlayerCheatHelper
         if (finished)
         {
             string answerID = _answerController.LastFinishedAnswerID;
-            if (!GameContext.HasAnswersManager)
-            {
-                Debug.LogError("AnswersManager reference is missing on PlayerCheatHelper.");
-                return;
-            }
-
-            Sprite answerTypeIcon = GameContext.AnswersManager.GetAnswerTypeIcon(answerID);
-            StartRemembering(answerID, _answerController.GetCorrectness(answerID), answerTypeIcon);
+            float correctness = _answerController.GetCorrectness(answerID);
+            StartRemembering(answerID, correctness);
         }
     }
 

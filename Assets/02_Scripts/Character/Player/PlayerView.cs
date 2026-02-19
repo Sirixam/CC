@@ -56,6 +56,11 @@ public class PlayerView : MonoBehaviour, IStunView, IChairView
         }
     }
 
+    public void Inject(IAnswerIconProvider answerIconProvider)
+    {
+        _memoryUI.Inject(answerIconProvider);
+    }
+
     public void OnStartStun(bool isSoftStun)
     {
         _isSoftStunned = isSoftStun;

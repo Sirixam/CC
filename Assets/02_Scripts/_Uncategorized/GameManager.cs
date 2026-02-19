@@ -99,6 +99,7 @@ public class GameManager : MonoBehaviour
 
         inputHandler.Initialize();
         PlayerController playerController = playerInput.GetComponent<PlayerController>();
+        playerController.Inject(_answerManager);
         ChairController chairController = _answerManager.GetPlayerDesk(playerInput.playerIndex).transform.parent.GetComponentInChildren<ChairController>();
         playerController.SetInitialChairController(chairController);
         playerController.OnShowHelp += OnShowHelp;

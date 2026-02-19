@@ -81,6 +81,11 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         TeleportToInitialChair();
     }
 
+    public void Inject(IAnswerIconProvider answerIconProvider)
+    {
+        _view.Inject(answerIconProvider);
+    }
+
     private void OnEnable()
     {
         _inputHandler.ActionEvent += OnActionRequested;
