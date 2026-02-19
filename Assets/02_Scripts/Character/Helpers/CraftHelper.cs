@@ -13,7 +13,6 @@ public class CraftHelper
 
     private PlayerView _actorView;
     private InteractionHelper _interactionHelper;
-    private ItemsManager _itemsManager;
 
     private CraftData _craftData;
     private Vector3 PickUpPosition => _actorView.PickUpPosition + Vector3.up; // Slightly above to highlight briefly.
@@ -24,7 +23,6 @@ public class CraftHelper
     {
         _actorView = actorView;
         _interactionHelper = interactionHelper;
-        _itemsManager = ItemsManager.GetInstance();
     }
 
     public void UpdateCrafting(float deltaTime)
@@ -47,7 +45,7 @@ public class CraftHelper
             return false;
         }
 
-        if (!_itemsManager.TryGetCraftData(itemName, out float craftDuration))
+        if (!GameContext.ItemsManager.TryGetCraftData(itemName, out float craftDuration))
         {
             Debug.LogError("Craft data was not found for item: " + itemName);
             return false;
@@ -71,7 +69,7 @@ public class CraftHelper
 
     public void CraftItem(string itemName)
     {
-        GameObject itemInstance = _itemsManager.InstantiateItem(itemName, PickUpPosition, Quaternion.identity, parent: null);
+        GameObject itemInstance = GameContext.ItemsManager.InstantiateItem(itemName, PickUpPosition, Quaternion.identity, parent: null);
         _actorView.OnPickUp(itemInstance.transform);
         if (itemInstance.TryGetComponent(out IInteractionOwner interactionOwner))
         {
@@ -82,7 +80,7 @@ public class CraftHelper
 
     public void CraftAnswer(string answerID, float correctness)
     {
-        PaperBallController answerInstance = _itemsManager.InstantiateAnswer(PickUpPosition, Quaternion.identity, parent: null);
+        PaperBallController answerInstance = GameContext.ItemsManager.InstantiateAnswer(PickUpPosition, Quaternion.identity, parent: null);
         answerInstance.SetAnswer(answerID, correctness);
         _actorView.OnPickUp(answerInstance.transform);
         _interactionHelper.AddInteraction(answerInstance.InteractionController);

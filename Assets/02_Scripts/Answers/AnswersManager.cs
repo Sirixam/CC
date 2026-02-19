@@ -165,7 +165,7 @@ public class AnswerSheet
     }
 }
 
-    public class AnswerPeek
+public class AnswerPeek
 {
     public string ActorID;
     public AnswerSheet AnswerSheet;
@@ -176,7 +176,7 @@ public class AnswerSheet
     public bool FinishedValidating => AnswerController.ValidatingPercent >= 1f;
 }
 
-    public class AnswersManager : MonoBehaviour
+public class AnswersManager : MonoBehaviour
 {
     public struct StudentNpcInput
     {
@@ -203,33 +203,8 @@ public class AnswerSheet
     public event Action<string, float> OnAllPlayersFinishedAnswer; // Params: float minCorrectness
     public event Action<float> OnAllPlayersFinishedAllAnswers; // Params: float minCorrectness
 
-        private static AnswersManager _instance;
-        public static AnswersManager GetInstance()
-        {
-            if (_instance == null)
-            {
-                _instance = FindObjectOfType<AnswersManager>();
-                if (_instance == null)
-                {
-                    Debug.LogError("AnswersManager instance not found in scene.");
-                }
-            }
-            return _instance;
-        }
-
-        private void Awake()
+    private void Awake()
     {
-            if (_instance == null)
-            {
-                _instance = this;
-            }
-            else if (_instance != this)
-            {
-                Debug.LogError("Multiple AnswersManager instances detected. Destroying duplicate.");
-                Destroy(gameObject);
-                return;
-            }
-
         _actorId2AnswerSheet = new();
         PlayerAnswerSheets = new AnswerSheet[_playerDesks.Length];
         for (int i = 0; i < _playerDesks.Length; i++)

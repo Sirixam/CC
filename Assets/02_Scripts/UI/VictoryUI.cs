@@ -6,7 +6,7 @@ public class VictoryUI : MonoBehaviour
 
     public void UpdateAnswerSheets()
     {
-        AnswerSheet[] answerSheets = AnswersManager.GetInstance().PlayerAnswerSheets;
+        AnswerSheet[] answerSheets = GameContext.AnswersManager.PlayerAnswerSheets;
         for (int i = 0; i < answerSheets.Length; i++)
         {
             _answerSheetsUI[i].Setup(answerSheets[i].Answers);

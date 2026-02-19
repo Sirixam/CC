@@ -18,8 +18,6 @@ public class ItemsManager : MonoBehaviour
 
     private List<string> _allItemsIDs = new();
 
-    public static ItemsManager GetInstance() => FindObjectOfType<ItemsManager>(); // TODO: Remove
-
     public bool TryGetCraftData(string itemName, out float craftDuration)
     {
         if (TryGetItemDataByName(itemName, out ItemData itemData, verbose: true))

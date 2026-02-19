@@ -41,19 +41,19 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
 
     private void Start()
     {
-        ID = ItemsManager.GetInstance().GetNewItemID();
-        if (HasAnswer)
+        ID = GameContext.ItemsManager.GetNewItemID();
+
+        if (HasAnswer && GameContext.HasAnswersManager)
         {
-            AnswersManager.GetInstance().OnAllPlayersFinishedAnswer += OnAllPlayersAnsweredFullyEvent;
+            GameContext.AnswersManager.OnAllPlayersFinishedAnswer += OnAllPlayersAnsweredFullyEvent;
         }
     }
 
     private void OnDestroy()
     {
-        AnswersManager answersManager = AnswersManager.GetInstance();
-        if (answersManager != null)
+        if (GameContext.HasAnswersManager)
         {
-            answersManager.OnAllPlayersFinishedAnswer -= OnAllPlayersAnsweredFullyEvent;
+            GameContext.AnswersManager.OnAllPlayersFinishedAnswer -= OnAllPlayersAnsweredFullyEvent;
         }
     }
 
@@ -75,15 +75,15 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
         _answerID = answerID;
         _correctness = correctness;
 
-        if (hadAnswer != HasAnswer)
+        if (hadAnswer != HasAnswer && GameContext.HasAnswersManager)
         {
             if (hadAnswer)
             {
-                AnswersManager.GetInstance().OnAllPlayersFinishedAnswer -= OnAllPlayersAnsweredFullyEvent;
+                GameContext.AnswersManager.OnAllPlayersFinishedAnswer -= OnAllPlayersAnsweredFullyEvent;
             }
             else
             {
-                AnswersManager.GetInstance().OnAllPlayersFinishedAnswer += OnAllPlayersAnsweredFullyEvent;
+                GameContext.AnswersManager.OnAllPlayersFinishedAnswer += OnAllPlayersAnsweredFullyEvent;
             }
         }
     }
