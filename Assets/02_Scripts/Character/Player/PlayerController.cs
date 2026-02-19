@@ -59,8 +59,6 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     Vector3 IThrowActor.LookDirection => _view.transform.forward;
     Collider[] IThrowActor.Colliders => _physics.Colliders;
 
-    public PlayerController LastOwner => throw new NotImplementedException();
-
     public event Action<EDevice> OnShowHelp;
     public event Action OnHideHelp;
 
@@ -161,7 +159,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         }
         else if (actionType == EAction.Help)
         {
-            OnHideHelp.Invoke();
+            OnHideHelp?.Invoke();
         }
     }
 
@@ -484,7 +482,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         }
         else if (actionType == EAction.Help)
         {
-            OnShowHelp.Invoke(_inputHandler.LastKnownDeviceType);
+            OnShowHelp?.Invoke(_inputHandler.LastKnownDeviceType);
         }
     }
 
@@ -542,7 +540,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         {
             if (!isHolding)
             {
-                OnHideHelp.Invoke();
+                OnHideHelp?.Invoke();
             }
         }
     }
@@ -634,7 +632,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     }
 
     private void OnCollisionStay(Collision collision)
-        => _dashHelper.OnCollisionStay(collision, OnStopDash: _stunHelper.StartStun, _audioHelper);
+        => _dashHelper.OnCollisionStay(collision, onStopDash: _stunHelper.StartStun);
 
     private void OnTriggerEnter(Collider other)
     {

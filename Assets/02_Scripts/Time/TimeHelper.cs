@@ -45,7 +45,7 @@ public class TimeHelper
             if (_remainingTime <= 0)
             {
                 IsRunning = false;
-                OnTimesUp.Invoke();
+                OnTimesUp?.Invoke();
             }
         }
         IsRunning = false;

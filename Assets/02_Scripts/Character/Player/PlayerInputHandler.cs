@@ -96,6 +96,11 @@ public partial class PlayerInputHandler : MonoBehaviour
 
         public EDevice GetDeviceFromContext(InputDevice device)
         {
+            if (device == null)
+            {
+                return EDevice.Undefined;
+            }
+
             if (device is Keyboard || device is Mouse)
             {
                 return EDevice.KeyboardAndMouse;

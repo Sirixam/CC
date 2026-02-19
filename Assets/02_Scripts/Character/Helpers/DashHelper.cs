@@ -42,7 +42,7 @@ public class DashHelper
 
     public void UpdateCooldown() => _dashCooldownTimer -= Time.deltaTime;
 
-    public void OnCollisionStay(Collision collision, Action<bool> OnStopDash, PlayerAudioHelper _audioHelper)
+    public void OnCollisionStay(Collision collision, Action<bool> onStopDash)
     {
         foreach (var contact in collision.contacts)
         {
@@ -53,7 +53,7 @@ public class DashHelper
                 {
                     _view.OnStopDash();
                     bool isSoftStun = !HasAnyTag(collision.transform, _data.HardCollisionTags);
-                    OnStopDash.Invoke(isSoftStun);
+                    onStopDash?.Invoke(isSoftStun);
                     _audioHelper.OnStun();
                 }
                 return;

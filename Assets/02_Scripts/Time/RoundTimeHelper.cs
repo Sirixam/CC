@@ -54,7 +54,7 @@ public class RoundTimeHelper
             if (_roundRemainingTime <= 0)
             {
                 IsRunning = false;
-                OnRoundTimesUp.Invoke();
+                OnRoundTimesUp?.Invoke();
             }
         }
         IsRunning = false;

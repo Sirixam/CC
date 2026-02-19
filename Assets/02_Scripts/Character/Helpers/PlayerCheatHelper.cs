@@ -125,7 +125,14 @@ public class PlayerCheatHelper
         if (finished)
         {
             string answerID = _answerController.LastFinishedAnswerID;
-            Sprite answerTypeIcon = AnswersManager.GetInstance().GetAnswerTypeIcon(answerID);
+            AnswersManager answersManager = AnswersManager.GetInstance();
+            if (answersManager == null)
+            {
+                Debug.LogError("AnswersManager instance not found when trying to start remembering.");
+                return;
+            }
+
+            Sprite answerTypeIcon = answersManager.GetAnswerTypeIcon(answerID);
             StartRemembering(answerID, _answerController.GetCorrectness(answerID), answerTypeIcon);
         }
     }
