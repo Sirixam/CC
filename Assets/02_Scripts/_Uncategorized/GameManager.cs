@@ -47,48 +47,11 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        Instance = this;
-        if (_defeatFeedback != null)
-        {
-            _defeatFeedback.SetActive(false);
-        }
-        if (_victoryUI != null)
-        {
-            _victoryUI.Hide();
-        }
-        if (_timesUpFeedback != null)
-        {
-            _timesUpFeedback.SetActive(false);
-        }
-        if (_timeUI != null)
-        {
-            _timeUI.gameObject.SetActive(false);
-        }
-        if (_roundTimeUI != null)
-        {
-            _roundTimeUI.gameObject.SetActive(false);
-        }
-        if (_livesUI != null)
-        {
-            _livesUI.gameObject.SetActive(false);
-        }
-        if (_helpUI != null)
-        {
-            _helpUI.Hide();
-        }
-        foreach (var button in _restartButtons)
-        {
-            button.OnClickEvent += RestartGame;
-        }
-        _timeHelper = new TimeHelper(_timeUI);
-        _roundTimeHelper = new RoundTimeHelper(_roundTimeUI);
-        _audioHelper = new GameAudioHelper(_audioData);
-
-        if (_useTestDefinition)
-        {
-            _answerManager.InjectTestDefinition(_testDefinition);
-            _studentManager.InjectTestDefinition(_testDefinition);
-        }
+        InitializeSingleton();
+        InitializeUIState();
+        InitializeRestartButtons();
+        InitializeHelpers();
+        InjectTestDefinitionsIfNeeded();
     }
 
     private void OnEnable()
@@ -179,6 +142,9 @@ public class GameManager : MonoBehaviour
 
     private void RestartGame()
     {
+        StopGame();
+        StopRoundTimer();
+
         _answerManager.CleanActivePeeks();
         _answerManager.ResetProgress();
 
@@ -226,6 +192,7 @@ public class GameManager : MonoBehaviour
     private void StopRoundTimer()
     {
         _roundCancellationSource?.Cancel();
+        _roundCancellationSource = null;
     }
     private void OnAllPlayersFinishedAllAnswers(float minCorrectness)
     {
@@ -397,6 +364,88 @@ public class GameManager : MonoBehaviour
     {
         if (_playerInputManager != null)
             _playerInputManager.enabled = false;
+    }
+
+    private void InitializeSingleton()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Debug.LogError("Multiple GameManager instances detected. Destroying duplicate.");
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+    }
+
+    private void InitializeUIState()
+    {
+        if (_defeatFeedback != null)
+        {
+            _defeatFeedback.SetActive(false);
+        }
+        if (_victoryUI != null)
+        {
+            _victoryUI.Hide();
+        }
+        if (_timesUpFeedback != null)
+        {
+            _timesUpFeedback.SetActive(false);
+        }
+        if (_timeUI != null)
+        {
+            _timeUI.gameObject.SetActive(false);
+        }
+        if (_roundTimeUI != null)
+        {
+            _roundTimeUI.gameObject.SetActive(false);
+        }
+        if (_livesUI != null)
+        {
+            _livesUI.gameObject.SetActive(false);
+        }
+        if (_helpUI != null)
+        {
+            _helpUI.Hide();
+        }
+    }
+
+    private void InitializeRestartButtons()
+    {
+        foreach (var button in _restartButtons)
+        {
+            if (button == null)
+            {
+                continue;
+            }
+
+            button.OnClickEvent += RestartGame;
+        }
+    }
+
+    private void InitializeHelpers()
+    {
+        _timeHelper = new TimeHelper(_timeUI);
+        _roundTimeHelper = new RoundTimeHelper(_roundTimeUI);
+        _audioHelper = new GameAudioHelper(_audioData);
+    }
+
+    private void InjectTestDefinitionsIfNeeded()
+    {
+        if (!_useTestDefinition || _testDefinition == null)
+        {
+            return;
+        }
+
+        if (_answerManager != null)
+        {
+            _answerManager.InjectTestDefinition(_testDefinition);
+        }
+
+        if (_studentManager != null)
+        {
+            _studentManager.InjectTestDefinition(_testDefinition);
+        }
     }
 
 }
