@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ItemsManager : MonoBehaviour
+public class ItemsManager : MonoBehaviour, ICraftService
 {
     [Serializable]
     public class ItemData

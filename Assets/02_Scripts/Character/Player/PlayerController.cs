@@ -73,7 +73,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _lookHelper = new LookHelper(_lookData);
         _audioHelper = new PlayerAudioHelper(_audioData);
         _dashHelper = new DashHelper(_dashData, _view, _physics, _lookHelper, _audioHelper);
-        _craftHelper = new CraftHelper(_view, _interactionHelper);
+        _craftHelper = new CraftHelper(_view, _interactionHelper, GameContext.ItemsManager);
 
         // Initialize
         _lookHelper.Initialize(transform.forward);

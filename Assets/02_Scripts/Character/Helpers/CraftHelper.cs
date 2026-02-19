@@ -1,5 +1,12 @@
 using UnityEngine;
 
+public interface ICraftService
+{
+    bool TryGetCraftData(string itemName, out float craftDuration);
+    GameObject InstantiateItem(string itemName, Vector3 position, Quaternion rotation, Transform parent);
+    PaperBallController InstantiateAnswer(Vector3 position, Quaternion rotation, Transform parent);
+}
+
 public class CraftHelper
 {
     public struct CraftData
@@ -13,16 +20,18 @@ public class CraftHelper
 
     private PlayerView _actorView;
     private InteractionHelper _interactionHelper;
+    private ICraftService _craftService;
 
     private CraftData _craftData;
     private Vector3 PickUpPosition => _actorView.PickUpPosition + Vector3.up; // Slightly above to highlight briefly.
 
     public bool IsCrafting { get; private set; }
 
-    public CraftHelper(PlayerView actorView, InteractionHelper interactionHelper)
+    public CraftHelper(PlayerView actorView, InteractionHelper interactionHelper, ICraftService craftService)
     {
         _actorView = actorView;
         _interactionHelper = interactionHelper;
+        _craftService = craftService;
     }
 
     public void UpdateCrafting(float deltaTime)
@@ -45,7 +54,7 @@ public class CraftHelper
             return false;
         }
 
-        if (!GameContext.ItemsManager.TryGetCraftData(itemName, out float craftDuration))
+        if (!_craftService.TryGetCraftData(itemName, out float craftDuration))
         {
             Debug.LogError("Craft data was not found for item: " + itemName);
             return false;
@@ -69,7 +78,7 @@ public class CraftHelper
 
     public void CraftItem(string itemName)
     {
-        GameObject itemInstance = GameContext.ItemsManager.InstantiateItem(itemName, PickUpPosition, Quaternion.identity, parent: null);
+        GameObject itemInstance = _craftService.InstantiateItem(itemName, PickUpPosition, Quaternion.identity, parent: null);
         _actorView.OnPickUp(itemInstance.transform);
         if (itemInstance.TryGetComponent(out IInteractionOwner interactionOwner))
         {
@@ -80,7 +89,7 @@ public class CraftHelper
 
     public void CraftAnswer(string answerID, float correctness)
     {
-        PaperBallController answerInstance = GameContext.ItemsManager.InstantiateAnswer(PickUpPosition, Quaternion.identity, parent: null);
+        PaperBallController answerInstance = _craftService.InstantiateAnswer(PickUpPosition, Quaternion.identity, parent: null);
         answerInstance.SetAnswer(answerID, correctness);
         _actorView.OnPickUp(answerInstance.transform);
         _interactionHelper.AddInteraction(answerInstance.InteractionController);
