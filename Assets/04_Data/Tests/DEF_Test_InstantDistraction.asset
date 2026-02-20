@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a520a855deaf5a4e97d2cf9c9404845, type: 3}
   m_Name: DEF_Test_InstantDistraction
   m_EditorClassIdentifier: 
-  _correctness: 1
-  ForcedNpcAnswer: {fileID: 11400000, guid: 688d70872986a7848a8364babff9f90d, type: 2}
-  ForcedDistractionLevel: 0
+  _correctness: 0
+  ForcedNpcAnswer: {fileID: 0}
+  ForcedDistractionLevel: 3
