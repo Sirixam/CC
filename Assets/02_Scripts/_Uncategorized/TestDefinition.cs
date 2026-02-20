@@ -15,6 +15,7 @@ public class TestDefinition : ScriptableObject
     [SerializeField] private ECorrectness _correctness;
     public AnswerDefinition ForcedNpcAnswer;
 
+    [Header("Distraction")]
     public int ForcedDistractionLevel;
 
     public bool ForcedHalfCorrectAnswer => _correctness == ECorrectness.HalfCorrect;

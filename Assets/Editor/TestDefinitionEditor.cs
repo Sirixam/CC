@@ -1,5 +1,6 @@
 using UnityEditor;
 using UnityEngine;
+using System.Collections.Generic;
 
 [CustomEditor(typeof(TestDefinition))]
 public class TestDefinitionEditor : Editor
@@ -22,44 +23,63 @@ public class TestDefinitionEditor : Editor
     {
         serializedObject.Update();
 
-        DrawCorrectness();
-        DrawForcedNpcAnswer();
-        DrawForcedDistraction();
+        var active = new List<Entry>();
+        var unused = new List<Entry>();
+
+        AddEntry(_correctnessProp, _correctnessProp.enumValueIndex == 0, active, unused);
+        AddEntry(_forcedNpcAnswerProp, _forcedNpcAnswerProp.objectReferenceValue == null, active, unused);
+        AddEntry(_forcedDistractionLevelProp, _forcedDistractionLevelProp.intValue == 0, active, unused);
+
+        // Draw active first
+        foreach (var entry in active)
+            DrawWithColor(entry.Property, false);
+
+        // Draw unused section if needed
+        if (unused.Count > 0)
+        {
+            EditorGUILayout.Space(10);
+            EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+            EditorGUILayout.Space(4);
+
+            EditorGUILayout.LabelField("Unused Fields", EditorStyles.boldLabel);
+            foreach (var entry in unused)
+                DrawWithColor(entry.Property, true);
+        }
 
         serializedObject.ApplyModifiedProperties();
     }
 
-    private void DrawCorrectness()
+    private void AddEntry(
+        SerializedProperty property,
+        bool isDefault,
+        List<Entry> active,
+        List<Entry> unused)
     {
-        DrawWithColor(
-            isDefault: _correctnessProp.enumValueIndex == 0, // Undefined
-            () => EditorGUILayout.PropertyField(_correctnessProp)
-        );
+        if (isDefault)
+            unused.Add(new Entry(property, true));
+        else
+            active.Add(new Entry(property, false));
     }
 
-    private void DrawForcedNpcAnswer()
-    {
-        DrawWithColor(
-            isDefault: _forcedNpcAnswerProp.objectReferenceValue == null,
-            () => EditorGUILayout.PropertyField(_forcedNpcAnswerProp)
-        );
-    }
-
-    private void DrawForcedDistraction()
-    {
-        DrawWithColor(
-            isDefault: _forcedDistractionLevelProp.intValue == 0,
-            () => EditorGUILayout.PropertyField(_forcedDistractionLevelProp)
-        );
-    }
-
-    private void DrawWithColor(bool isDefault, System.Action drawAction)
+    private void DrawWithColor(SerializedProperty property, bool isDefault)
     {
         Color previous = GUI.color;
         GUI.color = isDefault ? DefaultColor : NormalColor;
 
-        drawAction.Invoke();
+        EditorGUILayout.PropertyField(property);
 
         GUI.color = previous;
+    }
+
+    private struct Entry
+    {
+        public SerializedProperty Property;
+        public bool IsDefault;
+
+        public Entry(SerializedProperty property, bool isDefault)
+        {
+            Property = property;
+            IsDefault = isDefault;
+        }
     }
 }
