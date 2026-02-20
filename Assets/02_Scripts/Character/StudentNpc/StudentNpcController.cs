@@ -16,6 +16,7 @@ public class StudentNpcController : MonoBehaviour
     [SerializeField] private DistractionHelper.Data _distractionData;
     [SerializeField] private StudentAudioHelper.Data _audioData;
     [SerializeField] private GlobalDefinition _globalDefinition;
+    [SerializeField] private TestDefinition _testDefinitionOverride;
     [SerializeField] private Sprite _icon;
     [SerializeField] private Sprite _archetypeIcon;
     [SerializeField] private bool _canDetectItems;
@@ -52,7 +53,7 @@ public class StudentNpcController : MonoBehaviour
 
         // Initialize
         _stateText.text = "Idle";
-        InjectTestDefinition(_testDefinition); // Reinject in case it was injected before awake
+        InjectTestDefinition(_testDefinitionOverride ?? _testDefinition); // Reinject in case it was injected before awake
         _lookHelper.Initialize(transform.forward);
         AnswerController.BlockCheat();
         _fieldOfViewController.HideInstant();
