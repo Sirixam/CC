@@ -80,6 +80,18 @@ public class AnswerSheet
         Debug.LogError("GetAnsweringDuration.AnswerID was not found: " + answerID);
         return 0;
     }
+    
+    /* COMMENTED FOR TESTING. USE IN CASE WE WANT TO GIVE EACH ANSWER A PARTICULAR DURATION
+    public float GetAnsweringDuration(string answerID)
+    {
+        if (_id2Answer.TryGetValue(answerID, out Answer answer))
+        {
+            return answer.AnswerDuration;
+        }
+        Debug.LogError("GetAnsweringDuration.AnswerID was not found: " + answerID);
+        return 0;
+    }
+    */
 
     public void SetCorrectness(string answerID, float value)
     {

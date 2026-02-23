@@ -15,4 +15,4 @@ MonoBehaviour:
   ID: SA
   Icon: {fileID: 21300000, guid: e90f9a7a5edea184d9ba6fab3e0be465, type: 3}
   Color: {r: 1, g: 1, b: 1, a: 1}
-  BaseAnswerDuration: 2
+  BaseAnswerDuration: 1

@@ -15,4 +15,4 @@ MonoBehaviour:
   ID: SC
   Icon: {fileID: 21300000, guid: 53945fe1e9bb8264fa7c0fc4f3681bbd, type: 3}
   Color: {r: 0, g: 1, b: 0, a: 1}
-  BaseAnswerDuration: 2
+  BaseAnswerDuration: 1

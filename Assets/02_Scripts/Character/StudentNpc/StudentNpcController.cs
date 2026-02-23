@@ -78,9 +78,9 @@ public class StudentNpcController : MonoBehaviour
         _distractionHelper?.InjectTestDefinition(testDefinition);
     }
 
-    public void SetDurations(float thinkingDuration, float validatingDuration)
+    public void SetDurations(float thinkingDuration, float answeringDuration, float validatingDuration)
     {
-        float answeringDuration = AnswerController.GetAnsweringDuration();
+        //float answeringDuration = AnswerController.GetAnsweringDuration();
         AnswerController.SetDurations(thinkingDuration, answeringDuration, validatingDuration);
     }
 

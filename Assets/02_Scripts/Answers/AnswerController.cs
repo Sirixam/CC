@@ -91,6 +91,7 @@ public class AnswerController : MonoBehaviour
     {
         _thinkingDuration = _thinkingRemainingTime = thinkingDuration;
         _answeringDuration = _answeringRemainingTime = answeringDuration;
+        //_answeringDuration = _answeringRemainingTime = answeringDuration;
         _validatingDuration = _validatingRemainingTime = validatingDuration;
     }
 

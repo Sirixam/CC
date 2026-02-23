@@ -76,13 +76,14 @@ public class StudentManager : MonoBehaviour
             {
                 student.SetCorrectness(answerID, 1); // TODO: Dynamic correctness algorithm.
                 student.SetDurations(thinkingDuration: Random.Range(_globalDefinition.PreAnsweringDelay.x, _globalDefinition.PreAnsweringDelay.y),
+                                        answeringDuration: Random.Range(_globalDefinition.AnsweringDelay.x, _globalDefinition.AnsweringDelay.y),
                                         validatingDuration: Random.Range(_globalDefinition.PostAnsweringDelay.x, _globalDefinition.PostAnsweringDelay.y));
 
                 student.StartThinking();
                 await student.UpdateRemainingTimeWhileNotDistracted(cancellationToken: cancellationToken);
 
                 student.StartAnswering();
-                await student.UpdateAnsweringTaskWhileNotDistracted(cancellationToken);
+                await student.UpdateAnsweringTaskWhileNotDistracted(cancellationToken: cancellationToken);
 
                 student.StartValidating();
                 await student.UpdateRemainingTimeWhileNotDistracted(cancellationToken: cancellationToken);
@@ -98,6 +99,7 @@ public class StudentManager : MonoBehaviour
         while (!cancellationToken.IsCancellationRequested)
         {
             float thinkingDuration = Random.Range(_globalDefinition.PreAnsweringDelay.x, _globalDefinition.PreAnsweringDelay.y);
+            float answeringDuration = Random.Range(_globalDefinition.AnsweringDelay.x, _globalDefinition.AnsweringDelay.y);
             float validatingDuration = Random.Range(_globalDefinition.PostAnsweringDelay.x, _globalDefinition.PostAnsweringDelay.y);
 
             StudentNpcController smartStudent = GetNewSmartStudent();
@@ -110,7 +112,8 @@ public class StudentManager : MonoBehaviour
                 {
                     float correctness = GetNewCorrectness(student == smartStudent);
                     student.SetCorrectness(answerID, correctness);
-                    student.SetDurations(thinkingDuration, validatingDuration);
+                    student.SetDurations(thinkingDuration, answeringDuration, validatingDuration);
+                    Debug.Log("answeringDuration is: " + answeringDuration);
                     student.StartThinking();
                 }
             }

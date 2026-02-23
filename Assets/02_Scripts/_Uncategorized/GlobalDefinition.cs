@@ -11,6 +11,7 @@ public class GlobalDefinition : ScriptableObject
     public float MinCorrectnessToEarlyVictoryFlow;
     public int PlayerLives;
     public Vector2 PreAnsweringDelay;
+    public Vector2 AnsweringDelay;
     public Vector2 PostAnsweringDelay;
 
     [Header("TAGS")]
