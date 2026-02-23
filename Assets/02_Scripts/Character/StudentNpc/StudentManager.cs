@@ -126,6 +126,7 @@ public class StudentManager : MonoBehaviour
             }
 
             await UpdateAnsweringOnAllStudents(cancellationToken);
+            Debug.Log("EVERYONE FINISHED ANSWERING");
 
             foreach (var student in _students)
             {
