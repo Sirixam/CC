@@ -9,6 +9,7 @@ public class PlayerCheatHelper
         public float PeekDuration;
         public float CheatDuration;
         public float MemoryDuration;
+        public bool KeepPeekProgress;
     }
 
     public class RememberedAnswer
@@ -53,11 +54,15 @@ public class PlayerCheatHelper
 
     public void StartPeeking(AnswerController answerController)
     {
+        bool isSameTarget = _answerController == answerController;
         _answerController = answerController;
         IsPeeking = true;
-        _peekingProgress = 0;
+        if (!isSameTarget)
+        {
+            _peekingProgress = 0;
+            _playerView.PeekUI.SetPercent(_peekingProgress);
+        }
         _playerView.PeekUI.Show();
-        _playerView.PeekUI.SetPercent(_peekingProgress);
     }
 
     public void StartCheating(AnswerController answerController)
@@ -80,8 +85,10 @@ public class PlayerCheatHelper
 
     public void StopPeeking()
     {
-        //_deskController?.HideAnswersSheet();
-        _answerController = null;
+        if (!_data.KeepPeekProgress)
+        {
+            _answerController = null;
+        }
         IsPeeking = false;
         _playerView.PeekUI.Hide();
     }
@@ -110,6 +117,7 @@ public class PlayerCheatHelper
 
         if (finished)
         {
+            _peekingProgress = 0; // Reset so the same target can be peeked fresh next time.
             _answerController.TriggerFinishedPeeking();
         }
     }
