@@ -52,7 +52,7 @@ public class NavigationManager : MonoBehaviour
             }
         }
         Debug.LogError("Route not found: " + routeName);
-        return new WaypointData[0];
+        return Array.Empty<WaypointData>();
     }
 
     public WaypointData[] GetRandomRoute()
@@ -111,7 +111,7 @@ public class NavigationManager : MonoBehaviour
         }
 
         Debug.LogError("Type is not being handled: " + routeData.Type);
-        return new WaypointData[0];
+        return Array.Empty<WaypointData>();
     }
 
     private void OnDrawGizmos()

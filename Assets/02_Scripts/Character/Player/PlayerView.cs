@@ -20,7 +20,7 @@ public class PlayerView : MonoBehaviour, IStunView, IChairView
     [SerializeField] private TweenSettings<float> _standingTweenSettings = new();
     [SerializeField] private TweenSettings<Vector3> _pickUpTweenSettings = new();
 
-    private MeshRenderer[] _meshRenderes;
+    private MeshRenderer[] _meshRenderers;
     private float _initialBoundsExtentsY;
     private float _initialBoundsExtentsZ;
     private bool _isSoftStunned;
@@ -46,7 +46,7 @@ public class PlayerView : MonoBehaviour, IStunView, IChairView
         _standingTweenSettings.startFromCurrent = true;
         _pickUpTweenSettings.startFromCurrent = true;
         _stunVFX.Stop(withChildren: true, ParticleSystemStopBehavior.StopEmittingAndClear);
-        _meshRenderes = _rendererContainer.GetComponentsInChildren<MeshRenderer>();
+        _meshRenderers = _rendererContainer.GetComponentsInChildren<MeshRenderer>();
         _initialBoundsExtentsY = GetBounds().extents.y;
         _initialBoundsExtentsZ = GetBounds().extents.z;
 
@@ -97,7 +97,7 @@ public class PlayerView : MonoBehaviour, IStunView, IChairView
     private Bounds GetBounds()
     {
         Bounds bounds = new();
-        foreach (var meshRenderer in _meshRenderes)
+        foreach (var meshRenderer in _meshRenderers)
         {
             bounds.Encapsulate(meshRenderer.bounds);
         }

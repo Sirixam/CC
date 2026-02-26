@@ -8,10 +8,10 @@ namespace AKGaming.Game
         [SerializeField] Transform _initialPoint;
         [Header("Configurations")]
         [SerializeField] private float _initialSpeed = 12f;
-        [SerializeField] private float maxPredictionTime_ = 2f;
-        [SerializeField] private int maxPointsCount_ = 100;
-        [SerializeField] private float sphereCastRadius_ = 0.05f;
-        [SerializeField] private LayerMask collisionMask_;
+        [SerializeField] private float _maxPredictionTime = 2f;
+        [SerializeField] private int _maxPointsCount = 100;
+        [SerializeField] private float _sphereCastRadius = 0.05f;
+        [SerializeField] private LayerMask _collisionMask;
         [SerializeField] private float _lineAnimationSpeed = -1;
         [SerializeField] private float _particleFrecuency = 0.5f;
         //[SerializeField] private IdentifiableReference _particleIdRef = new(IdentifiableReference.EType.ID);
@@ -33,8 +33,8 @@ namespace AKGaming.Game
         {
             if (!Application.isPlaying) return;
 
-            _points = new Vector3[maxPointsCount_];
-            _timeStep = maxPredictionTime_ / maxPointsCount_;
+            _points = new Vector3[_maxPointsCount];
+            _timeStep = _maxPredictionTime / _maxPointsCount;
         }
 
         private void LateUpdate()
@@ -70,7 +70,7 @@ namespace AKGaming.Game
             Vector3 velocity = initialRotation * Vector3.forward * _initialSpeed;
             Vector3 previousPosition = initialPosition;
 
-            for (int i = 0; i < maxPointsCount_; i++)
+            for (int i = 0; i < _maxPointsCount; i++)
             {
                 // InitialPosition + Velocity Delta + Gravity
                 Vector3 nextPosition = initialPosition + _timeStep * i * velocity + 0.5f * Mathf.Pow(_timeStep * i, 2) * Physics.gravity;
@@ -78,7 +78,7 @@ namespace AKGaming.Game
                 Vector3 heading = nextPosition - previousPosition;
                 Vector3 direction = heading.normalized;
                 float maxDistance = heading.magnitude;
-                if (Physics.SphereCast(previousPosition, sphereCastRadius_, direction, out RaycastHit hit, maxDistance, collisionMask_))
+                if (Physics.SphereCast(previousPosition, _sphereCastRadius, direction, out RaycastHit hit, maxDistance, _collisionMask))
                 {
                     nextPosition = previousPosition + direction * (hit.point - previousPosition).magnitude;
                     _points[i] = nextPosition;
@@ -96,7 +96,7 @@ namespace AKGaming.Game
             }
 
             lastPoint = previousPosition; // [AKP] PreviousPosition is actually the last position here.
-            _lineRenderer.positionCount = maxPointsCount_;
+            _lineRenderer.positionCount = _maxPointsCount;
             _lineRenderer.SetPositions(_points);
         }
     }

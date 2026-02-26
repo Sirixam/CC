@@ -84,7 +84,7 @@ public class TestInputScopes : MonoBehaviour
         playerData.Container.SetActive(true);
 
         // Initialize Color (Optional)
-        var colorCompoonent = playerInput.GetComponentInChildren<ColorComponent>();
-        colorCompoonent?.SetColor(playerData.Color);
+        var colorComponent = playerInput.GetComponentInChildren<ColorComponent>();
+        colorComponent?.SetColor(playerData.Color);
     }
 }

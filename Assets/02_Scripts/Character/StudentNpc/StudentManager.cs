@@ -156,7 +156,6 @@ public class StudentManager : MonoBehaviour
 
     private StudentNpcController GetNewSmartStudent()
     {
-
         int index;
         do
         {

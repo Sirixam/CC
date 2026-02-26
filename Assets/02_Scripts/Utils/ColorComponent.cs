@@ -8,7 +8,7 @@ public class ColorComponent : MonoBehaviour
     public class RendererData
     {
         public MeshRenderer Renderer;
-        public string ColorPropertyName = DEFUALT_COLOR_PROPERTY_NAME;
+        public string ColorPropertyName = DEFAULT_COLOR_PROPERTY_NAME;
         public bool Ignore;
 
         public void SetColor(Color color)
@@ -20,11 +20,11 @@ public class ColorComponent : MonoBehaviour
         }
     }
 
-    private const string DEFUALT_COLOR_PROPERTY_NAME = "_Color";
+    private const string DEFAULT_COLOR_PROPERTY_NAME = "_Color";
 
     [SerializeField] private List<RendererData> _renderersData = new();
     [Header("EDITOR_ONLY")]
-    [SerializeField] private Transform EDITOR_RenderesParent;
+    [SerializeField] private Transform EDITOR_RenderersParent;
     [SerializeField] private bool EDITOR_IncludeInactive = true;
 
     public void SetColor(Color color)
@@ -39,7 +39,7 @@ public class ColorComponent : MonoBehaviour
     [Button("Add Missing Renderers Data")]
     private void EDITOR_AddMissingRenderersData()
     {
-        Transform parent = EDITOR_RenderesParent ?? transform;
+        Transform parent = EDITOR_RenderersParent ?? transform;
         MeshRenderer[] meshRenderers = transform.GetComponentsInChildren<MeshRenderer>(EDITOR_IncludeInactive);
         foreach (var meshRenderer in meshRenderers)
         {

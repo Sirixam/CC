@@ -138,6 +138,9 @@ MonoBehaviour:
     - {fileID: 11400000, guid: a290f2ff313dd2f42bd044c5395899e8, type: 2}
     - {fileID: 11400000, guid: 72824e033a980e541a6e4d2fdf9f21a0, type: 2}
   _globalDefinition: {fileID: 11400000, guid: 2b0875648e78a8e45b08a646836071ca, type: 2}
+  _testDefinitionOverride: {fileID: 0}
+  _icon: {fileID: 0}
+  _archetypeIcon: {fileID: 0}
   _canDetectItems: 0
   _canDetectFlyingItems: 0
 --- !u!54 &165944274530947382
@@ -201,7 +204,7 @@ MonoBehaviour:
   - Renderer: {fileID: 6967629285112109257}
     ColorPropertyName: _Color
     Ignore: 0
-  EDITOR_RenderesParent: {fileID: 9123122298512519571}
+  EDITOR_RenderersParent: {fileID: 9123122298512519571}
   EDITOR_IncludeInactive: 1
 --- !u!1 &2426362767405802943
 GameObject:

@@ -80,10 +80,10 @@ public class FieldOfViewController : MonoBehaviour
     {
         Vector3 forwardX0Z = new Vector3(forward.x, 0, forward.y);
         Vector3 forwardLeftX0Z = new Vector3(-forward.y, 0, forward.x);
-        Vector3 forawrdRightX0Z = new Vector3(forward.y, 0, -forward.x);
+        Vector3 forwardRightX0Z = new Vector3(forward.y, 0, -forward.x);
 
         Vector3 leftOrigin = origin + fieldOfViewWidth * 0.5f * forwardLeftX0Z;
-        Vector3 rightOrigin = origin + fieldOfViewWidth * 0.5f * forawrdRightX0Z;
+        Vector3 rightOrigin = origin + fieldOfViewWidth * 0.5f * forwardRightX0Z;
         Vector3 leftForward = leftOrigin + forwardX0Z * maxDistance;
         Vector3 rightForward = rightOrigin + forwardX0Z * maxDistance;
 

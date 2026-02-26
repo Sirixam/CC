@@ -825,7 +825,7 @@ MonoBehaviour:
   - Renderer: {fileID: 8858382138974637436}
     ColorPropertyName: _BaseColor
     Ignore: 0
-  EDITOR_RenderesParent: {fileID: 9123122298512519571}
+  EDITOR_RenderersParent: {fileID: 9123122298512519571}
   EDITOR_IncludeInactive: 1
 --- !u!1 &2426362767405802943
 GameObject:
@@ -1750,10 +1750,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _initialPoint: {fileID: 9197537246829724969}
   _initialSpeed: 12
-  maxPredictionTime_: 2
-  maxPointsCount_: 100
-  sphereCastRadius_: 0.05
-  collisionMask_:
+  _maxPredictionTime: 2
+  _maxPointsCount: 100
+  _sphereCastRadius: 0.05
+  _collisionMask:
     serializedVersion: 2
     m_Bits: 712
   _lineAnimationSpeed: -1
