@@ -5,8 +5,9 @@ using UnityEngine.UI;
 public class AnswerPeekUI : MonoBehaviour
 {
     [SerializeField] private Image _characterIcon;
-    //[SerializeField] private Image _archetypeIcon;
+    [SerializeField] private Image _archetypeIcon;
     [SerializeField] private Image _answerTypeIcon;
+    [SerializeField] private Image _answerCloudIcon;
     [SerializeField] private RectTransform _readyObject;
     //[SerializeField] private Image _progressMask;
     //[SerializeField] private Image _progressFill;
@@ -39,8 +40,9 @@ public class AnswerPeekUI : MonoBehaviour
     {
         AnswerPeek = answerPeek;
         _characterIcon.sprite = characterIcon;
-        //_archetypeIcon.sprite = archetypeIcon;
+        _archetypeIcon.sprite = archetypeIcon;
         _answerTypeIcon.sprite = answerTypeIcon;
+        _answerCloudIcon.color = ChangeCloudColor(answerPeek);
         UpdateProgress(setup: true);
     }
 
@@ -79,6 +81,20 @@ public class AnswerPeekUI : MonoBehaviour
         _readyTween.Stop();
         _readyTween = Tween.UIAnchoredPosition(_readyObject, _readyTweenSettings);
     }
+
+    public Color32 ChangeCloudColor(AnswerPeek answerPeek)
+    { 
+        var currentCorrectness = answerPeek.AnswerController.GetCorrectness(answerPeek.AnswerID);
+
+       switch (currentCorrectness)
+       {
+           case 0: return new Color32(102, 35, 35, 255);
+           case 0.5f: return new Color32(194, 176, 83, 255);
+           case 1f: return new Color32(89, 155, 112, 255);
+       }
+       return new Color32(255, 255, 255, 255);
+    }
+    
 
     // private void SetProgress(float percent)
     // {
