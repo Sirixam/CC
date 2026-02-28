@@ -40,7 +40,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameAudioHelper.Data _audioData;
 
     [Header("TEST ONLY")]
-    [SerializeField] private bool _useTestDefinition;
     [SerializeField] private TestDefinition _testDefinition;
 
     private GameAudioHelper _audioHelper;
@@ -433,7 +432,12 @@ public class GameManager : MonoBehaviour
 
     private void InjectTestDefinitionsIfNeeded()
     {
-        if (!_useTestDefinition || _testDefinition == null)
+#if UNITY_EDITOR
+        bool useTest = UnityEditor.EditorPrefs.GetBool(GameToolsMenu.UseTestDefinitionKey, false);
+#else
+        bool useTest = false;
+#endif
+        if (!useTest || _testDefinition == null)
         {
             return;
         }
