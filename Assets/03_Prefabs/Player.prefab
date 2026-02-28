@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7285972755819730837}
+  - component: {fileID: 4730099347010786376}
   - component: {fileID: 1715481654434308674}
   m_Layer: 6
   m_Name: PlayerTrigger
@@ -25,13 +26,32 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 71724598836224672}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 365723418938546978}
+  m_Father: {fileID: 7291423577909841436}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4730099347010786376
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 71724598836224672}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2c6568deb29e96458d2310e6a0868da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 0
+  note: 'This trigger is used by external script, ie:
+
+    - Being detected by students
+    or by the teacher.'
+  noteHeight: 42
+  noteLocked: 1
 --- !u!136 &1715481654434308674
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -55,6 +75,39 @@ CapsuleCollider:
   m_Height: 1.25
   m_Direction: 1
   m_Center: {x: 0, y: 0.625, z: 0}
+--- !u!1 &721078951414472420
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7291423577909841436}
+  m_Layer: 0
+  m_Name: Triggers
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7291423577909841436
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 721078951414472420}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 7285972755819730837}
+  - {fileID: 9059918439652315601}
+  m_Father: {fileID: 365723418938546978}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &758350572957091092
 GameObject:
   m_ObjectHideFlags: 0
@@ -264,9 +317,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9059918439652315601}
+  - component: {fileID: 3056433875354063644}
   - component: {fileID: 4285023096272519967}
   m_Layer: 0
-  m_Name: Trigger
+  m_Name: InteractionTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -285,8 +339,24 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 365723418938546978}
+  m_Father: {fileID: 7291423577909841436}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3056433875354063644
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 837174745192324393}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2c6568deb29e96458d2310e6a0868da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 0
+  note: This trigger is used to detect interactions.
+  noteHeight: 42
+  noteLocked: 1
 --- !u!135 &4285023096272519967
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -319,7 +389,7 @@ GameObject:
   - component: {fileID: 7345999615954957353}
   - component: {fileID: 7138881696294834915}
   m_Layer: 0
-  m_Name: Trigger
+  m_Name: FieldOfViewTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -520,8 +590,7 @@ Transform:
   m_Children:
   - {fileID: 9123122298512519571}
   - {fileID: 9035815860624316063}
-  - {fileID: 7285972755819730837}
-  - {fileID: 9059918439652315601}
+  - {fileID: 7291423577909841436}
   - {fileID: 4979429217401774222}
   - {fileID: 8779866896397922558}
   - {fileID: 5211738519952994070}
