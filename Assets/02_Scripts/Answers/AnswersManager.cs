@@ -184,6 +184,7 @@ public class AnswerPeek
     public AnswerController AnswerController;
     public string AnswerID;
     public float ShowRemainingTime;
+    public AnswerPeekUI PeekUI;
 
     public bool FinishedValidating => AnswerController.ValidatingPercent >= 1f;
 }
@@ -201,7 +202,12 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
     [SerializeField] private AnswerDefinition[] _playerAnswersDefinitions;
     [SerializeField] private AnswerDefinition[] _npcAnswersDefinitions;
     [SerializeField] private AnswerController[] _playerDesks;
-    [SerializeField] private AnswerPeekUI[] _answerPeekUIs;
+    //[SerializeField] private AnswerPeekUI[] _answerPeekUIs;
+    [SerializeField] private AnswerPeekUI _answerPeekUI;
+    [SerializeField] private Transform _peekUIParent;
+    [SerializeField] private int _maxPeekUIs = 5;
+    private Queue<AnswerPeekUI> _activePeekUIs = new();
+
     [SerializeField] private GlobalDefinition _globalDefinition;
 
     private TestDefinition _testDefinition;
@@ -230,9 +236,13 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
             _actorId2AnswerSheet.Add(actorID, answerSheet);
             _answerControllers.Add(answerController);
         }
-        foreach (var answerPeekUI in _answerPeekUIs)
+        /*foreach (var answerPeekUI in _answerPeekUI)
         {
             answerPeekUI.Hide();
+        }*/
+        if (_answerPeekUI == null)
+        {
+            Debug.LogError("Peek UI Prefab is not assigned!");
         }
     }
 
@@ -241,7 +251,8 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
         for (int i = _activePeeks.Count - 1; i >= 0; i--)
         {
             AnswerPeek peek = _activePeeks[i];
-            AnswerPeekUI answerPeekUI = Array.Find(_answerPeekUIs, x => x.AnswerPeek == peek);
+            AnswerPeekUI answerPeekUI = peek.PeekUI;
+            //AnswerPeekUI answerPeekUI = Array.Find(_answerPeekUIs, x => x.AnswerPeek == peek);
             if (!peek.FinishedValidating)
             {
                 answerPeekUI.UpdateProgress(setup: false);
@@ -284,11 +295,13 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
 
     public void CleanActivePeeks()
     {
-        foreach (var answerPeekUI in _answerPeekUIs)
+        while (_activePeekUIs.Count > 0)
         {
-            answerPeekUI.Clear();
-            answerPeekUI.Hide();
+            AnswerPeekUI ui = _activePeekUIs.Dequeue();
+            ui.Clear();
+            Destroy(ui.gameObject);
         }
+
         _activePeeks.Clear();
     }
 
@@ -320,8 +333,17 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
         AnswerPeek peek = _activePeeks.Find(x => x.AnswerSheet == answerController.AnswerSheet && x.AnswerID == answerID);
         if (peek != null) return; // Already showing this peek
 
-        AnswerPeekUI peekUI = Array.Find(_answerPeekUIs, x => x.AnswerPeek == null);
-        if (peekUI == null) return; // No available peek UI, TODO: Replace one of them.
+        //AnswerPeekUI peekUI = Array.Find(_answerPeekUIs, x => x.AnswerPeek == null);
+        //if (peekUI == null) return; // No available peek UI, TODO: Replace one of them.
+        if (_activePeekUIs.Count >= _maxPeekUIs)
+        {
+            AnswerPeekUI oldest = _activePeekUIs.Dequeue();
+            oldest.Clear();
+            Destroy(oldest.gameObject);
+        }
+
+        AnswerPeekUI peekUI = Instantiate(_answerPeekUI, _peekUIParent);
+        _activePeekUIs.Enqueue(peekUI);
 
         peek = new AnswerPeek()
         {
@@ -330,6 +352,8 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
             AnswerSheet = answerController.AnswerSheet,
             AnswerID = answerID,
         };
+        peek.PeekUI = peekUI;
+
         _activePeeks.Add(peek);
 
         Sprite answerTypeIcon = GetAnswerTypeIcon(answerID);
