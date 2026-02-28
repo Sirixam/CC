@@ -9,13 +9,13 @@ public class TestDefinitionEditor : Editor
     private static readonly Color NormalColor = Color.white;
 
     private SerializedProperty _correctnessProp;
-    private SerializedProperty _forcedNpcAnswerProp;
+    private SerializedProperty _forcedNpcAnswersProp;
     private SerializedProperty _forcedDistractionLevelProp;
 
     private void OnEnable()
     {
         _correctnessProp = serializedObject.FindProperty("_correctness");
-        _forcedNpcAnswerProp = serializedObject.FindProperty("ForcedNpcAnswer");
+        _forcedNpcAnswersProp = serializedObject.FindProperty("ForcedNpcAnswers");
         _forcedDistractionLevelProp = serializedObject.FindProperty("ForcedDistractionLevel");
     }
 
@@ -27,7 +27,7 @@ public class TestDefinitionEditor : Editor
         var unused = new List<Entry>();
 
         AddEntry(_correctnessProp, _correctnessProp.enumValueIndex == 0, active, unused);
-        AddEntry(_forcedNpcAnswerProp, _forcedNpcAnswerProp.objectReferenceValue == null, active, unused);
+        AddEntry(_forcedNpcAnswersProp, _forcedNpcAnswersProp.arraySize == 0, active, unused);
         AddEntry(_forcedDistractionLevelProp, _forcedDistractionLevelProp.intValue == 0, active, unused);
 
         // Draw active first
@@ -66,7 +66,7 @@ public class TestDefinitionEditor : Editor
         Color previous = GUI.color;
         GUI.color = isDefault ? DefaultColor : NormalColor;
 
-        EditorGUILayout.PropertyField(property);
+        EditorGUILayout.PropertyField(property, includeChildren: true);
 
         GUI.color = previous;
     }
