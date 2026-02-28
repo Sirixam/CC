@@ -12,6 +12,7 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
     }
 
     [SerializeField] private FieldOfViewController _fieldOfViewController;
+    [SerializeField] private TriggerListener _detectionTriggerListener;
     [SerializeField] private NavMeshAgent _navMeshAgent;
     [SerializeField] private NavigationHelper.Data _navigationData;
     [SerializeField] private TeacherAudioHelper.Data _audioData;
@@ -44,6 +45,12 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
         
         _audioHelper = new TeacherAudioHelper(_audioData);
         _fieldOfViewController.HideInstant();
+        _detectionTriggerListener.OnEnter += OnDetectionTriggerEnter;
+    }
+
+    private void OnDestroy()
+    {
+        _detectionTriggerListener.OnEnter -= OnDetectionTriggerEnter;
     }
 
     public void Inject(NavigationManager navigationManager)
@@ -113,19 +120,18 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
         _remainingTime = UnityEngine.Random.Range(_timeToSitRange.x, _timeToSitRange.y);
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnDetectionTriggerEnter(Collider other)
     {
         if (other.CompareTag(_globalDefinition.PlayerTag))
         {
             PlayerController playerController = other.GetComponentInParent<PlayerController>();
-            
-            //Audio won't play if player is sitting.
+
+            // Audio won't play if player is sitting.
             if (playerController != null && playerController.IsSitting)
                 return;
-            
+
             OnPlayerDetected?.Invoke(playerController);
             _audioHelper.OnGettingCaught();
-
         }
         else if (other.gameObject.layer == _globalDefinition.ItemLayer || other.gameObject.layer == _globalDefinition.FlyingLayer)
         {

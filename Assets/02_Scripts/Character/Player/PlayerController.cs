@@ -14,6 +14,11 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     [SerializeField] private PlayerPhysics _physics;
     [SerializeField] private FieldOfViewController _fieldOfViewController;
 
+    [Header("Triggers")]
+    [SerializeField] private TriggerListener _interactionTriggerListener;
+    [SerializeField] private TriggerListener _fovTriggerListener;
+    [SerializeField] private TriggerListener _selfTriggerListener; // passive — others detect the player through this
+
     [Header("Data")]
     [SerializeField] private InteractionHelper.Data _interactionData;
     [SerializeField] private ThrowHelper.Data _throwData;
@@ -38,6 +43,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     private bool IsPeeking => _inputHandler.ScopeType == EInputScope.PlayerPeeking;
     private bool IsAnswering => _answerController != null && _answerController.IsAnswering;
     public bool IsSitting => _chairHelper.IsSitting;
+    public TriggerListener SelfTriggerListener => _selfTriggerListener;
 
     // Helpers
     private InteractionHelper _interactionHelper;
@@ -92,6 +98,11 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _inputHandler.DirectionalActionEvent += OnDirectionalActionRequested;
         _inputHandler.PreHoldActionEvent += OnPreHoldActionDetected;
         _inputHandler.HoldActionEvent += OnHoldActionRequested;
+
+        _interactionTriggerListener.OnEnter += OnInteractionTriggerEnter;
+        _interactionTriggerListener.OnExit += OnInteractionTriggerExit;
+        _fovTriggerListener.OnEnter += OnFovTriggerEnter;
+        _fovTriggerListener.OnExit += OnFovTriggerExit;
     }
 
     private void OnDisable()
@@ -100,6 +111,11 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _inputHandler.DirectionalActionEvent -= OnDirectionalActionRequested;
         _inputHandler.PreHoldActionEvent -= OnPreHoldActionDetected;
         _inputHandler.HoldActionEvent -= OnHoldActionRequested;
+
+        _interactionTriggerListener.OnEnter -= OnInteractionTriggerEnter;
+        _interactionTriggerListener.OnExit -= OnInteractionTriggerExit;
+        _fovTriggerListener.OnEnter -= OnFovTriggerEnter;
+        _fovTriggerListener.OnExit -= OnFovTriggerExit;
     }
 
     private void OnActionRequested(EAction actionType)
@@ -640,9 +656,18 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     private void OnCollisionStay(Collision collision)
         => _dashHelper.OnCollisionStay(collision, onStopDash: _stunHelper.StartStun);
 
-    private void OnTriggerEnter(Collider other)
+    private void OnInteractionTriggerEnter(Collider other)
     {
-        //Debug.LogError("OnTriggerEnter: " + other.name + ", parent: " + other.transform.parent.name, other);
+        _interactionHelper.TryAddInteraction(other, out _);
+    }
+
+    private void OnInteractionTriggerExit(Collider other)
+    {
+        _interactionHelper.TryRemoveInteraction(other, out _);
+    }
+
+    private void OnFovTriggerEnter(Collider other)
+    {
         if (!_interactionHelper.TryAddInteraction(other, out InteractionController interaction)) return;
         if (_inputHandler.ScopeType != EInputScope.PlayerPeeking) return;
 
@@ -653,9 +678,8 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         }
     }
 
-    private void OnTriggerExit(Collider other)
+    private void OnFovTriggerExit(Collider other)
     {
-        //Debug.LogError("OnTriggerExit: " + other.name + ", parent: " + other.transform.parent.name, other);
         if (!_interactionHelper.TryRemoveInteraction(other, out InteractionController interaction)) return;
         if (_inputHandler.ScopeType != EInputScope.PlayerPeeking) return;
 

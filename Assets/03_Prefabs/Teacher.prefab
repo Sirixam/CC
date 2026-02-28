@@ -10,8 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 588493042075154606}
   - component: {fileID: 8603946212056961821}
+  - component: {fileID: 5737806508026976235}
+  - component: {fileID: 3048965588570717856}
   m_Layer: 0
-  m_Name: Trigger
+  m_Name: FieldOfViewTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -54,6 +56,35 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!114 &5737806508026976235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1146082431786732388}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6dec7f9d7e7e7d8449c54da95964ca1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _filterTags: []
+  _filterLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!114 &3048965588570717856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1146082431786732388}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa24dc2c122ced749964af5a055b9ea5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _validTags: []
 --- !u!1 &1293420975260992881
 GameObject:
   m_ObjectHideFlags: 0
@@ -106,6 +137,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _fieldOfViewController: {fileID: 8460483364678813329}
+  _detectionTriggerListener: {fileID: 5737806508026976235}
   _navMeshAgent: {fileID: 837891386267205533}
   _navigationData:
     AllowRepeatRoutes: 0

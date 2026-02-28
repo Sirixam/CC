@@ -10,9 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 7285972755819730837}
   - component: {fileID: 4730099347010786376}
+  - component: {fileID: 8672764946692480672}
   - component: {fileID: 1715481654434308674}
   m_Layer: 6
-  m_Name: PlayerTrigger
+  m_Name: SelfTrigger
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -52,6 +53,22 @@ MonoBehaviour:
     or by the teacher.'
   noteHeight: 42
   noteLocked: 1
+--- !u!114 &8672764946692480672
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 71724598836224672}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6dec7f9d7e7e7d8449c54da95964ca1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _filterTags: []
+  _filterLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!136 &1715481654434308674
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -318,6 +335,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9059918439652315601}
   - component: {fileID: 3056433875354063644}
+  - component: {fileID: 3952680182812972713}
   - component: {fileID: 4285023096272519967}
   m_Layer: 0
   m_Name: InteractionTrigger
@@ -357,6 +375,22 @@ MonoBehaviour:
   note: This trigger is used to detect interactions.
   noteHeight: 42
   noteLocked: 1
+--- !u!114 &3952680182812972713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 837174745192324393}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6dec7f9d7e7e7d8449c54da95964ca1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _filterTags: []
+  _filterLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!135 &4285023096272519967
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -387,6 +421,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7345999615954957353}
+  - component: {fileID: 1061069827351474162}
   - component: {fileID: 7138881696294834915}
   m_Layer: 0
   m_Name: FieldOfViewTrigger
@@ -410,6 +445,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 5604358380448060157}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1061069827351474162
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 928922063044258402}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6dec7f9d7e7e7d8449c54da95964ca1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _filterTags: []
+  _filterLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!64 &7138881696294834915
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -621,6 +672,9 @@ MonoBehaviour:
     _dashDuration: 0.2
     _frontalCollisionAngle: 30
   _fieldOfViewController: {fileID: 6954222443602317400}
+  _interactionTriggerListener: {fileID: 3952680182812972713}
+  _fovTriggerListener: {fileID: 1061069827351474162}
+  _detectionTriggerListener: {fileID: 8672764946692480672}
   _interactionData:
     FacingScores:
     - MaxAngle: 60

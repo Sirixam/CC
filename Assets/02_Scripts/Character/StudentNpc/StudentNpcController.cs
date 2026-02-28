@@ -7,6 +7,7 @@ using UnityEngine;
 public class StudentNpcController : MonoBehaviour
 {
     [SerializeField] private FieldOfViewController _fieldOfViewController;
+    [SerializeField] private TriggerListener _fieldOfViewTriggerListener;
     [SerializeField] private TMP_Text _stateText;
     [SerializeField] private DistractionUI _distractionUI;
     [SerializeField] private LightbulbUI _lightbulbUI;
@@ -60,11 +61,13 @@ public class StudentNpcController : MonoBehaviour
         _distractionUI.Hide();
         _lightbulbUI.Hide();
         _chairController.OnCollisionEnterEvent += OnCollisionEnter;
+        _fieldOfViewTriggerListener.OnEnter += OnDetectionTriggerEnter;
     }
 
     private void OnDestroy()
     {
         _chairController.OnCollisionEnterEvent = OnCollisionEnter;
+        _fieldOfViewTriggerListener.OnEnter -= OnDetectionTriggerEnter;
     }
 
     private void Update()
@@ -157,7 +160,7 @@ public class StudentNpcController : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnDetectionTriggerEnter(Collider other)
     {
         if (other.CompareTag(_globalDefinition.PlayerTag))
         {
