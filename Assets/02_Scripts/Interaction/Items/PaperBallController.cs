@@ -21,6 +21,7 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     //private ItemAudioHelper _audioHelper;
     private string _answerID;
     private float _correctness;
+    private string _contributorActorID;
     private float _remainingTimeToDestroyOnIdle;
     private EState _state;
     private string _lastOwnerID;
@@ -29,6 +30,7 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     public bool HasAnswer => !string.IsNullOrWhiteSpace(_answerID) || _defaultAnswerDefinition != null;
     public string AnswerID => !string.IsNullOrWhiteSpace(_answerID) ? _answerID : _defaultAnswerDefinition != null ? _defaultAnswerDefinition.ID : null;
     public float Correctness => !string.IsNullOrWhiteSpace(_answerID) ? _correctness : _defaultCorrectness;
+    public string ContributorActorID => !string.IsNullOrWhiteSpace(_answerID) ? _contributorActorID : null;
 
     public InteractionController InteractionController => GetComponentInChildren<InteractionController>();
 
@@ -37,14 +39,14 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     private void Awake()
     {
         //_audioHelper = new ItemAudioHelper(_audioData);
+        ID = GameContext.ItemsManager.GetNewItemID();
     }
 
     private void Start()
     {
-        ID = GameContext.ItemsManager.GetNewItemID();
-
         if (HasAnswer && GameContext.HasAnswersManager)
         {
+            GameContext.AnswersManager.OnAllPlayersFinishedAnswer -= OnAllPlayersAnsweredFullyEvent;
             GameContext.AnswersManager.OnAllPlayersFinishedAnswer += OnAllPlayersAnsweredFullyEvent;
         }
     }
@@ -69,11 +71,12 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
         }
     }
 
-    public void SetAnswer(string answerID, float correctness)
+    public void SetAnswer(string answerID, float correctness, string contributorActorID)
     {
         bool hadAnswer = HasAnswer;
         _answerID = answerID;
         _correctness = correctness;
+        _contributorActorID = contributorActorID;
 
         if (hadAnswer != HasAnswer && GameContext.HasAnswersManager)
         {
@@ -83,6 +86,7 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
             }
             else
             {
+                GameContext.AnswersManager.OnAllPlayersFinishedAnswer -= OnAllPlayersAnsweredFullyEvent;
                 GameContext.AnswersManager.OnAllPlayersFinishedAnswer += OnAllPlayersAnsweredFullyEvent;
             }
         }
@@ -91,7 +95,10 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     private void OnAllPlayersAnsweredFullyEvent(string answerID, float minCorrectness)
     {
         if (AnswerID != answerID) return;
-        Destroy(gameObject);
+        if (gameObject != null)
+        {
+            Destroy(gameObject);
+        }
     }
 
     private void OnCollisionEnter(Collision collision)

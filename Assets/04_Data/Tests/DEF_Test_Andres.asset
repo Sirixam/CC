@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a520a855deaf5a4e97d2cf9c9404845, type: 3}
   m_Name: DEF_Test_Andres
   m_EditorClassIdentifier: 
-  _correctness: 1
-  ForcedNpcAnswer: {fileID: 11400000, guid: 688d70872986a7848a8364babff9f90d, type: 2}
+  _correctness: 2
+  ForcedNpcAnswers:
+  - {fileID: 11400000, guid: 688d70872986a7848a8364babff9f90d, type: 2}
+  - {fileID: 11400000, guid: 7d9e8d81f2c6b3b4ab63797a91605dc6, type: 2}
   ForcedDistractionLevel: 3

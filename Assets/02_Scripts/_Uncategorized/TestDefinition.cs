@@ -13,7 +13,7 @@ public class TestDefinition : ScriptableObject
 
     [Header("Answer")]
     [SerializeField] private ECorrectness _correctness;
-    public AnswerDefinition ForcedNpcAnswer;
+    public AnswerDefinition[] ForcedNpcAnswers;
 
     [Header("Distraction")]
     public int ForcedDistractionLevel;

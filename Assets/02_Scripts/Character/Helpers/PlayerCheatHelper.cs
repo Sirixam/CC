@@ -16,6 +16,7 @@ public class PlayerCheatHelper
     {
         public string ID;
         public float Correctness;
+        public string ActorID;
     }
 
     private Data _data;
@@ -74,10 +75,10 @@ public class PlayerCheatHelper
         _playerView.CheatUI.SetPercent(_cheatingProgress);
     }
 
-    public void StartRemembering(string answerID, float correctness)
+    public void StartRemembering(string answerID, float correctness, string actorID)
     {
         _memoryProgress = 1;
-        _rememberedAnswer = new RememberedAnswer() { ID = answerID, Correctness = correctness };
+        _rememberedAnswer = new RememberedAnswer() { ID = answerID, Correctness = correctness, ActorID = actorID };
         _playerView.MemoryUI.Show();
         _playerView.MemoryUI.SetAnswerID(answerID);
         _playerView.MemoryUI.SetPercent(_memoryProgress);
@@ -133,7 +134,7 @@ public class PlayerCheatHelper
         {
             string answerID = _answerController.LastFinishedAnswerID;
             float correctness = _answerController.GetCorrectness(answerID);
-            StartRemembering(answerID, correctness);
+            StartRemembering(answerID, correctness, _answerController.ActorID);
         }
     }
 
@@ -149,16 +150,18 @@ public class PlayerCheatHelper
         }
     }
 
-    public bool TryGetRememberedAnswer(out string answerID, out float correctness)
+    public bool TryGetRememberedAnswer(out string answerID, out float correctness, out string actorID)
     {
         if (IsRemembering)
         {
             answerID = _rememberedAnswer.ID;
             correctness = _rememberedAnswer.Correctness;
+            actorID = _rememberedAnswer.ActorID;
             return true;
         }
         answerID = null;
         correctness = 0;
+        actorID = null;
         return false;
     }
 }

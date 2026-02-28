@@ -6,6 +6,7 @@ public class Answer
 {
     private AnswerDefinition _definition;
     private float _progressPerSecond;
+    private HashSet<string> _contributors = new();
 
     public string ID => _definition.ID;
     public float Progress { get; private set; }
@@ -27,6 +28,10 @@ public class Answer
         Correctness = value;
     }
 
+    public bool HasContributor(string contributorID) => _contributors.Contains(contributorID);
+
+    public void AddContributor(string contributorID) => _contributors.Add(contributorID);
+
     public float UpdateProgress(float deltaTime, out bool finishedAnswering)
     {
         bool wasFull = Progress >= 1;
@@ -35,9 +40,10 @@ public class Answer
         return Progress;
     }
 
-    public void ResetProgress()
+    public void ResetProgress(bool clearContributors = false)
     {
         Progress = 0;
+        if (clearContributors) _contributors.Clear();
     }
 }
 
@@ -80,7 +86,7 @@ public class AnswerSheet
         Debug.LogError("GetAnsweringDuration.AnswerID was not found: " + answerID);
         return 0;
     }
-    
+
     /* COMMENTED FOR TESTING. USE IN CASE WE WANT TO GIVE EACH ANSWER A PARTICULAR DURATION
     public float GetAnsweringDuration(string answerID)
     {
@@ -172,7 +178,26 @@ public class AnswerSheet
     {
         foreach (var answer in _id2Answer.Values)
         {
-            answer.ResetProgress();
+            answer.ResetProgress(clearContributors: true);
+        }
+    }
+
+    /// <summary> Contributors could be actors, source or anything. </summary>
+    public bool HasContributor(string answerID, string contributorID)
+    {
+        if (_id2Answer.TryGetValue(answerID, out Answer answer))
+        {
+            return answer.HasContributor(contributorID);
+        }
+        return false;
+    }
+
+    /// <summary> Contributors could be actors, source or anything. </summary>
+    public void AddContributor(string answerID, string contributorID)
+    {
+        if (_id2Answer.TryGetValue(answerID, out Answer answer))
+        {
+            answer.AddContributor(contributorID);
         }
     }
 }
@@ -285,9 +310,9 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
     private AnswerDefinition[] GetAnswerDefinitions()
     {
 #if UNITY_EDITOR
-        if (_testDefinition != null && _testDefinition.ForcedNpcAnswer != null)
+        if (_testDefinition != null && _testDefinition.ForcedNpcAnswers != null && _testDefinition.ForcedNpcAnswers.Length > 0)
         {
-            return new AnswerDefinition[] { _testDefinition.ForcedNpcAnswer };
+            return _testDefinition.ForcedNpcAnswers;
         }
 #endif
         return _npcAnswersDefinitions;
@@ -364,9 +389,9 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
     public AnswerDefinition GetNewStudentAnswer(AnswerDefinition lastAnswerDef)
     {
 #if UNITY_EDITOR
-        if (_testDefinition != null && _testDefinition.ForcedNpcAnswer != null)
+        if (_testDefinition != null && _testDefinition.ForcedNpcAnswers != null && _testDefinition.ForcedNpcAnswers.Length > 0)
         {
-            return _testDefinition.ForcedNpcAnswer;
+            return PickAnswer(_testDefinition.ForcedNpcAnswers, lastAnswerDef);
         }
 #endif
         if (_npcAnswersDefinitions.Length == 0)
@@ -375,13 +400,18 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
             return null;
         }
 
-        if (_npcAnswersDefinitions.Length == 1) return _npcAnswersDefinitions[0];
+        return PickAnswer(_npcAnswersDefinitions, lastAnswerDef);
+    }
+
+    private AnswerDefinition PickAnswer(AnswerDefinition[] answerDefinitions, AnswerDefinition lastAnswerDef)
+    {
+        if (answerDefinitions.Length == 1) return answerDefinitions[0];
 
         AnswerDefinition newAnswerDef;
         do
         {
-            int answerIndex = UnityEngine.Random.Range(0, _npcAnswersDefinitions.Length);
-            newAnswerDef = _npcAnswersDefinitions[answerIndex];
+            int answerIndex = UnityEngine.Random.Range(0, answerDefinitions.Length);
+            newAnswerDef = answerDefinitions[answerIndex];
         } while (newAnswerDef == lastAnswerDef);
         return newAnswerDef;
     }

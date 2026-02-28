@@ -17,6 +17,7 @@ public class AnswerController : MonoBehaviour
 
     private int _cheatBlockCount;
     private EState _state;
+    private string[] _activeAnswerContributorIDs = new string[0];
     private bool HasAnswerSheet => AnswerSheet != null;
     private float _thinkingDuration;
     private float _thinkingRemainingTime;
@@ -119,7 +120,7 @@ public class AnswerController : MonoBehaviour
         return true;
     }
 
-    public bool CanStartAnswering(string answerID, float correctness, out float progress)
+    public bool CanStartAnswering(string answerID, float correctness, string contributorActorID, string sourceID, out float progress)
     {
         if (!HasAnswerSheet || !AnswerSheet.HasAnswer(answerID))
         {
@@ -127,14 +128,23 @@ public class AnswerController : MonoBehaviour
             return false; // No answer sheet in this desk
         }
         if (AnswerSheet.IsAnswerFull(answerID, out progress, out float oldCorrectness) && oldCorrectness == 1) return false; // Already answered correctly
+        //if (!string.IsNullOrEmpty(contributorActorID) && AnswerSheet.HasContributor(answerID, contributorActorID)) return false; // Same source already contributed
+        if (!string.IsNullOrEmpty(sourceID) && AnswerSheet.HasContributor(answerID, sourceID)) return false; // Same source 
         return true;
     }
 
-    public bool TryStartAnswering(string answerID, float correctness)
+    public bool TryStartAnswering(string answerID, float correctness, string contributorActorID, string sourceID)
     {
-        if (!CanStartAnswering(answerID, correctness, out float progress)) return false;
+        if (!CanStartAnswering(answerID, correctness, contributorActorID, sourceID, out float progress)) return false;
         ActiveAnswerID = answerID;
         ActiveAnswerCorrectness = correctness;
+        _activeAnswerContributorIDs = new string[] { contributorActorID, sourceID };
+        if (progress >= 1)
+        {
+            // Answer was previously filled; reset so the progress bar can be filled again.
+            AnswerSheet.ResetProgress(answerID);
+            progress = 0;
+        }
         StartAnswering(progress);
         return true;
     }
@@ -175,6 +185,11 @@ public class AnswerController : MonoBehaviour
         return AnswerSheet.GetAnsweringDuration(ActiveAnswerID);
     }
 
+    public void AddContributor(string answerID, string contributorID)
+    {
+        AnswerSheet.AddContributor(answerID, contributorID);
+    }
+
     public void UpdateAnswering(float deltaTime, out bool finishedAnswering)
     {
         string answerID = ActiveAnswerID;
@@ -196,10 +211,16 @@ public class AnswerController : MonoBehaviour
             {
                 float correctness = Mathf.Clamp01(ActiveAnswerCorrectness + AnswerSheet.GetCorrectness(answerID));
                 AnswerSheet.SetCorrectness(answerID, correctness);
+                foreach (var contributor in _activeAnswerContributorIDs)
+                {
+                    if (contributor == null) continue;
+                    AnswerSheet.AddContributor(answerID, contributor);
+                }
                 _answerSheetUI.SetAnswerState(answerID, true);
                 _answerSheetUI.SetCorrectness(answerID, correctness);
                 _answerSheetUI.HideProgress(answerID);
             }
+            _activeAnswerContributorIDs = new string[0];
             LastFinishedAnswerID = answerID;
             ActiveAnswerID = null;
             OnFinishAnsweringEvent?.Invoke(this, answerID);

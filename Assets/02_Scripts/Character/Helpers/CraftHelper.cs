@@ -87,12 +87,13 @@ public class CraftHelper
         }
     }
 
-    public void CraftAnswer(string answerID, float correctness)
+    public PaperBallController CraftAnswer(string answerID, float correctness, string contributorActorID)
     {
         PaperBallController answerInstance = _craftService.InstantiateAnswer(PickUpPosition, Quaternion.identity, parent: null);
-        answerInstance.SetAnswer(answerID, correctness);
+        answerInstance.SetAnswer(answerID, correctness, contributorActorID);
         _actorView.OnPickUp(answerInstance.transform);
         _interactionHelper.AddInteraction(answerInstance.InteractionController);
         _interactionHelper.StartInteraction(answerInstance.InteractionController);
+        return answerInstance;
     }
 }

@@ -273,14 +273,14 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         StopStaticInteraction();
     }
 
-    private bool CanStartAnswering(string answerID, float correctness)
+    private bool CanStartAnswering(string answerID, float correctness, string contributorActorID, string sourceID)
     {
-        return _answerController.CanStartAnswering(answerID, correctness, out _);
+        return _answerController.CanStartAnswering(answerID, correctness, contributorActorID, sourceID, out _);
     }
 
-    private void StartAnswering(string answerID, float correctness)
+    private void StartAnswering(string answerID, float correctness, string contributorActorID, string sourceID)
     {
-        if (_answerController.TryStartAnswering(answerID, correctness))
+        if (_answerController.TryStartAnswering(answerID, correctness, contributorActorID, sourceID))
         {
             _audioHelper.OnStartAnswering();
         }
@@ -439,13 +439,13 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         {
             if (_chairHelper.IsSitting)
             {
-                if (_cheatHelper.TryGetRememberedAnswer(out string answerID, out float correctness) && CanStartAnswering(answerID, correctness))
+                if (_cheatHelper.TryGetRememberedAnswer(out string answerID, out float correctness, out string actorID) && CanStartAnswering(answerID, correctness, actorID, sourceID: null))
                 {
-                    StartAnswering(answerID, correctness);
+                    StartAnswering(answerID, correctness, actorID, sourceID: null); // Source is null because it's answered from memory and we already pass the actorID.
                 }
-                else if (_interactionHelper.TryGetPickedUpInteraction(out PaperBallController paperBallController) && paperBallController.HasAnswer && CanStartAnswering(paperBallController.AnswerID, paperBallController.Correctness))
+                else if (_interactionHelper.TryGetPickedUpInteraction(out PaperBallController paperBallController) && paperBallController.HasAnswer && CanStartAnswering(paperBallController.AnswerID, paperBallController.Correctness, paperBallController.ContributorActorID, paperBallController.ID))
                 {
-                    StartAnswering(paperBallController.AnswerID, paperBallController.Correctness);
+                    StartAnswering(paperBallController.AnswerID, paperBallController.Correctness, paperBallController.ContributorActorID, paperBallController.ID);
                 }
                 else
                 {
@@ -590,10 +590,11 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             {
                 _answerController.StartIdle();
                 _audioHelper.OnFinishedCorrectAnswer();
-                if (_cheatHelper.TryGetRememberedAnswer(out string answerID, out float correctness))
+                if (_cheatHelper.TryGetRememberedAnswer(out string answerID, out float correctness, out string actorID))
                 {
                     _cheatHelper.StopRemembering();
-                    _craftHelper.CraftAnswer(answerID, correctness);
+                    PaperBallController answerInstance = _craftHelper.CraftAnswer(answerID, correctness, actorID);
+                    _answerController.AddContributor(answerID, answerInstance.ID);
                 }
             }
         }

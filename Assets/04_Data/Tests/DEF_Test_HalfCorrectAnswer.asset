@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: DEF_Test_HalfCorrectAnswer
   m_EditorClassIdentifier: 
   _correctness: 2
-  ForcedNpcAnswer: {fileID: 11400000, guid: 688d70872986a7848a8364babff9f90d, type: 2}
+  ForcedNpcAnswers: []
   ForcedDistractionLevel: 0
