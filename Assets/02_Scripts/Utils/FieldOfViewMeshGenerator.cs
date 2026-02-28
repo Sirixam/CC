@@ -1,0 +1,122 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+public static class FieldOfViewMeshGenerator
+{
+    public static Mesh Generate(float maxDistance, float fieldOfView, float width, float thickness, int segments = 16)
+    {
+        // Build 2D perimeter in XZ plane (clockwise)
+        List<Vector3> perimeter = BuildPerimeter(maxDistance, fieldOfView, width, segments);
+
+        // Extrude to 3D
+        return Extrude(perimeter, thickness);
+    }
+
+    private static List<Vector3> BuildPerimeter(float maxDistance, float fieldOfView, float width, int segments)
+    {
+        List<Vector3> points = new();
+
+        float halfWidth = width * 0.5f;
+        float halfFov = fieldOfView * 0.5f;
+
+        Vector3 leftOrigin = new Vector3(-halfWidth, 0, 0);
+        Vector3 rightOrigin = new Vector3(halfWidth, 0, 0);
+
+        float radius = maxDistance;
+
+        // --- LEFT ARC ---
+        for (int i = 0; i <= segments; i++)
+        {
+            float t = i / (float)segments;
+            float angle = Mathf.Lerp(-halfFov, 0f, t);
+            float rad = angle * Mathf.Deg2Rad;
+
+            Vector3 p = new(leftOrigin.x + Mathf.Sin(rad) * radius, 0, Mathf.Cos(rad) * radius);
+
+            points.Add(p);
+        }
+
+        // --- RIGHT ARC ---
+        for (int i = 0; i <= segments; i++)
+        {
+            float t = i / (float)segments;
+            float angle = Mathf.Lerp(0f, halfFov, t);
+            float rad = angle * Mathf.Deg2Rad;
+
+            Vector3 p = new(rightOrigin.x + Mathf.Sin(rad) * radius, 0, Mathf.Cos(rad) * radius);
+
+            points.Add(p);
+        }
+
+        // Add rear rectangle corners (close the shape)
+        points.Add(new Vector3(halfWidth, 0, 0));
+        points.Add(new Vector3(-halfWidth, 0, 0));
+
+        return points;
+    }
+
+    private static Mesh Extrude(List<Vector3> baseShape, float thickness)
+    {
+        int count = baseShape.Count;
+
+        Vector3[] vertices = new Vector3[count * 2];
+
+        // bottom
+        for (int i = 0; i < count; i++)
+            vertices[i] = baseShape[i];
+
+        // top
+        for (int i = 0; i < count; i++)
+            vertices[i + count] = baseShape[i] + Vector3.up * thickness;
+
+        List<int> triangles = new();
+
+        // --- Bottom face (fan triangulation) ---
+        for (int i = 1; i < count - 1; i++)
+        {
+            triangles.Add(0);
+            triangles.Add(i);
+            triangles.Add(i + 1);
+        }
+
+        // --- Top face (reverse winding) ---
+        int offset = count;
+        for (int i = 1; i < count - 1; i++)
+        {
+            triangles.Add(offset);
+            triangles.Add(offset + i + 1);
+            triangles.Add(offset + i);
+        }
+
+        // --- Side walls ---
+        for (int i = 0; i < count; i++)
+        {
+            int next = (i + 1) % count;
+
+            int a = i;
+            int b = next;
+            int c = next + offset;
+            int d = i + offset;
+
+            // First triangle
+            triangles.Add(a);
+            triangles.Add(b);
+            triangles.Add(c);
+
+            // Second triangle
+            triangles.Add(a);
+            triangles.Add(c);
+            triangles.Add(d);
+        }
+
+        Mesh mesh = new();
+        mesh.name = "FieldOfViewMesh";
+        mesh.vertices = vertices;
+        mesh.triangles = triangles.ToArray();
+
+        mesh.RecalculateNormals();
+        mesh.RecalculateBounds();
+
+        return mesh;
+    }
+}

@@ -72,6 +72,8 @@ public class FieldOfViewController : MonoBehaviour
 
     private Mesh GetMesh(float thickness)
     {
+        return FieldOfViewMeshGenerator.Generate(_maxDistance, _fieldOfView, _fieldOfViewWidth, thickness, segments: 20);
+
         Mesh[] meshes = CreateFieldOfViewMeshes(transform.localPosition, Vector2.up, _maxDistance, _fieldOfView, _fieldOfViewWidth, thickness);
         return MeshUtils.MergeMeshes(meshes);
     }
