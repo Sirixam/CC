@@ -794,7 +794,6 @@ MonoBehaviour:
   - {fileID: 219597136}
   _globalDefinition: {fileID: 11400000, guid: 2b0875648e78a8e45b08a646836071ca, type: 2}
   _maxTimeInSeconds: 180
-  _maxRoundTimeInSeconds: 30
   _eventSystem: {fileID: 366332586}
   _playerInputManager: {fileID: 1683781321}
   _audioData:
@@ -16870,15 +16869,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 9f67efe7b42baa2448cdc123a36988cb, type: 2}
   - {fileID: 11400000, guid: 506ce7810c85be34aaa2ecd4571f5faf, type: 2}
   - {fileID: 11400000, guid: 7d9e8d81f2c6b3b4ab63797a91605dc6, type: 2}
-  - {fileID: 11400000, guid: 27362b46e3cce524ab9e00b199c4cf5b, type: 2}
-  - {fileID: 11400000, guid: b953172722e381c419901feffbd23a9a, type: 2}
   _npcAnswersDefinitions:
   - {fileID: 11400000, guid: 688d70872986a7848a8364babff9f90d, type: 2}
   - {fileID: 11400000, guid: 9f67efe7b42baa2448cdc123a36988cb, type: 2}
   - {fileID: 11400000, guid: 506ce7810c85be34aaa2ecd4571f5faf, type: 2}
   - {fileID: 11400000, guid: 7d9e8d81f2c6b3b4ab63797a91605dc6, type: 2}
-  - {fileID: 11400000, guid: 27362b46e3cce524ab9e00b199c4cf5b, type: 2}
-  - {fileID: 11400000, guid: b953172722e381c419901feffbd23a9a, type: 2}
   _playerDesks:
   - {fileID: 777102169}
   - {fileID: 1555389987}

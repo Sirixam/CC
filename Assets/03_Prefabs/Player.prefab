@@ -694,7 +694,7 @@ MonoBehaviour:
     HardStunDuration: 1
     SoftStunDuration: 0.5
   _cheatData:
-    PeekDuration: 2
+    PeekDuration: 1.5
     CheatDuration: 1
     MemoryDuration: 99999
     KeepPeekProgress: 1

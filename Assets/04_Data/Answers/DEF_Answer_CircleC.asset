@@ -15,4 +15,4 @@ MonoBehaviour:
   ID: CC
   Icon: {fileID: 21300000, guid: e895b97e05abc23438a74054653a5215, type: 3}
   Color: {r: 0, g: 1, b: 0, a: 1}
-  BaseAnswerDuration: 30
+  BaseAnswerDuration: 5

@@ -16,7 +16,6 @@ public class AnswerPeekUI : MonoBehaviour
     [SerializeField] private Vector2 _notReadyPosition;
     [SerializeField] private TweenSettings<Vector2> _readyTweenSettings;
     private RectTransform _rect;
-    private LayoutElement _layout;
 
 
     private Tween _readyTween;
@@ -28,7 +27,6 @@ public class AnswerPeekUI : MonoBehaviour
     {
         _readyTweenSettings.startFromCurrent = true;
         _rect = GetComponent<RectTransform>();
-        _layout = GetComponent<LayoutElement>();
     }
 
     public void Show()
@@ -83,10 +81,16 @@ public class AnswerPeekUI : MonoBehaviour
     {
         AnswerPeek = null;
     }
-
+    
     public void ShowReady()
     {
         _readyTween.Stop();
+
+        if(_readyObject == null)
+        {
+            Debug.LogError("Tween / Ready object is NULL");
+            return;
+        }
         _readyTween = Tween.UIAnchoredPosition(_readyObject, _readyTweenSettings);
     }
 
