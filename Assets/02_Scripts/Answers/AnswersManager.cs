@@ -363,8 +363,10 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
         if (_activePeekUIs.Count >= _maxPeekUIs)
         {
             AnswerPeekUI oldest = _activePeekUIs.Dequeue();
-            oldest.Clear();
-            Destroy(oldest.gameObject);
+            oldest.PlayExitAnimation(() =>
+            {
+                Destroy(oldest.gameObject);
+            });
         }
 
         AnswerPeekUI peekUI = Instantiate(_answerPeekUI, _peekUIParent);

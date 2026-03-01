@@ -15,6 +15,9 @@ public class AnswerPeekUI : MonoBehaviour
     //[SerializeField] private Gradient _progressGradient;
     [SerializeField] private Vector2 _notReadyPosition;
     [SerializeField] private TweenSettings<Vector2> _readyTweenSettings;
+    private RectTransform _rect;
+    private LayoutElement _layout;
+
 
     private Tween _readyTween;
     private bool _isFull;
@@ -24,11 +27,14 @@ public class AnswerPeekUI : MonoBehaviour
     private void Awake()
     {
         _readyTweenSettings.startFromCurrent = true;
+        _rect = GetComponent<RectTransform>();
+        _layout = GetComponent<LayoutElement>();
     }
 
     public void Show()
     {
         gameObject.SetActive(true);
+        PlayIntro();
     }
 
     public void Hide()
@@ -96,7 +102,41 @@ public class AnswerPeekUI : MonoBehaviour
        }
        return new Color32(255, 255, 255, 255);
     }
-    
+
+    private void PlayIntro()
+    {
+        // Ensure layout is updated first
+        LayoutRebuilder.ForceRebuildLayoutImmediate(
+            _rect.parent as RectTransform);
+
+        // Reset scale
+        _rect.localScale = Vector3.one;
+
+        // Start visually above
+        _rect.localPosition += Vector3.up * 100f;
+        _rect.localScale = Vector3.zero;
+
+        Sequence.Create()
+            .Group(Tween.LocalPositionY(
+                _rect,
+                _rect.localPosition.y - 100f,
+                0.35f,
+                Ease.OutCubic
+            ))
+            .Group(Tween.Scale(
+                _rect,
+                Vector3.one,
+                0.35f,
+                Ease.OutBack
+            ));
+    }
+    public void PlayExitAnimation(System.Action onComplete)
+    {
+        Sequence.Create()
+            .Chain(Tween.Scale(_rect, new Vector3(1.1f, 0.9f, 1f), 0.12f, Ease.OutQuad))
+            .Chain(Tween.Scale(_rect, Vector3.zero, 0.2f, Ease.InBack))
+            .OnComplete(() => onComplete?.Invoke());
+    }
 
     // private void SetProgress(float percent)
     // {
