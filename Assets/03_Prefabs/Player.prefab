@@ -674,7 +674,7 @@ MonoBehaviour:
   _fieldOfViewController: {fileID: 6954222443602317400}
   _interactionTriggerListener: {fileID: 3952680182812972713}
   _fovTriggerListener: {fileID: 1061069827351474162}
-  _detectionTriggerListener: {fileID: 8672764946692480672}
+  _selfTriggerListener: {fileID: 8672764946692480672}
   _interactionData:
     FacingScores:
     - MaxAngle: 60
@@ -1448,6 +1448,7 @@ MonoBehaviour:
   _maxDistance: 3
   _fieldOfView: 60
   _fieldOfViewWidth: 0.5
+  _widthScale: 1
   _visualThickness: 0.01
   _physicsThickness: 0.5
 --- !u!33 &368862458362584757
