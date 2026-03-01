@@ -25,10 +25,13 @@ public class RoundTimeHelper
         _roundTimeUI = roundTimeUI;
     }
 
-    public void Setup(float maxTimeInSeconds)
+    public void Setup(GlobalDefinition globalDef)
     {
-        _roundRemainingTime = maxTimeInSeconds;
-        _roundTimeUI.Setup(maxTimeInSeconds);
+        float p1 = (globalDef.PreAnsweringDelay.x + globalDef.PreAnsweringDelay.y) / 2f;
+        float p2 = (globalDef.AnsweringDelay.x + globalDef.AnsweringDelay.y) / 2f;
+        float p3 = (globalDef.PostAnsweringDelay.x + globalDef.PostAnsweringDelay.y) / 2f;
+        _roundRemainingTime = p1 + p2 + p3;
+        _roundTimeUI.Setup(_roundRemainingTime, globalDef);
     }
 
     public async UniTask StartTimer(CancellationToken cancellationToken)

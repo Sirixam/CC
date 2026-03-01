@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviour
     [Header("Configurations")]
     [SerializeField] private GlobalDefinition _globalDefinition;
     [SerializeField] private float _maxTimeInSeconds = 30;
-    [SerializeField] private float _maxRoundTimeInSeconds = 30;
+    // [SerializeField] private float _maxRoundTimeInSeconds = 30;
 
     private TimeHelper _timeHelper;
     private RoundTimeHelper _roundTimeHelper;
@@ -185,7 +185,7 @@ public class GameManager : MonoBehaviour
         Debug.Log("Timer started");
         _roundCancellationSource?.Cancel();
         _roundCancellationSource = new CancellationTokenSource();
-        _roundTimeHelper.Setup(_maxRoundTimeInSeconds);
+        _roundTimeHelper.Setup(_globalDefinition);
         _roundTimeHelper.StartTimer(_roundCancellationSource.Token).Forget();
     }
 
