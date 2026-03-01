@@ -12,6 +12,7 @@ public class FieldOfViewController : MonoBehaviour
     [SerializeField] private float _maxDistance = 5f;
     [SerializeField] private float _fieldOfView = 90f;
     [SerializeField] private float _fieldOfViewWidth = 0.5f;
+    [SerializeField] [Range(0f, 1f)] private float _widthScale = 1f;
     [SerializeField] private float _visualThickness = 0.01f;
     [SerializeField] private float _physicsThickness = 0.1f;
 
@@ -70,9 +71,17 @@ public class FieldOfViewController : MonoBehaviour
         _meshCollider.sharedMesh = GetMesh(_physicsThickness);
     }
 
+    public void SetWidthScale(float scale)
+    {
+        _widthScale = Mathf.Clamp01(scale);
+        UpdateMesh();
+    }
+
     private Mesh GetMesh(float thickness)
     {
-        return FieldOfViewMeshGenerator.Generate(_maxDistance, _fieldOfView, _fieldOfViewWidth, thickness, segments: 20);
+        // _widthScale controls the arc sweep (0 = pure rectangle, 1 = full binocular).
+        // _fieldOfViewWidth stays constant — it is the bridge/square width, independent of the arc angle.
+        return FieldOfViewMeshGenerator.Generate(_maxDistance, _fieldOfView * _widthScale, _fieldOfViewWidth, thickness, segments: 20);
 
         Mesh[] meshes = CreateFieldOfViewMeshes(transform.localPosition, Vector2.up, _maxDistance, _fieldOfView, _fieldOfViewWidth, thickness);
         return MeshUtils.MergeMeshes(meshes);

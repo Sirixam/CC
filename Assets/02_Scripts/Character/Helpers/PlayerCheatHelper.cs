@@ -23,7 +23,7 @@ public class PlayerCheatHelper
     private PlayerView _playerView;
     private AnswerController _answerController;
 
-    private float _peekingProgress;
+    public float PeekingProgress { get; private set; }
     private float _cheatingProgress;
     private float _memoryProgress;
     private RememberedAnswer _rememberedAnswer;
@@ -60,8 +60,8 @@ public class PlayerCheatHelper
         IsPeeking = true;
         if (!isSameTarget)
         {
-            _peekingProgress = 0;
-            _playerView.PeekUI.SetPercent(_peekingProgress);
+            PeekingProgress = 0;
+            _playerView.PeekUI.SetPercent(PeekingProgress);
         }
         _playerView.PeekUI.Show();
     }
@@ -112,13 +112,13 @@ public class PlayerCheatHelper
     public void UpdatePeeking(out bool finished)
     {
         float progressDelta = Time.deltaTime / _data.PeekDuration;
-        _peekingProgress = Mathf.Clamp01(_peekingProgress + progressDelta);
-        finished = _peekingProgress >= 1;
-        _playerView.PeekUI.SetPercent(_peekingProgress);
+        PeekingProgress = Mathf.Clamp01(PeekingProgress + progressDelta);
+        finished = PeekingProgress >= 1;
+        _playerView.PeekUI.SetPercent(PeekingProgress);
 
         if (finished)
         {
-            _peekingProgress = 0; // Reset so the same target can be peeked fresh next time.
+            PeekingProgress = 0; // Reset so the same target can be peeked fresh next time.
             _answerController.TriggerFinishedPeeking();
         }
     }

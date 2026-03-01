@@ -668,8 +668,8 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private void OnFovTriggerEnter(Collider other)
     {
-        if (!_interactionHelper.TryAddInteraction(other, out InteractionController interaction)) return;
         if (_inputHandler.ScopeType != EInputScope.PlayerPeeking) return;
+        if (!_interactionHelper.TryGetInteraction(other, out InteractionController interaction)) return;
 
         if (interaction.TryGetComponent(out AnswerController answerController) && _cheatHelper.CanStartPeeking(answerController))
         {
@@ -680,8 +680,8 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private void OnFovTriggerExit(Collider other)
     {
-        if (!_interactionHelper.TryRemoveInteraction(other, out InteractionController interaction)) return;
         if (_inputHandler.ScopeType != EInputScope.PlayerPeeking) return;
+        if (!_interactionHelper.TryGetInteraction(other, out InteractionController interaction)) return;
 
         if (interaction.TryGetComponent(out AnswerController answerController) && _cheatHelper.CanStopPeeking(answerController))
         {

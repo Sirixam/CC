@@ -33,7 +33,7 @@ public class InteractionHelper
         public string[] InteractionTags;
         public ELog ScoreLogType = ELog.None;
     }
-    
+
     private Data _data;
     private IInteractionActor _actor;
     private bool _isEnabled;
@@ -45,9 +45,25 @@ public class InteractionHelper
     public InteractionHelper(Data data, IInteractionActor actor, bool isEnabled)
     {
         _data = data;
-        _actor = actor;        
+        _actor = actor;
         _isEnabled = isEnabled;
         _data.FacingScores.Sort((a, b) => a.MaxAngle.CompareTo(b.MaxAngle)); // Ensure ascending order
+    }
+
+    public bool TryGetInteraction(Collider other, out InteractionController interaction)
+    {
+        if (HasAnyTag(other.transform, _data.InteractionTags))
+        {
+            interaction = other.GetComponentInParent<InteractionController>();
+            if (interaction == null)
+            {
+                Debug.LogError("Interaction controller was not found in object tagged as interaction: " + other.transform.name);
+                return false;
+            }
+            return true;
+        }
+        interaction = default;
+        return false;
     }
 
     public bool TryAddInteraction(Collider other, out InteractionController interaction)

@@ -3,24 +3,28 @@ using UnityEngine;
 
 public static class FieldOfViewMeshGenerator
 {
-    public static Mesh Generate(float maxDistance, float fieldOfView, float width, float thickness, int segments = 16)
+    /// <param name="squareWidth">Width of the centre rectangle (bridge between the two arc sectors).</param>
+    /// <param name="fieldOfView">Total arc sweep angle in degrees. 0 = pure rectangle, full value = binocular.</param>
+    public static Mesh Generate(float maxDistance, float fieldOfView, float squareWidth, float thickness, int segments = 16)
     {
         // Build 2D perimeter in XZ plane (clockwise)
-        List<Vector3> perimeter = BuildPerimeter(maxDistance, fieldOfView, width, segments);
+        List<Vector3> perimeter = BuildPerimeter(maxDistance, fieldOfView, squareWidth, segments);
 
         // Extrude to 3D
         return Extrude(perimeter, thickness);
     }
 
-    private static List<Vector3> BuildPerimeter(float maxDistance, float fieldOfView, float width, int segments)
+    private static List<Vector3> BuildPerimeter(float maxDistance, float fieldOfView, float squareWidth, int segments)
     {
         List<Vector3> points = new();
 
-        float halfWidth = width * 0.5f;
+        // halfSquareWidth positions the arc origins and back corners — these always match.
+        float halfSquareWidth = squareWidth * 0.5f;
         float halfFov = fieldOfView * 0.5f;
 
-        Vector3 leftOrigin = new Vector3(-halfWidth, 0, 0);
-        Vector3 rightOrigin = new Vector3(halfWidth, 0, 0);
+        // Arc centres sit at the left/right edges of the centre rectangle.
+        Vector3 leftOrigin  = new Vector3(-halfSquareWidth, 0, 0);
+        Vector3 rightOrigin = new Vector3( halfSquareWidth, 0, 0);
 
         float radius = maxDistance;
 
@@ -48,9 +52,9 @@ public static class FieldOfViewMeshGenerator
             points.Add(p);
         }
 
-        // Add rear rectangle corners (close the shape)
-        points.Add(new Vector3(halfWidth, 0, 0));
-        points.Add(new Vector3(-halfWidth, 0, 0));
+        // Add rear rectangle corners (close the shape — must match arc origins).
+        points.Add(new Vector3( halfSquareWidth, 0, 0));
+        points.Add(new Vector3(-halfSquareWidth, 0, 0));
 
         return points;
     }
