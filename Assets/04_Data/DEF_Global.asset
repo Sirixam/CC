@@ -18,9 +18,9 @@ MonoBehaviour:
   SimulateStudentsIndividually: 0
   MinCorrectnessToEarlyVictoryFlow: 1
   PlayerLives: 3
-  PreAnsweringDelay: {x: 15, y: 15}
+  PreAnsweringDelay: {x: 5, y: 5}
   AnsweringDelay: {x: 5, y: 5}
-  PostAnsweringDelay: {x: 20, y: 20}
+  PostAnsweringDelay: {x: 5, y: 5}
   PlayerTag: Player
   DistractionTag: Distraction
   ItemLayer: 7

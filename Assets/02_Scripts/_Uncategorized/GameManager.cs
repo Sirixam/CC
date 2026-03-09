@@ -57,6 +57,9 @@ public class GameManager : MonoBehaviour
     {
         _timeHelper.OnTimesUp += OnTimesUp;
         _roundTimeHelper.OnRoundTimesUp += OnRoundTimesUp;
+        _roundTimeHelper.OnPhaseChanged += HandlePhaseChanged;
+        _roundTimeHelper.OnCountdownBeep += HandleCountdownBeep;
+        _roundTimeHelper.OnLoopRestarted += HandleLoopRestarted;
         _answerManager.OnAllPlayersFinishedAllAnswers += OnAllPlayersFinishedAllAnswers;
         _studentManager.OnPlayerDetected += OnPlayerDetected;
         _studentManager.OnItemDetected += OnItemDetected;
@@ -71,6 +74,9 @@ public class GameManager : MonoBehaviour
     {
         _timeHelper.OnTimesUp -= OnTimesUp;
         _roundTimeHelper.OnRoundTimesUp -= OnRoundTimesUp;
+        _roundTimeHelper.OnPhaseChanged -= HandlePhaseChanged;
+        _roundTimeHelper.OnCountdownBeep -= HandleCountdownBeep;
+        _roundTimeHelper.OnLoopRestarted -= HandleLoopRestarted;
         _answerManager.OnAllPlayersFinishedAllAnswers -= OnAllPlayersFinishedAllAnswers;
         _studentManager.OnPlayerDetected -= OnPlayerDetected;
         _studentManager.OnItemDetected -= OnItemDetected;
@@ -182,9 +188,9 @@ public class GameManager : MonoBehaviour
 
     private void StartRoundTimer()
     {
-        Debug.Log("Timer started");
         _roundCancellationSource?.Cancel();
         _roundCancellationSource = new CancellationTokenSource();
+        _roundTimeHelper.IsLooping = true; // 👈 ensure this is set
         _roundTimeHelper.Setup(_globalDefinition);
         _roundTimeHelper.StartTimer(_roundCancellationSource.Token).Forget();
     }
@@ -194,6 +200,36 @@ public class GameManager : MonoBehaviour
         _roundCancellationSource?.Cancel();
         _roundCancellationSource = null;
     }
+    private void HandlePhaseChanged(int phaseIndex)
+    {
+        switch (phaseIndex)
+        {
+            case 0: // PreAnswering → Answering
+                _audioHelper.OnPhaseChangeAnswer(); 
+                break;
+            case 1: // Answering → PostAnswering
+                _audioHelper.OnPhaseChangeCheat();  
+                break;
+        }
+    }
+
+    private void HandleLoopRestarted()
+    {
+        _audioHelper.OnPhaseChangeThink();
+    }
+    private void HandleCountdownBeep(int phaseIndex, int secondsLeft)
+    {
+        // Play a different final beep on 1, ticks on 2 and 3
+        if (secondsLeft == 1)
+            _audioHelper.BeepFinal();
+        else
+            _audioHelper.BeepNotFinal();
+
+        // Optionally do something different per phase
+        // e.g. urgent beep only during answering phase
+        // if (phaseIndex == 1) AudioManager.Instance.Play("beep_urgent");
+    }
+
     private void OnAllPlayersFinishedAllAnswers(float minCorrectness)
     {
         if (minCorrectness < _globalDefinition.MinCorrectnessToEarlyVictoryFlow) return;
@@ -209,8 +245,8 @@ public class GameManager : MonoBehaviour
     }
     private async void OnRoundTimesUp()
     {
-        await UniTask.Yield();
-        StartRoundTimer();
+        //await UniTask.Yield();
+        //StartRoundTimer();
     }
 
     private void OnPlayerDetected(PlayerController playerController)

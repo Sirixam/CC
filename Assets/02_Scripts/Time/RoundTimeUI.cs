@@ -60,5 +60,11 @@ public class RoundTimeUI : MonoBehaviour
         float percent = Mathf.Clamp01((_maxRoundTimeInSeconds - seconds) / _maxRoundTimeInSeconds);
         _fill.fillAmount = percent;
     }
+
+    public void ResetFill()
+    {
+        _fill.fillAmount = 0f;
+    }
+
 }
 
