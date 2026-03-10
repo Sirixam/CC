@@ -113,7 +113,7 @@ public class StudentManager : MonoBehaviour
                     float correctness = GetNewCorrectness(student == smartStudent);
                     student.SetCorrectness(answerID, correctness);
                     student.SetDurations(thinkingDuration, answeringDuration, validatingDuration);
-                    Debug.Log("answeringDuration is: " + answeringDuration);
+                    //Debug.Log("answeringDuration is: " + answeringDuration);
                     student.StartThinking();
                 }
             }

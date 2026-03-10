@@ -144,10 +144,16 @@ public partial class PlayerInputHandler : MonoBehaviour
     }
 
     private void OnEnable()
-        => _mapper.OnEnable();
+    {
+        if (_mapper != null)
+            _mapper.OnEnable();
+    }
 
     private void OnDisable()
-        => _mapper.OnDisable();
+    {
+        if (_mapper != null)
+            _mapper.OnDisable();
+    }
 
     private void Update()
     {
