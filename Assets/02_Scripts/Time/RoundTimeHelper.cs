@@ -47,7 +47,7 @@ public class RoundTimeHelper
     public void Setup(GlobalDefinition globalDef)
     {
         _p1 = (globalDef.PreAnsweringDelay.x + globalDef.PreAnsweringDelay.y) / 2f;
-        _p2 = (globalDef.AnsweringDelay.x + globalDef.AnsweringDelay.y) / 2f;
+        _p2 = (globalDef.AnsweringDuration.x + globalDef.AnsweringDuration.y) / 2f;
         _p3 = (globalDef.PostAnsweringDelay.x + globalDef.PostAnsweringDelay.y) / 2f;
         _totalRoundDuration = _p1 + _p2 + _p3;
 

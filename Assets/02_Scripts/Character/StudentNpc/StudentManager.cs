@@ -76,7 +76,7 @@ public class StudentManager : MonoBehaviour
             {
                 student.SetCorrectness(answerID, 1); // TODO: Dynamic correctness algorithm.
                 student.SetDurations(thinkingDuration: Random.Range(_globalDefinition.PreAnsweringDelay.x, _globalDefinition.PreAnsweringDelay.y),
-                                        answeringDuration: Random.Range(_globalDefinition.AnsweringDelay.x, _globalDefinition.AnsweringDelay.y),
+                                        answeringDuration: Random.Range(_globalDefinition.AnsweringDuration.x, _globalDefinition.AnsweringDuration.y),
                                         validatingDuration: Random.Range(_globalDefinition.PostAnsweringDelay.x, _globalDefinition.PostAnsweringDelay.y));
 
                 student.StartThinking();
@@ -99,7 +99,7 @@ public class StudentManager : MonoBehaviour
         while (!cancellationToken.IsCancellationRequested)
         {
             float thinkingDuration = Random.Range(_globalDefinition.PreAnsweringDelay.x, _globalDefinition.PreAnsweringDelay.y);
-            float answeringDuration = Random.Range(_globalDefinition.AnsweringDelay.x, _globalDefinition.AnsweringDelay.y);
+            float answeringDuration = Random.Range(_globalDefinition.AnsweringDuration.x, _globalDefinition.AnsweringDuration.y);
             float validatingDuration = Random.Range(_globalDefinition.PostAnsweringDelay.x, _globalDefinition.PostAnsweringDelay.y);
 
             StudentNpcController smartStudent = GetNewSmartStudent();

@@ -19,7 +19,7 @@ MonoBehaviour:
   MinCorrectnessToEarlyVictoryFlow: 1
   PlayerLives: 3
   PreAnsweringDelay: {x: 5, y: 5}
-  AnsweringDelay: {x: 5, y: 5}
+  AnsweringDuration: {x: 50, y: 50}
   PostAnsweringDelay: {x: 20, y: 20}
   PlayerTag: Player
   DistractionTag: Distraction

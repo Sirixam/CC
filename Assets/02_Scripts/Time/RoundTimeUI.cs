@@ -29,7 +29,7 @@ public class RoundTimeUI : MonoBehaviour
 
         // Resolve phase durations from GlobalDefinition (using midpoint of each range)
         _phase1Duration = (globalDef.PreAnsweringDelay.x + globalDef.PreAnsweringDelay.y) / 2f;
-        _phase2Duration = (globalDef.AnsweringDelay.x + globalDef.AnsweringDelay.y) / 2f;
+        _phase2Duration = (globalDef.AnsweringDuration.x + globalDef.AnsweringDuration.y) / 2f;
         _phase3Duration = (globalDef.PostAnsweringDelay.x + globalDef.PostAnsweringDelay.y) / 2f;
 
         BuildPhaseArcs();
