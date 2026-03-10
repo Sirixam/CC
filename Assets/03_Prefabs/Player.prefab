@@ -699,6 +699,7 @@ MonoBehaviour:
     CheatDuration: 1
     MemoryDuration: 99999
     KeepPeekProgress: 1
+    AnswerDuration: 1
   _dashData:
     DashCooldown: 0.7
     HardCollisionTags:

@@ -10,6 +10,7 @@ public class PlayerCheatHelper
         public float CheatDuration;
         public float MemoryDuration;
         public bool KeepPeekProgress;
+        public float AnswerDuration;
     }
 
     public class RememberedAnswer

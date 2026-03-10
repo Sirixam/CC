@@ -606,16 +606,26 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
         _lookHelper.UpdateRotation(transform);
         _interactionHelper.UpdateBestInteraction();
-        if (IsAnswering)
+
+        if (IsAnswering && _answerController.ActiveAnswerID != null)
         {
-            _answerController.UpdateAnswering(Time.deltaTime, out bool finishedAnswering);
+            //If writing a cheated answer, scale deltaTime to match AnswerDuration
+            // instead of the answer's BaseAnswerDuration
+            float deltaTime = Time.deltaTime;
+            if (_cheatHelper.IsRemembering)
+            {
+                float baseAnswerDuration = _answerController.GetAnsweringDuration();
+                deltaTime *= baseAnswerDuration / _cheatData.AnswerDuration;
+            }
+
+            _answerController.UpdateAnswering(deltaTime, out bool finishedAnswering);
+
             if (finishedAnswering)
             {
                 _answerController.StartIdle();
                 _audioHelper.OnFinishedCorrectAnswer();
                 if (_cheatHelper.TryGetRememberedAnswer(out string answerID, out float correctness, out string actorID))
                 {
-                    //Guardrail: don't craft if player already holds an item
                     if (!_interactionHelper.TryGetPickedUpInteraction(out _))
                     {
                         _cheatHelper.StopRemembering();
