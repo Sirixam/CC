@@ -619,6 +619,7 @@ GameObject:
   - component: {fileID: 5061849212568918116}
   - component: {fileID: 165944274530947382}
   - component: {fileID: 5101409339834082186}
+  - component: {fileID: -2618675718745890452}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -714,6 +715,7 @@ MonoBehaviour:
     CheatingAudio: {fileID: 11400000, guid: 763f6b57428e08f4092e9372027d251d, type: 2}
     StunnedAudio: {fileID: 11400000, guid: aac6e454b1f8925418af7951309d392f, type: 2}
   _globalDefinition: {fileID: 11400000, guid: 2b0875648e78a8e45b08a646836071ca, type: 2}
+  _flashEffect: {fileID: 0}
   _dropByHoldingInteract: 0
   _toggleToPeek: 1
   _stopPeekOnDash: 1
@@ -951,6 +953,31 @@ MonoBehaviour:
     Ignore: 0
   EDITOR_RenderersParent: {fileID: 9123122298512519571}
   EDITOR_IncludeInactive: 1
+--- !u!114 &-2618675718745890452
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2028980368172026476}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 927dfcb0591e34f4e964e097885dd7f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _renderers:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  _flashColor: {r: 1, g: 0, b: 0, a: 1}
+  _flashDuration: 0.1
+  _flashCount: 3
 --- !u!1 &2426362767405802943
 GameObject:
   m_ObjectHideFlags: 0

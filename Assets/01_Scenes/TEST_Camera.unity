@@ -25363,14 +25363,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: ItemsManager
       objectReference: {fileID: 0}
-    - target: {fileID: 5489921417720654080, guid: 8d6c8104f4fd9ee4da070c1ef6ac57f9, type: 3}
-      propertyPath: _itemsData.Array.data[0].CraftDuration
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5489921417720654080, guid: 8d6c8104f4fd9ee4da070c1ef6ac57f9, type: 3}
-      propertyPath: _itemsData.Array.data[1].CraftDuration
-      value: 0.5
-      objectReference: {fileID: 0}
     - target: {fileID: 6961697550944100687, guid: 8d6c8104f4fd9ee4da070c1ef6ac57f9, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
