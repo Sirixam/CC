@@ -103,14 +103,27 @@ public class GameManager : MonoBehaviour
         }
 
         inputHandler.Initialize();
+        
         PlayerController playerController = playerInput.GetComponent<PlayerController>();
         playerController.Inject(_answerManager);
+        
+        var colorComponent = playerInput.GetComponent<ColorComponent>();
+        if (playerInput.playerIndex == 0)
+        {
+            colorComponent.SetColor(Color.blue);
+        }else if (playerInput.playerIndex == 1)
+        {
+            colorComponent.SetColor(Color.red);
+        }
+        
+        
         ChairController chairController = _answerManager.GetPlayerDesk(playerInput.playerIndex).transform.parent.GetComponentInChildren<ChairController>();
         playerController.SetInitialChairController(chairController);
         playerController.OnShowHelp += OnShowHelp;
         playerController.OnHideHelp += OnHideHelp;
         _players.Add(playerController);
-
+        
+        
         if (_players.Count >= _answerManager.RequiredPlayersCount ||
             !_globalDefinition.StartGameWhenAllPlayersJoined)
         {
@@ -137,6 +150,7 @@ public class GameManager : MonoBehaviour
         _studentManager.StartStimulation(_gameCancellationSource.Token);
 
         EnableGameplayInput();
+
     }
 
     private void StopGame()

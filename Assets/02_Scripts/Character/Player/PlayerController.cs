@@ -191,6 +191,10 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
         if (interaction.Type == EInteraction.PickUp)
         {
+            // GUARDRAIL: player can only carry one item
+            if (IsHoldingItem())
+                return;
+            
             _view.OnPickUp(interaction.transform);
             _interactionHelper.StartInteraction(interaction);
             _audioHelper.OnPickUp();
@@ -411,6 +415,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private void OnDirectionalActionRequested(EDirectionalAction actionType, Vector2 input, bool isMouse)
     {
+        Debug.Log($"Directional input: {actionType} {input}");
         if (_skipNextDirectionAction)
         {
             _skipNextDirectionAction = false;
@@ -495,8 +500,10 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         }
         else if (actionType == EAction.Utility)
         {
-            // TODO: Show inventory
-            if (!_interactionHelper.TryGetPickedUpInteraction(out _))
+            bool hasItem = _interactionHelper.TryGetPickedUpInteraction(out _);
+            bool hasMemory = _cheatHelper.TryGetRememberedAnswer(out _, out _, out _);
+
+            if (!hasItem && !hasMemory)
             {
                 _craftHelper.TryStartCraftingItem("Paper Ball");
             }
@@ -608,9 +615,13 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
                 _audioHelper.OnFinishedCorrectAnswer();
                 if (_cheatHelper.TryGetRememberedAnswer(out string answerID, out float correctness, out string actorID))
                 {
-                    _cheatHelper.StopRemembering();
-                    PaperBallController answerInstance = _craftHelper.CraftAnswer(answerID, correctness, actorID);
-                    _answerController.AddContributor(answerID, answerInstance.ID);
+                    //Guardrail: don't craft if player already holds an item
+                    if (!_interactionHelper.TryGetPickedUpInteraction(out _))
+                    {
+                        _cheatHelper.StopRemembering();
+                        PaperBallController answerInstance = _craftHelper.CraftAnswer(answerID, correctness, actorID);
+                        _answerController.AddContributor(answerID, answerInstance.ID);
+                    }
                 }
             }
         }
@@ -706,5 +717,10 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _interactionHelper?.DisableInteraction();
         _inputHandler.CancelActionHold();
         _inputHandler.CancelPeekHold();
+    }
+    
+    private bool IsHoldingItem()
+    {
+        return _interactionHelper.TryGetPickedUpInteraction(out _);
     }
 }
