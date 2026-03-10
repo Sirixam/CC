@@ -31,6 +31,7 @@ public class GameManager : MonoBehaviour
     private CancellationTokenSource _roundCancellationSource;
     private List<PlayerController> _players = new();
     private int _playerLives;
+    private Dictionary<PlayerController, FlashEffect> _playerFlashEffects = new();
 
     public static GameManager Instance { get; private set; }
     public bool GameplayActive { get; private set; }
@@ -116,14 +117,17 @@ public class GameManager : MonoBehaviour
             colorComponent.SetColor(Color.red);
         }
         
-        
         ChairController chairController = _answerManager.GetPlayerDesk(playerInput.playerIndex).transform.parent.GetComponentInChildren<ChairController>();
         playerController.SetInitialChairController(chairController);
         playerController.OnShowHelp += OnShowHelp;
         playerController.OnHideHelp += OnHideHelp;
         _players.Add(playerController);
-        
-        
+
+        FlashEffect flashEffect = playerController.GetComponent<FlashEffect>();
+        if (flashEffect != null)
+            _playerFlashEffects[playerController] = flashEffect;
+
+
         if (_players.Count >= _answerManager.RequiredPlayersCount ||
             !_globalDefinition.StartGameWhenAllPlayersJoined)
         {
@@ -296,7 +300,11 @@ public class GameManager : MonoBehaviour
         SetLives(_playerLives - 1);
         if (_playerLives > 0)
         {
+            if (_playerFlashEffects.TryGetValue(playerController, out var flash))
+                flash.Flash();
+
             playerController.TeleportToInitialChair();
+
             return;
         }
 

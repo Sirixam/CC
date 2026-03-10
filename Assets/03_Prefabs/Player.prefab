@@ -715,7 +715,6 @@ MonoBehaviour:
     CheatingAudio: {fileID: 11400000, guid: 763f6b57428e08f4092e9372027d251d, type: 2}
     StunnedAudio: {fileID: 11400000, guid: aac6e454b1f8925418af7951309d392f, type: 2}
   _globalDefinition: {fileID: 11400000, guid: 2b0875648e78a8e45b08a646836071ca, type: 2}
-  _flashEffect: {fileID: 0}
   _dropByHoldingInteract: 0
   _toggleToPeek: 1
   _stopPeekOnDash: 1
@@ -965,19 +964,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 927dfcb0591e34f4e964e097885dd7f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _renderers:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   _flashColor: {r: 1, g: 0, b: 0, a: 1}
   _flashDuration: 0.1
-  _flashCount: 3
+  _flashCount: 5
 --- !u!1 &2426362767405802943
 GameObject:
   m_ObjectHideFlags: 0
