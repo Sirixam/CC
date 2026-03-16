@@ -957,24 +957,31 @@ MonoBehaviour:
   _renderersData:
   - Renderer: {fileID: 206191294507930170}
     ColorPropertyName: _Color
+    tag: _Tag
     Ignore: 1
   - Renderer: {fileID: 6267885214080775603}
     ColorPropertyName: _Color
+    tag: _Tag
     Ignore: 1
   - Renderer: {fileID: 3126426675261080456}
     ColorPropertyName: _Color
+    tag: _Tag
     Ignore: 1
   - Renderer: {fileID: 4286758188582577514}
-    ColorPropertyName: _Color
-    Ignore: 1
+    ColorPropertyName: _BaseColor
+    tag: Hair
+    Ignore: 0
   - Renderer: {fileID: 3495097351033944284}
     ColorPropertyName: _Color
+    tag: _Tag
     Ignore: 1
   - Renderer: {fileID: 2624721205167258179}
     ColorPropertyName: _BaseColor
+    tag: Clothes
     Ignore: 0
   - Renderer: {fileID: 8858382138974637436}
     ColorPropertyName: _BaseColor
+    tag: Clothes
     Ignore: 0
   EDITOR_RenderersParent: {fileID: 9123122298512519571}
   EDITOR_IncludeInactive: 1
