@@ -294,7 +294,6 @@ public class GameManager : MonoBehaviour
 
         LoseLife(owner);
     }
-
     private void LoseLife(PlayerController playerController)
     {
         SetLives(_playerLives - 1);
@@ -303,14 +302,12 @@ public class GameManager : MonoBehaviour
             if (_playerFlashEffects.TryGetValue(playerController, out var flash))
                 flash.Flash();
 
-            playerController.TeleportToInitialChair();
-
+            playerController.OnCaught(onAfterTeleport: null);
             return;
         }
 
         ShowEndMenu(_defeatFeedback);
     }
-
     private void SetLives(int value)
     {
         _playerLives = value;

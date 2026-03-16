@@ -170,4 +170,9 @@ public class PlayerPhysics
         float angle = Mathf.Acos(alignment) * Mathf.Rad2Deg;
         return angle <= _frontalCollisionAngle;
     }
+
+    public void ApplyImpulse(Vector3 force)
+    {
+        _rigidbody.AddForce(force, ForceMode.Impulse);
+    }
 }

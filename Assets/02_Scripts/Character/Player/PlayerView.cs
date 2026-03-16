@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using PrimeTween;
 using AKGaming.Game;
@@ -14,6 +15,15 @@ public class PlayerView : MonoBehaviour, IStunView, IChairView
     [SerializeField] private CraftingUI _craftingUI;
     [SerializeField] private MemoryUI _memoryUI;
     [SerializeField] private ThrowPreviewComponent _throwPreview;
+    [SerializeField] private float _caughtFreezeDuration = 0.2f;
+    [SerializeField] private float _caughtShakeAmount = 0.3f;
+    [SerializeField] private float _caughtShakeDuration = 0.07f;
+    [SerializeField] private int _caughtShakeCount = 5;
+    [SerializeField] private ParticleSystem _caughtCloudVFXPrefab;
+    private Sequence _caughtSequence;
+    [SerializeField] private TweenSettings<Vector3> _caughtShrinkTweenSettings = new();
+    private Tween _caughtShrinkTween;
+
     [SerializeField] private TweenSettings<float> _startStunTweenSettings = new();
     [SerializeField] private TweenSettings<float> _stopStunTweenSettings = new();
     [SerializeField] private TweenSettings<float> _sittingTweenSettings = new();
@@ -45,6 +55,7 @@ public class PlayerView : MonoBehaviour, IStunView, IChairView
         _sittingTweenSettings.startFromCurrent = true;
         _standingTweenSettings.startFromCurrent = true;
         _pickUpTweenSettings.startFromCurrent = true;
+        _caughtShrinkTweenSettings.startFromCurrent = true;
         _stunVFX.Stop(withChildren: true, ParticleSystemStopBehavior.StopEmittingAndClear);
         _meshRenderers = _rendererContainer.GetComponentsInChildren<MeshRenderer>();
         _initialBoundsExtentsY = GetBounds().extents.y;
@@ -160,5 +171,52 @@ public class PlayerView : MonoBehaviour, IStunView, IChairView
     {
         _scaleTweenY.Stop();
         _scaleTweenY = Tween.ScaleY(_bodyRenderer, _standingTweenSettings).OnUpdate(_bodyRenderer, OnUpdateScaleY);
+    }
+
+    public void OnCaught(Vector3 worldPosition, Action onComplete)
+    {
+        _caughtSequence.Stop();
+        _caughtShrinkTween.Stop();
+
+        // Calculate total shake duration so shrink matches it exactly
+        float totalShakeDuration = (_caughtShakeCount + 1) * _caughtShakeDuration;
+
+        _caughtShrinkTween = Tween.Scale(
+            _rendererContainer,
+            Vector3.zero,
+            totalShakeDuration,
+            Ease.InBack,
+            startDelay: _caughtFreezeDuration
+        );
+
+        _caughtSequence = Sequence.Create()
+            .ChainDelay(_caughtFreezeDuration);
+
+        for (int i = 0; i < _caughtShakeCount; i++)
+        {
+            float dir = (i % 2 == 0) ? _caughtShakeAmount : -_caughtShakeAmount;
+            _caughtSequence.Chain(
+                Tween.LocalPositionX(_rendererContainer, dir, _caughtShakeDuration, Ease.OutQuad)
+            );
+        }
+
+        _caughtSequence
+            .Chain(Tween.LocalPositionX(_rendererContainer, 0f, _caughtShakeDuration, Ease.OutQuad))
+            .OnComplete(() =>
+            {
+                _caughtShrinkTween.Stop();
+                _rendererContainer.localScale = Vector3.one;
+
+                if (_caughtCloudVFXPrefab != null)
+                {
+                    ParticleSystem cloud = UnityEngine.Object.Instantiate(
+                        _caughtCloudVFXPrefab, worldPosition, Quaternion.identity
+                    );
+                    UnityEngine.Object.Destroy(cloud.gameObject,
+                        cloud.main.duration + cloud.main.startLifetime.constantMax);
+                }
+
+                onComplete?.Invoke();
+            });
     }
 }

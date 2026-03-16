@@ -27,12 +27,15 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     [SerializeField] private DashHelper.Data _dashData;
     [SerializeField] private LookHelper.Data _lookData;
     [SerializeField] private PlayerAudioHelper.Data _audioData;
+    
     [SerializeField] private GlobalDefinition _globalDefinition;
     [Header("TO BE REMOVED")]
     [SerializeField] private bool _dropByHoldingInteract; // Once we decide on the final input scheme, this can be removed
     [SerializeField] private bool _toggleToPeek;
     [SerializeField] private bool _stopPeekOnDash;
     [SerializeField] private bool _stopPeekOnTeleport;
+    private bool _isCaught;
+
 
     // Runtime
     private AnswerController _answerController;
@@ -593,9 +596,16 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             return;
 
         _dashHelper.UpdateCooldown();
-        if (_stunHelper.IsStunned)
+        /*if (_stunHelper.IsStunned)
         {
             _stunHelper.UpdateStun();
+            return;
+        }*/
+
+        if (_stunHelper.IsStunned || _isCaught)
+        {
+            if (_stunHelper.IsStunned) 
+                _stunHelper.UpdateStun();
             return;
         }
 
@@ -661,13 +671,13 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             _craftHelper.UpdateCrafting(Time.deltaTime);
         }
     }
-
     private void FixedUpdate()
     {
         if (!GameManager.Instance.GameplayActive)
             return;
 
-        _physics.OnFixedUpdate(Time.fixedDeltaTime, canMove: !_stunHelper.IsStunned, out bool stoppedDashing);
+        // ✅ pass _isCaught so physics zeroes velocity while frozen
+        _physics.OnFixedUpdate(Time.fixedDeltaTime, canMove: !_stunHelper.IsStunned && !_isCaught, out bool stoppedDashing);
         if (stoppedDashing)
         {
             _view.OnStopDash();
@@ -732,5 +742,22 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     private bool IsHoldingItem()
     {
         return _interactionHelper.TryGetPickedUpInteraction(out _);
+    }
+
+    public void OnCaught(Action onAfterTeleport)
+    {
+        if (_isCaught) return;
+        _isCaught = true;
+        _inputHandler.PlayerInput.DeactivateInput();
+        ResetInputState();
+        ForceClearInteractionState();
+
+        _view.OnCaught(transform.position, onComplete: () =>
+        {
+            _isCaught = false;
+            _inputHandler.PlayerInput.ActivateInput();
+            TeleportToInitialChair();
+            onAfterTeleport?.Invoke();
+        });
     }
 }
