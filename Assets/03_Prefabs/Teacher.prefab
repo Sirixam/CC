@@ -286,9 +286,10 @@ MonoBehaviour:
       useUnscaledTime: 0
       _useFixedUpdate: 0
       _updateType: 0
-  _maxDistance: 3
+  _maxDistance: 5
   _fieldOfView: 60
   _fieldOfViewWidth: 0.5
+  _widthScale: 1
   _visualThickness: 0.01
   _physicsThickness: 2
 --- !u!33 &6965761521721660108
