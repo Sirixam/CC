@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using System.Threading;
+using _02_Scripts.Tools;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
@@ -19,6 +20,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private HelpUI _helpUI;
     [SerializeField] private GameObject _timesUpFeedback;
     [SerializeField] private ButtonListener[] _restartButtons;
+    [SerializeField] private PlayerAppearanceSO[] _playerAppearances;
 
     [Header("Configurations")]
     [SerializeField] private GlobalDefinition _globalDefinition;
@@ -109,13 +111,9 @@ public class GameManager : MonoBehaviour
         playerController.Inject(_answerManager);
         
         var colorComponent = playerInput.GetComponent<ColorComponent>();
-        if (playerInput.playerIndex == 0)
-        {
-            colorComponent.SetColor(Color.blue);
-        }else if (playerInput.playerIndex == 1)
-        {
-            colorComponent.SetColor(Color.red);
-        }
+        var appearance = _playerAppearances[playerInput.playerIndex];
+        colorComponent.SetColor(appearance.ClothesColor, "Clothes");
+        colorComponent.SetColor(appearance.HairColor, "Hair");
         
         ChairController chairController = _answerManager.GetPlayerDesk(playerInput.playerIndex).transform.parent.GetComponentInChildren<ChairController>();
         playerController.SetInitialChairController(chairController);

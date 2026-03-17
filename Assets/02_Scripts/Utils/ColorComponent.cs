@@ -9,9 +9,11 @@ public class ColorComponent : MonoBehaviour
     {
         public MeshRenderer Renderer;
         public string ColorPropertyName = DEFAULT_COLOR_PROPERTY_NAME;
+        public string tag = DEFAULT_TAG;
         public bool Ignore;
+        
 
-        public void SetColor(Color color)
+        public void SetColor(Color color, string tag)
         {
             MaterialPropertyBlock block = new();
             Renderer.GetPropertyBlock(block);
@@ -21,18 +23,24 @@ public class ColorComponent : MonoBehaviour
     }
 
     private const string DEFAULT_COLOR_PROPERTY_NAME = "_Color";
+    private const string DEFAULT_TAG = "_Tag";
 
     [SerializeField] private List<RendererData> _renderersData = new();
     [Header("EDITOR_ONLY")]
     [SerializeField] private Transform EDITOR_RenderersParent;
     [SerializeField] private bool EDITOR_IncludeInactive = true;
 
-    public void SetColor(Color color)
+    public void SetColor(Color color, string tag)
     {
         foreach (var rendererData in _renderersData)
         {
             if (rendererData.Ignore) continue;
-            rendererData.SetColor(color);
+            if (rendererData.tag != tag) continue;
+            MaterialPropertyBlock block = new();
+            rendererData.Renderer.GetPropertyBlock(block);
+            block.SetTexture("_BaseMap", Texture2D.whiteTexture);
+            block.SetColor(rendererData.ColorPropertyName, color);
+            rendererData.Renderer.SetPropertyBlock(block);
         }
     }
 
@@ -48,4 +56,6 @@ public class ColorComponent : MonoBehaviour
             _renderersData.Add(new RendererData() { Renderer = meshRenderer });
         }
     }
+    
+
 }
