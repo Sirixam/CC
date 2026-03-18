@@ -67,6 +67,7 @@ public class AnswerPeekUI : MonoBehaviour
         {
             if (setup)
             {
+                if (_readyObject == null) return;
                 _readyObject.anchoredPosition = isFull ? _readyTweenSettings.endValue : _notReadyPosition;
             }
             else
