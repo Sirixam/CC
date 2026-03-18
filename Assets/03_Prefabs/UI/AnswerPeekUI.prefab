@@ -281,6 +281,7 @@ MonoBehaviour:
   _answerTypeIcon: {fileID: 5752528687074409068}
   _answerCloudIcon: {fileID: 3193702650535311042}
   _readyObject: {fileID: 8413923895918963103}
+  _shakeContainer: {fileID: 2658736487981480584}
   _notReadyPosition: {x: 0, y: 65}
   _readyTweenSettings:
     startFromCurrent: 1
@@ -522,7 +523,7 @@ GameObject:
   - component: {fileID: 6009919734338281553}
   - component: {fileID: 2725866741929594603}
   m_Layer: 5
-  m_Name: Layout
+  m_Name: ShakeContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

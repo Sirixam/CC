@@ -223,27 +223,26 @@ public class GameManager : MonoBehaviour
             case 0: // PreAnswering → Answering
                 _audioHelper.OnPhaseChangeAnswer(); 
                 break;
-            case 1: // Answering → PostAnswering
-                _audioHelper.OnPhaseChangeCheat();  
-                break;
         }
     }
 
     private void HandleLoopRestarted()
     {
         _audioHelper.OnPhaseChangeThink();
+        _studentManager.RestartStimulation();
+        _answerManager.StopAllPeekCardShakes();
+        _answerManager.CleanActivePeeks();
     }
     private void HandleCountdownBeep(int phaseIndex, int secondsLeft)
     {
-        // Play a different final beep on 1, ticks on 2 and 3
         if (secondsLeft == 1)
             _audioHelper.BeepFinal();
         else
             _audioHelper.BeepNotFinal();
 
-        // Optionally do something different per phase
-        // e.g. urgent beep only during answering phase
-        // if (phaseIndex == 1) AudioManager.Instance.Play("beep_urgent");
+        // ✅ shake all peek cards when 3 seconds remain in the phase
+        if (secondsLeft == 3 && phaseIndex == 1)
+            _answerManager.ShakeAllPeekCards();
     }
 
     private void OnAllPlayersFinishedAllAnswers(float minCorrectness)

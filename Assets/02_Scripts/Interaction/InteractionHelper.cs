@@ -137,6 +137,7 @@ public class InteractionHelper
     public void UpdateBestInteraction()
     {
         if (!_isEnabled) return;
+        if (_actor is UnityEngine.Object actorObject && actorObject == null) return;
 
         bool isCarrying = _activeInteractions.Exists(x => x.Type == EInteraction.PickUp);
 

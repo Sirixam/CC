@@ -9,16 +9,17 @@ public class AnswerPeekUI : MonoBehaviour
     [SerializeField] private Image _answerTypeIcon;
     [SerializeField] private Image _answerCloudIcon;
     [SerializeField] private RectTransform _readyObject;
-    //[SerializeField] private Image _progressMask;
-    //[SerializeField] private Image _progressFill;
+    [SerializeField] private RectTransform _shakeContainer;
+
     [Header("Configurations")]
     //[SerializeField] private Gradient _progressGradient;
     [SerializeField] private Vector2 _notReadyPosition;
     [SerializeField] private TweenSettings<Vector2> _readyTweenSettings;
+    private Vector2 _originalAnchoredPosition;
     private RectTransform _rect;
-
-
     private Tween _readyTween;
+    private Sequence _highlightTween;
+    private Sequence _shakeTween;
     private bool _isFull;
 
     public AnswerPeek AnswerPeek { get; private set; }
@@ -142,10 +143,30 @@ public class AnswerPeekUI : MonoBehaviour
             .Chain(Tween.Scale(_rect, Vector3.zero, 0.2f, Ease.InBack))
             .OnComplete(() => onComplete?.Invoke());
     }
+    public void PlayHighlight()
+    {
+        _highlightTween.Stop();
+        _highlightTween = Sequence.Create()
+            .Chain(Tween.Scale(_rect, new Vector3(1.15f, 1.15f, 1f), 0.1f, Ease.OutQuad))
+            .Chain(Tween.Scale(_rect, Vector3.one, 0.15f, Ease.OutBack));
+    }
+    public void PlayShake()
+    {
+        _shakeTween.Stop();
+        float amount = 6f;
+        float duration = 0.06f;
 
-    // private void SetProgress(float percent)
-    // {
-    //     _progressMask.fillAmount = percent;
-    //     _progressFill.color = _progressGradient.Evaluate(percent);
-    // }
+        _shakeTween = Sequence.Create(cycles: -1)
+            .Chain(Tween.LocalPositionX(_shakeContainer, amount, duration, Ease.OutQuad))
+            .Chain(Tween.LocalPositionX(_shakeContainer, -amount, duration, Ease.OutQuad))
+            .Chain(Tween.LocalPositionX(_shakeContainer, amount, duration, Ease.OutQuad))
+            .Chain(Tween.LocalPositionX(_shakeContainer, -amount, duration, Ease.OutQuad))
+            .Chain(Tween.LocalPositionX(_shakeContainer, 0f, duration, Ease.OutQuad));
+    }
+
+    public void StopShake()
+    {
+        _shakeTween.Stop();
+        _shakeContainer.localPosition = Vector3.zero;
+    }
 }

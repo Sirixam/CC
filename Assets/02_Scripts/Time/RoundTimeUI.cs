@@ -40,8 +40,12 @@ public class RoundTimeUI : MonoBehaviour
         float total = _phase1Duration + _phase2Duration + _phase3Duration;
 
         SetupArc(_phase1Arc, _phase1Duration / total, 0f, _phase1Color);
-        SetupArc(_phase2Arc, _phase2Duration / total, _phase1Duration / total, _phase2Color);
-        SetupArc(_phase3Arc, _phase3Duration / total, (_phase1Duration + _phase2Duration) / total, _phase3Color);
+
+        float combinedDuration = _phase2Duration + _phase3Duration;
+        SetupArc(_phase2Arc, combinedDuration / total, _phase1Duration / total, _phase2Color);
+
+        _phase3Arc.gameObject.SetActive(false);
+
     }
 
     private void SetupArc(Image arc, float fraction, float startFraction, Color color)

@@ -19,6 +19,8 @@ public class StudentManager : MonoBehaviour
 
     private TestDefinition _testDefinition;
     private StudentNpcController _smartStudent;
+    private CancellationTokenSource _simulationCancellationSource;
+
 
     public Action<PlayerController> OnPlayerDetected;
     public Action<IItemController> OnItemDetected;
@@ -49,26 +51,27 @@ public class StudentManager : MonoBehaviour
         }
     }
 
-    public void StartStimulation(CancellationToken cancellationToken)
+    public void StartStimulation(CancellationToken externalToken)
     {
+        _simulationCancellationSource?.Cancel();
+        _simulationCancellationSource?.Dispose();
+
+        _simulationCancellationSource = CancellationTokenSource.CreateLinkedTokenSource(externalToken);
+
         if (_globalDefinition.SimulateStudentsIndividually)
         {
             foreach (var student in _students)
-            {
-                SimulateNPCAnswering(student, cancellationToken).Forget();
-            }
+                SimulateNPCAnswering(student, _simulationCancellationSource.Token).Forget();
         }
         else
         {
-            SimulateNPCsAnswering(cancellationToken).Forget();
+            SimulateNPCsAnswering(_simulationCancellationSource.Token).Forget();
         }
     }
 
     private async UniTask SimulateNPCAnswering(StudentNpcController student, CancellationToken cancellationToken)
     {
         AnswerDefinition answerDef = null;
-        while (!cancellationToken.IsCancellationRequested)
-        {
             answerDef = _answerManager.GetNewStudentAnswer(answerDef);
             string answerID = answerDef.ID;
             bool startedThinking = student.AnswerController.TryRestartAnswering(answerID, isThinking: true);
@@ -90,14 +93,12 @@ public class StudentManager : MonoBehaviour
             }
 
             await UniTask.Yield(cancellationToken); // Prevent blocking if failed to start answering.
-        }
     }
 
     private async UniTask SimulateNPCsAnswering(CancellationToken cancellationToken)
     {
         AnswerDefinition answerDef = null;
-        while (!cancellationToken.IsCancellationRequested)
-        {
+
             float thinkingDuration = Random.Range(_globalDefinition.PreAnsweringDelay.x, _globalDefinition.PreAnsweringDelay.y);
             float answeringDuration = Random.Range(_globalDefinition.AnsweringDuration.x, _globalDefinition.AnsweringDuration.y);
             float validatingDuration = Random.Range(_globalDefinition.PostAnsweringDelay.x, _globalDefinition.PostAnsweringDelay.y);
@@ -134,7 +135,6 @@ public class StudentManager : MonoBehaviour
             }
 
             await UpdateRemainingTimeOnAllStudents(cancellationToken);
-        }
     }
 
     private float GetNewCorrectness(bool isSmartStudent)
@@ -188,5 +188,9 @@ public class StudentManager : MonoBehaviour
             }
             await UniTask.Yield(cancellationToken);
         }
+    }
+    public void RestartStimulation()
+    {
+        StartStimulation(_simulationCancellationSource.Token);
     }
 }

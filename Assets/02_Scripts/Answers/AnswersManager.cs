@@ -242,6 +242,8 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
     private List<AnswerPeek> _activePeeks = new();
 
     public int RequiredPlayersCount => _playerDesks.Length;
+    private bool _isShaking;
+
 
     public event Action<string, float> OnAllPlayersFinishedAnswer; // Params: float minCorrectness
     public event Action<float> OnAllPlayersFinishedAllAnswers; // Params: float minCorrectness
@@ -271,6 +273,7 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
         }
     }
 
+    /*
     private void Update()
     {
         for (int i = _activePeeks.Count - 1; i >= 0; i--)
@@ -288,6 +291,17 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
                 answerPeekUI.Hide();
                 _activePeeks.RemoveAt(i);
             }
+        }
+    }*/
+
+    private void Update()
+    {
+        for (int i = _activePeeks.Count - 1; i >= 0; i--)
+        {
+            AnswerPeek peek = _activePeeks[i];
+            AnswerPeekUI answerPeekUI = peek.PeekUI;
+
+            answerPeekUI.UpdateProgress(setup: false);
         }
     }
 
@@ -356,7 +370,11 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
     private void OnFinishPeeking(AnswerController answerController, string answerID, Sprite characterIcon, Sprite archetypeIcon)
     {
         AnswerPeek peek = _activePeeks.Find(x => x.AnswerSheet == answerController.AnswerSheet && x.AnswerID == answerID);
-        if (peek != null) return; // Already showing this peek
+        if (peek != null)
+        {
+            peek.PeekUI.PlayHighlight();
+            return;
+        }
 
         //AnswerPeekUI peekUI = Array.Find(_answerPeekUIs, x => x.AnswerPeek == null);
         //if (peekUI == null) return; // No available peek UI, TODO: Replace one of them.
@@ -387,6 +405,9 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
         Sprite answerTypeIcon = GetAnswerTypeIcon(answerID);
         peekUI.Setup(peek, characterIcon, archetypeIcon, answerTypeIcon);
         peekUI.Show();
+
+        if (_isShaking) 
+            peekUI.PlayShake();
     }
 
     public AnswerDefinition GetNewStudentAnswer(AnswerDefinition lastAnswerDef)
@@ -458,5 +479,19 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
     public AnswerController GetPlayerDesk(int index)
     {
         return _playerDesks[index];
+    }
+
+    public void ShakeAllPeekCards()
+    {
+        _isShaking = true;
+        foreach (var peek in _activePeeks)
+            peek.PeekUI.PlayShake();
+    }
+
+    public void StopAllPeekCardShakes()
+    {
+        _isShaking = false;
+        foreach (var peek in _activePeeks)
+            peek.PeekUI.StopShake();
     }
 }

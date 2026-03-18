@@ -55,7 +55,6 @@ public class RoundTimeHelper
 
         _phaseThresholds.Clear();
         _phaseThresholds.Add(_p2 + _p3);
-        _phaseThresholds.Add(_p3);
 
         _currentPhaseIndex = 0;
         _lastBeepSecond = -1;
@@ -70,7 +69,6 @@ public class RoundTimeHelper
 
         _phaseThresholds.Clear();
         _phaseThresholds.Add(_p2 + _p3);
-        _phaseThresholds.Add(_p3);
 
         _currentPhaseIndex = 0;
         _lastBeepSecond = -1;
