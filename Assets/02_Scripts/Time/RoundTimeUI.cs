@@ -16,6 +16,10 @@ public class RoundTimeUI : MonoBehaviour
 
     [SerializeField] private Color _phase2Color = Color.green;
     [SerializeField] private Color _phase3Color = Color.blue;
+    
+    [Header("Dividers")]
+    [SerializeField] private RectTransform _divider1;
+    [SerializeField] private RectTransform _divider2;
 
     private float _maxRoundTimeInSeconds;
     private float _phase1Duration;
@@ -45,6 +49,8 @@ public class RoundTimeUI : MonoBehaviour
         SetupArc(_phase2Arc, combinedDuration / total, _phase1Duration / total, _phase2Color);
 
         _phase3Arc.gameObject.SetActive(false);
+        
+        BuildDividers(_phase1Duration + _phase2Duration + _phase3Duration);
 
     }
 
@@ -70,5 +76,15 @@ public class RoundTimeUI : MonoBehaviour
         _fill.fillAmount = 0f;
     }
 
+    private void BuildDividers(float total)
+    {
+        float angle1 = 0f; // start of Phase1 = top
+        float angle2 = (_phase1Duration / total) * 360f;
+        float angle3 = ((_phase1Duration + _phase2Duration) / total) * 360f;
+
+        _divider1.localRotation = Quaternion.Euler(0f, 0f, -angle1);
+        _divider2.localRotation = Quaternion.Euler(0f, 0f, -angle2);
+    }
+    
 }
 

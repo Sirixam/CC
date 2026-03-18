@@ -53,9 +53,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _fill: {fileID: 0}
   _timerText: {fileID: 6387714085564125613}
-  thinkingColor: {r: 0, g: 0, b: 0, a: 0}
-  writingColor: {r: 0, g: 0, b: 0, a: 0}
-  cheatingColor: {r: 0, g: 0, b: 0, a: 0}
+  thinkingColor: {r: 1, g: 1, b: 1, a: 0}
+  writingColor: {r: 0.8773585, g: 0.8486898, b: 0.376602, a: 0}
+  cheatingColor: {r: 0.6037736, g: 0.15663938, b: 0.15663938, a: 0}
   writingThreshold: 0.5
   cheatingThreshold: 0.65
 --- !u!222 &7126694503832914497
@@ -130,8 +130,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 14.4, y: 0}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 175.22, y: 59.5694}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7791453120988411614
 CanvasRenderer:
@@ -172,8 +172,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -226,7 +226,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 36.498116, y: 0, z: 70.037346, w: 0}
+  m_margin: {x: 36.498116, y: 0, z: 37.291203, w: 11.239092}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
