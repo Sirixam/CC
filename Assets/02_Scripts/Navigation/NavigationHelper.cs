@@ -156,4 +156,12 @@ public class NavigationHelper
     {
         return _currentWaypointIndex + 1 < _currentRoute.Length;
     }
+    public void Reset()
+    {
+        _state = EState.Idle;
+        _currentRoute = null;
+        _currentWaypointIndex = 0;
+        _lastRouteIndex = -1;
+        _remainingWaitTime = 0f;
+    }
 }

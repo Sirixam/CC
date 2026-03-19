@@ -118,6 +118,12 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
 
     private void Stand()
     {
+        if (_navMeshAgent != null)
+        {
+            _navMeshAgent.updateRotation = true;
+            _navMeshAgent.isStopped = false;
+        }
+        
         _fieldOfViewController.Show();
         _remainingTime = UnityEngine.Random.Range(_timeToSitRange.x, _timeToSitRange.y);
     }
@@ -151,11 +157,18 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
     
     public void ResetTeacher()
     {
+        StopAllCoroutines();
+
+        _navigationHelper.Reset();
+
         // Stop movement immediately
         if (_navMeshAgent != null)
         {
             _navMeshAgent.isStopped = true;
             _navMeshAgent.ResetPath();
+            _navMeshAgent.velocity = Vector3.zero;
+            _navMeshAgent.updateRotation = false;
+            _navMeshAgent.Warp(_initialPosition);
         }
 
         // Reset transform

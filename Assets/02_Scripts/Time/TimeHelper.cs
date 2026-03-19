@@ -60,4 +60,9 @@ public class TimeHelper
     {
         _isPaused = false;
     }
+    public void Stop()
+    {
+        IsRunning = false;
+        _isPaused = false;
+    }
 }

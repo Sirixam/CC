@@ -40,7 +40,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     [Tooltip("If TRUE penalty will apply while peek mode is active, if FALSE it will apply only while peeking a student.")]
     [SerializeField] private bool _applyMovePenaltyOnPeekMode;
     private bool _isCaught;
-
+    public bool IsCaught => _isCaught;
 
     // Runtime
     private AnswerController _answerController;

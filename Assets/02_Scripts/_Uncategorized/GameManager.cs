@@ -160,6 +160,7 @@ public class GameManager : MonoBehaviour
         GameplayActive = false;
         _gameCancellationSource?.Cancel();
         _gameCancellationSource = null;
+        _timeHelper.Stop();
     }
 
     private void RestartGame()
@@ -215,6 +216,7 @@ public class GameManager : MonoBehaviour
     {
         _roundCancellationSource?.Cancel();
         _roundCancellationSource = null;
+        _roundTimeHelper.Stop();
     }
     private void HandlePhaseChanged(int phaseIndex)
     {
@@ -266,7 +268,8 @@ public class GameManager : MonoBehaviour
 
     private void OnPlayerDetected(PlayerController playerController)
     {
-        if (playerController.IsSitting) return; // Cannot lose life while 
+        if (playerController.IsSitting) return;
+        if (playerController.IsCaught) return;
         LoseLife(playerController);
     }
 
@@ -289,8 +292,11 @@ public class GameManager : MonoBehaviour
         if (!TryGetPlayerController(itemController.LastOwnerID, out PlayerController owner))
             return;
 
+        if (owner.IsCaught) return;
+        
         LoseLife(owner);
     }
+
     private void LoseLife(PlayerController playerController)
     {
         SetLives(_playerLives - 1);
