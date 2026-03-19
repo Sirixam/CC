@@ -219,4 +219,18 @@ public class PlayerView : MonoBehaviour, IStunView, IChairView
                 onComplete?.Invoke();
             });
     }
+
+    public void ResetVisuals()
+    {
+        _stunVFX.Stop(withChildren: true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        _rendererContainer.localScale = Vector3.one;
+        _rendererContainer.localPosition = Vector3.zero;
+        _scaleTweenZ.Stop();
+        _scaleTweenY.Stop();
+        _caughtSequence.Stop();
+        _caughtShrinkTween.Stop();
+
+        foreach (var trail in _dashTrails)
+            trail.emitting = false;
+    }
 }

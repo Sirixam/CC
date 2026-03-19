@@ -1,4 +1,5 @@
 using System;
+using UnityEngine.InputSystem;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -40,7 +41,14 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     [Tooltip("If TRUE penalty will apply while peek mode is active, if FALSE it will apply only while peeking a student.")]
     [SerializeField] private bool _applyMovePenaltyOnPeekMode;
     private bool _isCaught;
+    private int _inputGuardFrames;
+
     public bool IsCaught => _isCaught;
+
+    //exposing variables to GM
+    public PlayerView View => _view;
+    public PlayerInputHandler InputHandler => _inputHandler;
+
 
     // Runtime
     private AnswerController _answerController;
@@ -598,6 +606,13 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private void Update()
     {
+        if (_inputGuardFrames > 0)
+        {
+            _inputGuardFrames--;
+            ResetInputState();
+            return;
+        }
+        
         if (!GameManager.Instance.GameplayActive)
             return;
 
@@ -778,8 +793,34 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         {
             _isCaught = false;
             _inputHandler.PlayerInput.ActivateInput();
+            ResetInputState();
             TeleportToInitialChair();
+            SetInputGuard(2); // ignore input for 2 frames
             onAfterTeleport?.Invoke();
         });
+    }
+    public void OnGameOver(Action onComplete)
+    {
+        _inputHandler.PlayerInput.DeactivateInput();
+        ResetInputState();
+        ForceClearInteractionState();
+        _view.OnCaught(transform.position, onComplete: onComplete);
+    }
+    public void ForceStopStun()
+    {
+        _stunHelper.ForceStop();
+    }
+    public void ResetPlayerState()
+    {
+        _isCaught = false;
+        ResetInputState();
+        ForceClearInteractionState();
+        ForceStopStun();
+    }
+
+    //add a cooldown guard to remove dash input after being caught
+    public void SetInputGuard(int frames = 2)
+    {
+        _inputGuardFrames = frames;
     }
 }

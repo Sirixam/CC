@@ -190,7 +190,9 @@ public class GameManager : MonoBehaviour
 
         foreach (var player in _players)
         {
-            player.ForceClearInteractionState();
+            player.gameObject.SetActive(true);
+            player.ResetPlayerState();
+            player.View.ResetVisuals();
             player.TeleportToInitialChair();
         }
 
@@ -308,6 +310,21 @@ public class GameManager : MonoBehaviour
             playerController.OnCaught(onAfterTeleport: null);
             return;
         }
+        
+        foreach (var player in _players)
+        {
+            player.InputHandler.PlayerInput.DeactivateInput();
+            player.ResetInputState();
+            player.ForceClearInteractionState();
+
+            if (_playerFlashEffects.TryGetValue(player, out var flash))
+                flash.Flash();
+
+            player.View.OnCaught(player.transform.position, onComplete: () =>
+            {
+                player.gameObject.SetActive(false);
+            });
+        }
 
         ShowEndMenu(_defeatFeedback);
     }
@@ -391,7 +408,11 @@ public class GameManager : MonoBehaviour
                 continue;
 
             playerInput.ActivateInput();
+            playerInput.GetComponent<PlayerController>()?.ResetInputState();
         }
+
+        // Flush any buffered input actions from while input was deactivated
+        UnityEngine.InputSystem.InputSystem.Update();
     }
 
     private void ShowEndMenu(GameObject menu)

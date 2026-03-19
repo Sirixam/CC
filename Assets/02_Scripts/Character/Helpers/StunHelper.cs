@@ -43,4 +43,10 @@ public class StunHelper
             _ownerView.OnStopStun();
         }
     }
+
+    public void ForceStop()
+    {
+        IsStunned = false;
+    }
+
 }
