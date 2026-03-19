@@ -12,7 +12,9 @@ GameObject:
   - component: {fileID: 497982216308674865}
   - component: {fileID: 7598595293022351512}
   - component: {fileID: 5352594445115601037}
+  - component: {fileID: 2792465293115094078}
   - component: {fileID: 3097922760986382795}
+  - component: {fileID: 6421910442547208266}
   m_Layer: 0
   m_Name: Hand_White
   m_TagString: Untagged
@@ -155,6 +157,25 @@ MonoBehaviour:
   _littleCurl: 1
   _relaxedCurl: 0.15
   _instantPinchOnStart: 0
+--- !u!114 &2792465293115094078
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 180557533655662575}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e873b8d67a543c4c8818e64fc91df48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _handRoot: {fileID: 705561775665358165}
+  _stroke: {fileID: 6421910442547208266}
+  _writingMotion: {fileID: 3097922760986382795}
+  _writeDuration: 5
+  _maxDistance: 1
+  _resetSpeed: 5
+  _liftHeight: 0.1
 --- !u!114 &3097922760986382795
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -162,17 +183,36 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 180557533655662575}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 820f27ae200b6c444868c0c96eff473e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _handRoot: {fileID: 705561775665358165}
+  _stroke: {fileID: 6421910442547208266}
   _amplitude: {x: 0.01, y: 0.005}
   _speed: 10
   _rotationAmplitude: {x: 5, y: 2, z: 3}
   _noiseAmount: 0.002
   _noiseSpeed: 6
+--- !u!114 &6421910442547208266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 180557533655662575}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 255eeb36fb8933d4491ee155e18ea164, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _type: 0
+  _speed: 0.5
+  _scale: 0.1
+  _waveAmplitude: 0.5
+  _waveFrequency: 2
+  _loopRadius: 0.5
 --- !u!1 &914044531976162097
 GameObject:
   m_ObjectHideFlags: 0
