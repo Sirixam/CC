@@ -133,7 +133,7 @@ PrefabInstance:
     - {fileID: 1609321713557377502, guid: ad9006417494d994081c9e11b544b17e, type: 3}
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 9123122298512519571, guid: ad9006417494d994081c9e11b544b17e, type: 3}
-      insertIndex: -1
+      insertIndex: 0
       addedObject: {fileID: 4869020118414059942}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ad9006417494d994081c9e11b544b17e, type: 3}
@@ -168,7 +168,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1190683562005110306, guid: f456b3ba4145c844d9c61e1718dedba2, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 1190683562005110306, guid: f456b3ba4145c844d9c61e1718dedba2, type: 3}
       propertyPath: m_LocalPosition.z
