@@ -54,12 +54,12 @@ public class DistractionHelper
 
     public async UniTask OnDistracted(Vector3 hitDirection)
     {
-        if (IsDistracted) return; // TODO: Handle multiple simultaneous distractions.
+        if (IsDistracted) return;
 
         _cancellationTokenSource?.Cancel();
         _cancellationTokenSource = new CancellationTokenSource();
 
-        _accumulatedDistraction++; // TODO: Increased based on distraction and other factors.
+        _accumulatedDistraction++;
         Data.Level levelData = GetLevelData(out int level);
         if (levelData == null)
         {
@@ -72,32 +72,38 @@ public class DistractionHelper
         _audioHelper.OnDistracted(level);
         _distractionUI.Show(level);
 
-        await UniTask.WaitForSeconds(levelData.DistractionRotationDelay);
+        try
+        {
+            await UniTask.WaitForSeconds(levelData.DistractionRotationDelay);
 
-        Vector2 lookDirection = new Vector2(hitDirection.x, hitDirection.z).normalized;
-        if (levelData.Rotate)
-        {
-            _lookHelper.AddLookMultiplier(levelData.LookSpeedMultiplier);
-            _lookHelper.SetLookInput(lookDirection);
-        }
-        if (levelData.ShowFOV)
-        {
-            _fovController.Show();
-        }
+            Vector2 lookDirection = new Vector2(hitDirection.x, hitDirection.z).normalized;
+            if (levelData.Rotate)
+            {
+                _lookHelper.AddLookMultiplier(levelData.LookSpeedMultiplier);
+                _lookHelper.SetLookInput(lookDirection);
+            }
+            if (levelData.ShowFOV)
+            {
+                _fovController.Show();
+            }
 
-        await UniTask.WaitForSeconds(levelData.DistractionDuration - levelData.DistractionRotationDelay);
-
-        IsDistracted = false;
-        _answerController.BlockCheat();
-        _distractionUI.Hide();
-        if (levelData.ShowFOV)
-        {
-            _fovController.Hide();
+            await UniTask.WaitForSeconds(levelData.DistractionDuration - levelData.DistractionRotationDelay);
         }
-        if (levelData.Rotate)
+        finally
         {
-            _lookHelper.RemoveLookMultiplier(levelData.LookSpeedMultiplier);
-            _lookHelper.RestoreInitialLookDirection();
+            // Always runs — even if cancelled
+            IsDistracted = false;
+            _answerController.BlockCheat();
+            _distractionUI.Hide();
+            if (levelData.ShowFOV)
+            {
+                _fovController.Hide();
+            }
+            if (levelData.Rotate)
+            {
+                _lookHelper.RemoveLookMultiplier(levelData.LookSpeedMultiplier);
+                _lookHelper.RestoreInitialLookDirection();
+            }
         }
 
         await ReduceDistractionLevelOverTime(_cancellationTokenSource.Token);

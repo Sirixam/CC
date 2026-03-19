@@ -81,9 +81,10 @@ public class ChairHelper
         return dot < 0.3f; // player is NOT already on the approach side
     }
 
-    public void StartStanding()
+    public void StartStanding(Vector2 inputDirection)
     {
-        Transform standingPoint = GetBestStandingPoint(_chairController);
+
+        Transform standingPoint = GetBestStandingPoint(_chairController, inputDirection);
         IsTransitioning = true;
         IsSitting = false;
 
@@ -96,10 +97,32 @@ public class ChairHelper
     }
 
     // TODO: Check if point is blocked.
-    private Transform GetBestStandingPoint(ChairController chairController)
+    private Transform GetBestStandingPoint(ChairController chairController, Vector2 inputDirection)
     {
-        int bestIndex = Random.Range(0, chairController.StandingPoints.Length);
-        return chairController.StandingPoints[bestIndex];
+        Transform[] points = chairController.StandingPoints;
+        if (points.Length == 0) return null;
+
+        // No input — fall back to random
+        if (inputDirection.sqrMagnitude < 0.1f)
+            return points[Random.Range(0, points.Length)];
+
+        // Convert 2D input to world direction relative to chair
+        Vector3 worldDir = new Vector3(inputDirection.x, 0f, inputDirection.y).normalized;
+
+        Transform best = points[0];
+        float bestDot = -Mathf.Infinity;
+
+        foreach (var point in points)
+        {
+            Vector3 toPoint = (point.position - chairController.SittingPoint.position).normalized;
+            float dot = Vector3.Dot(worldDir, toPoint);
+            if (dot > bestDot)
+            {
+                bestDot = dot;
+                best = point;
+            }
+        }
+        return best;
     }
     public void OnArrive()
     {

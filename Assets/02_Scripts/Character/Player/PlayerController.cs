@@ -379,8 +379,9 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private void RequestStanding()
     {
+        Vector2 inputDir = _inputHandler.LastMoveInput;
         _lookHelper.ClearLookAt();
-        _chairHelper.StartStanding();
+        _chairHelper.StartStanding(inputDir);
         _interactionHelper.EnableInteraction();
         if (_answerController != null)
         {

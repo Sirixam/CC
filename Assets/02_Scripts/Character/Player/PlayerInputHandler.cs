@@ -40,6 +40,8 @@ public partial class PlayerInputHandler : MonoBehaviour
 
     public void Block() => _isBlocked = true;
     public void Unblock() => _isBlocked = false;
+    public Vector2 LastMoveInput { get; private set; }
+
     private class HoldState
     {
         private const float HOLD_THRESHOLD = 0.3f; // Time in seconds to consider "hold" instead of "tap"
@@ -221,6 +223,7 @@ public partial class PlayerInputHandler : MonoBehaviour
 
     private void OnNavigate(InputAction.CallbackContext context)
     {
+        LastMoveInput = context.ReadValue<Vector2>();
         if (context.performed)
         {
             Vector2 input = context.ReadValue<Vector2>();
