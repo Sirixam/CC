@@ -189,6 +189,7 @@ public class StudentManager : MonoBehaviour
             await UniTask.Yield(cancellationToken);
         }
     }
+
     public void RestartStimulation()
     {
         StartStimulation(_simulationCancellationSource.Token);

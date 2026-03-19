@@ -11,6 +11,7 @@ public class StudentNpcController : MonoBehaviour
     [SerializeField] private TMP_Text _stateText;
     [SerializeField] private DistractionUI _distractionUI;
     [SerializeField] private LightbulbUI _lightbulbUI;
+    [SerializeField] private StudentView _studentView;
 
     [Header("Data")]
     [SerializeField] private LookHelper.Data _lookData;
@@ -106,12 +107,14 @@ public class StudentNpcController : MonoBehaviour
         AnswerController.StartAnswering(progress: 0);
         _lightbulbUI.SetState(isOn: true);
         _lightbulbUI.HideDelayed();
+        _studentView.StartAnswering();
     }
 
     public void StartValidating()
     {
         _stateText.text = "Validating";
         AnswerController.StartValidating();
+        _studentView.StartValidating();
     }
 
     public async UniTask UpdateRemainingTimeWhileNotDistracted(CancellationToken cancellationToken)

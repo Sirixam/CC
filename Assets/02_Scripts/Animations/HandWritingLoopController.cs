@@ -137,20 +137,6 @@ namespace AKGaming.Game
             }
         }
 
-        //private void UpdateLift()
-        //{
-        //    Vector3 target = _handRoot.localPosition;
-        //    target.y = _initialPos.y + _liftHeight;
-
-        //    _handRoot.localPosition = Vector3.SmoothDamp(_handRoot.localPosition, target, ref _velocity, 0.08f);
-
-        //    if (Mathf.Abs(_handRoot.localPosition.y - target.y) < 0.001f)
-        //    {
-        //        _resetPhase = ResetPhase.Return;
-        //        _velocity = Vector3.zero;
-        //    }
-        //}
-
         private void UpdateLift()
         {
             Vector3 current = _handRoot.localPosition;
