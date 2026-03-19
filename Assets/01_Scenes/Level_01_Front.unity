@@ -1610,11 +1610,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5694824683282462777, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}
       propertyPath: _routesData.Array.data[0].Include
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5694824683282462777, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}
       propertyPath: _routesData.Array.data[1].Include
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5694824683282462777, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}
       propertyPath: _routesData.Array.data[2].Include
@@ -1982,7 +1982,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5694824683282462777, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}
       propertyPath: _routesData.Array.data[1].Waitpoints.Array.data[0].NextDelay
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5694824683282462777, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}
       propertyPath: _routesData.Array.data[1].Waitpoints.Array.data[1].NextDelay
@@ -2107,7 +2107,7 @@ PrefabInstance:
     - target: {fileID: 5694824683282462777, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}
       propertyPath: _routesData.Array.data[1].Waitpoints.Array.data[0].ArriveEvent
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 11400000, guid: 6c6410a07e4b8084c8c1739799977128, type: 2}
     - target: {fileID: 5694824683282462777, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}
       propertyPath: _routesData.Array.data[1].Waitpoints.Array.data[1].ArriveEvent
       value: 
