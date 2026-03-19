@@ -29,6 +29,7 @@ public partial class PlayerInputHandler
         private const string PLAYER_SITTING_MAP = "Player - Sitting";
         private const string PLAYER_AIMING_MAP = "Player - Aiming";
         private const string PLAYER_PEEKING_MAP = "Player - Peeking";
+        private const string PLAYER_PEEKING_NO_MOVE_MAP = "Player - Peeking_NoMove";
         //private const string MENU_MAP = "Menu";
 
         private static readonly string AIM_ACTION = EDirectionalAction.Aim.ToString(); // AimMouse use the same Action
@@ -60,6 +61,7 @@ public partial class PlayerInputHandler
             PlayerInput.actions.FindActionMap(PLAYER_SITTING_MAP).Disable();
             PlayerInput.actions.FindActionMap(PLAYER_AIMING_MAP).Disable();
             PlayerInput.actions.FindActionMap(PLAYER_PEEKING_MAP).Disable();
+            PlayerInput.actions.FindActionMap(PLAYER_PEEKING_NO_MOVE_MAP).Disable();
             //_playerInput.actions.FindActionMap(MENU_MAP).Disable();
 
             Debug.Log("Current control scheme: " + PlayerInput.currentControlScheme);
@@ -303,7 +305,14 @@ public partial class PlayerInputHandler
 
         private void SubscribePlayerPeekingActions()
         {
-            PlayerInput.actions.FindActionMap(PLAYER_PEEKING_MAP).Enable();
+            if (_data.AllowMovementWhilePeeking)
+            {
+                PlayerInput.actions.FindActionMap(PLAYER_PEEKING_MAP).Enable();
+            }
+            else
+            {
+                PlayerInput.actions.FindActionMap(PLAYER_PEEKING_NO_MOVE_MAP).Enable();
+            }
 
             var actions = PlayerInput.actions;
             if (_data.AllowMovementWhilePeeking)
@@ -330,7 +339,14 @@ public partial class PlayerInputHandler
 
         private void UnsubscribePlayerPeekingActions()
         {
-            PlayerInput.actions.FindActionMap(PLAYER_PEEKING_MAP).Disable();
+            if (_data.AllowMovementWhilePeeking)
+            {
+                PlayerInput.actions.FindActionMap(PLAYER_PEEKING_MAP).Disable();
+            }
+            else
+            {
+                PlayerInput.actions.FindActionMap(PLAYER_PEEKING_NO_MOVE_MAP).Disable();
+            }
 
             var actions = PlayerInput.actions;
             if (_data.AllowMovementWhilePeeking)
