@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
@@ -40,6 +41,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     // Runtime
     private AnswerController _answerController;
     private ChairController _initialChairController;
+    private List<InteractionController> _interactionsInsideFoV = new();
 
     private AimInput _lastAimInput;
     private bool _skipNextDirectionAction;
@@ -696,8 +698,14 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private void OnFovTriggerEnter(Collider other)
     {
-        if (_inputHandler.ScopeType != EInputScope.PlayerPeeking) return;
         if (!_interactionHelper.TryGetInteraction(other, out InteractionController interaction)) return;
+        _interactionsInsideFoV.Add(interaction);
+        TryStartPeeking(interaction);
+    }
+
+    private void TryStartPeeking(InteractionController interaction)
+    {
+        if (_inputHandler.ScopeType != EInputScope.PlayerPeeking) return;
 
         if (interaction.TryGetComponent(out AnswerController answerController) && _cheatHelper.CanStartPeeking(answerController))
         {
@@ -708,13 +716,24 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private void OnFovTriggerExit(Collider other)
     {
-        if (_inputHandler.ScopeType != EInputScope.PlayerPeeking) return;
         if (!_interactionHelper.TryGetInteraction(other, out InteractionController interaction)) return;
+        _interactionsInsideFoV.Remove(interaction);
+
+        if (_inputHandler.ScopeType != EInputScope.PlayerPeeking) return;
 
         if (interaction.TryGetComponent(out AnswerController answerController) && _cheatHelper.CanStopPeeking(answerController))
         {
             _cheatHelper.StopPeeking();
             _interactionHelper.TryStopInteraction(interaction);
+
+            if (_interactionsInsideFoV.Count > 0)
+            {
+                if (_interactionsInsideFoV.Count > 1)
+                {
+                    Debug.LogWarning("Multiple interactions are inside FOV, TODO: Choose best interaction instead of first..");
+                }
+                TryStartPeeking(_interactionsInsideFoV[0]);
+            }
         }
     }
 
