@@ -27,7 +27,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     [SerializeField] private DashHelper.Data _dashData;
     [SerializeField] private LookHelper.Data _lookData;
     [SerializeField] private PlayerAudioHelper.Data _audioData;
-    
+
     [SerializeField] private GlobalDefinition _globalDefinition;
     [Header("TO BE REMOVED")]
     [SerializeField] private bool _dropByHoldingInteract; // Once we decide on the final input scheme, this can be removed
@@ -197,7 +197,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             // GUARDRAIL: player can only carry one item
             if (IsHoldingItem())
                 return;
-            
+
             _view.OnPickUp(interaction.transform);
             _interactionHelper.StartInteraction(interaction);
             _audioHelper.OnPickUp();
@@ -596,16 +596,13 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             return;
 
         _dashHelper.UpdateCooldown();
-        /*if (_stunHelper.IsStunned)
-        {
-            _stunHelper.UpdateStun();
-            return;
-        }*/
 
         if (_stunHelper.IsStunned || _isCaught)
         {
-            if (_stunHelper.IsStunned) 
+            if (_stunHelper.IsStunned)
+            {
                 _stunHelper.UpdateStun();
+            }
             return;
         }
 
@@ -676,8 +673,8 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         if (!GameManager.Instance.GameplayActive)
             return;
 
-        // ✅ pass _isCaught so physics zeroes velocity while frozen
-        _physics.OnFixedUpdate(Time.fixedDeltaTime, canMove: !_stunHelper.IsStunned && !_isCaught, out bool stoppedDashing);
+        bool canMove = !_stunHelper.IsStunned && !_isCaught;
+        _physics.OnFixedUpdate(Time.fixedDeltaTime, canMove, out bool stoppedDashing);
         if (stoppedDashing)
         {
             _view.OnStopDash();
@@ -738,7 +735,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _inputHandler.CancelActionHold();
         _inputHandler.CancelPeekHold();
     }
-    
+
     private bool IsHoldingItem()
     {
         return _interactionHelper.TryGetPickedUpInteraction(out _);

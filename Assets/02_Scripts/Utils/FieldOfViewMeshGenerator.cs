@@ -23,8 +23,8 @@ public static class FieldOfViewMeshGenerator
         float halfFov = fieldOfView * 0.5f;
 
         // Arc centres sit at the left/right edges of the centre rectangle.
-        Vector3 leftOrigin  = new Vector3(-halfSquareWidth, 0, 0);
-        Vector3 rightOrigin = new Vector3( halfSquareWidth, 0, 0);
+        Vector3 leftOrigin = new Vector3(-halfSquareWidth, 0, 0);
+        Vector3 rightOrigin = new Vector3(halfSquareWidth, 0, 0);
 
         float radius = maxDistance;
 
@@ -53,7 +53,7 @@ public static class FieldOfViewMeshGenerator
         }
 
         // Add rear rectangle corners (close the shape — must match arc origins).
-        points.Add(new Vector3( halfSquareWidth, 0, 0));
+        points.Add(new Vector3(halfSquareWidth, 0, 0));
         points.Add(new Vector3(-halfSquareWidth, 0, 0));
 
         return points;
@@ -117,6 +117,27 @@ public static class FieldOfViewMeshGenerator
         mesh.name = "FieldOfViewMesh";
         mesh.vertices = vertices;
         mesh.triangles = triangles.ToArray();
+
+
+        Vector2[] uvs = new Vector2[vertices.Length];
+
+        Bounds bounds = new Bounds(baseShape[0], Vector3.zero);
+        for (int i = 1; i < baseShape.Count; i++)
+            bounds.Encapsulate(baseShape[i]);
+
+        // Project XZ → UV space
+        for (int i = 0; i < count; i++)
+        {
+            Vector3 p = baseShape[i];
+
+            float u = Mathf.InverseLerp(bounds.min.x, bounds.max.x, p.x);
+            float v = Mathf.InverseLerp(bounds.min.z, bounds.max.z, p.z);
+
+            uvs[i] = new Vector2(u, v);
+            uvs[i + count] = new Vector2(u, v); // same for top
+        }
+
+        mesh.uv = uvs;
 
         mesh.RecalculateNormals();
         mesh.RecalculateBounds();

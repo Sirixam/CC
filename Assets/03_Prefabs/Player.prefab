@@ -1499,7 +1499,7 @@ MonoBehaviour:
   _fieldOfViewWidth: 0.5
   _widthScale: 1
   _visualThickness: 0.01
-  _physicsThickness: 0.5
+  _physicsThickness: 1
 --- !u!33 &368862458362584757
 MeshFilter:
   m_ObjectHideFlags: 0
