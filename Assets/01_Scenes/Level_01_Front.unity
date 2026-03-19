@@ -1178,7 +1178,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 24cbb670adb57b1488484bc3daa0942d, type: 2}
   - {fileID: 11400000, guid: 935b485b7e347e4488ba37a14cc3d716, type: 2}
   _globalDefinition: {fileID: 11400000, guid: 2b0875648e78a8e45b08a646836071ca, type: 2}
-  _maxTimeInSeconds: 180
+  _maxTimeInSeconds: 300
   _eventSystem: {fileID: 366332586}
   _playerInputManager: {fileID: 1683781321}
   _audioData:

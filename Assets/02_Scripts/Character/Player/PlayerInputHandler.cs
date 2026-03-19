@@ -147,6 +147,7 @@ public partial class PlayerInputHandler : MonoBehaviour
         _mapper = new Mapper(_mapperData, this);
         _deviceManager = new DeviceManager();
         Debug.Log("Current control scheme: " + PlayerInput.currentControlScheme);
+        _isBlocked = false;
     }
 
     private void OnEnable()

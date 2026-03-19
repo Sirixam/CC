@@ -122,7 +122,7 @@ MonoBehaviour:
   - {fileID: 3372036648344291618}
   _lookAtPoint: {fileID: 84607046470278236}
   _globalDefinition: {fileID: 11400000, guid: 2b0875648e78a8e45b08a646836071ca, type: 2}
-  _approachPoint: {fileID: 0}
+  _approachPoints: []
 --- !u!114 &5794938467827128188
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -919,6 +919,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: chair_MSA
       objectReference: {fileID: 0}
+    - target: {fileID: 2283380928237936185, guid: a8439cddb34f7024bb1e0e5dffdffa51, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 13400000, guid: 867dde34d442dd34d8c71b43fabe256e, type: 2}
+    - target: {fileID: 5774500387026163696, guid: a8439cddb34f7024bb1e0e5dffdffa51, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 13400000, guid: 867dde34d442dd34d8c71b43fabe256e, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

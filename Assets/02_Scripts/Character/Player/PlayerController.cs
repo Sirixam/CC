@@ -347,7 +347,8 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
         if (_initialChairController.IsBlocked)
         {
-            Debug.LogError("Initial chair controller is blocked");
+            _initialChairController.Unblock();
+            Debug.LogError("Initial chair controller was blocked");
             return;
         }
 
@@ -599,6 +600,14 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             {
                 interactionOwner.OnDropped();
             }
+
+            // Small random nudge so the ball doesn't bounce in place
+            Vector3 nudge = new Vector3(
+                UnityEngine.Random.Range(-1f, 1f),
+                0f,
+                UnityEngine.Random.Range(-1f, 1f)
+            );
+            stoppedInteraction.Rigidbody.AddForce(nudge, ForceMode.VelocityChange);
         }
     }
 

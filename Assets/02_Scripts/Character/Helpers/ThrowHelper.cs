@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-
 public interface IThrowActor : IActor
 {
     Vector3 LookDirection { get; }
@@ -49,6 +48,8 @@ public class ThrowHelper
 
             Vector3 throwDirection = _actor.LookDirection;
             throwDirection.y = Mathf.Tan(_data.PitchAngle * Mathf.Deg2Rad);
+            throwDirection.Normalize();
+
             stoppedInteraction.Rigidbody.AddForce(throwDirection * _data.Speed, ForceMode.VelocityChange);
 
             CollisionComponent collisionComponent = stoppedInteraction.GetComponentInChildren<CollisionComponent>();
