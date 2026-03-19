@@ -8,6 +8,8 @@ public class ChairController : MonoBehaviour
     [SerializeField] private Transform[] _standingPoints;
     [SerializeField] private Transform _lookAtPoint;
     [SerializeField] private GlobalDefinition _globalDefinition;
+    [SerializeField] private Transform[] _approachPoints;
+    public Transform[] ApproachPoints => _approachPoints;
 
     public AnswerController AnswerController { get; private set; }
     public Transform SittingPoint => _sittingPoint;

@@ -265,7 +265,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _triggers:
-  - {fileID: 0}
+  - {fileID: 5264359567647864891}
   _rigidbody: {fileID: 8630432724720451707}
   _data:
     Type: 2
@@ -872,7 +872,7 @@ MonoBehaviour:
   - Environment
   - Player
   _colliders:
-  - {fileID: 0}
+  - {fileID: 5264359567647864891}
 --- !u!54 &8630432724720451707
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1086,6 +1086,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bfab905240348ae4c85a5d625b3b4c49, type: 3}
+--- !u!65 &5264359567647864891 stripped
+BoxCollider:
+  m_CorrespondingSourceObject: {fileID: 7947367143266621746, guid: bfab905240348ae4c85a5d625b3b4c49, type: 3}
+  m_PrefabInstance: {fileID: 2829522177694425353}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &9020866829115119326 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6518105023360153559, guid: bfab905240348ae4c85a5d625b3b4c49, type: 3}

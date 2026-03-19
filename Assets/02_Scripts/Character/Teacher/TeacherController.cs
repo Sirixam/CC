@@ -61,7 +61,8 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
 
     private void Start()
     {
-        GoToSeat();
+        _state = EState.Sit;
+        _remainingTime = 1f; // 1 second before standing
     }
 
     private void Update()
@@ -112,6 +113,7 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
         _state = EState.Sit;
         _fieldOfViewController.Hide();
         _remainingTime = UnityEngine.Random.Range(_timeToStandRange.x, _timeToStandRange.y);
+        transform.rotation = Quaternion.LookRotation(Vector3.forward);
     }
 
     private void Stand()
@@ -161,16 +163,14 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
         transform.rotation = _initialRotation;
 
         // Reset state machine
-        _state = EState.GoToSeat;
+        _state = EState.Sit;
         _goToSeatOnArrive = false;
 
         // Reset timers
-        _remainingTime = 0f;
+        _remainingTime = 1f;
 
         // Reset vision
         _fieldOfViewController.HideInstant();
 
-        // Restart navigation cleanly
-        GoToSeat();
     }
 }

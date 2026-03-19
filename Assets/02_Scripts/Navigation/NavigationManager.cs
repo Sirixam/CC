@@ -27,7 +27,8 @@ public class NavigationManager : MonoBehaviour
         public bool Include;
         public ERoute Type;
         public WaypointData[] Waitpoints;
-        public bool ShowOnGizmos;
+        public string RouteName;
+        public bool ShowOnGizmos; 
     }
 
     [Serializable]

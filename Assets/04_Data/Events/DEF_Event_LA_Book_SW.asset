@@ -10,14 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f176bf1e04c72d04e9d2ecb8212a0f5e, type: 3}
-  m_Name: DEF_Event_LookAround_360_R1_W63
+  m_Name: DEF_Event_LA_Book_SW
   m_EditorClassIdentifier: 
   _type: 1
   _lookAroundData:
-    Angles:
-    - 40
-    - -20
-    - -150
-    - -200
-    IntervalDelayThreshold: {x: 0.2, y: 0.2}
-    RotateDuration: 0.7
+    Steps:
+    - Angle: 100
+      Direction: 1
+      RotateDuration: 0.8
+      HoldDuration: 0.2
+    - Angle: 80
+      Direction: 1
+      RotateDuration: 0.8
+      HoldDuration: 0.2
+    - Angle: 100
+      Direction: 1
+      RotateDuration: 0.5
+      HoldDuration: 0
+    ReturnToOriginalRotation: 0
+    ReturnRotateDuration: 0

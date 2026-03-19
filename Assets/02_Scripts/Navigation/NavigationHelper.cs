@@ -60,7 +60,7 @@ public class NavigationHelper
             _remainingWaitTime -= Time.deltaTime;
             if (_remainingWaitTime <= 0)
             {
-                MoveToCurrentWaypoint();
+                AdvanceOrFinish();
             }
         }
     }
@@ -119,17 +119,23 @@ public class NavigationHelper
             waypoint.ArriveEvent.Execute(_actor);
         }
 
+        float nextDelay = waypoint.NextDelay;
+        if (nextDelay > 0)
+        {
+            _state = EState.WaitingDelay;
+            _remainingWaitTime = nextDelay;
+            return;
+        }
+
+        AdvanceOrFinish();
+
+    }
+
+    private void AdvanceOrFinish()
+    {
         if (HasNextWaypoint())
         {
             _currentWaypointIndex++;
-            float nextDelay = waypoint.NextDelay;
-            if (nextDelay > 0)
-            {
-                _state = EState.WaitingDelay;
-                _remainingWaitTime = nextDelay;
-                return;
-            }
-
             MoveToCurrentWaypoint();
         }
         else

@@ -17,6 +17,8 @@ public class PlayerPhysics
     private Vector3 _inputDirection;
     private Vector3 _moveDirection;
     private Transform _targetPoint;
+    public Vector3 Position => _rigidbody.position;
+
     // Dash
     public bool IsDashing { get; private set; }
     private float _dashTimer;

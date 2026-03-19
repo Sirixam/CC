@@ -13,6 +13,8 @@ public class ChairHelper
     private ChairController _chairController;
     private IChairView _actorView;
     private PlayerPhysics _actorPhysics;
+    private enum ESitPhase { None, Approaching, Sitting }
+    private ESitPhase _sitPhase;
 
     public bool IsTransitioning { get; private set; }
     public bool IsSitting { get; private set; }
@@ -50,12 +52,33 @@ public class ChairHelper
         _chairController = chairController;
         IsTransitioning = true;
         IsSitting = true;
+        _chairController.Block();
+
         _actorPhysics.OnArriveEvent -= OnArrive;
         _actorPhysics.OnArriveEvent += OnArrive;
-
-        _chairController.Block();
-        _actorPhysics.SetTargetPoint(chairController.SittingPoint);
         _inputHandler.SetScope(EInputScope.PlayerSitting);
+
+        if (chairController.ApproachPoints != null && chairController.ApproachPoints.Length > 0)
+        {
+            Transform approachPoint = GetBestApproachPoint(chairController);
+            if (NeedsApproach(chairController, approachPoint))
+            {
+                _sitPhase = ESitPhase.Approaching;
+                _actorPhysics.SetTargetPoint(approachPoint);
+            }
+            else
+            {
+                _sitPhase = ESitPhase.Sitting;
+                _actorPhysics.SetTargetPoint(chairController.SittingPoint);
+            }
+        }
+    }
+
+    private bool NeedsApproach(ChairController chairController, Transform approachPoint)
+    {
+        Vector3 toPlayer = (_actorPhysics.Position - chairController.SittingPoint.position).normalized;
+        float dot = Vector3.Dot(approachPoint.forward, toPlayer);
+        return dot < 0.3f; // player is NOT already on the approach side
     }
 
     public void StartStanding()
@@ -78,16 +101,45 @@ public class ChairHelper
         int bestIndex = Random.Range(0, chairController.StandingPoints.Length);
         return chairController.StandingPoints[bestIndex];
     }
-
     public void OnArrive()
     {
+        if (_sitPhase == ESitPhase.Approaching)
+        {
+            _sitPhase = ESitPhase.Sitting;
+            _actorPhysics.SetTargetPoint(_chairController.SittingPoint);
+            return; // don't unsubscribe yet, wait for second arrival
+        }
+
         if (IsSitting)
         {
             _actorView.OnSitting();
         }
+
+        _sitPhase = ESitPhase.None;
         _actorPhysics.OnArriveEvent -= OnArrive;
         IsTransitioning = false;
-        _actorPhysics.SetTargetPoint(null); // Clear
+        _actorPhysics.SetTargetPoint(null);
+    }
+
+    private Transform GetBestApproachPoint(ChairController chairController)
+    {
+        Transform[] points = chairController.ApproachPoints;
+        if (points == null || points.Length == 0) return null;
+
+        Transform best = null;
+        float bestSqrDist = float.MaxValue;
+        Vector3 playerPos = _actorPhysics.Position;
+
+        foreach (var point in points)
+        {
+            float sqrDist = (point.position - playerPos).sqrMagnitude;
+            if (sqrDist < bestSqrDist)
+            {
+                bestSqrDist = sqrDist;
+                best = point;
+            }
+        }
+        return best;
     }
 }
 

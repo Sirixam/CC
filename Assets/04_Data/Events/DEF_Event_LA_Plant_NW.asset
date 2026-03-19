@@ -10,14 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f176bf1e04c72d04e9d2ecb8212a0f5e, type: 3}
-  m_Name: DEF_Event_LookAround_360fluid_B
+  m_Name: DEF_Event_LA_Plant_NW
   m_EditorClassIdentifier: 
   _type: 1
   _lookAroundData:
-    Angles:
-    - 90
-    - 180
-    - 270
-    - 300
-    IntervalDelayThreshold: {x: 0, y: 0}
-    RotateDuration: 0.5
+    Steps:
+    - Angle: 45
+      Direction: 1
+      RotateDuration: 0.5
+      HoldDuration: 0
+    - Angle: 90
+      Direction: 0
+      RotateDuration: 1
+      HoldDuration: 0
+    ReturnToOriginalRotation: 0
+    ReturnRotateDuration: 0
