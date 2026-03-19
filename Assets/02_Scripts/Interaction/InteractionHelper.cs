@@ -140,23 +140,13 @@ public class InteractionHelper
         if (_actor is UnityEngine.Object actorObject && actorObject == null) return;
 
         bool isCarrying = _activeInteractions.Exists(x => x.Type == EInteraction.PickUp);
-
-        InteractionController bestInteraction = null;
-        float bestScore = float.MinValue;
-
-        foreach (InteractionController interaction in _interactions)
+        InteractionController bestInteraction = ComputeBestInteraction(_activeInteractions, isValid: interaction =>
         {
-            if (!interaction.IsEnabled) continue;
-            if (isCarrying && interaction.Type == EInteraction.PickUp) continue;
-            if (!interaction.CanInteract(_actor.ID)) continue;
-
-            float score = ComputeScore(interaction, isCarrying);
-            if (score > bestScore)
-            {
-                bestScore = score;
-                bestInteraction = score > 0 ? interaction : null;
-            }
-        }
+            return !isCarrying || interaction.Type != EInteraction.PickUp;
+        }, computeScore: interaction =>
+        {
+            return ComputeScore(interaction, computeContextScore: x => isCarrying ? x.CarryingExtraScore : x.EmptyHandsExtraScore);
+        });
 
         // Step 4: Apply
         if (BestInteraction != bestInteraction)
@@ -167,7 +157,36 @@ public class InteractionHelper
         }
     }
 
-    private float ComputeScore(InteractionController interaction, bool isCarrying)
+    public InteractionController ComputeBestInteractionForFOV(List<InteractionController> candidates)
+    {
+        return ComputeBestInteraction(candidates, isValid: x => true, x => ComputeScore(x, computeContextScore: null));
+    }
+
+    private InteractionController ComputeBestInteraction(List<InteractionController> candidates, Predicate<InteractionController> isValid, Func<InteractionController, float> computeScore)
+    {
+        if (_actor is UnityEngine.Object actorObject && actorObject == null) return null;
+
+        InteractionController best = null;
+        float bestScore = float.MinValue;
+
+        foreach (InteractionController interaction in candidates)
+        {
+            if (!interaction.IsEnabled) continue;
+            if (!isValid(interaction)) continue;
+            if (!interaction.CanInteract(_actor.ID)) continue;
+
+            float score = computeScore(interaction);
+            if (score > bestScore)
+            {
+                bestScore = score;
+                best = score > 0 ? interaction : null;
+            }
+        }
+
+        return best;
+    }
+
+    private float ComputeScore(InteractionController interaction, Func<InteractionController, float> computeContextScore)
     {
         // --- Distance factor ---
         float distance = Vector3.Distance(_actor.Position, interaction.Position);
@@ -179,9 +198,10 @@ public class InteractionHelper
         float facingScore = _data.InterpolateFacingScore ? ComputeFacingFactorInterpolated(absoluteYaw) : ComputeFacingFactor(absoluteYaw);
 
         // --- Context factor ---
-        float contextScore = isCarrying ? interaction.CarryingExtraScore : interaction.EmptyHandsExtraScore;
+        if (computeContextScore == null) computeContextScore = x => 0;
+        float contextScore = computeContextScore(interaction);
 
-        float score = interaction.BaseScore + distanceScore + facingScore + contextScore;
+        float score = interaction.BaseScore + distanceScore + facingScore;
         Logger.Log(_data.ScoreLogType, $"Score: {score}, interaction: {interaction.name}, yawToTarget: {yawToTarget}, baseScore: {interaction.BaseScore}, distanceScore: {distanceScore}, facingScore: {facingScore}, contextScore: {contextScore}");
         return score;
     }
