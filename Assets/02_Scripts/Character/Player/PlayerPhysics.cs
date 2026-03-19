@@ -183,4 +183,13 @@ public class PlayerPhysics
     {
         _rigidbody.AddForce(force, ForceMode.Impulse);
     }
+    public void ForceStopDash()
+    {
+        if (IsDashing)
+        {
+            IsDashing = false;
+            _dashTimer = 0;
+            _rigidbody.velocity = Vector3.zero;
+        }
+    }
 }

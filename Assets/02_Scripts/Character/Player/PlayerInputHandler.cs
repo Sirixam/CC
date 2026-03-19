@@ -36,6 +36,10 @@ public enum EDevice
 /// </summary>
 public partial class PlayerInputHandler : MonoBehaviour
 {
+    private bool _isBlocked;
+
+    public void Block() => _isBlocked = true;
+    public void Unblock() => _isBlocked = false;
     private class HoldState
     {
         private const float HOLD_THRESHOLD = 0.3f; // Time in seconds to consider "hold" instead of "tap"
@@ -338,9 +342,11 @@ public partial class PlayerInputHandler : MonoBehaviour
 
     private void RequestAction(EAction actionType)
     {
+        if (_isBlocked) return;
+
         ActionEvent?.Invoke(actionType);
 #if LOG_ACTIONS
-        Debug.Log($"{actionType} requested");
+    Debug.Log($"{actionType} requested");
 #endif
     }
 }

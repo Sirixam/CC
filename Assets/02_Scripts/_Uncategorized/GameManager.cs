@@ -410,9 +410,6 @@ public class GameManager : MonoBehaviour
             playerInput.ActivateInput();
             playerInput.GetComponent<PlayerController>()?.ResetInputState();
         }
-
-        // Flush any buffered input actions from while input was deactivated
-        UnityEngine.InputSystem.InputSystem.Update();
     }
 
     private void ShowEndMenu(GameObject menu)

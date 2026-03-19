@@ -1,5 +1,4 @@
 using System;
-using UnityEngine.InputSystem;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -41,8 +40,6 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     [Tooltip("If TRUE penalty will apply while peek mode is active, if FALSE it will apply only while peeking a student.")]
     [SerializeField] private bool _applyMovePenaltyOnPeekMode;
     private bool _isCaught;
-    private int _inputGuardFrames;
-
     public bool IsCaught => _isCaught;
 
     //exposing variables to GM
@@ -606,12 +603,6 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private void Update()
     {
-        if (_inputGuardFrames > 0)
-        {
-            _inputGuardFrames--;
-            ResetInputState();
-            return;
-        }
         
         if (!GameManager.Instance.GameplayActive)
             return;
@@ -785,9 +776,14 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     {
         if (_isCaught) return;
         _isCaught = true;
+        _inputHandler.Block();
         _inputHandler.PlayerInput.DeactivateInput();
         ResetInputState();
         ForceClearInteractionState();
+        _physics.ForceStopDash();
+        _view.OnStopDash();
+        _physics.SetInputDirection(Vector3.zero);
+        _physics.SetMoveDirection(Vector3.zero);
 
         _view.OnCaught(transform.position, onComplete: () =>
         {
@@ -795,7 +791,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             _inputHandler.PlayerInput.ActivateInput();
             ResetInputState();
             TeleportToInitialChair();
-            SetInputGuard(2); // ignore input for 2 frames
+            StartCoroutine(DelayedUnblock());
             onAfterTeleport?.Invoke();
         });
     }
@@ -818,9 +814,10 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         ForceStopStun();
     }
 
-    //add a cooldown guard to remove dash input after being caught
-    public void SetInputGuard(int frames = 2)
+    private System.Collections.IEnumerator DelayedUnblock()
     {
-        _inputGuardFrames = frames;
+        yield return null; // wait 1 frame
+        yield return null; // wait another frame
+        _inputHandler.Unblock();
     }
 }
