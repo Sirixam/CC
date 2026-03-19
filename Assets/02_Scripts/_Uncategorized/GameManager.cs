@@ -191,6 +191,7 @@ public class GameManager : MonoBehaviour
         foreach (var player in _players)
         {
             player.gameObject.SetActive(true);
+            player.InputHandler.Unblock();
             player.ResetPlayerState();
             player.View.ResetVisuals();
             player.TeleportToInitialChair();
@@ -313,9 +314,11 @@ public class GameManager : MonoBehaviour
         
         foreach (var player in _players)
         {
+            player.InputHandler.Block();
             player.InputHandler.PlayerInput.DeactivateInput();
             player.ResetInputState();
             player.ForceClearInteractionState();
+            player.ForceStopDash();
 
             if (_playerFlashEffects.TryGetValue(player, out var flash))
                 flash.Flash();
@@ -408,7 +411,6 @@ public class GameManager : MonoBehaviour
                 continue;
 
             playerInput.ActivateInput();
-            playerInput.GetComponent<PlayerController>()?.ResetInputState();
         }
     }
 

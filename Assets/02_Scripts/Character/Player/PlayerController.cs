@@ -820,4 +820,9 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         yield return null; // wait another frame
         _inputHandler.Unblock();
     }
+    public void ForceStopDash()
+    {
+        _physics.ForceStopDash();
+        _view.OnStopDash();
+    }
 }
