@@ -37,6 +37,8 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
     
     private Vector3 _initialPosition;
     private Quaternion _initialRotation;
+    private float _detectionCooldown;
+
 
     private void Awake()
     {
@@ -68,6 +70,9 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
     private void Update()
     {
         _navigationHelper.Update();
+
+        if (_detectionCooldown > 0)
+            _detectionCooldown -= Time.deltaTime;
 
         _remainingTime -= Time.deltaTime;
         if (_remainingTime <= 0)
@@ -123,21 +128,23 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
             _navMeshAgent.updateRotation = true;
             _navMeshAgent.isStopped = false;
         }
-        
+
         _fieldOfViewController.Show();
         _remainingTime = UnityEngine.Random.Range(_timeToSitRange.x, _timeToSitRange.y);
     }
 
     private void OnDetectionTriggerEnter(Collider other)
     {
+        if (_detectionCooldown > 0) return;
+
         if (other.CompareTag(_globalDefinition.PlayerTag))
         {
             PlayerController playerController = other.GetComponentInParent<PlayerController>();
 
-            // Audio won't play if player is sitting.
             if (playerController != null && playerController.IsSitting)
                 return;
 
+            _detectionCooldown = 1f; // ignore further detections for 1 second
             OnPlayerDetected?.Invoke(playerController);
             _audioHelper.OnGettingCaught();
         }
@@ -154,12 +161,13 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
             }
         }
     }
-    
+
     public void ResetTeacher()
     {
         StopAllCoroutines();
 
         _navigationHelper.Reset();
+        _detectionCooldown = 0f;
 
         // Stop movement immediately
         if (_navMeshAgent != null)
