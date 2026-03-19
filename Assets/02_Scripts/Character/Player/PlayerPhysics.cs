@@ -17,6 +17,7 @@ public class PlayerPhysics
     private Vector3 _inputDirection;
     private Vector3 _moveDirection;
     private Transform _targetPoint;
+    private float _moveSpeedMultiplier = 1f;
     public Vector3 Position => _rigidbody.position;
 
     // Dash
@@ -103,7 +104,7 @@ public class PlayerPhysics
         }
         else
         {
-            velocity = _moveDirection * _moveSpeed;
+            velocity = _moveDirection * _moveSpeed * _moveSpeedMultiplier;
         }
 
         // Handle sliding
@@ -171,6 +172,11 @@ public class PlayerPhysics
 
         float angle = Mathf.Acos(alignment) * Mathf.Rad2Deg;
         return angle <= _frontalCollisionAngle;
+    }
+
+    public void SetMoveSpeedMultiplier(float value)
+    {
+        _moveSpeedMultiplier = value;
     }
 
     public void ApplyImpulse(Vector3 force)

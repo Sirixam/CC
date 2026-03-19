@@ -716,10 +716,12 @@ MonoBehaviour:
     CheatingAudio: {fileID: 11400000, guid: 763f6b57428e08f4092e9372027d251d, type: 2}
     StunnedAudio: {fileID: 11400000, guid: aac6e454b1f8925418af7951309d392f, type: 2}
   _globalDefinition: {fileID: 11400000, guid: 2b0875648e78a8e45b08a646836071ca, type: 2}
+  _peekMoveSpeedMultiplier: 0.5
   _dropByHoldingInteract: 0
   _toggleToPeek: 1
   _stopPeekOnDash: 1
   _stopPeekOnTeleport: 1
+  _applyMovePenaltyOnPeekMode: 1
 --- !u!114 &1863892939415744151
 MonoBehaviour:
   m_ObjectHideFlags: 0

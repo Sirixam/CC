@@ -30,11 +30,15 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     [SerializeField] private PlayerAudioHelper.Data _audioData;
 
     [SerializeField] private GlobalDefinition _globalDefinition;
+    [Header("Peek")]
+    [SerializeField] private float _peekMoveSpeedMultiplier = 0.5f;
     [Header("TO BE REMOVED")]
     [SerializeField] private bool _dropByHoldingInteract; // Once we decide on the final input scheme, this can be removed
     [SerializeField] private bool _toggleToPeek;
     [SerializeField] private bool _stopPeekOnDash;
     [SerializeField] private bool _stopPeekOnTeleport;
+    [Tooltip("If TRUE penalty will apply while peek mode is active, if FALSE it will apply only while peeking a student.")]
+    [SerializeField] private bool _applyMovePenaltyOnPeekMode;
     private bool _isCaught;
 
 
@@ -644,6 +648,10 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
                 }
             }
         }
+
+        bool applyPeekMoveSpeedMultiplier = _applyMovePenaltyOnPeekMode ? IsPeeking : _cheatHelper.IsPeeking;
+        _physics.SetMoveSpeedMultiplier(applyPeekMoveSpeedMultiplier ? _peekMoveSpeedMultiplier : 1f);
+
         if (IsPeeking)
         {
             UpdateFovPeeking();
