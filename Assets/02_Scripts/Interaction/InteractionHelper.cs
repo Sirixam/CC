@@ -140,7 +140,7 @@ public class InteractionHelper
         if (_actor is UnityEngine.Object actorObject && actorObject == null) return;
 
         bool isCarrying = _activeInteractions.Exists(x => x.Type == EInteraction.PickUp);
-        InteractionController bestInteraction = ComputeBestInteraction(_activeInteractions, isValid: interaction =>
+        InteractionController bestInteraction = ComputeBestInteraction(_interactions, isValid: interaction =>
         {
             return !isCarrying || interaction.Type != EInteraction.PickUp;
         }, computeScore: interaction =>
@@ -201,7 +201,7 @@ public class InteractionHelper
         if (computeContextScore == null) computeContextScore = x => 0;
         float contextScore = computeContextScore(interaction);
 
-        float score = interaction.BaseScore + distanceScore + facingScore;
+        float score = interaction.BaseScore + distanceScore + facingScore + contextScore;
         Logger.Log(_data.ScoreLogType, $"Score: {score}, interaction: {interaction.name}, yawToTarget: {yawToTarget}, baseScore: {interaction.BaseScore}, distanceScore: {distanceScore}, facingScore: {facingScore}, contextScore: {contextScore}");
         return score;
     }
