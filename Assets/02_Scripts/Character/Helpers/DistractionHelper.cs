@@ -17,6 +17,7 @@ public class DistractionHelper
             public float LookSpeedMultiplier;
             public bool Rotate;
             public bool ShowFOV;
+            public float FOVGrowDuration; // 0 = instant, > 0 = gradual
         }
 
         public float DistractionReductionDelay;
@@ -72,6 +73,15 @@ public class DistractionHelper
         _audioHelper.OnDistracted(level);
         _distractionUI.Show(level);
 
+        // Start FOV immediately
+        if (levelData.ShowFOV)
+        {
+            if (levelData.FOVGrowDuration > 0)
+                _fovController.ShowGradual(levelData.FOVGrowDuration);
+            else
+                _fovController.Show();
+        }
+
         try
         {
             await UniTask.WaitForSeconds(levelData.DistractionRotationDelay);
@@ -81,10 +91,6 @@ public class DistractionHelper
             {
                 _lookHelper.AddLookMultiplier(levelData.LookSpeedMultiplier);
                 _lookHelper.SetLookInput(lookDirection);
-            }
-            if (levelData.ShowFOV)
-            {
-                _fovController.Show();
             }
 
             await UniTask.WaitForSeconds(levelData.DistractionDuration - levelData.DistractionRotationDelay);

@@ -738,6 +738,8 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private void UpdateFovPeeking()
     {
+        _interactionsInsideFoV.RemoveAll(x => x == null);
+
         InteractionController bestFov = _interactionHelper.ComputeBestInteractionForFOV(_interactionsInsideFoV);
 
         _interactionHelper.TryGetStaticInteraction(out InteractionController currentPeek);
@@ -768,15 +770,14 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _physics.SetMoveDirection(Vector3.zero);
         _lookHelper.SetLookInput(Vector2.zero);
     }
-
     public void ForceClearInteractionState()
     {
         _answerController = null;
         _interactionHelper?.DisableInteraction();
         _inputHandler.CancelActionHold();
         _inputHandler.CancelPeekHold();
+        _interactionsInsideFoV.Clear();
     }
-
     private bool IsHoldingItem()
     {
         return _interactionHelper.TryGetPickedUpInteraction(out _);
@@ -834,5 +835,10 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     {
         _physics.ForceStopDash();
         _view.OnStopDash();
+    }
+    public void SetAnsweringDuration(float duration)
+    {
+        if (_answerController != null)
+            _answerController.SetDurations(0, duration, 0);
     }
 }

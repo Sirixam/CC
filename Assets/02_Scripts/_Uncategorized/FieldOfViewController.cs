@@ -16,9 +16,16 @@ public class FieldOfViewController : MonoBehaviour
     [SerializeField] private float _visualThickness = 0.01f;
     [SerializeField] private float _physicsThickness = 0.1f;
 
+    [Header("Gradual Show")]
+    [SerializeField] private Color _safeColor = Color.yellow;
+    [SerializeField] private Color _dangerColor = Color.red;
+    [SerializeField] private string _colorProperty = "_BaseColor";
+
     private Tween _scaleTween;
     private Vector3 _meshColliderOriginalPosition;
     private bool _isOriginalPositionInitialized;
+    private Tween _gradualTween;
+    private Material _materialInstance;
 
     private void Awake()
     {
@@ -48,6 +55,8 @@ public class FieldOfViewController : MonoBehaviour
             _isOriginalPositionInitialized = true;
             _meshColliderOriginalPosition = _meshCollider.transform.localPosition;
         }
+        _scaleTween.Stop();
+        _gradualTween.Stop();
         _meshRenderer.transform.localScale = _hideTweenSettings.endValue;
         OnHidden();
     }
@@ -55,6 +64,7 @@ public class FieldOfViewController : MonoBehaviour
     public void Hide()
     {
         _scaleTween.Stop();
+        _gradualTween.Stop();
         _scaleTween = Tween.Scale(_meshRenderer.transform, _hideTweenSettings).OnComplete(OnHidden);
     }
 
@@ -115,5 +125,40 @@ public class FieldOfViewController : MonoBehaviour
             return new Mesh[] { leftMesh, centerMesh, rightMesh };
         }
         return new Mesh[] { leftMesh, rightMesh };
+    }
+
+    public void ShowGradual(float duration)
+    {
+        _meshRenderer.enabled = true;
+        _meshCollider.transform.localPosition = _meshColliderOriginalPosition;
+
+        // Create instance to avoid modifying shared material
+        if (_materialInstance == null)
+        {
+            _materialInstance = new Material(_meshRenderer.material);
+            _meshRenderer.material = _materialInstance;
+        }
+
+        _materialInstance.SetColor(_colorProperty, _safeColor);
+
+        _scaleTween.Stop();
+        _gradualTween.Stop();
+
+        // Start from zero scale
+        _meshRenderer.transform.localScale = Vector3.zero;
+
+        // Grow to full size over duration
+        _scaleTween = Tween.Scale(
+            _meshRenderer.transform,
+            _showTweenSettings.endValue,
+            duration,
+            Ease.Linear
+        ).OnUpdate(_meshRenderer.transform, (target, tween) =>
+        {
+            // Calculate progress (0 to 1)
+            float progress = target.localScale.x / _showTweenSettings.endValue.x;
+            Color currentColor = Color.Lerp(_safeColor, _dangerColor, progress);
+            _materialInstance.SetColor(_colorProperty, currentColor);
+        });
     }
 }

@@ -149,6 +149,12 @@ public class GameManager : MonoBehaviour
         _gameCancellationSource = new CancellationTokenSource();
         StartTimer();
         StartRoundTimer();
+
+        foreach (var player in _players)
+        {
+            float answeringDuration = ((_globalDefinition.AnsweringDuration.x + _globalDefinition.AnsweringDuration.y) / 2f);
+            player.SetAnsweringDuration(answeringDuration);
+        }
         _studentManager.StartStimulation(_gameCancellationSource.Token);
 
         EnableGameplayInput();
@@ -186,6 +192,10 @@ public class GameManager : MonoBehaviour
         if (_timesUpFeedback != null)
         {
             _timesUpFeedback.SetActive(false);
+        }
+        if (_studentManager != null)
+        {
+            _studentManager.ResetForNewGame();
         }
 
         foreach (var player in _players)
