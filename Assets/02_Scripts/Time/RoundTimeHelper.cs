@@ -36,7 +36,7 @@ public class RoundTimeHelper
 
     // NEW: whether the timer should loop indefinitely
     public bool IsLooping { get; set; } = false;
-
+    private int _timerGeneration;
 
 
     public RoundTimeHelper(RoundTimeUI roundTimeUI)
@@ -78,16 +78,15 @@ public class RoundTimeHelper
 
     public async UniTask StartTimer(CancellationToken cancellationToken)
     {
-        //Debug.Log("Is Running? " + IsRunning);
-        if (IsRunning) return;
-       
+        int generation = ++_timerGeneration;
+
         if (_roundTimeUI != null)
         {
             _roundTimeUI.gameObject.SetActive(true);
         }
 
         IsRunning = true;
-        while (IsRunning && !cancellationToken.IsCancellationRequested)
+        while (IsRunning && !cancellationToken.IsCancellationRequested && generation == _timerGeneration)
         {
             await UniTask.Yield();
             if (_isPaused) continue;
@@ -95,16 +94,14 @@ public class RoundTimeHelper
             _roundRemainingTime = Mathf.Max(0, _roundRemainingTime - Time.deltaTime);
             _roundTimeUI.SetRoundRemainingTime(_roundRemainingTime);
 
-            //check if we've crossed the next phase threshold
             if (_currentPhaseIndex < _phaseThresholds.Count &&
                 _roundRemainingTime <= _phaseThresholds[_currentPhaseIndex])
             {
                 OnPhaseChanged?.Invoke(_currentPhaseIndex);
-                _lastBeepSecond = -1; // reset beep tracker for new phase
+                _lastBeepSecond = -1;
                 _currentPhaseIndex++;
             }
 
-            // NEW: check countdown beeps
             CheckCountdownBeep();
 
             if (_roundRemainingTime <= 0)
@@ -122,7 +119,12 @@ public class RoundTimeHelper
                 }
             }
         }
-        IsRunning = false;
+
+        // Only clear IsRunning if this is still the active generation
+        if (generation == _timerGeneration)
+        {
+            IsRunning = false;
+        }
     }
 
     // calculates how many seconds remain in the CURRENT phase

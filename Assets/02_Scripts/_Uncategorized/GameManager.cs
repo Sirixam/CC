@@ -213,6 +213,10 @@ public class GameManager : MonoBehaviour
     private void StartTimer()
     {
         _timeHelper.Setup(_maxTimeInSeconds);
+
+        if (_timeUI != null)
+            _timeUI.gameObject.SetActive(true);
+
         _timeHelper.StartTimer(_gameCancellationSource.Token).Forget();
     }
 
@@ -222,6 +226,10 @@ public class GameManager : MonoBehaviour
         _roundCancellationSource = new CancellationTokenSource();
         _roundTimeHelper.IsLooping = true; // 👈 ensure this is set
         _roundTimeHelper.Setup(_globalDefinition);
+
+        if (_roundTimeUI != null)
+            _roundTimeUI.gameObject.SetActive(true);
+
         _roundTimeHelper.StartTimer(_roundCancellationSource.Token).Forget();
     }
 
