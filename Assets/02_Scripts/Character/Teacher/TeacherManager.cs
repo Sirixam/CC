@@ -53,4 +53,12 @@ public class TeacherManager : MonoBehaviour
             _teachers[i].ResetTeacher();
         }
     }
+
+    public void StartPatrolling()
+    {
+        for (int i = 0; i < _teachers.Length; i++)
+        {
+            _teachers[i].StartPatrolling();
+        }
+    }
 }

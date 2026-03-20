@@ -12,6 +12,8 @@ public class GameAudioHelper
         public AudioDefinition PhaseChangeCheat;
         public AudioDefinition BeepFinal;
         public AudioDefinition BeepNotFinal;
+        public AudioClip BackgroundMusic;
+        [Range(0f, 1f)] public float MusicVolume = 0.5f;
     }
 
     private Data _data;
@@ -49,6 +51,17 @@ public class GameAudioHelper
     public void BeepNotFinal()
     {
         _data.BeepNotFinal.Play();
+    }
+
+    public void PlayMusic()
+    {
+        if (_data.BackgroundMusic != null)
+            AudioManager.Instance.PlayMusic(_data.BackgroundMusic, _data.MusicVolume);
+    }
+
+    public void StopMusic()
+    {
+        AudioManager.Instance.StopMusic();
     }
 
 }

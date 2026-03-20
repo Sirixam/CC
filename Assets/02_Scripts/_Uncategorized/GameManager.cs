@@ -33,6 +33,7 @@ public class GameManager : MonoBehaviour
     private CancellationTokenSource _roundCancellationSource;
     private List<PlayerController> _players = new();
     private int _playerLives;
+    private bool _isProcessingLifeLoss;
     private Dictionary<PlayerController, FlashEffect> _playerFlashEffects = new();
 
     public static GameManager Instance { get; private set; }
@@ -139,6 +140,11 @@ public class GameManager : MonoBehaviour
 
         DisablePlayerJoining();
 
+        if (_teacherManager != null)
+        {
+            _teacherManager.StartPatrolling();
+        }
+
         if (_livesUI != null)
         {
             _livesUI.gameObject.SetActive(true);
@@ -158,6 +164,7 @@ public class GameManager : MonoBehaviour
         _studentManager.StartStimulation(_gameCancellationSource.Token);
 
         EnableGameplayInput();
+        _audioHelper.PlayMusic();
 
     }
 
@@ -320,11 +327,24 @@ public class GameManager : MonoBehaviour
 
     private void LoseLife(PlayerController playerController)
     {
-        SetLives(_playerLives - 1);
+        if (_isProcessingLifeLoss) return;
+        _isProcessingLifeLoss = true;
+
+        _playerLives--;
+        
+        _livesUI.playLostLifeAnimation(_playerLives, () => 
+        {
+            SetLives(_playerLives);
+            _isProcessingLifeLoss = false;
+        });
+        
         if (_playerLives > 0)
         {
-            if (_playerFlashEffects.TryGetValue(playerController, out var flash))
-                flash.Flash();
+            foreach (var player in _players)
+            {
+                if (_playerFlashEffects.TryGetValue(playerController, out var flash))
+                    flash.Flash();
+            }
 
             playerController.OnCaught(onAfterTeleport: null);
             return;
@@ -435,6 +455,7 @@ public class GameManager : MonoBehaviour
     private void ShowEndMenu(GameObject menu)
     {
         GameplayActive = false;
+        _audioHelper.StopMusic();
 
         DisableGameplayInput(); // STOP PLAYERS
         DisablePlayerJoining(); // STOP NEW PLAYERS

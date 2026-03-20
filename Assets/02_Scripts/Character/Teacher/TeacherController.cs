@@ -28,6 +28,7 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
     private EState _state;
     private float _remainingTime;
     private bool _goToSeatOnArrive;
+    private bool _isActive;
 
     private NavigationHelper _navigationHelper;
     private TeacherAudioHelper _audioHelper;
@@ -64,7 +65,7 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
     private void Start()
     {
         _state = EState.Sit;
-        _remainingTime = 1f; // 1 second before standing
+        _isActive = false;
     }
 
     private void Update()
@@ -73,6 +74,8 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
 
         if (_detectionCooldown > 0)
             _detectionCooldown -= Time.deltaTime;
+
+        if (!_isActive) return;
 
         _remainingTime -= Time.deltaTime;
         if (_remainingTime <= 0)
@@ -186,12 +189,19 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
         // Reset state machine
         _state = EState.Sit;
         _goToSeatOnArrive = false;
-
-        // Reset timers
-        _remainingTime = 1f;
+        
+        // Reset teacher
+        _isActive = false;
 
         // Reset vision
         _fieldOfViewController.HideInstant();
 
+    }
+
+    public void StartPatrolling()
+    {
+        _isActive = true;
+        _state = EState.Sit;
+        _remainingTime = 1f;
     }
 }

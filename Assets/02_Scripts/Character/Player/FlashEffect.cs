@@ -16,9 +16,13 @@ public class FlashEffect : MonoBehaviour
 
     private void Awake()
     {
+        CollectRenderers();
+    }
+
+    private void CollectRenderers()
+    {
         Renderer[] allRenderers = GetComponentsInChildren<Renderer>();
 
-        //Filter out renderers whose materials don't support color flashing
         var validRenderers = new List<Renderer>();
         var validColors = new List<Color>();
         var validPropNames = new List<string>();
@@ -26,7 +30,7 @@ public class FlashEffect : MonoBehaviour
         foreach (var r in allRenderers)
         {
             string propName = GetColorPropertyName(r.material);
-            if (propName == null) continue; // skip unsupported materials
+            if (propName == null) continue;
 
             validRenderers.Add(r);
             validPropNames.Add(propName);
@@ -40,12 +44,14 @@ public class FlashEffect : MonoBehaviour
 
     public void Flash()
     {
+        if (_renderers == null || _renderers.Length == 0)
+            CollectRenderers();
+
         if (_flashCoroutine != null)
             StopCoroutine(_flashCoroutine);
 
         _flashCoroutine = StartCoroutine(FlashRoutine());
     }
-
     private IEnumerator FlashRoutine()
     {
         for (int i = 0; i < _flashCount; i++)
