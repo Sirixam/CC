@@ -124,9 +124,11 @@ public class GameManager : MonoBehaviour
 
         FlashEffect flashEffect = playerController.GetComponent<FlashEffect>();
         if (flashEffect != null)
+        {
+            flashEffect.RefreshRenderers();
             _playerFlashEffects[playerController] = flashEffect;
-
-
+        }
+            
         if (_players.Count >= _answerManager.RequiredPlayersCount ||
             !_globalDefinition.StartGameWhenAllPlayersJoined)
         {
@@ -342,7 +344,7 @@ public class GameManager : MonoBehaviour
         {
             foreach (var player in _players)
             {
-                if (_playerFlashEffects.TryGetValue(playerController, out var flash))
+                if (_playerFlashEffects.TryGetValue(player, out var flash))
                     flash.Flash();
             }
 

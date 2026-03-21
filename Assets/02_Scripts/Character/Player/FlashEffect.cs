@@ -5,15 +5,14 @@ using UnityEngine;
 public class FlashEffect : MonoBehaviour
 {
     [SerializeField] private Color _flashColor = Color.red;
-    [SerializeField] private float _flashDuration = 0.1f;
-    [SerializeField] private int _flashCount = 3;
+    [SerializeField] private float _flashDuration = 0.3f;
+    [SerializeField] private int _flashCount = 5;
 
     // Only holds renderers whose materials have a supported color property
     private Renderer[] _renderers;
     private Color[] _originalColors;
     private string[] _colorPropertyNames;
     private Coroutine _flashCoroutine;
-
     private void Awake()
     {
         CollectRenderers();
@@ -22,26 +21,22 @@ public class FlashEffect : MonoBehaviour
     private void CollectRenderers()
     {
         Renderer[] allRenderers = GetComponentsInChildren<Renderer>();
-
         var validRenderers = new List<Renderer>();
-        var validColors = new List<Color>();
         var validPropNames = new List<string>();
 
         foreach (var r in allRenderers)
         {
-            string propName = GetColorPropertyName(r.material);
+            if (r.sharedMaterial == null) continue;
+            string propName = GetColorPropertyName(r.sharedMaterial);
             if (propName == null) continue;
-
             validRenderers.Add(r);
             validPropNames.Add(propName);
-            validColors.Add(r.material.GetColor(propName));
         }
 
         _renderers = validRenderers.ToArray();
         _colorPropertyNames = validPropNames.ToArray();
-        _originalColors = validColors.ToArray();
+        _originalColors = new Color[_renderers.Length]; // allocated but NOT filled
     }
-
     public void Flash()
     {
         if (_renderers == null || _renderers.Length == 0)
@@ -69,13 +64,19 @@ public class FlashEffect : MonoBehaviour
     private void SetAllColors(Color color)
     {
         for (int i = 0; i < _renderers.Length; i++)
+        {
+            // Capture current color RIGHT before overwriting
+            _originalColors[i] = _renderers[i].material.GetColor(_colorPropertyNames[i]);
             _renderers[i].material.SetColor(_colorPropertyNames[i], color);
+        }
     }
 
     private void RestoreAllColors()
     {
         for (int i = 0; i < _renderers.Length; i++)
+        {
             _renderers[i].material.SetColor(_colorPropertyNames[i], _originalColors[i]);
+        }
     }
 
     /// <summary>
@@ -100,5 +101,10 @@ public class FlashEffect : MonoBehaviour
 
         // No valid color property — this material will be silently skipped
         return null;
+    }
+
+    public void RefreshRenderers()
+    {
+        CollectRenderers();
     }
 }
