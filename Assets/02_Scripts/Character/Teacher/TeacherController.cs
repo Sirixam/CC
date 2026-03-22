@@ -19,6 +19,11 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
     [SerializeField] private NavigationHelper.Data _navigationData;
     [SerializeField] private TeacherAudioHelper.Data _audioData;
     [SerializeField] private GlobalDefinition _globalDefinition;
+    [SerializeField] private NavMeshObstacle _walkBackObstacle;
+    [SerializeField] private Collider _collider;
+    [SerializeField] private TeacherView _teacherView;
+    public Collider Collider => _collider;
+
     [Header("Configurations")]
     [SerializeField] private Vector2 _timeToStandRange = new Vector2(5, 5);
     [SerializeField] private Vector2 _timeToSitRange = new Vector2(10, 10);
@@ -288,7 +293,19 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
         _navMeshAgent.isStopped = true;
         _navMeshAgent.updateRotation = false;
         _navMeshAgent.velocity = Vector3.zero;
+        _navMeshAgent.enabled = false; // disable agent so obstacle can carve
         _isActive = false;
+
+        if (_walkBackObstacle != null)
+        {
+            _walkBackObstacle.enabled = true;
+            Debug.Log($"Obstacle enabled at {_walkBackObstacle.transform.position}");
+        }
+        else
+        {
+            Debug.Log("WalkBackObstacle is null!");
+        }
+
 
         // Cache original FOV values
         float originalDistance = _fieldOfViewController.GetMaxDistance();
@@ -322,7 +339,10 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
             yield return null;
         }
 
-        // Resume patrolling
+        if (_walkBackObstacle != null)
+            _walkBackObstacle.enabled = false;
+
+        _navMeshAgent.enabled = true;
         _navMeshAgent.updateRotation = true;
         _navMeshAgent.isStopped = false;
         _isActive = true;

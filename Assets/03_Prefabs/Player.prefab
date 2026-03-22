@@ -717,6 +717,8 @@ MonoBehaviour:
     StunnedAudio: {fileID: 11400000, guid: aac6e454b1f8925418af7951309d392f, type: 2}
   _globalDefinition: {fileID: 11400000, guid: 2b0875648e78a8e45b08a646836071ca, type: 2}
   _peekMoveSpeedMultiplier: 0.5
+  _pushForce: 20
+  _pushStunDuration: 0.5
   _dropByHoldingInteract: 0
   _toggleToPeek: 1
   _stopPeekOnDash: 1
@@ -1502,6 +1504,9 @@ MonoBehaviour:
   _widthScale: 1
   _visualThickness: 0.01
   _physicsThickness: 1
+  _safeColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  _dangerColor: {r: 1, g: 0, b: 0, a: 1}
+  _colorProperty: _BaseColor
 --- !u!33 &368862458362584757
 MeshFilter:
   m_ObjectHideFlags: 0

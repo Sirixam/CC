@@ -33,7 +33,6 @@ public class StunHelper
         IsStunned = true;
         _ownerView.OnStartStun(isSoftStun);
     }
-
     public void UpdateStun()
     {
         _stunTimer -= Time.deltaTime;

@@ -26,6 +26,8 @@ public class PlayerPhysics
     private int _currentCornerIndex;
     private bool _isFollowingPath;
     public bool IsFollowingPath => _isFollowingPath;
+    public Vector3 PathDirection { get; private set; }
+
 
 
     // Dash
@@ -88,22 +90,23 @@ public class PlayerPhysics
             toTarget.y = 0;
             float distance = toTarget.magnitude;
 
-            if (distance < 0.1f)
+            if (distance < 0.2f) 
             {
                 _currentCornerIndex++;
                 if (_currentCornerIndex >= _pathCorners.Length)
                 {
                     _isFollowingPath = false;
                     _pathCorners = null;
-                    OnArriveEvent?.Invoke();
                     _rigidbody.velocity = Vector3.zero;
+                    OnArriveEvent?.Invoke();
                     return;
                 }
             }
             else
             {
                 Vector3 direction = toTarget.normalized;
-                _rigidbody.MovePosition(_rigidbody.position + direction * _moveSpeed * deltaTime);
+                PathDirection = direction;
+                _rigidbody.velocity = direction * _moveSpeed;
             }
 
             _collisionNormals.Clear();
@@ -229,15 +232,79 @@ public class PlayerPhysics
         }
     }
 
-    public bool StartFollowingNavMeshPath(Vector3 destination)
+    public bool StartFollowingNavMeshPath(Vector3 destination, Vector3? avoidPosition = null, float avoidRadius = 2f)
     {
-        NavMeshPath path = new NavMeshPath();
-        if (NavMesh.CalculatePath(_rigidbody.position, destination, NavMesh.AllAreas, path))
+        if (!NavMesh.SamplePosition(_rigidbody.position, out NavMeshHit startHit, 2f, NavMesh.AllAreas))
+            return false;
+
+        if (!NavMesh.SamplePosition(destination, out NavMeshHit endHit, 2f, NavMesh.AllAreas))
+            return false;
+
+        if (avoidPosition.HasValue)
         {
-            _pathCorners = path.corners;
-            _currentCornerIndex = 1; // skip first corner (current position)
-            _isFollowingPath = true;
-            return true;
+            Vector3 start = startHit.position;
+            Vector3 end = endHit.position;
+            Vector3 avoid = avoidPosition.Value;
+
+            // Check if direct path passes near the avoidance point
+            Vector3 toEnd = (end - start).normalized;
+            Vector3 toAvoid = avoid - start;
+            float projection = Vector3.Dot(toAvoid, toEnd);
+            Vector3 closestPoint = start + toEnd * Mathf.Clamp(projection, 0, Vector3.Distance(start, end));
+            float distToPath = Vector3.Distance(closestPoint, avoid);
+
+            if (distToPath < avoidRadius)
+            {
+                // Calculate a waypoint to the side
+                Vector3 perpendicular = Vector3.Cross(toEnd, Vector3.up).normalized;
+                Vector3 waypointA = avoid + perpendicular * avoidRadius * 2f;
+                Vector3 waypointB = avoid - perpendicular * avoidRadius * 2f;
+                Vector3 waypoint = Vector3.Distance(start, waypointA) < Vector3.Distance(start, waypointB)
+                    ? waypointA : waypointB;
+
+                if (NavMesh.SamplePosition(waypoint, out NavMeshHit waypointHit, 3f, NavMesh.AllAreas))
+                {
+                    // Use NavMesh pathfinding for each segment
+                    NavMeshPath pathA = new NavMeshPath();
+                    NavMeshPath pathB = new NavMeshPath();
+
+                    if (NavMesh.CalculatePath(startHit.position, waypointHit.position, NavMesh.AllAreas, pathA) &&
+                        NavMesh.CalculatePath(waypointHit.position, endHit.position, NavMesh.AllAreas, pathB))
+                    {
+                        // Merge both paths
+                        var allCorners = new List<Vector3>(pathA.corners);
+                        // Skip first corner of pathB (it's the same as last corner of pathA)
+                        for (int i = 1; i < pathB.corners.Length; i++)
+                            allCorners.Add(pathB.corners[i]);
+
+                        _pathCorners = allCorners.ToArray();
+                        _currentCornerIndex = 1;
+                        _isFollowingPath = true;
+
+                        for (int i = 0; i < _pathCorners.Length - 1; i++)
+                            Debug.DrawLine(_pathCorners[i], _pathCorners[i + 1], Color.green, 5f);
+
+                        return true;
+                    }
+                }
+            }
+        }
+
+        // Default: direct navmesh path
+        NavMeshPath path = new NavMeshPath();
+        if (NavMesh.CalculatePath(startHit.position, endHit.position, NavMesh.AllAreas, path))
+        {
+            if (path.status == NavMeshPathStatus.PathComplete)
+            {
+                _pathCorners = path.corners;
+                _currentCornerIndex = 1;
+                _isFollowingPath = true;
+
+                for (int i = 0; i < _pathCorners.Length - 1; i++)
+                    Debug.DrawLine(_pathCorners[i], _pathCorners[i + 1], Color.green, 5f);
+
+                return true;
+            }
         }
         return false;
     }

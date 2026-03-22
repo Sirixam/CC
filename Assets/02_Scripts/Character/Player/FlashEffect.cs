@@ -111,6 +111,8 @@ public class FlashEffect : MonoBehaviour
     }
     public void StartContinuousFlash()
     {
+        Debug.Log($"StartContinuousFlash on {gameObject.name}, already flashing: {_isContinuousFlashing}");
+
         if (_isContinuousFlashing) return;
         _isContinuousFlashing = true;
 
@@ -132,12 +134,15 @@ public class FlashEffect : MonoBehaviour
 
     private IEnumerator ContinuousFlashRoutine()
     {
+        Debug.Log("ContinuousFlashRoutine started");
         while (_isContinuousFlashing)
         {
+            Debug.Log("Flash ON");
             SetAllColors(_flashColor);
             yield return new WaitForSeconds(_flashDuration);
             RestoreAllColors();
             yield return new WaitForSeconds(_flashDuration);
         }
+        Debug.Log("ContinuousFlashRoutine ended");
     }
 }

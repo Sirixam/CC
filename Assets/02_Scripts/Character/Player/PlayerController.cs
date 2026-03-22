@@ -32,6 +32,9 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     [SerializeField] private GlobalDefinition _globalDefinition;
     [Header("Peek")]
     [SerializeField] private float _peekMoveSpeedMultiplier = 0.5f;
+    [Header("Push")]
+    [SerializeField] private float _pushForce = 5f;
+    [SerializeField] private float _pushStunDuration = 0.5f;
     [Header("TO BE REMOVED")]
     [SerializeField] private bool _dropByHoldingInteract; // Once we decide on the final input scheme, this can be removed
     [SerializeField] private bool _toggleToPeek;
@@ -625,18 +628,25 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
         _dashHelper.UpdateCooldown();
 
-        if (_stunHelper.IsStunned || _isCaught)
+        if (_stunHelper.IsStunned || (_isCaught && !_isWalkingBack))
         {
             if (_stunHelper.IsStunned)
-            {
                 _stunHelper.UpdateStun();
-            }
             return;
         }
 
         if (IsPeeking && _lastAimInput.IsMouse)
         {
             ProcessAimInput(_lastAimInput.Input, _lastAimInput.IsMouse); // [AKP] Force aim to stick on current mouse position while moving
+        }
+
+        if (_isWalkingBack && _physics.IsFollowingPath)
+        {
+            Vector3 dir = _physics.PathDirection;
+            if (dir.sqrMagnitude > 0.01f)
+            {
+                _lookHelper.SetLookInput(new Vector2(dir.x, dir.z));
+            }
         }
 
         _lookHelper.UpdateRotation(transform);
@@ -718,6 +728,33 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private void OnCollisionStay(Collision collision)
         => _dashHelper.OnCollisionStay(collision, onStopDash: _stunHelper.StartStun);
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (!_isWalkingBack) return;
+
+        PlayerController otherPlayer = collision.gameObject.GetComponentInParent<PlayerController>();
+        if (otherPlayer == null || otherPlayer == this) return;
+        if (otherPlayer.IsCaught) return; // don't push another caught player
+
+        // Calculate push direction — perpendicular to our walk direction
+        Vector3 walkDir = _physics.PathDirection;
+        Vector3 toOther = (otherPlayer.transform.position - transform.position).normalized;
+
+        // Determine which side to push — left or right of walk direction
+        float cross = Vector3.Cross(walkDir, toOther).y;
+        Vector3 pushDir = cross >= 0
+            ? new Vector3(walkDir.z, 0, -walkDir.x)   // right
+            : new Vector3(-walkDir.z, 0, walkDir.x);  // left
+
+        // Check if that side is blocked, if so push the other way
+        if (Physics.Raycast(otherPlayer.transform.position, pushDir, 1f))
+        {
+            pushDir = -pushDir;
+        }
+
+        otherPlayer.OnPushedAside(pushDir);
+    }
 
     private void OnInteractionTriggerEnter(Collider other)
     {
@@ -849,8 +886,10 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         if (_answerController != null)
             _answerController.SetDurations(0, duration, 0);
     }
-    public void OnCaughtWalkBack(Action onSeated)
+    public void OnCaughtWalkBack(Action onSeated, Vector3? avoidPosition = null)
     {
+        Debug.Log($"OnCaughtWalkBack called, _isCaught: {_isCaught}");
+
         if (_isCaught) return;
         _isCaught = true;
         _isWalkingBack = true;
@@ -864,13 +903,16 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         if (_initialChairController.IsBlocked)
             _initialChairController.Unblock();
 
-        // Use navmesh path instead of straight line
-        _physics.StartFollowingNavMeshPath(_initialChairController.SittingPoint.position);
-        _physics.OnArriveEvent += OnArrivedAtChair;
+        bool pathFound = _physics.StartFollowingNavMeshPath(
+            _initialChairController.SittingPoint.position,
+            avoidPosition
+        );
 
-        void OnArrivedAtChair()
+        Debug.Log($"Path found: {pathFound}");
+
+        if (!pathFound)
         {
-            _physics.OnArriveEvent -= OnArrivedAtChair;
+            // Fallback to teleport if no valid path
             _physics.StopFollowingPath();
             _chairHelper.TeleportToSitting(_initialChairController);
             _isCaught = false;
@@ -879,6 +921,38 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             _inputHandler.PlayerInput.ActivateInput();
             StartCoroutine(DelayedUnblock());
             onSeated?.Invoke();
+            return;
         }
+        _physics.OnArriveEvent += OnArrivedAtChair;
+
+        void OnArrivedAtChair()
+        {
+            _physics.OnArriveEvent -= OnArrivedAtChair;
+            _physics.StopFollowingPath();
+            _chairHelper.TeleportToSitting(_initialChairController);
+            _lookHelper.SetLookAt(_initialChairController.LookAtPoint);
+            _lookHelper.RestoreInitialLookDirection();
+            _isCaught = false;
+            _isWalkingBack = false;
+            _answerController = _initialChairController.AnswerController;
+            _inputHandler.PlayerInput.ActivateInput();
+            StartCoroutine(DelayedUnblock());
+            onSeated?.Invoke();
+        }
+    }
+
+    public void OnPushedAside(Vector3 direction)
+    {
+        if (_isCaught) return;
+
+        _physics.ApplyImpulse(direction * _pushForce);
+        _stunHelper.StartStun(true);
+
+        // Briefly ignore collision with the walking-back player
+        // The collision will re-enable via the existing CollisionComponent or after the stun ends
+    }
+    public Collider[] GetColliders()
+    {
+        return _physics.Colliders;
     }
 }

@@ -76,4 +76,22 @@ public class TeacherManager : MonoBehaviour
             _teachers[i].PauseAndFollowTarget(target, onComplete);
         }
     }
+    public void IgnoreCollisionWith(Collider[] playerColliders, bool ignore)
+    {
+        for (int i = 0; i < _teachers.Length; i++)
+        {
+            Debug.Log($"Teacher collider is: {_teachers[i].Collider}");
+            if (_teachers[i].Collider == null) continue;
+            foreach (var playerCollider in playerColliders)
+            {
+                Physics.IgnoreCollision(_teachers[i].Collider, playerCollider, ignore);
+            }
+        }
+    }
+    public Vector3? GetTeacherPosition()
+    {
+        if (_teachers.Length > 0)
+            return _teachers[0].transform.position;
+        return null;
+    }
 }

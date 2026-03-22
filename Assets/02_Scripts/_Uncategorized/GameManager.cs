@@ -5,6 +5,8 @@ using _02_Scripts.Tools;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
+using System.Collections;
+
 
 public class GameManager : MonoBehaviour
 {
@@ -344,13 +346,16 @@ public class GameManager : MonoBehaviour
         {
             foreach (var player in _players)
             {
+                if (player == playerController && _globalDefinition.CaughtMode == GlobalDefinition.ECaughtMode.WalkBack)
+                    continue; // skip regular flash for caught player, they get continuous flash
+
                 if (_playerFlashEffects.TryGetValue(player, out var flash))
                     flash.Flash();
             }
 
             if (_globalDefinition.CaughtMode == GlobalDefinition.ECaughtMode.WalkBack)
             {
-                // Start continuous flash on caught player
+                Debug.Log("WalkBack mode, starting continuous flash");
                 if (_playerFlashEffects.TryGetValue(playerController, out var caughtFlash))
                     caughtFlash.StartContinuousFlash();
 
@@ -358,15 +363,7 @@ public class GameManager : MonoBehaviour
                 if (_teacherManager != null)
                     _teacherManager.PauseAndFollowTarget(playerController.transform, null);
 
-                playerController.OnCaughtWalkBack(onSeated: () =>
-                {
-                    // Stop continuous flash
-                    if (_playerFlashEffects.TryGetValue(playerController, out var flash))
-                        flash.StopContinuousFlash();
-
-                    // Tell teacher to stop following (deactivate target tracking)
-                    // Teacher's coroutine will detect player is seated and exit
-                });
+                StartCoroutine(DelayedWalkBack(playerController));
             }
             else
             {
@@ -575,5 +572,27 @@ public class GameManager : MonoBehaviour
             _studentManager.InjectTestDefinition(_testDefinition);
         }
     }
+    private IEnumerator DelayedWalkBack(PlayerController playerController)
+    {
+        yield return new WaitForSeconds(0.3f);
 
+        if (_teacherManager != null)
+            _teacherManager.IgnoreCollisionWith(playerController.GetColliders(), true);
+
+        Vector3? teacherPos = _teacherManager != null
+            ? _teacherManager.GetTeacherPosition()
+            : null;
+
+        playerController.OnCaughtWalkBack(
+            onSeated: () =>
+            {
+                if (_playerFlashEffects.TryGetValue(playerController, out var flash))
+                    flash.StopContinuousFlash();
+
+                if (_teacherManager != null)
+                    _teacherManager.IgnoreCollisionWith(playerController.GetColliders(), false);
+            },
+            avoidPosition: teacherPos
+        );
+    }
 }
