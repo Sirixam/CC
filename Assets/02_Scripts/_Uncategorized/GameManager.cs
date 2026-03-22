@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using System.Threading;
 using _02_Scripts.Tools;
+using _02_Scripts.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
@@ -290,6 +291,10 @@ public class GameManager : MonoBehaviour
 
     private void OnTimesUp()
     {
+        if (_timesUpFeedback.TryGetComponent(out AnswerSheetsDisplayUI answerUI))
+        {
+            answerUI.UpdateAnswerSheets();
+        }
         ShowEndMenu(_timesUpFeedback);
         StopRoundTimer();
     }

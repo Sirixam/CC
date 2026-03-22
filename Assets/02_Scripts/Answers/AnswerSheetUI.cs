@@ -103,8 +103,7 @@ public class AnswerSheetUI : MonoBehaviour
         instance.SetID(answerID);
         instance.SetNumber(number, color);
         instance.SetIcon(icon, color);
-        instance.SetState(isFilled);
-        instance.SetCorrectness(correctness);
+        instance.SetFinalState(isFilled, correctness);
         return instance;
     }
 
