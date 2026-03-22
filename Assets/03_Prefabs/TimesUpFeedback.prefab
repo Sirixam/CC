@@ -888,6 +888,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4217333417023948306}
     m_Modifications:
+    - target: {fileID: 1515760786864614198, guid: ee09af9b2d5d48f4d9dd1e8a3a30cfdd, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1732221888440739196, guid: ee09af9b2d5d48f4d9dd1e8a3a30cfdd, type: 3}
       propertyPath: _answersParent
       value: 
@@ -1022,6 +1026,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4217333417023948306}
     m_Modifications:
+    - target: {fileID: 1515760786864614198, guid: ee09af9b2d5d48f4d9dd1e8a3a30cfdd, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1732221888440739196, guid: ee09af9b2d5d48f4d9dd1e8a3a30cfdd, type: 3}
       propertyPath: _answersParent
       value: 
@@ -1155,6 +1163,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4217333417023948306}
     m_Modifications:
+    - target: {fileID: 1515760786864614198, guid: ee09af9b2d5d48f4d9dd1e8a3a30cfdd, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1732221888440739196, guid: ee09af9b2d5d48f4d9dd1e8a3a30cfdd, type: 3}
       propertyPath: _answersParent
       value: 
@@ -1288,6 +1300,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4217333417023948306}
     m_Modifications:
+    - target: {fileID: 1515760786864614198, guid: ee09af9b2d5d48f4d9dd1e8a3a30cfdd, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1732221888440739196, guid: ee09af9b2d5d48f4d9dd1e8a3a30cfdd, type: 3}
       propertyPath: _answersParent
       value: 
