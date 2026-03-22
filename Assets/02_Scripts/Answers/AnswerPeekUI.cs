@@ -10,6 +10,7 @@ public class AnswerPeekUI : MonoBehaviour
     [SerializeField] private Image _answerCloudIcon;
     [SerializeField] private RectTransform _readyObject;
     [SerializeField] private RectTransform _shakeContainer;
+    [SerializeField] private CanvasGroup _canvasGroup;
 
     [Header("Configurations")]
     //[SerializeField] private Gradient _progressGradient;
@@ -21,6 +22,7 @@ public class AnswerPeekUI : MonoBehaviour
     private Sequence _highlightTween;
     private Sequence _shakeTween;
     private bool _isFull;
+    private bool _isCompleted;
 
     public AnswerPeek AnswerPeek { get; private set; }
 
@@ -81,6 +83,10 @@ public class AnswerPeekUI : MonoBehaviour
 
     public void Clear()
     {
+        _isCompleted = false;
+
+        if (_canvasGroup != null)
+            _canvasGroup.alpha = 1f;
         AnswerPeek = null;
     }
     
@@ -102,9 +108,9 @@ public class AnswerPeekUI : MonoBehaviour
 
        switch (currentCorrectness)
        {
-           case 0: return new Color32(102, 35, 35, 255);
-           case 0.5f: return new Color32(194, 176, 83, 255);
-           case 1f: return new Color32(89, 155, 112, 255);
+           case 0: return new Color32(183, 48, 48, 255);
+           case 0.5f: return new Color32(217, 180, 62, 255);
+           case 1f: return new Color32(92, 181, 95, 255);
        }
        return new Color32(255, 255, 255, 255);
     }
@@ -168,5 +174,21 @@ public class AnswerPeekUI : MonoBehaviour
     {
         _shakeTween.Stop();
         _shakeContainer.localPosition = Vector3.zero;
+    }
+    
+    public void SetCompleted(bool completed)
+    {
+        if (_isCompleted == completed) return;
+
+        _isCompleted = completed;
+        if (_canvasGroup == null)
+        {
+            Debug.LogWarning("SetCompleted called but CanvasGroup is NULL on " + gameObject.name);
+            return;
+        }
+
+        float targetAlpha = completed ? 0.5f : 1f;
+
+        Tween.Alpha(_canvasGroup, targetAlpha, 0.2f); // smooth fade
     }
 }

@@ -356,11 +356,26 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
 
     private void OnFinishAnswering(AnswerController answerController, string answerID)
     {
+        
+        Debug.Log($"[FinishAnswering] Player: {answerController.ActorID} | AnswerID: {answerID}");
+
+        bool isFull = HaveAllPlayersAnsweredFully(answerID, out float debugMinCorrectness);
+
+        Debug.Log($"[Check] AnswerID: {answerID} | IsFull: {isFull} | MinCorrectness: {debugMinCorrectness}");
+       
+
         if (!answerController.IsPlayer) return;
 
         if (HaveAllPlayersAnsweredFully(answerID, out float answerMinCorrectness))
         {
             OnAllPlayersFinishedAnswer?.Invoke(answerID, answerMinCorrectness);
+            foreach (var peek in _activePeeks)
+            {
+                if (peek.AnswerID == answerID)
+                {
+                    peek.PeekUI.SetCompleted(true);
+                }
+            }
         }
 
         if (HaveAllPlayersAnsweredFully(out float minCorrectness))
@@ -406,6 +421,10 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
 
         Sprite answerTypeIcon = GetAnswerTypeIcon(answerID);
         peekUI.Setup(peek, characterIcon, archetypeIcon, answerTypeIcon);
+        if (HaveAllPlayersAnsweredFully(answerID, out _))
+        {
+            peekUI.SetCompleted(true);
+        }
         peekUI.Show();
 
         if (_isShaking) 
@@ -466,13 +485,28 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
     public bool HaveAllPlayersAnsweredFully(string answerID, out float minCorrectness)
     {
         minCorrectness = float.MaxValue;
-        foreach (var answerSheet in PlayerAnswerSheets)
+        
+        var players = GameManager.Instance.Players;
+       
+        foreach (var player in players)
         {
-            if (!answerSheet.IsAnswerFull(answerID, out _, out float correctness))
+            string playerID = player.ID;
+
+            var controller = _answerControllers.Find(x => x.ActorID == playerID);
+            if (controller == null)
+            {
+                Debug.LogError($"No AnswerController found for player {playerID}");
+                continue;
+            }
+
+            var sheet = controller.AnswerSheet;
+
+            if (!sheet.IsAnswerFull(answerID, out _, out float correctness))
             {
                 minCorrectness = 0;
                 return false;
             }
+
             minCorrectness = Mathf.Min(minCorrectness, correctness);
         }
         return true;

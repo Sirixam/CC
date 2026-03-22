@@ -440,7 +440,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private void OnDirectionalActionRequested(EDirectionalAction actionType, Vector2 input, bool isMouse)
     {
-        Debug.Log($"Directional input: {actionType} {input}");
+       // Debug.Log($"Directional input: {actionType} {input}");
         if (_skipNextDirectionAction)
         {
             _skipNextDirectionAction = false;

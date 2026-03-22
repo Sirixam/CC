@@ -34,6 +34,7 @@ public class GameManager : MonoBehaviour
     private CancellationTokenSource _gameCancellationSource;
     private CancellationTokenSource _roundCancellationSource;
     private List<PlayerController> _players = new();
+    public List<PlayerController> Players => _players;
     private int _playerLives;
     private bool _isProcessingLifeLoss;
     private Dictionary<PlayerController, FlashEffect> _playerFlashEffects = new();
