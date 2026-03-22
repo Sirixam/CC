@@ -64,4 +64,44 @@ public class AnswerUI : MonoBehaviour
             _fill.fillAmount = percent;
         }
     }
+    
+    public void SetFinalState(bool isFilled, float correctness)
+    {
+        // Base state (filled vs not filled)
+        SetState(isFilled);
+
+        if (!isFilled)
+        {
+            // NOT ANSWERED
+            if (_correctnessColorTarget != null)
+                _correctnessColorTarget.color = Color.gray;
+
+            if (_icon != null)
+                _icon.color = new Color(1f, 1f, 1f, 0.5f); // faded icon
+
+            // slightly smaller
+            transform.localScale = Vector3.one * 0.95f;
+
+            return;
+        }
+
+        // Reset icon visibility for answered states
+        if (_icon != null)
+            _icon.color = Color.white;
+
+        // Apply correctness color (uses your existing logic)
+        SetCorrectness(correctness);
+
+        // subtle emphasis
+        if (correctness < 1f)
+        {
+            // Partial / incorrect
+            transform.localScale = Vector3.one * 1.05f;
+        }
+        else
+        {
+            // Correct 
+            transform.localScale = Vector3.one;
+        }
+    }
 }

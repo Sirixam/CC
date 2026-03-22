@@ -1,21 +1,13 @@
+using _02_Scripts.UI;
 using UnityEngine;
 
 public class VictoryUI : MonoBehaviour
 {
-    [SerializeField] private AnswerSheetUI[] _answerSheetsUI;
+    [SerializeField] private AnswerSheetsDisplayUI _answerSheetsDisplay;
 
     public void UpdateAnswerSheets()
     {
-        AnswerSheet[] answerSheets = GameContext.AnswersManager.PlayerAnswerSheets;
-        for (int i = 0; i < answerSheets.Length; i++)
-        {
-            _answerSheetsUI[i].Setup(answerSheets[i].Answers);
-            _answerSheetsUI[i].Show();
-        }
-        for (int i = answerSheets.Length; i < _answerSheetsUI.Length; i++)
-        {
-            _answerSheetsUI[i].Hide();
-        }
+        _answerSheetsDisplay.UpdateAnswerSheets();
     }
 
     public void Show()
