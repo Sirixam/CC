@@ -373,7 +373,7 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
             {
                 if (peek.AnswerID == answerID)
                 {
-                    peek.PeekUI.SetCompleted(true);
+                    peek.PeekUI.SetCompleted(ShouldMarkAsCompleted(answerID));
                 }
             }
         }
@@ -423,7 +423,7 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
         peekUI.Setup(peek, characterIcon, archetypeIcon, answerTypeIcon);
         if (HaveAllPlayersAnsweredFully(answerID, out float minCorrectness) && minCorrectness >= 1f)
         {
-            peekUI.SetCompleted(true);
+            peekUI.SetCompleted(ShouldMarkAsCompleted(answerID));
         }
         peekUI.Show();
 
@@ -529,5 +529,11 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
         _isShaking = false;
         foreach (var peek in _activePeeks)
             peek.PeekUI.StopShake();
+    }
+    
+    private bool ShouldMarkAsCompleted(string answerID)
+    {
+        return HaveAllPlayersAnsweredFully(answerID, out float minCorrectness)
+               && minCorrectness >= 1f;
     }
 }
