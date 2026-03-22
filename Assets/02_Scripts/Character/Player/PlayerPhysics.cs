@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 [Serializable]
 public class PlayerPhysics
@@ -19,6 +20,13 @@ public class PlayerPhysics
     private Transform _targetPoint;
     private float _moveSpeedMultiplier = 1f;
     public Vector3 Position => _rigidbody.position;
+
+    // Navmesh pathing
+    private Vector3[] _pathCorners;
+    private int _currentCornerIndex;
+    private bool _isFollowingPath;
+    public bool IsFollowingPath => _isFollowingPath;
+
 
     // Dash
     public bool IsDashing { get; private set; }
@@ -71,6 +79,34 @@ public class PlayerPhysics
         {
             _collisionNormals.Clear();
             _rigidbody.velocity = Vector3.zero;
+            return;
+        }
+        if (_isFollowingPath && _pathCorners != null)
+        {
+            Vector3 target = _pathCorners[_currentCornerIndex];
+            Vector3 toTarget = target - _rigidbody.position;
+            toTarget.y = 0;
+            float distance = toTarget.magnitude;
+
+            if (distance < 0.1f)
+            {
+                _currentCornerIndex++;
+                if (_currentCornerIndex >= _pathCorners.Length)
+                {
+                    _isFollowingPath = false;
+                    _pathCorners = null;
+                    OnArriveEvent?.Invoke();
+                    _rigidbody.velocity = Vector3.zero;
+                    return;
+                }
+            }
+            else
+            {
+                Vector3 direction = toTarget.normalized;
+                _rigidbody.MovePosition(_rigidbody.position + direction * _moveSpeed * deltaTime);
+            }
+
+            _collisionNormals.Clear();
             return;
         }
 
@@ -191,5 +227,25 @@ public class PlayerPhysics
             _dashTimer = 0;
             _rigidbody.velocity = Vector3.zero;
         }
+    }
+
+    public bool StartFollowingNavMeshPath(Vector3 destination)
+    {
+        NavMeshPath path = new NavMeshPath();
+        if (NavMesh.CalculatePath(_rigidbody.position, destination, NavMesh.AllAreas, path))
+        {
+            _pathCorners = path.corners;
+            _currentCornerIndex = 1; // skip first corner (current position)
+            _isFollowingPath = true;
+            return true;
+        }
+        return false;
+    }
+
+    public void StopFollowingPath()
+    {
+        _isFollowingPath = false;
+        _pathCorners = null;
+        _currentCornerIndex = 0;
     }
 }

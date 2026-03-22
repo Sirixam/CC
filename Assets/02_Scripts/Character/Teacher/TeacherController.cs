@@ -1,6 +1,8 @@
 using System;
 using UnityEngine;
 using UnityEngine.AI;
+using System.Collections;
+
 
 public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitActor
 {
@@ -203,5 +205,128 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
         _isActive = true;
         _state = EState.Sit;
         _remainingTime = 1f;
+    }
+
+    public void PauseAndLookAt(Transform target, float duration, System.Action onComplete)
+    {
+        StartCoroutine(PauseAndLookAtRoutine(target, duration, onComplete));
+    }
+
+    private IEnumerator PauseAndLookAtRoutine(Transform target, float duration, System.Action onComplete)
+    {
+        _navMeshAgent.isStopped = true;
+        _navMeshAgent.updateRotation = false;
+        _navMeshAgent.velocity = Vector3.zero;
+        _isActive = false;
+
+        // Cache original FOV values
+        float originalDistance = _fieldOfViewController.GetMaxDistance();
+        float originalWidth = _fieldOfViewController.GetWidthScale();
+
+        // Rotate toward target
+        Vector3 direction = (target.position - transform.position).normalized;
+        direction.y = 0;
+        Quaternion targetRotation = Quaternion.LookRotation(direction);
+        float rotateTime = 0.3f;
+        float t = 0f;
+        Quaternion startRotation = transform.rotation;
+
+        while (t < 1f)
+        {
+            t += Time.deltaTime / rotateTime;
+            transform.rotation = Quaternion.Slerp(startRotation, targetRotation, t);
+            yield return null;
+        }
+
+        // Calculate distance to target
+        float distanceToTarget = Vector3.Distance(transform.position, target.position) + 1f; // overshoot slightly
+
+        // Narrow FOV into a line and extend to reach the desk
+        float narrowTime = 0.3f;
+        t = 0f;
+        while (t < 1f)
+        {
+            t += Time.deltaTime / narrowTime;
+            float eased = Mathf.SmoothStep(0f, 1f, t);
+            float newWidth = Mathf.Lerp(originalWidth, 0f, eased);
+            float newDistance = Mathf.Lerp(originalDistance, distanceToTarget, eased);
+            _fieldOfViewController.SetFOVParams(newDistance, newWidth);
+            yield return null;
+        }
+
+        // Hold the look
+        yield return new WaitForSeconds(duration);
+
+        // Restore FOV back to normal
+        float restoreTime = 0.3f;
+        t = 0f;
+        while (t < 1f)
+        {
+            t += Time.deltaTime / restoreTime;
+            float eased = Mathf.SmoothStep(0f, 1f, t);
+            float newWidth = Mathf.Lerp(0f, originalWidth, eased);
+            float newDistance = Mathf.Lerp(distanceToTarget, originalDistance, eased);
+            _fieldOfViewController.SetFOVParams(newDistance, newWidth);
+            yield return null;
+        }
+
+        // Resume patrolling
+        _navMeshAgent.updateRotation = true;
+        _navMeshAgent.isStopped = false;
+        _isActive = true;
+
+        onComplete?.Invoke();
+    }
+    public void PauseAndFollowTarget(Transform target, System.Action onComplete)
+    {
+        StopAllCoroutines();
+        StartCoroutine(FollowTargetRoutine(target, onComplete));
+    }
+
+    private IEnumerator FollowTargetRoutine(Transform target, System.Action onComplete)
+    {
+        _navMeshAgent.isStopped = true;
+        _navMeshAgent.updateRotation = false;
+        _navMeshAgent.velocity = Vector3.zero;
+        _isActive = false;
+
+        // Cache original FOV values
+        float originalDistance = _fieldOfViewController.GetMaxDistance();
+        float originalWidth = _fieldOfViewController.GetWidthScale();
+
+        PlayerController player = target.GetComponent<PlayerController>();
+
+        while (target != null && target.gameObject.activeInHierarchy)
+        {
+            // Stop following when player sits down
+            if (player != null && player.IsSitting && !player.IsCaught)
+                break;
+
+            // ... rest of rotation and FOV code
+            yield return null;
+        }
+
+        // Restore FOV
+        float restoreTime = 0.3f;
+        float currentDistance = _fieldOfViewController.GetMaxDistance();
+        float currentWidth = _fieldOfViewController.GetWidthScale();
+        float t = 0f;
+        while (t < 1f)
+        {
+            t += Time.deltaTime / restoreTime;
+            float eased = Mathf.SmoothStep(0f, 1f, t);
+            _fieldOfViewController.SetFOVParams(
+                Mathf.Lerp(currentDistance, originalDistance, eased),
+                Mathf.Lerp(currentWidth, originalWidth, eased)
+            );
+            yield return null;
+        }
+
+        // Resume patrolling
+        _navMeshAgent.updateRotation = true;
+        _navMeshAgent.isStopped = false;
+        _isActive = true;
+
+        onComplete?.Invoke();
     }
 }

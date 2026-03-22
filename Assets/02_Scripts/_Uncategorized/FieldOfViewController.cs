@@ -161,4 +161,27 @@ public class FieldOfViewController : MonoBehaviour
             _materialInstance.SetColor(_colorProperty, currentColor);
         });
     }
+
+    public void SetMaxDistance(float distance)
+    {
+        _maxDistance = distance;
+        UpdateMesh();
+    }
+
+    public float GetMaxDistance()
+    {
+        return _maxDistance;
+    }
+
+    public float GetWidthScale()
+    {
+        return _widthScale;
+    }
+
+    public void SetFOVParams(float distance, float widthScale)
+    {
+        _maxDistance = distance;
+        _widthScale = Mathf.Clamp01(widthScale);
+        UpdateMesh();
+    }
 }

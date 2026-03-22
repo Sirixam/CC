@@ -13,6 +13,8 @@ public class FlashEffect : MonoBehaviour
     private Color[] _originalColors;
     private string[] _colorPropertyNames;
     private Coroutine _flashCoroutine;
+    private bool _isContinuousFlashing;
+
     private void Awake()
     {
         CollectRenderers();
@@ -106,5 +108,36 @@ public class FlashEffect : MonoBehaviour
     public void RefreshRenderers()
     {
         CollectRenderers();
+    }
+    public void StartContinuousFlash()
+    {
+        if (_isContinuousFlashing) return;
+        _isContinuousFlashing = true;
+
+        if (_flashCoroutine != null)
+            StopCoroutine(_flashCoroutine);
+
+        _flashCoroutine = StartCoroutine(ContinuousFlashRoutine());
+    }
+    public void StopContinuousFlash()
+    {
+        _isContinuousFlashing = false;
+
+        if (_flashCoroutine != null)
+            StopCoroutine(_flashCoroutine);
+
+        RestoreAllColors();
+        _flashCoroutine = null;
+    }
+
+    private IEnumerator ContinuousFlashRoutine()
+    {
+        while (_isContinuousFlashing)
+        {
+            SetAllColors(_flashColor);
+            yield return new WaitForSeconds(_flashDuration);
+            RestoreAllColors();
+            yield return new WaitForSeconds(_flashDuration);
+        }
     }
 }

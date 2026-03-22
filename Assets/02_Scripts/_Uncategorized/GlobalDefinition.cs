@@ -21,4 +21,6 @@ public class GlobalDefinition : ScriptableObject
     [Header("LAYERS")]
     [Layer] public int ItemLayer;
     [Layer] public int FlyingLayer;
+    public enum ECaughtMode { Teleport, WalkBack }
+    public ECaughtMode CaughtMode;
 }

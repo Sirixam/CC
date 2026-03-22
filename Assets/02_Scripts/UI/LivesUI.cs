@@ -17,16 +17,17 @@ public class LivesUI : MonoBehaviour
         {
             if (i < value)
             {
+                _lives[i].gameObject.SetActive(true);
                 _lives[i].color = _defaultColor;
             }
             else
             {
-                _lives[i].color = _emptyColor;
+                _lives[i].color = Color.clear; // transparent, but still occupies space
             }
         }
     }
 
-     public void playLostLifeAnimation(int lifeIndex, Action onComplete)
+    public void playLostLifeAnimation(int lifeIndex, Action onComplete)
     {
         RectTransform target = _lives[lifeIndex].rectTransform;
 
@@ -36,6 +37,7 @@ public class LivesUI : MonoBehaviour
             .Chain(Tween.Scale(target, Vector3.zero, 1f, Ease.InBack)
             .OnComplete(() =>
             {
+                _lives[lifeIndex].color = Color.clear;
                 target.localScale = Vector3.one; // reset for next game
                 onComplete?.Invoke();
             }));

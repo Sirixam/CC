@@ -339,7 +339,7 @@ public class GameManager : MonoBehaviour
             SetLives(_playerLives);
             _isProcessingLifeLoss = false;
         });
-        
+
         if (_playerLives > 0)
         {
             foreach (var player in _players)
@@ -348,28 +348,32 @@ public class GameManager : MonoBehaviour
                     flash.Flash();
             }
 
-            playerController.OnCaught(onAfterTeleport: null);
+            if (_globalDefinition.CaughtMode == GlobalDefinition.ECaughtMode.WalkBack)
+            {
+                // Start continuous flash on caught player
+                if (_playerFlashEffects.TryGetValue(playerController, out var caughtFlash))
+                    caughtFlash.StartContinuousFlash();
+
+                // Teacher follows the player
+                if (_teacherManager != null)
+                    _teacherManager.PauseAndFollowTarget(playerController.transform, null);
+
+                playerController.OnCaughtWalkBack(onSeated: () =>
+                {
+                    // Stop continuous flash
+                    if (_playerFlashEffects.TryGetValue(playerController, out var flash))
+                        flash.StopContinuousFlash();
+
+                    // Tell teacher to stop following (deactivate target tracking)
+                    // Teacher's coroutine will detect player is seated and exit
+                });
+            }
+            else
+            {
+                playerController.OnCaught(onAfterTeleport: null);
+            }
             return;
         }
-        
-        foreach (var player in _players)
-        {
-            player.InputHandler.Block();
-            player.InputHandler.PlayerInput.DeactivateInput();
-            player.ResetInputState();
-            player.ForceClearInteractionState();
-            player.ForceStopDash();
-
-            if (_playerFlashEffects.TryGetValue(player, out var flash))
-                flash.Flash();
-
-            player.View.OnCaught(player.transform.position, onComplete: () =>
-            {
-                player.gameObject.SetActive(false);
-            });
-        }
-
-        ShowEndMenu(_defeatFeedback);
     }
     private void SetLives(int value)
     {

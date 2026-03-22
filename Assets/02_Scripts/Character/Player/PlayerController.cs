@@ -81,6 +81,12 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     public event Action<EDevice> OnShowHelp;
     public event Action OnHideHelp;
+    public Transform InitialChairTransform => _initialChairController != null
+        ? _initialChairController.SittingPoint
+        : null;
+
+    private bool _isWalkingBack;
+
 
     private void Awake()
     {
@@ -704,8 +710,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             return;
 
         bool canMove = !_stunHelper.IsStunned && !_isCaught;
-        _physics.OnFixedUpdate(Time.fixedDeltaTime, canMove, out bool stoppedDashing);
-        if (stoppedDashing)
+        _physics.OnFixedUpdate(Time.fixedDeltaTime, canMove: !_stunHelper.IsStunned && (!_isCaught || _isWalkingBack), out bool stoppedDashing);
         {
             _view.OnStopDash();
         }
@@ -817,9 +822,12 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     {
         _stunHelper.ForceStop();
     }
-    public void ResetPlayerState()
+
+   public void ResetPlayerState()
     {
         _isCaught = false;
+        _isWalkingBack = false;
+        _physics.StopFollowingPath();
         ResetInputState();
         ForceClearInteractionState();
         ForceStopStun();
@@ -840,5 +848,37 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     {
         if (_answerController != null)
             _answerController.SetDurations(0, duration, 0);
+    }
+    public void OnCaughtWalkBack(Action onSeated)
+    {
+        if (_isCaught) return;
+        _isCaught = true;
+        _isWalkingBack = true;
+
+        _inputHandler.Block();
+        _inputHandler.PlayerInput.DeactivateInput();
+        ResetInputState();
+        ForceClearInteractionState();
+        ForceStopDash();
+
+        if (_initialChairController.IsBlocked)
+            _initialChairController.Unblock();
+
+        // Use navmesh path instead of straight line
+        _physics.StartFollowingNavMeshPath(_initialChairController.SittingPoint.position);
+        _physics.OnArriveEvent += OnArrivedAtChair;
+
+        void OnArrivedAtChair()
+        {
+            _physics.OnArriveEvent -= OnArrivedAtChair;
+            _physics.StopFollowingPath();
+            _chairHelper.TeleportToSitting(_initialChairController);
+            _isCaught = false;
+            _isWalkingBack = false;
+            _answerController = _initialChairController.AnswerController;
+            _inputHandler.PlayerInput.ActivateInput();
+            StartCoroutine(DelayedUnblock());
+            onSeated?.Invoke();
+        }
     }
 }

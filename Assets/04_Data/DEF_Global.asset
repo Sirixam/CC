@@ -25,3 +25,4 @@ MonoBehaviour:
   DistractionTag: Distraction
   ItemLayer: 7
   FlyingLayer: 8
+  CaughtMode: 1
