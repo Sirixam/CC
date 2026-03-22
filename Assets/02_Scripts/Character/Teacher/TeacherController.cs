@@ -46,6 +46,8 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
     private Vector3 _initialPosition;
     private Quaternion _initialRotation;
     private float _detectionCooldown;
+    public void PlayAngryVFX() => _teacherView.PlayAngryVFX();
+    public void StopAngryVFX() => _teacherView.StopAngryVFX();
 
 
     private void Awake()
@@ -77,12 +79,13 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
 
     private void Update()
     {
-        _navigationHelper.Update();
 
         if (_detectionCooldown > 0)
             _detectionCooldown -= Time.deltaTime;
 
         if (!_isActive) return;
+
+        _navigationHelper.Update();
 
         _remainingTime -= Time.deltaTime;
         if (_remainingTime <= 0)
@@ -156,7 +159,7 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
 
             _detectionCooldown = 1f; // ignore further detections for 1 second
             OnPlayerDetected?.Invoke(playerController);
-            _audioHelper.OnGettingCaught();
+            _teacherView.PlayAngryVFX();
         }
         else if (other.gameObject.layer == _globalDefinition.ItemLayer || other.gameObject.layer == _globalDefinition.FlyingLayer)
         {
@@ -175,6 +178,8 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
     public void ResetTeacher()
     {
         StopAllCoroutines();
+        _teacherView.StopAngryVFX();
+
 
         _navigationHelper.Reset();
         _detectionCooldown = 0f;
@@ -285,43 +290,54 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
     public void PauseAndFollowTarget(Transform target, System.Action onComplete)
     {
         StopAllCoroutines();
+        _navigationHelper.Reset();
         StartCoroutine(FollowTargetRoutine(target, onComplete));
     }
 
     private IEnumerator FollowTargetRoutine(Transform target, System.Action onComplete)
     {
+        Debug.Log("FollowTargetRoutine: STARTED, disabling agent");
+
         _navMeshAgent.isStopped = true;
+        _navMeshAgent.ResetPath();
         _navMeshAgent.updateRotation = false;
         _navMeshAgent.velocity = Vector3.zero;
-        _navMeshAgent.enabled = false; // disable agent so obstacle can carve
+        _navMeshAgent.enabled = false;
         _isActive = false;
 
         if (_walkBackObstacle != null)
-        {
             _walkBackObstacle.enabled = true;
-            Debug.Log($"Obstacle enabled at {_walkBackObstacle.transform.position}");
-        }
-        else
-        {
-            Debug.Log("WalkBackObstacle is null!");
-        }
 
-
-        // Cache original FOV values
         float originalDistance = _fieldOfViewController.GetMaxDistance();
         float originalWidth = _fieldOfViewController.GetWidthScale();
 
         PlayerController player = target.GetComponent<PlayerController>();
 
+        Debug.Log($"FollowTargetRoutine: entering while loop, IsSitting: {player.IsSitting}, IsCaught: {player.IsCaught}");
+
         while (target != null && target.gameObject.activeInHierarchy)
         {
-            // Stop following when player sits down
             if (player != null && player.IsSitting && !player.IsCaught)
+            {
+                Debug.Log("FollowTargetRoutine: player sat down, breaking");
                 break;
+            }
 
-            // ... rest of rotation and FOV code
+            Vector3 direction = (target.position - transform.position).normalized;
+            direction.y = 0;
+            if (direction.sqrMagnitude > 0.001f)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(direction);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 8f);
+            }
+
             yield return null;
         }
+
+        Debug.Log("FollowTargetRoutine: while loop exited, restoring");
+
+        // Small pause before resuming
+        yield return new WaitForSeconds(0.5f);
 
         // Restore FOV
         float restoreTime = 0.3f;
@@ -342,10 +358,29 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
         if (_walkBackObstacle != null)
             _walkBackObstacle.enabled = false;
 
+        // Wait one frame for obstacle to uncarve
+        yield return null;
+
+        Vector3 currentPos = transform.position;
         _navMeshAgent.enabled = true;
+
+        // Sample nearest valid navmesh point
+        if (UnityEngine.AI.NavMesh.SamplePosition(currentPos, out UnityEngine.AI.NavMeshHit hit, 2f, UnityEngine.AI.NavMesh.AllAreas))
+        {
+            _navMeshAgent.Warp(hit.position);
+        }
+        else
+        {
+            _navMeshAgent.Warp(currentPos);
+        }
+
         _navMeshAgent.updateRotation = true;
         _navMeshAgent.isStopped = false;
         _isActive = true;
+
+        _state = EState.Patrol;
+        _remainingTime = UnityEngine.Random.Range(_timeToSitRange.x, _timeToSitRange.y);
+        _navigationHelper.GoToRandomDestination();
 
         onComplete?.Invoke();
     }

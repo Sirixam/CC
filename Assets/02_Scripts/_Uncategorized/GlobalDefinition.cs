@@ -13,6 +13,8 @@ public class GlobalDefinition : ScriptableObject
     public Vector2 PreAnsweringDelay;
     public Vector2 AnsweringDuration;
     public Vector2 PostAnsweringDelay;
+    public enum ECaughtMode { Teleport, WalkBack }
+    public ECaughtMode CaughtMode;
 
     [Header("TAGS")]
     [Tag] public string PlayerTag;
@@ -21,6 +23,4 @@ public class GlobalDefinition : ScriptableObject
     [Header("LAYERS")]
     [Layer] public int ItemLayer;
     [Layer] public int FlyingLayer;
-    public enum ECaughtMode { Teleport, WalkBack }
-    public ECaughtMode CaughtMode;
 }

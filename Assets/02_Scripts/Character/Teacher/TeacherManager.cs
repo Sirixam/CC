@@ -94,4 +94,15 @@ public class TeacherManager : MonoBehaviour
             return _teachers[0].transform.position;
         return null;
     }
+    public void PlayAngryVFX()
+    {
+        for (int i = 0; i < _teachers.Length; i++)
+            _teachers[i].PlayAngryVFX();
+    }
+
+    public void StopAngryVFX()
+    {
+        for (int i = 0; i < _teachers.Length; i++)
+            _teachers[i].StopAngryVFX();
+    }
 }

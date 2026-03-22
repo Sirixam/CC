@@ -353,21 +353,26 @@ public class GameManager : MonoBehaviour
             foreach (var player in _players)
             {
                 if (player == playerController && _globalDefinition.CaughtMode == GlobalDefinition.ECaughtMode.WalkBack)
-                    continue; // skip regular flash for caught player, they get continuous flash
+                    continue;
 
                 if (_playerFlashEffects.TryGetValue(player, out var flash))
                     flash.Flash();
             }
 
+            // Teacher stops and follows the student in BOTH modes
+            if (_teacherManager != null)
+            {
+                _teacherManager.PlayAngryVFX();
+                _teacherManager.PauseAndFollowTarget(playerController.transform, () =>
+                {
+                    _teacherManager.StopAngryVFX();
+                });
+            }
+
             if (_globalDefinition.CaughtMode == GlobalDefinition.ECaughtMode.WalkBack)
             {
-                Debug.Log("WalkBack mode, starting continuous flash");
                 if (_playerFlashEffects.TryGetValue(playerController, out var caughtFlash))
                     caughtFlash.StartContinuousFlash();
-
-                // Teacher follows the player
-                if (_teacherManager != null)
-                    _teacherManager.PauseAndFollowTarget(playerController.transform, null);
 
                 StartCoroutine(DelayedWalkBack(playerController));
             }
@@ -377,6 +382,34 @@ public class GameManager : MonoBehaviour
             }
             return;
         }
+        
+        if (_teacherManager != null)
+        {
+            _teacherManager.PlayAngryVFX();
+            _teacherManager.PauseAndFollowTarget(playerController.transform, () =>
+            {
+                _teacherManager.StopAngryVFX();
+            });
+        }
+
+        foreach (var player in _players)
+        {
+            player.InputHandler.Block();
+            player.InputHandler.PlayerInput.DeactivateInput();
+            player.ResetInputState();
+            player.ForceClearInteractionState();
+            player.ForceStopDash();
+
+            if (_playerFlashEffects.TryGetValue(player, out var flash))
+                flash.Flash();
+
+            player.View.OnCaught(player.transform.position, onComplete: () =>
+            {
+                player.gameObject.SetActive(false);
+            });
+        }
+
+        ShowEndMenu(_defeatFeedback);
     }
     private void SetLives(int value)
     {
@@ -596,7 +629,10 @@ public class GameManager : MonoBehaviour
                     flash.StopContinuousFlash();
 
                 if (_teacherManager != null)
+                {
                     _teacherManager.IgnoreCollisionWith(playerController.GetColliders(), false);
+                    _teacherManager.StopAngryVFX();
+                }
             },
             avoidPosition: teacherPos
         );
