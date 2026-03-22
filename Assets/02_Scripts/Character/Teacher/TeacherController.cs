@@ -22,6 +22,9 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
     [SerializeField] private NavMeshObstacle _walkBackObstacle;
     [SerializeField] private Collider _collider;
     [SerializeField] private TeacherView _teacherView;
+    [SerializeField] private float _detectionDwellTime = 0.3f;
+    private PlayerController _playerInsideFOV;
+    private float _dwellTimer;
     public Collider Collider => _collider;
 
     [Header("Configurations")]
@@ -58,11 +61,13 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
         _audioHelper = new TeacherAudioHelper(_audioData);
         _fieldOfViewController.HideInstant();
         _detectionTriggerListener.OnEnter += OnDetectionTriggerEnter;
+        _detectionTriggerListener.OnExit += OnDetectionTriggerExit;
     }
 
     private void OnDestroy()
     {
         _detectionTriggerListener.OnEnter -= OnDetectionTriggerEnter;
+        _detectionTriggerListener.OnExit -= OnDetectionTriggerExit;
     }
 
     public void Inject(NavigationManager navigationManager)
@@ -79,9 +84,29 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
 
     private void Update()
     {
-
         if (_detectionCooldown > 0)
             _detectionCooldown -= Time.deltaTime;
+
+        // Dwell time detection
+        if (_playerInsideFOV != null)
+        {
+            if (_playerInsideFOV.IsSitting || _playerInsideFOV.IsCaught)
+            {
+                _playerInsideFOV = null;
+                _dwellTimer = 0f;
+            }
+            else
+            {
+                _dwellTimer -= Time.deltaTime;
+                if (_dwellTimer <= 0f && _detectionCooldown <= 0f)
+                {
+                    _detectionCooldown = 1f;
+                    OnPlayerDetected?.Invoke(_playerInsideFOV);
+                    _teacherView.PlayAngryVFX();
+                    _playerInsideFOV = null;
+                }
+            }
+        }
 
         if (!_isActive) return;
 
@@ -93,7 +118,6 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
             if (_state == EState.Sit)
             {
                 Stand();
-
                 _state = EState.Patrol;
                 _navigationHelper.GoToRandomDestination();
             }
@@ -153,13 +177,11 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
         if (other.CompareTag(_globalDefinition.PlayerTag))
         {
             PlayerController playerController = other.GetComponentInParent<PlayerController>();
+            if (playerController != null && playerController.IsSitting) return;
+            if (playerController != null && playerController.IsCaught) return;
 
-            if (playerController != null && playerController.IsSitting)
-                return;
-
-            _detectionCooldown = 1f; // ignore further detections for 1 second
-            OnPlayerDetected?.Invoke(playerController);
-            _teacherView.PlayAngryVFX();
+            _playerInsideFOV = playerController;
+            _dwellTimer = _detectionDwellTime;
         }
         else if (other.gameObject.layer == _globalDefinition.ItemLayer || other.gameObject.layer == _globalDefinition.FlyingLayer)
         {
@@ -174,13 +196,27 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
             }
         }
     }
+    private void OnDetectionTriggerExit(Collider other)
+    {
+        if (other.CompareTag(_globalDefinition.PlayerTag))
+        {
+            PlayerController playerController = other.GetComponentInParent<PlayerController>();
+            if (playerController == _playerInsideFOV)
+            {
+                _playerInsideFOV = null;
+                _dwellTimer = 0f;
+            }
+        }
+    }
 
     public void ResetTeacher()
     {
         StopAllCoroutines();
         _teacherView.StopAngryVFX();
 
-
+        _playerInsideFOV = null;
+        _dwellTimer = 0f;
+        
         _navigationHelper.Reset();
         _detectionCooldown = 0f;
 
@@ -197,7 +233,7 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
             _navMeshAgent.updateRotation = false;
             _navMeshAgent.Warp(_initialPosition);
         }
-        
+
         // Also disable the obstacle if it was active
         if (_walkBackObstacle != null)
             _walkBackObstacle.enabled = false;

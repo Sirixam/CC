@@ -21,8 +21,8 @@ MonoBehaviour:
   PreAnsweringDelay: {x: 30, y: 30}
   AnsweringDuration: {x: 5, y: 5}
   PostAnsweringDelay: {x: 25, y: 25}
+  CaughtMode: 1
   PlayerTag: Player
   DistractionTag: Distraction
   ItemLayer: 7
   FlyingLayer: 8
-  CaughtMode: 1

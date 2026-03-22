@@ -184,4 +184,8 @@ public class FieldOfViewController : MonoBehaviour
         _widthScale = Mathf.Clamp01(widthScale);
         UpdateMesh();
     }
+    public float GetFieldOfView()
+    {
+        return _fieldOfView;
+    }
 }
