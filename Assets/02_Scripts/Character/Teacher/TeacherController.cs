@@ -184,6 +184,10 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
         _navigationHelper.Reset();
         _detectionCooldown = 0f;
 
+        // Re-enable agent first if it was disabled
+        if (!_navMeshAgent.enabled)
+            _navMeshAgent.enabled = true;
+
         // Stop movement immediately
         if (_navMeshAgent != null)
         {
@@ -193,6 +197,10 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
             _navMeshAgent.updateRotation = false;
             _navMeshAgent.Warp(_initialPosition);
         }
+        
+        // Also disable the obstacle if it was active
+        if (_walkBackObstacle != null)
+            _walkBackObstacle.enabled = false;
 
         // Reset transform
         transform.position = _initialPosition;
@@ -229,10 +237,6 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
         _navMeshAgent.velocity = Vector3.zero;
         _isActive = false;
 
-        // Cache original FOV values
-        float originalDistance = _fieldOfViewController.GetMaxDistance();
-        float originalWidth = _fieldOfViewController.GetWidthScale();
-
         // Rotate toward target
         Vector3 direction = (target.position - transform.position).normalized;
         direction.y = 0;
@@ -251,34 +255,8 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
         // Calculate distance to target
         float distanceToTarget = Vector3.Distance(transform.position, target.position) + 1f; // overshoot slightly
 
-        // Narrow FOV into a line and extend to reach the desk
-        float narrowTime = 0.3f;
-        t = 0f;
-        while (t < 1f)
-        {
-            t += Time.deltaTime / narrowTime;
-            float eased = Mathf.SmoothStep(0f, 1f, t);
-            float newWidth = Mathf.Lerp(originalWidth, 0f, eased);
-            float newDistance = Mathf.Lerp(originalDistance, distanceToTarget, eased);
-            _fieldOfViewController.SetFOVParams(newDistance, newWidth);
-            yield return null;
-        }
-
         // Hold the look
         yield return new WaitForSeconds(duration);
-
-        // Restore FOV back to normal
-        float restoreTime = 0.3f;
-        t = 0f;
-        while (t < 1f)
-        {
-            t += Time.deltaTime / restoreTime;
-            float eased = Mathf.SmoothStep(0f, 1f, t);
-            float newWidth = Mathf.Lerp(0f, originalWidth, eased);
-            float newDistance = Mathf.Lerp(distanceToTarget, originalDistance, eased);
-            _fieldOfViewController.SetFOVParams(newDistance, newWidth);
-            yield return null;
-        }
 
         // Resume patrolling
         _navMeshAgent.updateRotation = true;
@@ -291,17 +269,27 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
     {
         StopAllCoroutines();
         _navigationHelper.Reset();
+
+        // Re-enable agent if it was disabled from a previous follow
+        if (!_navMeshAgent.enabled)
+        {
+            _navMeshAgent.enabled = true;
+            _navMeshAgent.Warp(transform.position);
+        }
+
         StartCoroutine(FollowTargetRoutine(target, onComplete));
     }
 
     private IEnumerator FollowTargetRoutine(Transform target, System.Action onComplete)
     {
-        Debug.Log("FollowTargetRoutine: STARTED, disabling agent");
 
-        _navMeshAgent.isStopped = true;
-        _navMeshAgent.ResetPath();
-        _navMeshAgent.updateRotation = false;
-        _navMeshAgent.velocity = Vector3.zero;
+        if (_navMeshAgent.enabled)
+        {
+            _navMeshAgent.isStopped = true;
+            _navMeshAgent.ResetPath();
+            _navMeshAgent.updateRotation = false;
+            _navMeshAgent.velocity = Vector3.zero;
+        }
         _navMeshAgent.enabled = false;
         _isActive = false;
 
@@ -338,22 +326,6 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
 
         // Small pause before resuming
         yield return new WaitForSeconds(0.5f);
-
-        // Restore FOV
-        float restoreTime = 0.3f;
-        float currentDistance = _fieldOfViewController.GetMaxDistance();
-        float currentWidth = _fieldOfViewController.GetWidthScale();
-        float t = 0f;
-        while (t < 1f)
-        {
-            t += Time.deltaTime / restoreTime;
-            float eased = Mathf.SmoothStep(0f, 1f, t);
-            _fieldOfViewController.SetFOVParams(
-                Mathf.Lerp(currentDistance, originalDistance, eased),
-                Mathf.Lerp(currentWidth, originalWidth, eased)
-            );
-            yield return null;
-        }
 
         if (_walkBackObstacle != null)
             _walkBackObstacle.enabled = false;
