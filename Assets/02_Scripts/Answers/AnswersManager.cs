@@ -421,7 +421,7 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
 
         Sprite answerTypeIcon = GetAnswerTypeIcon(answerID);
         peekUI.Setup(peek, characterIcon, archetypeIcon, answerTypeIcon);
-        if (HaveAllPlayersAnsweredFully(answerID, out _))
+        if (HaveAllPlayersAnsweredFully(answerID, out float minCorrectness) && minCorrectness >= 1f)
         {
             peekUI.SetCompleted(true);
         }
