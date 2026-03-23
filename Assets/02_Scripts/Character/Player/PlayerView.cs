@@ -20,6 +20,8 @@ public class PlayerView : MonoBehaviour, IStunView, IChairView
     [SerializeField] private float _caughtShakeDuration = 0.07f;
     [SerializeField] private int _caughtShakeCount = 5;
     [SerializeField] private ParticleSystem _caughtCloudVFXPrefab;
+    [SerializeField] private ParticleSystem _caughtSymbolsVFX;
+
     private Sequence _caughtSequence;
     [SerializeField] private TweenSettings<Vector3> _caughtShrinkTweenSettings = new();
     private Tween _caughtShrinkTween;
@@ -232,5 +234,19 @@ public class PlayerView : MonoBehaviour, IStunView, IChairView
 
         foreach (var trail in _dashTrails)
             trail.emitting = false;
+
+        if (_caughtSymbolsVFX != null)
+            _caughtSymbolsVFX.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+    }
+    public void PlayCaughtSymbols()
+    {
+        if (_caughtSymbolsVFX != null)
+            _caughtSymbolsVFX.Play();
+    }
+
+    public void StopCaughtSymbols()
+    {
+        if (_caughtSymbolsVFX != null)
+            _caughtSymbolsVFX.Stop(true, ParticleSystemStopBehavior.StopEmitting);
     }
 }

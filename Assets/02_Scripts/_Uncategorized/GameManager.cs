@@ -359,6 +359,8 @@ public class GameManager : MonoBehaviour
                     flash.Flash();
             }
 
+            playerController.PlayCaughtAudio();
+
             // Teacher stops and follows the student in BOTH modes
             if (_teacherManager != null)
             {
@@ -382,7 +384,7 @@ public class GameManager : MonoBehaviour
             }
             return;
         }
-        
+
         if (_teacherManager != null)
         {
             _teacherManager.PlayAngryVFX();

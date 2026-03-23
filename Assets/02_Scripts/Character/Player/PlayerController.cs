@@ -721,6 +721,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
         bool canMove = !_stunHelper.IsStunned && !_isCaught;
         _physics.OnFixedUpdate(Time.fixedDeltaTime, canMove: !_stunHelper.IsStunned && (!_isCaught || _isWalkingBack), out bool stoppedDashing);
+        if (stoppedDashing)
         {
             _view.OnStopDash();
         }
@@ -731,29 +732,48 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (!_isWalkingBack) return;
-
-        PlayerController otherPlayer = collision.gameObject.GetComponentInParent<PlayerController>();
-        if (otherPlayer == null || otherPlayer == this) return;
-        if (otherPlayer.IsCaught) return; // don't push another caught player
-
-        // Calculate push direction — perpendicular to our walk direction
-        Vector3 walkDir = _physics.PathDirection;
-        Vector3 toOther = (otherPlayer.transform.position - transform.position).normalized;
-
-        // Determine which side to push — left or right of walk direction
-        float cross = Vector3.Cross(walkDir, toOther).y;
-        Vector3 pushDir = cross >= 0
-            ? new Vector3(walkDir.z, 0, -walkDir.x)   // right
-            : new Vector3(-walkDir.z, 0, walkDir.x);  // left
-
-        // Check if that side is blocked, if so push the other way
-        if (Physics.Raycast(otherPlayer.transform.position, pushDir, 1f))
+        // Walk-back push logic
+        if (_isWalkingBack)
         {
-            pushDir = -pushDir;
+            PlayerController otherPlayer = collision.gameObject.GetComponentInParent<PlayerController>();
+            if (otherPlayer != null && otherPlayer != this && !otherPlayer.IsCaught)
+            {
+                Vector3 walkDir = _physics.PathDirection;
+                Vector3 toOther = (otherPlayer.transform.position - transform.position).normalized;
+                float cross = Vector3.Cross(walkDir, toOther).y;
+                Vector3 pushDir = cross >= 0
+                    ? new Vector3(walkDir.z, 0, -walkDir.x)
+                    : new Vector3(-walkDir.z, 0, walkDir.x);
+                if (Physics.Raycast(otherPlayer.transform.position, pushDir, 1f))
+                    pushDir = -pushDir;
+                otherPlayer.OnPushedAside(pushDir);
+            }
+            return;
         }
 
-        otherPlayer.OnPushedAside(pushDir);
+        // Dash-to-sit logic
+        if (!_physics.IsDashing) return;
+        if (_chairHelper.IsSitting) return;
+
+        ChairController chair = collision.gameObject.GetComponentInParent<ChairController>();
+        if (chair == null) return;
+        if (!chair.CanPlayerSit) return;
+
+        // Check approach angle — reject from behind
+        Vector3 toChair = (chair.SittingPoint.position - transform.position).normalized;
+        Vector3 chairRight = chair.transform.right;
+        float sideAlignment = Mathf.Abs(Vector3.Dot(toChair, chairRight));
+
+        // sideAlignment > 0.3 means approaching from the sides
+        // Also allow from the front (dot with chair.forward)
+        float frontAlignment = Vector3.Dot(toChair, chair.transform.forward);
+
+        if (sideAlignment < 0.3f && frontAlignment < 0.3f)
+            return; // approaching from behind, don't allow
+
+        // Stop dash and sit instantly
+        ForceStopDash();
+        RequestSitting(chair);
     }
 
     private void OnInteractionTriggerEnter(Collider other)
@@ -894,6 +914,8 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _isCaught = true;
         _isWalkingBack = true;
 
+        _view.PlayCaughtSymbols();
+
         _inputHandler.Block();
         _inputHandler.PlayerInput.DeactivateInput();
         ResetInputState();
@@ -927,7 +949,9 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
         void OnArrivedAtChair()
         {
+            _view.PlayCaughtSymbols();
             _physics.OnArriveEvent -= OnArrivedAtChair;
+            _view.StopCaughtSymbols();
             _physics.StopFollowingPath();
             _chairHelper.TeleportToSitting(_initialChairController);
             _lookHelper.SetLookAt(_initialChairController.LookAtPoint);
@@ -954,5 +978,9 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     public Collider[] GetColliders()
     {
         return _physics.Colliders;
+    }
+    public void PlayCaughtAudio()
+    {
+        _audioHelper.OnCaught();
     }
 }

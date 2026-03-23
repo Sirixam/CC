@@ -4056,6 +4056,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 2994896442341047896, guid: 0ad07dedf987bb2439d07df5bc57dc3a, type: 3}
+      propertyPath: _detectionDwellTime
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2994896442341047896, guid: 0ad07dedf987bb2439d07df5bc57dc3a, type: 3}
       propertyPath: _audioData.CaughtAudio
       value: 
       objectReference: {fileID: 11400000, guid: c5a9f7c67793deb45847d65f973ff710, type: 2}
@@ -15207,7 +15211,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_NotificationBehavior: 2
-  m_MaxPlayerCount: 1
+  m_MaxPlayerCount: 2
   m_AllowJoining: 1
   m_JoinBehavior: 0
   m_PlayerJoinedEvent:

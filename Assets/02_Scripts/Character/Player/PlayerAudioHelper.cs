@@ -14,6 +14,7 @@ public class PlayerAudioHelper
         public AudioDefinition CollectingAudio;
         public AudioDefinition CheatingAudio;
         public AudioDefinition StunnedAudio;
+        public AudioDefinition CaughtAudio;
     }
 
     private Data _data;
@@ -80,5 +81,9 @@ public class PlayerAudioHelper
     public void OnStun()
     {
         _data.StunnedAudio.Play();
+    }
+    public void OnCaught()
+    {
+        _data.CaughtAudio.Play();
     }
 }
