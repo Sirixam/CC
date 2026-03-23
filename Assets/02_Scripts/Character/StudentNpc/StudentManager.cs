@@ -215,9 +215,13 @@ public class StudentManager : MonoBehaviour
         bool finished = false;
         while (!finished && !cancellationToken.IsCancellationRequested)
         {
+            finished = true;
             foreach (var student in _students)
             {
-                student.AnswerController.UpdateRemainingTime(Time.deltaTime, out finished);
+                if (string.IsNullOrEmpty(student.AnswerController.ActiveAnswerID)) continue;
+
+                student.AnswerController.UpdateRemainingTime(Time.deltaTime, out bool studentFinished);
+                if (!studentFinished) finished = false;
             }
             await UniTask.Yield(cancellationToken);
         }
@@ -228,9 +232,13 @@ public class StudentManager : MonoBehaviour
         bool finished = false;
         while (!finished && !cancellationToken.IsCancellationRequested)
         {
+            finished = true;
             foreach (var student in _students)
             {
-                student.AnswerController.UpdateAnswering(Time.deltaTime, out finished);
+                if (string.IsNullOrEmpty(student.AnswerController.ActiveAnswerID)) continue;
+
+                student.AnswerController.UpdateAnswering(Time.deltaTime, out bool studentFinished);
+                if (!studentFinished) finished = false;
             }
             await UniTask.Yield(cancellationToken);
         }

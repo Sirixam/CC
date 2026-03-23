@@ -39,6 +39,8 @@ public class PlayerView : MonoBehaviour, IStunView, IChairView
     private Tween _scaleTweenZ;
     private Tween _scaleTweenY;
     private Tween _positionTween;
+    private Sequence _heldItemShakeTween;
+
 
     public Vector3 PickUpPosition => _itemContainer.position + _pickUpTweenSettings.endValue;
     public CheatUI PeekUI => _peekUI;
@@ -248,5 +250,25 @@ public class PlayerView : MonoBehaviour, IStunView, IChairView
     {
         if (_caughtSymbolsVFX != null)
             _caughtSymbolsVFX.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+    }
+
+    public void ShakeHeldItem()
+    {
+        if (_itemContainer.childCount == 0) return;
+        Transform item = _itemContainer.GetChild(0);
+
+        _heldItemShakeTween.Stop();
+        _heldItemShakeTween = Sequence.Create(cycles: -1)
+            .Chain(Tween.LocalPositionX(item, 0.05f, 0.05f, Ease.OutQuad))
+            .Chain(Tween.LocalPositionX(item, -0.05f, 0.05f, Ease.OutQuad));
+    }
+
+    public void StopShakeHeldItem()
+    {
+        _heldItemShakeTween.Stop();
+        if (_itemContainer.childCount > 0)
+        {
+            _itemContainer.GetChild(0).localPosition = Vector3.zero;
+        }
     }
 }

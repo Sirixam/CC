@@ -12,14 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40d90e2970b957e4d8dae8e9f0f2f052, type: 3}
   m_Name: DEF_Global
   m_EditorClassIdentifier: 
-  StartGameWhenAllPlayersJoined: 0
+  StartGameWhenAllPlayersJoined: 1
   CanUseAnyPlayerChair: 1
   PersistAnswerProgress: 0
   SimulateStudentsIndividually: 0
   MinCorrectnessToEarlyVictoryFlow: 1
   PlayerLives: 3
-  PreAnsweringDelay: {x: 30, y: 30}
-  AnsweringDuration: {x: 5, y: 5}
+  PreAnsweringDelay: {x: 2, y: 2}
+  AnsweringDuration: {x: 2, y: 2}
   PostAnsweringDelay: {x: 25, y: 25}
   CaughtMode: 1
   PlayerTag: Player

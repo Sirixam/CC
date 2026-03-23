@@ -7,6 +7,11 @@ public class AudioDefinition : ScriptableObject
     [SerializeField] private float _volume = 1;
     [SerializeField] private float _pitch = 1;
     [SerializeField] private bool _loop = false;
+    [SerializeField] private bool _preventOverlap = false;
+    private AudioSource _lastSource;
+
+
+
 
     public AudioSource Play()
     {
@@ -16,7 +21,12 @@ public class AudioDefinition : ScriptableObject
             return null;
         }
 
+        // Skip only if the previous sound is actually still playing
+        if (_preventOverlap && _lastSource != null && _lastSource.isPlaying)
+            return null;
+
         AudioClip randomClip = _clips[Random.Range(0, _clips.Length)];
-        return AudioManager.Instance.PlaySFX(randomClip, _volume, _pitch, _loop);
+        _lastSource = AudioManager.Instance.PlaySFX(randomClip, _volume, _pitch, _loop);
+        return _lastSource;
     }
 }

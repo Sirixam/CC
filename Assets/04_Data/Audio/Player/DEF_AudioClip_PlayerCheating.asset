@@ -21,3 +21,4 @@ MonoBehaviour:
   _volume: 1
   _pitch: 1
   _loop: 0
+  _preventOverlap: 1

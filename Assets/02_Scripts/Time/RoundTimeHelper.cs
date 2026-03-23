@@ -11,7 +11,6 @@ public class RoundTimeHelper
     public float ElapsedTime { get; private set; }
     public float TotalDuration { get; private set; }
 
-    public event Action<float> OnTimeUpdated;
     public event Action<int> OnPhaseChanged;
     public event Action<int, int> OnCountdownBeep;
     public event Action OnLoopRestarted;

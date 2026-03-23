@@ -25,6 +25,8 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     private float _remainingTimeToDestroyOnIdle;
     private EState _state;
     private string _lastOwnerID;
+    private bool _hasHitGround;
+    public bool HasHitGround => _hasHitGround;
 
     public string ID { get; private set; }
     public bool HasAnswer => !string.IsNullOrWhiteSpace(_answerID) || _defaultAnswerDefinition != null;
@@ -35,6 +37,7 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     public InteractionController InteractionController => GetComponentInChildren<InteractionController>();
 
     string IItemController.LastOwnerID => _lastOwnerID;
+    public EState State => _state;
 
     private void Awake()
     {
@@ -103,9 +106,15 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Environment") || collision.gameObject.CompareTag("NPC"))
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Environment")
+            || collision.gameObject.layer == LayerMask.NameToLayer("Floor")
+            || collision.gameObject.CompareTag("NPC"))
         {
-            //_audioHelper.OnCollide(collision);
+            if (collision.gameObject.layer == LayerMask.NameToLayer("Floor"))
+            {
+                _hasHitGround = true;
+            }
+
             if (_state == EState.MidAir)
             {
                 SetIdleState();
@@ -132,6 +141,7 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     void IPickUpInteractionOwner.OnThrowed()
     {
         _state = EState.MidAir;
+        _hasHitGround = false;
     }
 
     public void OnDetectedByTeacher()

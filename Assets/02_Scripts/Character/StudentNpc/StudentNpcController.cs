@@ -153,6 +153,10 @@ public class StudentNpcController : MonoBehaviour
     {
         if (collision.collider.CompareTag(_globalDefinition.DistractionTag))
         {
+            PaperBallController paperBall = collision.collider.GetComponentInParent<PaperBallController>();
+            if (paperBall != null && paperBall.HasHitGround)
+                return;
+
             Vector3 hitDirection = Vector3.zero;
             foreach (var contact in collision.contacts)
             {

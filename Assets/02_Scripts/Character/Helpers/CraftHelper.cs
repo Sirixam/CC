@@ -21,8 +21,8 @@ public class CraftHelper
     private PlayerView _actorView;
     private InteractionHelper _interactionHelper;
     private ICraftService _craftService;
-
     private CraftData _craftData;
+    private bool _shouldDropBeforeCraft;
     private Vector3 PickUpPosition => _actorView.PickUpPosition + Vector3.up; // Slightly above to highlight briefly.
 
     public bool IsCrafting { get; private set; }
@@ -41,6 +41,15 @@ public class CraftHelper
         if (_craftData.RemainingTime <= 0)
         {
             IsCrafting = false;
+
+            // Drop current item right before crafting new one
+            if (_shouldDropBeforeCraft)
+            {
+                _actorView.StopShakeHeldItem();
+                DropCurrentItem();
+                _shouldDropBeforeCraft = false;
+            }
+
             CraftItem(_craftData.ItemName);
             _actorView.CraftingUI.Hide();
         }
@@ -60,6 +69,13 @@ public class CraftHelper
             return false;
         }
 
+        // Check if holding an item — start shaking it
+        _shouldDropBeforeCraft = _interactionHelper.TryGetPickedUpInteraction(out _);
+        if (_shouldDropBeforeCraft)
+        {
+            _actorView.ShakeHeldItem();
+        }
+
         IsCrafting = true;
         _craftData = new CraftData { ItemName = itemName, CraftDuration = craftDuration, RemainingTime = craftDuration };
         _actorView.CraftingUI.Show();
@@ -67,11 +83,20 @@ public class CraftHelper
         return true;
     }
 
+
     public bool TryStopCraftingItem()
     {
         if (!IsCrafting) return false;
 
         IsCrafting = false;
+
+        // Stop shaking if we were going to drop
+        if (_shouldDropBeforeCraft)
+        {
+            _actorView.StopShakeHeldItem();
+            _shouldDropBeforeCraft = false;
+        }
+
         _actorView.CraftingUI.Hide();
         return true;
     }
@@ -95,5 +120,27 @@ public class CraftHelper
         _interactionHelper.AddInteraction(answerInstance.InteractionController);
         _interactionHelper.StartInteraction(answerInstance.InteractionController);
         return answerInstance;
+    }
+
+    private void DropCurrentItem()
+    {
+        if (_interactionHelper.TryGetPickedUpInteraction(out InteractionController stoppedInteraction))
+        {
+            _interactionHelper.TryStopInteraction(stoppedInteraction);
+            _actorView.OnDrop(stoppedInteraction.transform);
+            _actorView.HideThrowPreview();
+            if (stoppedInteraction.TryGetComponent(out IPickUpInteractionOwner interactionOwner))
+            {
+                interactionOwner.OnDropped();
+            }
+
+            Vector3 sideDirection = UnityEngine.Random.value > 0.5f
+                        ? _actorView.transform.right
+                        : -_actorView.transform.right;
+
+            // Add slight upward arc and forward push
+            Vector3 throwForce = sideDirection * 1f + Vector3.up * 1.5f + _actorView.transform.forward * -0.5f;
+            stoppedInteraction.Rigidbody.AddForce(throwForce, ForceMode.VelocityChange);
+        }
     }
 }

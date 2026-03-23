@@ -34,7 +34,6 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     [SerializeField] private float _peekMoveSpeedMultiplier = 0.5f;
     [Header("Push")]
     [SerializeField] private float _pushForce = 5f;
-    [SerializeField] private float _pushStunDuration = 0.5f;
     [Header("TO BE REMOVED")]
     [SerializeField] private bool _dropByHoldingInteract; // Once we decide on the final input scheme, this can be removed
     [SerializeField] private bool _toggleToPeek;
@@ -485,13 +484,13 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         {
             if (_chairHelper.IsSitting)
             {
-                if (_cheatHelper.TryGetRememberedAnswer(out string answerID, out float correctness, out string actorID) && CanStartAnswering(answerID, correctness, actorID, sourceID: null))
-                {
-                    StartAnswering(answerID, correctness, actorID, sourceID: null); // Source is null because it's answered from memory and we already pass the actorID.
-                }
-                else if (_interactionHelper.TryGetPickedUpInteraction(out PaperBallController paperBallController) && paperBallController.HasAnswer && CanStartAnswering(paperBallController.AnswerID, paperBallController.Correctness, paperBallController.ContributorActorID, paperBallController.ID))
+                if (_interactionHelper.TryGetPickedUpInteraction(out PaperBallController paperBallController) && paperBallController.HasAnswer && CanStartAnswering(paperBallController.AnswerID, paperBallController.Correctness, paperBallController.ContributorActorID, paperBallController.ID))
                 {
                     StartAnswering(paperBallController.AnswerID, paperBallController.Correctness, paperBallController.ContributorActorID, paperBallController.ID);
+                }
+                else if (_cheatHelper.TryGetRememberedAnswer(out string answerID, out float correctness, out string actorID) && CanStartAnswering(answerID, correctness, actorID, sourceID: null))
+                {
+                    StartAnswering(answerID, correctness, actorID, sourceID: null); // Source is null because it's answered from memory and we already pass the actorID.
                 }
                 else
                 {
@@ -525,10 +524,9 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         }
         else if (actionType == EAction.Utility)
         {
-            bool hasItem = _interactionHelper.TryGetPickedUpInteraction(out _);
             bool hasMemory = _cheatHelper.TryGetRememberedAnswer(out _, out _, out _);
 
-            if (!hasItem && !hasMemory)
+            if (!hasMemory)
             {
                 _craftHelper.TryStartCraftingItem("Paper Ball");
             }
@@ -858,6 +856,9 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _physics.SetInputDirection(Vector3.zero);
         _physics.SetMoveDirection(Vector3.zero);
 
+        if (_cheatHelper.IsCheating) StopCheating();
+        if (_cheatHelper.IsPeeking) StopPeeking();
+
         _view.OnCaught(transform.position, onComplete: () =>
         {
             _isCaught = false;
@@ -921,6 +922,9 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         ResetInputState();
         ForceClearInteractionState();
         ForceStopDash();
+
+        if (_cheatHelper.IsCheating) StopCheating();
+        if (_cheatHelper.IsPeeking) StopPeeking();
 
         if (_initialChairController.IsBlocked)
             _initialChairController.Unblock();
