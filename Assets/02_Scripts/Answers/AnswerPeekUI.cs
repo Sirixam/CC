@@ -11,6 +11,7 @@ public class AnswerPeekUI : MonoBehaviour
     [SerializeField] private RectTransform _readyObject;
     [SerializeField] private RectTransform _shakeContainer;
     [SerializeField] private CanvasGroup _canvasGroup;
+    [SerializeField] private Image _completedStamp;
 
     [Header("Configurations")]
     //[SerializeField] private Gradient _progressGradient;
@@ -87,9 +88,12 @@ public class AnswerPeekUI : MonoBehaviour
 
         if (_canvasGroup != null)
             _canvasGroup.alpha = 1f;
+
+        if (_completedStamp != null)
+            _completedStamp.gameObject.SetActive(false);
+
         AnswerPeek = null;
     }
-    
     public void ShowReady()
     {
         _readyTween.Stop();
@@ -175,7 +179,7 @@ public class AnswerPeekUI : MonoBehaviour
         _shakeTween.Stop();
         _shakeContainer.localPosition = Vector3.zero;
     }
-    
+
     public void SetCompleted(bool completed)
     {
         if (_isCompleted == completed) return;
@@ -188,7 +192,18 @@ public class AnswerPeekUI : MonoBehaviour
         }
 
         float targetAlpha = completed ? 0.5f : 1f;
+        Tween.Alpha(_canvasGroup, targetAlpha, 0.2f);
 
-        Tween.Alpha(_canvasGroup, targetAlpha, 0.2f); // smooth fade
+        if (_completedStamp != null)
+        {
+            _completedStamp.gameObject.SetActive(completed);
+            if (completed)
+            {
+                // Stamp punch animation
+                _completedStamp.rectTransform.localScale = Vector3.one * 2f;
+                _completedStamp.rectTransform.localRotation = Quaternion.Euler(0, 0, Random.Range(-20f, -10f));
+                Tween.Scale(_completedStamp.rectTransform, Vector3.one, 0.25f, Ease.OutBack);
+            }
+        }
     }
 }

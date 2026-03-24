@@ -749,6 +749,17 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             return;
         }
 
+        // Teacher collision detection
+        if (!_isCaught && !_chairHelper.IsSitting)
+        {
+            TeacherController teacher = collision.gameObject.GetComponentInParent<TeacherController>();
+            if (teacher != null)
+            {
+                teacher.OnPlayerCollided(this);
+                return;
+            }
+        }
+
         // Dash-to-sit logic
         if (!_physics.IsDashing) return;
         if (_chairHelper.IsSitting) return;

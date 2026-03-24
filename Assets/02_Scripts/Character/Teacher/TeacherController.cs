@@ -392,4 +392,15 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
 
         onComplete?.Invoke();
     }
+
+    public void OnPlayerCollided(PlayerController playerController)
+    {
+        if (_detectionCooldown > 0) return;
+        if (playerController.IsSitting) return;
+        if (playerController.IsCaught) return;
+
+        _detectionCooldown = 1f;
+        OnPlayerDetected?.Invoke(playerController);
+        _teacherView.PlayAngryVFX();
+    }
 }
