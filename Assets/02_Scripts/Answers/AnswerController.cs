@@ -14,6 +14,9 @@ public class AnswerController : MonoBehaviour
     [SerializeField] private Transform _lookAtPoint;
     [SerializeField] private AnswerSheetUI _answerSheetUI;
     [SerializeField] private InteractionController _interactionController;
+    [SerializeField] private SemicircleAnswerSheetUI _semicircleAnswerSheetUI;
+    [SerializeField] private GlobalDefinition _globalDefinition;
+    [SerializeField] private TestPageView _testPageView;
 
     private int _cheatBlockCount;
     private EState _state;
@@ -25,6 +28,8 @@ public class AnswerController : MonoBehaviour
     private float _answeringRemainingTime;
     private float _validatingDuration;
     private float _validatingRemainingTime;
+    private IAnswerSheetUI _activeUI;
+
 
     public AnswerSheet AnswerSheet { get; private set; }
     public string ActiveAnswerID { get; private set; }
@@ -47,6 +52,7 @@ public class AnswerController : MonoBehaviour
     private void Awake()
     {
         _answerSheetUI.Hide();
+        _semicircleAnswerSheetUI.Hide();
     }
 
     public void Setup(AnswerSheet answerSheet, string actorID, bool isPlayer)
@@ -54,14 +60,24 @@ public class AnswerController : MonoBehaviour
         AnswerSheet = answerSheet;
         ActorID = actorID;
         IsPlayer = isPlayer;
-        if (answerSheet != null && IsPlayer)
+
+        if (_globalDefinition.AnswerSheetMode == GlobalDefinition.EAnswerSheetMode.SemiCircle)
+            _activeUI = _semicircleAnswerSheetUI;
+        else
+            _activeUI = _answerSheetUI;
+
+        if (_activeUI != null && IsPlayer)
         {
-            _answerSheetUI.Setup(answerSheet.Answers);
+            _activeUI.Setup(answerSheet.Answers);
         }
+
+        Debug.Log($"AnswerSheetMode: {_globalDefinition.AnswerSheetMode}, ActiveUI: {_activeUI}");
+
         if (IsPlayer)
         {
             _interactionController.Disable();
         }
+
     }
 
     public void UpdateRemainingTime(float deltaTime, out bool finished)
@@ -105,7 +121,11 @@ public class AnswerController : MonoBehaviour
     public void ShowAnswerSheet()
     {
         if (!HasAnswerSheet || !IsPlayer) return;
-        _answerSheetUI.Show();
+        _activeUI.Show();
+
+        if (_activeUI == _semicircleAnswerSheetUI)
+            _testPageView?.Lift();
+
     }
 
     public bool TryRestartAnswering(string answerID, bool isThinking)
@@ -160,8 +180,8 @@ public class AnswerController : MonoBehaviour
         if (IsPlayer)
         {
             string answerID = ActiveAnswerID;
-            _answerSheetUI.ShowProgress(answerID, progress);
-            _answerSheetUI.Show();
+            _activeUI.ShowProgress(answerID, progress);
+            _activeUI.Show();
         }
     }
 
@@ -203,7 +223,7 @@ public class AnswerController : MonoBehaviour
         float progress = AnswerSheet.UpdateProgress(answerID, deltaTime, out finishedAnswering);
         if (IsPlayer)
         {
-            _answerSheetUI.SetProgress(answerID, progress);
+            _activeUI.SetProgress(answerID, progress);
         }
         if (finishedAnswering)
         {
@@ -216,9 +236,9 @@ public class AnswerController : MonoBehaviour
                     if (contributor == null) continue;
                     AnswerSheet.AddContributor(answerID, contributor);
                 }
-                _answerSheetUI.SetAnswerState(answerID, true);
-                _answerSheetUI.SetCorrectness(answerID, correctness);
-                _answerSheetUI.HideProgress(answerID);
+                _activeUI.SetAnswerState(answerID, true);
+                _activeUI.SetCorrectness(answerID, correctness);
+                _activeUI.HideProgress(answerID);
             }
             _activeAnswerContributorIDs = new string[0];
             LastFinishedAnswerID = answerID;
@@ -233,14 +253,16 @@ public class AnswerController : MonoBehaviour
 
         if (IsPlayer)
         {
-            _answerSheetUI.Hide();
+            _activeUI.Hide();
+            if (_activeUI == _semicircleAnswerSheetUI)
+                _testPageView?.Lower();
         }
         if (IsAnswering)
         {
             string answerID = ActiveAnswerID;
             if (IsPlayer)
             {
-                _answerSheetUI.HideProgress(answerID);
+                _activeUI.HideProgress(answerID);
             }
             ActiveAnswerID = null;
             AnswerSheet.OnStopAnswering(answerID);
@@ -259,8 +281,8 @@ public class AnswerController : MonoBehaviour
         AnswerSheet.ResetProgress();
         if (IsPlayer)
         {
-            _answerSheetUI.HideProgress();
-            _answerSheetUI.ResetAnswerStates();
+            _activeUI.HideProgress();
+            _activeUI.ResetAnswerStates();
         }
     }
 

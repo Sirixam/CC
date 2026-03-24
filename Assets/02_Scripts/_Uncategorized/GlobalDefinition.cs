@@ -15,6 +15,19 @@ public class GlobalDefinition : ScriptableObject
     public Vector2 PostAnsweringDelay;
     public enum ECaughtMode { Teleport, WalkBack }
     public ECaughtMode CaughtMode;
+    public enum EAnswerSheetMode
+    {
+        Classic,      // current UI behavior
+        SemiCircle    // new world-space semicircle
+    }
+    public EAnswerSheetMode AnswerSheetMode;
+
+    public enum EImmediateAnswersheet
+    {
+        HoldButton, // current AnswerSheet Behavior
+        Immediate // new automatic AnswerSheet Behavior
+    }
+    public EImmediateAnswersheet ImmediateAnswersheet;
 
     [Header("TAGS")]
     [Tag] public string PlayerTag;

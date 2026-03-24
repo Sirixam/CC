@@ -22,6 +22,7 @@ MonoBehaviour:
   AnsweringDuration: {x: 2, y: 2}
   PostAnsweringDelay: {x: 25, y: 25}
   CaughtMode: 1
+  AnswerSheetMode: 1
   PlayerTag: Player
   DistractionTag: Distraction
   ItemLayer: 7
