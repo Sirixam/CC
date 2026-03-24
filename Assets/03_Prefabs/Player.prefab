@@ -720,7 +720,6 @@ MonoBehaviour:
   _globalDefinition: {fileID: 11400000, guid: 2b0875648e78a8e45b08a646836071ca, type: 2}
   _peekMoveSpeedMultiplier: 0.5
   _pushForce: 20
-  _pushStunDuration: 0.5
   _dropByHoldingInteract: 0
   _toggleToPeek: 1
   _stopPeekOnDash: 1
@@ -1584,13 +1583,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4360808374014168473}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.08715578, y: 0, z: 0, w: 0.9961947}
-  m_LocalPosition: {x: 0, y: 0.557, z: 0.435}
+  m_LocalRotation: {x: -0.13052624, y: 0, z: 0, w: 0.9914449}
+  m_LocalPosition: {x: 0, y: 0.41, z: 0.37}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2778112393418716491}
-  m_LocalEulerAnglesHint: {x: -10, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -15, y: 0, z: 0}
 --- !u!1 &5059149654283163174
 GameObject:
   m_ObjectHideFlags: 0
@@ -1933,10 +1932,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _initialPoint: {fileID: 9197537246829724969}
-  _initialSpeed: 12
+  _initialSpeed: 10
   _maxPredictionTime: 2
   _maxPointsCount: 100
-  _sphereCastRadius: 0.05
+  _sphereCastRadius: 0.2
   _collisionMask:
     serializedVersion: 2
     m_Bits: 712

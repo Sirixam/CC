@@ -104,6 +104,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _craftHelper = new CraftHelper(_view, _interactionHelper, GameContext.ItemsManager);
 
         // Initialize
+        _view.InitializeThrowPreview(_chairHelper);
         _lookHelper.Initialize(transform.forward);
         _fieldOfViewController.HideInstant();
         TeleportToInitialChair();

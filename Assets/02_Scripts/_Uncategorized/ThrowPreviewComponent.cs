@@ -7,25 +7,31 @@ namespace AKGaming.Game
     {
         [SerializeField] Transform _initialPoint;
         [Header("Configurations")]
-        [SerializeField] private float _initialSpeed = 12f;
+        [SerializeField] private float _initialSpeed = 10f;
         [SerializeField] private float _maxPredictionTime = 2f;
         [SerializeField] private int _maxPointsCount = 100;
-        [SerializeField] private float _sphereCastRadius = 0.05f;
+        [SerializeField] private float _sphereCastRadius = 0.2f;
         [SerializeField] private LayerMask _collisionMask;
         [SerializeField] private float _lineAnimationSpeed = -1;
         [SerializeField] private float _particleFrecuency = 0.5f;
         //[SerializeField] private IdentifiableReference _particleIdRef = new(IdentifiableReference.EType.ID);
 
+
         private Vector3[] _points;
         private LineRenderer _lineRenderer;
         private float _timeStep;
         private float _timeToParticle;
-
+        private ChairHelper _chairHelper;
+        public bool IsSitting => _chairHelper.IsSitting;
         private void Awake()
         {
             _lineRenderer = GetComponent<LineRenderer>();
             _lineRenderer.enabled = false;
             UpdateConfigurationsCache();
+        }
+        public void Initialize(ChairHelper chairHelper)
+        {
+            _chairHelper = chairHelper;
         }
 
         /// Triggered by OnValueChanged attribute.
@@ -36,6 +42,7 @@ namespace AKGaming.Game
             _points = new Vector3[_maxPointsCount];
             _timeStep = _maxPredictionTime / _maxPointsCount;
         }
+
 
         private void LateUpdate()
         {
@@ -68,6 +75,12 @@ namespace AKGaming.Game
             Quaternion initialRotation = _initialPoint.rotation;
             Vector3 initialPosition = _initialPoint.position;
             Vector3 velocity = initialRotation * Vector3.forward * _initialSpeed;
+            if (_chairHelper.IsSitting)
+            {
+                // Offset start position forward slightly to avoid starting inside nearby colliders
+                initialPosition -= velocity.normalized * 0.3f;
+            }
+
             Vector3 previousPosition = initialPosition;
 
             for (int i = 0; i < _maxPointsCount; i++)

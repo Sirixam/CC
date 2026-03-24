@@ -271,4 +271,9 @@ public class PlayerView : MonoBehaviour, IStunView, IChairView
             _itemContainer.GetChild(0).localPosition = Vector3.zero;
         }
     }
+
+    public void InitializeThrowPreview(ChairHelper chairHelper)
+    {
+        _throwPreview.Initialize(chairHelper);
+    }
 }
