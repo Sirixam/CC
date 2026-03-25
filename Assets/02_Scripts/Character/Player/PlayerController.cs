@@ -1028,4 +1028,9 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         if (_globalDefinition.ShowAnswerSheetOnSit)
             _answerController?.ShowAnswerSheet();
     }
+    
+    public AnswerSheet GetAnswerSheet()
+    {
+        return _answerController?.AnswerSheet;
+    }
 }

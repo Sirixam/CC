@@ -9,15 +9,24 @@ namespace _02_Scripts.UI
 
         public void UpdateAnswerSheets()
         {
-            AnswerSheet[] answerSheets = GameContext.AnswersManager.PlayerAnswerSheets;
+            var players = GameManager.Instance.Players;
 
-            for (int i = 0; i < answerSheets.Length; i++)
+            for (int i = 0; i < players.Count; i++)
             {
-                _answerSheetsUI[i].Setup(answerSheets[i].Answers);
-                _answerSheetsUI[i].Show();
+                var answerSheet = players[i].GetAnswerSheet();
+
+                if (answerSheet != null)
+                {
+                    _answerSheetsUI[i].Setup(answerSheet.Answers);
+                    _answerSheetsUI[i].Show();
+                }
+                else
+                {
+                    _answerSheetsUI[i].Hide();
+                }
             }
 
-            for (int i = answerSheets.Length; i < _answerSheetsUI.Length; i++)
+            for (int i = players.Count; i < _answerSheetsUI.Length; i++)
             {
                 _answerSheetsUI[i].Hide();
             }
