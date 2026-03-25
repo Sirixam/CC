@@ -272,8 +272,8 @@ public class PlayerView : MonoBehaviour, IStunView, IChairView
         }
     }
 
-    public void InitializeThrowPreview(ChairHelper chairHelper)
+    public void InitializeThrowPreview(ChairHelper chairHelper, ThrowHelper.Data throwData, int flyingLayer)
     {
-        _throwPreview.Initialize(chairHelper);
+        _throwPreview.Initialize(chairHelper, throwData, flyingLayer);
     }
 }

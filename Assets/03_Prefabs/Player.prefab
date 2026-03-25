@@ -1932,7 +1932,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _initialPoint: {fileID: 9197537246829724969}
-  _initialSpeed: 10
   _maxPredictionTime: 2
   _maxPointsCount: 100
   _sphereCastRadius: 0.2
@@ -1941,6 +1940,8 @@ MonoBehaviour:
     m_Bits: 712
   _lineAnimationSpeed: -1
   _particleFrecuency: 0.75
+  _maxBounces: 1
+  _bounciness: 0.8
 --- !u!120 &3361659025060047718
 LineRenderer:
   serializedVersion: 2
