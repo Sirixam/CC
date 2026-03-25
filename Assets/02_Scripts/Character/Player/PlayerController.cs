@@ -108,6 +108,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _lookHelper.Initialize(transform.forward);
         _fieldOfViewController.HideInstant();
         TeleportToInitialChair();
+    
     }
 
     public void Inject(IAnswerIconProvider answerIconProvider)
@@ -126,6 +127,10 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _interactionTriggerListener.OnExit += OnInteractionTriggerExit;
         _fovTriggerListener.OnEnter += OnFovTriggerEnter;
         _fovTriggerListener.OnExit += OnFovTriggerExit;
+
+        _chairHelper.OnSittingComplete += TryShowAnswerSheetOnSit;
+        _craftHelper.OnFinishedCrafting += TryShowAnswerSheetOnSit;
+
     }
 
     private void OnDisable()
@@ -139,6 +144,9 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _interactionTriggerListener.OnExit -= OnInteractionTriggerExit;
         _fovTriggerListener.OnEnter -= OnFovTriggerEnter;
         _fovTriggerListener.OnExit -= OnFovTriggerExit;
+
+        _chairHelper.OnSittingComplete -= TryShowAnswerSheetOnSit;
+        _craftHelper.OnFinishedCrafting -= TryShowAnswerSheetOnSit;
     }
 
     private void OnActionRequested(EAction actionType)
@@ -182,6 +190,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
                 RestoreInputScope();
                 _inputHandler.CancelActionHold();
                 _view.HideThrowPreview();
+                TryShowAnswerSheetOnSit();
             }
             else if (_inputHandler.ScopeType == EInputScope.PlayerSitting)
             {
@@ -375,6 +384,9 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _chairHelper.TeleportToSitting(chairController);
         _interactionHelper.DisableInteraction();
         _answerController = chairController.AnswerController;
+
+        if (_globalDefinition.ShowAnswerSheetOnSit)
+            _answerController.ShowAnswerSheet();
     }
 
     private void RequestSitting(ChairController chairController)
@@ -529,6 +541,9 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
             if (!hasMemory)
             {
+                if (_globalDefinition.ShowAnswerSheetOnSit)
+                    _answerController?.HideAnswerSheet();
+
                 _craftHelper.TryStartCraftingItem("Paper Ball");
             }
         }
@@ -546,7 +561,10 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             {
                 if (!isHolding)
                 {
-                    HideAnswerSheet();
+                    if (!_globalDefinition.ShowAnswerSheetOnSit)
+                    {
+                        HideAnswerSheet();
+                    }
                 }
             }
             else if (_cheatHelper.IsCheating)
@@ -565,12 +583,14 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         {
             if (!isHolding)
             {
+                TryShowAnswerSheetOnSit();
                 RestoreInputScope();
                 _throwHelper.TryTriggerThrow();
             }
             else if (_throwHelper.CanShowPreview())
             {
                 _view.ShowThrowPreview();
+                HideAnswerSheet();
             }
         }
         else if (actionType == EAction.Peek)
@@ -584,7 +604,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         {
             if (!isHolding)
             {
-                // TODO: Hide inventory
+                TryShowAnswerSheetOnSit();
                 _craftHelper.TryStopCraftingItem();
             }
         }
@@ -959,8 +979,10 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             _inputHandler.PlayerInput.ActivateInput();
             StartCoroutine(DelayedUnblock());
             onSeated?.Invoke();
+
             return;
         }
+
         _physics.OnArriveEvent += OnArrivedAtChair;
 
         void OnArrivedAtChair()
@@ -969,12 +991,12 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             _physics.OnArriveEvent -= OnArrivedAtChair;
             _view.StopCaughtSymbols();
             _physics.StopFollowingPath();
+            _answerController = _initialChairController.AnswerController;
             _chairHelper.TeleportToSitting(_initialChairController);
             _lookHelper.SetLookAt(_initialChairController.LookAtPoint);
             _lookHelper.RestoreInitialLookDirection();
             _isCaught = false;
             _isWalkingBack = false;
-            _answerController = _initialChairController.AnswerController;
             _inputHandler.PlayerInput.ActivateInput();
             StartCoroutine(DelayedUnblock());
             onSeated?.Invoke();
@@ -998,5 +1020,12 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     public void PlayCaughtAudio()
     {
         _audioHelper.OnCaught();
+    }
+
+    //refactor to avoid having 2 similar functions
+    private void TryShowAnswerSheetOnSit()
+    {
+        if (_globalDefinition.ShowAnswerSheetOnSit)
+            _answerController?.ShowAnswerSheet();
     }
 }

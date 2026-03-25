@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public interface ICraftService
@@ -24,6 +25,8 @@ public class CraftHelper
     private CraftData _craftData;
     private bool _shouldDropBeforeCraft;
     private Vector3 PickUpPosition => _actorView.PickUpPosition + Vector3.up; // Slightly above to highlight briefly.
+
+    public event Action OnFinishedCrafting;
 
     public bool IsCrafting { get; private set; }
 
@@ -110,6 +113,7 @@ public class CraftHelper
             _interactionHelper.AddInteraction(interactionOwner.InteractionController);
             _interactionHelper.StartInteraction(interactionOwner.InteractionController);
         }
+        OnFinishedCrafting?.Invoke();
     }
 
     public PaperBallController CraftAnswer(string answerID, float correctness, string contributorActorID)

@@ -7,6 +7,7 @@ public class GlobalDefinition : ScriptableObject
     public bool CanUseAnyPlayerChair;
     public bool PersistAnswerProgress;
     public bool SimulateStudentsIndividually;
+    public bool ShowAnswerSheetOnSit;
     [Range(0f, 1f)]
     public float MinCorrectnessToEarlyVictoryFlow;
     public int PlayerLives;
@@ -21,13 +22,6 @@ public class GlobalDefinition : ScriptableObject
         SemiCircle    // new world-space semicircle
     }
     public EAnswerSheetMode AnswerSheetMode;
-
-    public enum EImmediateAnswersheet
-    {
-        HoldButton, // current AnswerSheet Behavior
-        Immediate // new automatic AnswerSheet Behavior
-    }
-    public EImmediateAnswersheet ImmediateAnswersheet;
 
     [Header("TAGS")]
     [Tag] public string PlayerTag;

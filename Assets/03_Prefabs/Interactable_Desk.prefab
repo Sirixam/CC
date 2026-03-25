@@ -167,7 +167,7 @@ MonoBehaviour:
   _answerPrefab: {fileID: 2433503228722236097, guid: 20b30ee21228386479482ff0fe029c93, type: 3}
   _answersParent: {fileID: 6973302865305811193}
   _radius: 50
-  _angleRange: 360
+  _angleRange: 180
   _progress: {fileID: 0}
 --- !u!1 &2794252811251585438
 GameObject:

@@ -1,4 +1,5 @@
 
+using System;
 using UnityEngine;
 
 public interface IChairView
@@ -18,6 +19,8 @@ public class ChairHelper
 
     public bool IsTransitioning { get; private set; }
     public bool IsSitting { get; private set; }
+    public event Action OnSittingComplete;
+
 
     public Transform LookAtPoint => _chairController != null ? _chairController.LookAtPoint : null;
 
@@ -45,6 +48,7 @@ public class ChairHelper
         _chairController.Block();
         _actorPhysics.TeleportToPoint(chairController.SittingPoint);
         _inputHandler.SetScope(EInputScope.PlayerSitting);
+        OnSittingComplete?.Invoke(); //callback to handle showing the answersheet upon sitting
     }
 
     public void StartSitting(ChairController chairController)
@@ -104,7 +108,7 @@ public class ChairHelper
 
         // No input — fall back to random
         if (inputDirection.sqrMagnitude < 0.1f)
-            return points[Random.Range(0, points.Length)];
+            return points[UnityEngine.Random.Range(0, points.Length)];
 
         // Convert 2D input to world direction relative to chair
         Vector3 worldDir = new Vector3(inputDirection.x, 0f, inputDirection.y).normalized;
@@ -136,12 +140,14 @@ public class ChairHelper
         if (IsSitting)
         {
             _actorView.OnSitting();
+            OnSittingComplete?.Invoke();
         }
 
         _sitPhase = ESitPhase.None;
         _actorPhysics.OnArriveEvent -= OnArrive;
         IsTransitioning = false;
         _actorPhysics.SetTargetPoint(null);
+
     }
 
     private Transform GetBestApproachPoint(ChairController chairController)
