@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
 using System.Collections;
+using _02_Scripts.Utils;
 
 
 public class GameManager : MonoBehaviour
@@ -285,12 +286,16 @@ public class GameManager : MonoBehaviour
     {
         if (minCorrectness < _globalDefinition.MinCorrectnessToEarlyVictoryFlow) return;
 
+        GradingHelper.CalculateAndPrintGrades(Players);
+        
         _victoryUI.UpdateAnswerSheets();
         ShowEndMenu(_victoryUI.gameObject);
     }
 
     private void OnTimesUp()
     {
+        GradingHelper.CalculateAndPrintGrades(Players);
+        
         if (_timesUpFeedback.TryGetComponent(out AnswerSheetsDisplayUI answerUI))
         {
             answerUI.UpdateAnswerSheets();
