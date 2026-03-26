@@ -19,7 +19,7 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] private bool _autoStart = true;
 
     private Transform[] _spawnPoints;
-    private readonly List<GameObject> _active = new();
+    private readonly Dictionary<Transform, GameObject> _occupiedPoints = new();
     private CancellationTokenSource _cts;
 
     private Transform SpawnPointsParent => _spawnPointsParent != null ? _spawnPointsParent : transform;
@@ -55,9 +55,9 @@ public class SpawnManager : MonoBehaviour
 
     public void DespawnAll()
     {
-        foreach (var obj in _active)
+        foreach (var obj in _occupiedPoints.Values)
             if (obj != null) Destroy(obj);
-        _active.Clear();
+        _occupiedPoints.Clear();
     }
 
     // --- Internal ---
@@ -71,16 +71,20 @@ public class SpawnManager : MonoBehaviour
 
             if (token.IsCancellationRequested) break;
 
-            _active.RemoveAll(o => o == null);
+            // Free points whose objects have been destroyed externally
+            foreach (var key in new List<Transform>(_occupiedPoints.Keys))
+                if (_occupiedPoints[key] == null) _occupiedPoints.Remove(key);
 
-            if (_active.Count >= _definition.MaxActive) continue;
+            if (_occupiedPoints.Count >= _definition.MaxActive) continue;
 
             GameObject prefab = PickWeightedRandom(out Vector3 offset);
             if (prefab == null) continue;
 
-            Transform point = PickSpawnPoint();
+            Transform point = PickFreeSpawnPoint();
+            if (point == null) continue;
+
             GameObject spawned = Instantiate(prefab, point.position + offset, point.rotation, _spawnParent);
-            _active.Add(spawned);
+            _occupiedPoints[point] = spawned;
         }
     }
 
@@ -113,14 +117,19 @@ public class SpawnManager : MonoBehaviour
         return defaultEntry.Prefab;
     }
 
-    private Transform PickSpawnPoint()
+    private Transform PickFreeSpawnPoint()
     {
         if (_spawnPoints == null || _spawnPoints.Length == 0)
-        {
             _spawnPoints = SpawnPointsParent.GetComponentsInChildren<Transform>();
-        }
-        if (_spawnPoints.Length == 0) return transform;
-        return _spawnPoints[Random.Range(0, _spawnPoints.Length)];
+
+        // Collect points that have no living occupant
+        var free = new List<Transform>();
+        foreach (var point in _spawnPoints)
+            if (point != null && !_occupiedPoints.ContainsKey(point))
+                free.Add(point);
+
+        if (free.Count == 0) return null;
+        return free[Random.Range(0, free.Count)];
     }
 
 #if UNITY_EDITOR

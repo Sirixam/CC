@@ -22,6 +22,9 @@ public class GradeBoostItem : MonoBehaviour
     [SerializeField] private float _warningPulseScale = 1.25f;
     [SerializeField] private float _warningPulseDuration = 0.2f;
 
+    [Header("Collect Particle")]
+    [SerializeField] private ParticleSystem _collectParticle;
+
     private Tween _floatTween;
     private Sequence _warningTween;
     private float _timer;
@@ -66,7 +69,18 @@ public class GradeBoostItem : MonoBehaviour
     {
         _collected = true;
         ApplyGradeBoost(player);
+        PlayCollectParticle();
         Destroy(gameObject);
+    }
+
+    private void PlayCollectParticle()
+    {
+        if (_collectParticle == null) return;
+
+        // Detach so it outlives the item, then auto-destroy when done
+        _collectParticle.transform.SetParent(null, worldPositionStays: true);
+        _collectParticle.Play();
+        Destroy(_collectParticle.gameObject, _collectParticle.main.duration + _collectParticle.main.startLifetime.constantMax);
     }
 
     private void ApplyGradeBoost(PlayerController player)
