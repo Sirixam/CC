@@ -2,6 +2,8 @@ using PrimeTween;
 using UnityEngine;
 using UnityEngine.UI;
 
+public enum PeekState { PartialInfo, FullInfo }
+
 public class AnswerPeekUI : MonoBehaviour
 {
     [SerializeField] private Image _characterIcon;
@@ -24,6 +26,7 @@ public class AnswerPeekUI : MonoBehaviour
     private Sequence _shakeTween;
     private bool _isFull;
     private bool _isCompleted;
+    private PeekState _state = PeekState.FullInfo;
 
     public AnswerPeek AnswerPeek { get; private set; }
 
@@ -50,8 +53,23 @@ public class AnswerPeekUI : MonoBehaviour
         _characterIcon.sprite = characterIcon;
         _archetypeIcon.sprite = archetypeIcon;
         _answerTypeIcon.sprite = answerTypeIcon;
-        _answerCloudIcon.color = ChangeCloudColor(answerPeek);
+        ApplyState();
         UpdateProgress(setup: true);
+    }
+
+    public void SetState(PeekState state)
+    {
+        if (_state == state) return;
+        _state = state;
+        ApplyState();
+    }
+
+    private void ApplyState()
+    {
+        if (AnswerPeek == null) return;
+        _answerCloudIcon.color = _state == PeekState.FullInfo
+            ? ChangeCloudColor(AnswerPeek)
+            : new Color32(255, 255, 255, 255);
     }
 
     public void UpdateProgress(bool setup)
