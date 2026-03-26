@@ -2,7 +2,7 @@
 Legal Stuff:
 This code is free to use no restrictions but attribution would be appreciated.
 Any damage caused either partly or completly due to usage this stuff is not my responsibility*/
-Shader "BitshiftProgrammer/BillboardUI"
+Shader "Custom/BillboardUI"
 {
     Properties
     {
@@ -17,7 +17,7 @@ Shader "BitshiftProgrammer/BillboardUI"
         _StencilOp ("Stencil Operation", Float) = 0
         _StencilWriteMask ("Stencil Write Mask", Float) = 255
         _StencilReadMask ("Stencil Read Mask", Float) = 255
-
+        _HorizontalCorrection ("Horizontal Correction", Float) = 0.5
         _ColorMask ("Color Mask", Float) = 15
 
         [Toggle(UNITY_UI_ALPHACLIP)] _UseUIAlphaClip ("Use Alpha Clip", Float) = 0
@@ -86,6 +86,7 @@ Shader "BitshiftProgrammer/BillboardUI"
             float4 _ClipRect;
 	        float _KeepConstantScaling;
 	        float _Scaling;
+            float _HorizontalCorrection;
 
             sampler2D _MainTex;
 
@@ -96,11 +97,28 @@ Shader "BitshiftProgrammer/BillboardUI"
                 UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(OUT);
 
                 float4 worldPos = mul(unity_ObjectToWorld, v.vertex);
-		        float relativeScaler =  (_KeepConstantScaling) ? distance(mul(unity_ObjectToWorld, v.vertex), _WorldSpaceCameraPos) : 1;
-		        OUT.vertex = mul(UNITY_MATRIX_P, mul(UNITY_MATRIX_MV, float4(0.0, 0.0, 0.0, 1.0)) + float4(v.vertex.x, v.vertex.y, 0.0, 0.0) * relativeScaler * _Scaling);
+                float4 viewOrigin = mul(UNITY_MATRIX_MV, float4(0.0, 0.0, 0.0, 1.0));
+
+                // Perspective divide approximation (before projection)
+                float xOffsetFromCenter = viewOrigin.x / viewOrigin.z;
+
+                // Push toward screen center (invert sign)
+                float correction = -xOffsetFromCenter * _HorizontalCorrection;
+
+                // Apply correction in view space (camera right = +X in view space)
+                viewOrigin.x += correction * viewOrigin.z;
+
+                // Existing scaling
+                float relativeScaler = (_KeepConstantScaling) ? distance(mul(unity_ObjectToWorld, v.vertex), _WorldSpaceCameraPos) : 1;
+
+                // Build billboard quad
+                float4 billboardOffset = float4(v.vertex.x, v.vertex.y, 0.0, 0.0) * relativeScaler * _Scaling;
+
+                OUT.vertex = mul(UNITY_MATRIX_P, viewOrigin + billboardOffset);
                 OUT.texcoord = v.texcoord;
                 OUT.color = v.color * _Color;
                 OUT.worldPosition = worldPos;
+
                 return OUT;
             }
 
