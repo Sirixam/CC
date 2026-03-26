@@ -19,6 +19,7 @@ public class LookHelper
     private Vector3 _initialLookDirection;
     private Vector3 _lookDirection;
     private Transform _lookAtPoint;
+    private Action _onRotationRestoredCallback;
 
     public LookHelper(Data data)
     {
@@ -54,12 +55,20 @@ public class LookHelper
         {
             Quaternion targetRotation = Quaternion.LookRotation(_lookDirection, Vector3.up);
             transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, _data.LookSpeed * _computedLookMultiplier * Time.deltaTime);
+
+            if (_onRotationRestoredCallback != null && Quaternion.Angle(transform.rotation, targetRotation) < 0.5f)
+            {
+                var cb = _onRotationRestoredCallback;
+                _onRotationRestoredCallback = null;
+                cb.Invoke();
+            }
         }
     }
 
-    public void RestoreInitialLookDirection()
+    public void RestoreInitialLookDirection(Action onRestored = null)
     {
         _lookDirection = _initialLookDirection;
+        _onRotationRestoredCallback = onRestored;
     }
 
     public void AddLookMultiplier(float value)

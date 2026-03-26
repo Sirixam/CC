@@ -103,7 +103,6 @@ public class DistractionHelper
         {
             // Always runs — even if cancelled
             IsDistracted = false;
-            OnDistractionEnded?.Invoke();
             _answerController.BlockCheat();
             _distractionUI.Hide();
             if (levelData.ShowFOV)
@@ -113,7 +112,11 @@ public class DistractionHelper
             if (levelData.Rotate)
             {
                 _lookHelper.RemoveLookMultiplier(levelData.LookSpeedMultiplier);
-                _lookHelper.RestoreInitialLookDirection();
+                _lookHelper.RestoreInitialLookDirection(onRestored: () => OnDistractionEnded?.Invoke());
+            }
+            else
+            {
+                OnDistractionEnded?.Invoke();
             }
         }
 
