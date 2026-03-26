@@ -762,10 +762,10 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             return;
 
         bool canMove = !_stunHelper.IsStunned && !_isCaught;
-        _physics.OnFixedUpdate(Time.fixedDeltaTime, canMove: !_stunHelper.IsStunned && (!_isCaught || _isWalkingBack), out bool stoppedDashing);
-        if (stoppedDashing)
+        _physics.OnFixedUpdate(Time.fixedDeltaTime, canMove: !_stunHelper.IsStunned && (!_isCaught || _isWalkingBack), out bool stoppedForce);
+        if (stoppedForce)
         {
-            _view.OnStopDash();
+            _view.OnStopForce();
         }
     }
 
@@ -825,7 +825,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             return; // approaching from behind, don't allow
 
         // Stop dash and sit instantly
-        ForceStopDash();
+        ForceStopForce();
         RequestSitting(chair);
     }
 
@@ -906,8 +906,8 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _inputHandler.PlayerInput.DeactivateInput();
         ResetInputState();
         ForceClearInteractionState();
-        _physics.ForceStopDash();
-        _view.OnStopDash();
+        _physics.ForceStopForce();
+        _view.OnStopForce();
         _physics.SetInputDirection(Vector3.zero);
         _physics.SetMoveDirection(Vector3.zero);
 
@@ -952,10 +952,10 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         yield return null; // wait another frame
         _inputHandler.Unblock();
     }
-    public void ForceStopDash()
+    public void ForceStopForce()
     {
-        _physics.ForceStopDash();
-        _view.OnStopDash();
+        _physics.ForceStopForce();
+        _view.OnStopForce();
     }
     public void SetAnsweringDuration(float duration)
     {
@@ -976,7 +976,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _inputHandler.PlayerInput.DeactivateInput();
         ResetInputState();
         ForceClearInteractionState();
-        ForceStopDash();
+        ForceStopForce();
 
         if (_cheatHelper.IsCheating) StopCheating();
         if (_cheatHelper.IsPeeking) StopPeeking();

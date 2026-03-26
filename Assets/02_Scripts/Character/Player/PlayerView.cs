@@ -151,7 +151,7 @@ public class PlayerView : MonoBehaviour, IStunView, IChairView
         _positionTween.Stop();
     }
 
-    public void OnStartDash()
+    public void OnStartForce()
     {
         foreach (var trailRenderer in _dashTrails)
         {
@@ -159,7 +159,7 @@ public class PlayerView : MonoBehaviour, IStunView, IChairView
         }
     }
 
-    public void OnStopDash()
+    public void OnStopForce()
     {
         foreach (var trailRenderer in _dashTrails)
         {

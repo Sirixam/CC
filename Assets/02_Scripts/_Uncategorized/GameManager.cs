@@ -404,7 +404,7 @@ public class GameManager : MonoBehaviour
             player.InputHandler.PlayerInput.DeactivateInput();
             player.ResetInputState();
             player.ForceClearInteractionState();
-            player.ForceStopDash();
+            player.ForceStopForce();
 
             if (_playerFlashEffects.TryGetValue(player, out var flash))
                 flash.Flash();

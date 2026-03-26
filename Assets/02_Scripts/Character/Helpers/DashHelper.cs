@@ -1,4 +1,3 @@
-using Cysharp.Threading.Tasks;
 using System;
 using UnityEngine;
 
@@ -34,7 +33,7 @@ public class DashHelper
 
     public void StartDash()
     {
-        _view.OnStartDash();
+        _view.OnStartForce();
         _physics.StartDashing(_view.transform.forward);
         _dashCooldownTimer = _data.DashCooldown;
         _audioHelper.OnStartDash();
@@ -49,9 +48,9 @@ public class DashHelper
             if (_physics.IsFrontalCollision(contact.normal))
             {
                 _physics.ClearCollisionNormals();
-                if (_physics.TryStopDashing())
+                if (_physics.TryStopForce())
                 {
-                    _view.OnStopDash();
+                    _view.OnStopForce();
                     bool isSoftStun = !HasAnyTag(collision.transform, _data.HardCollisionTags);
                     onStopDash?.Invoke(isSoftStun);
                     _audioHelper.OnStun();

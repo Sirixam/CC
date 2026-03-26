@@ -6,6 +6,13 @@ using UnityEngine.AI;
 [Serializable]
 public class PlayerPhysics
 {
+    public enum EForce
+    {
+        None,
+        Dash,
+        External
+    }
+
     [SerializeField] private Rigidbody _rigidbody;
     [SerializeField] private Collider[] _colliders;
     [Header("Configurations")]
@@ -28,18 +35,17 @@ public class PlayerPhysics
     public bool IsFollowingPath => _isFollowingPath;
     public Vector3 PathDirection { get; private set; }
 
-
-
-    // Dash
-    public bool IsDashing { get; private set; }
-    private float _dashTimer;
-    private Vector3 _dashDirection;
+    // Force
+    public EForce ForceType { get; private set; }
+    private float _forceTimer;
+    private Vector3 _force;
     // Collisions
     private List<Vector3> _collisionNormals = new();
     public Collider[] Colliders => _colliders;
 
     // General
-    public Vector3 Direction => IsDashing ? _dashDirection : _moveDirection;
+    public Vector3 Direction => ForceType == EForce.None ? _moveDirection : _force;
+    public bool IsDashing => ForceType == EForce.Dash;
 
     public event Action OnArriveEvent;
 
@@ -60,23 +66,30 @@ public class PlayerPhysics
 
     public void StartDashing(Vector3 forward)
     {
-        IsDashing = true;
-        _dashDirection = _inputDirection != Vector3.zero ? _inputDirection : forward;
-        _dashTimer = _dashDuration;
+        ForceType = EForce.Dash;
+        _force = _inputDirection != Vector3.zero ? _inputDirection : forward * _dashSpeed;
+        _forceTimer = _dashDuration;
     }
 
-    public bool TryStopDashing()
+    public void StartExternalForce(Vector3 force)
     {
-        if (!IsDashing) return false;
+        ForceType = EForce.External;
+        _force = force;
+        _forceTimer = _dashDuration;
+    }
 
-        IsDashing = false;
-        _dashTimer = 0;
+    public bool TryStopForce()
+    {
+        if (ForceType == EForce.None) return false;
+
+        ForceType = EForce.None;
+        _forceTimer = 0;
         return true;
     }
 
-    public void OnFixedUpdate(float deltaTime, bool canMove, out bool stoppedDashing)
+    public void OnFixedUpdate(float deltaTime, bool canMove, out bool stoppedForce)
     {
-        stoppedDashing = false;
+        stoppedForce = false;
         if (!canMove)
         {
             _collisionNormals.Clear();
@@ -90,7 +103,7 @@ public class PlayerPhysics
             toTarget.y = 0;
             float distance = toTarget.magnitude;
 
-            if (distance < 0.2f) 
+            if (distance < 0.2f)
             {
                 _currentCornerIndex++;
                 if (_currentCornerIndex >= _pathCorners.Length)
@@ -115,10 +128,10 @@ public class PlayerPhysics
 
         if (_targetPoint != null)
         {
-            if (IsDashing)
+            if (ForceType != EForce.None)
             {
-                IsDashing = false;
-                stoppedDashing = true;
+                ForceType = EForce.None;
+                stoppedForce = true;
             }
 
             MoveTowardsTarget(_targetPoint, out bool hasArrived); // [AKP] This is ignoring sliding for now
@@ -130,20 +143,20 @@ public class PlayerPhysics
         }
 
         Vector3 velocity;
-        if (IsDashing)
+        if (ForceType == EForce.None)
         {
-            velocity = _dashDirection * _dashSpeed;
-
-            _dashTimer -= deltaTime;
-            if (_dashTimer < 0)
-            {
-                IsDashing = false;
-                stoppedDashing = true;
-            }
+            velocity = _moveDirection * _moveSpeed * _moveSpeedMultiplier;
         }
         else
         {
-            velocity = _moveDirection * _moveSpeed * _moveSpeedMultiplier;
+            velocity = _force;
+
+            _forceTimer -= deltaTime;
+            if (_forceTimer < 0)
+            {
+                ForceType = EForce.None;
+                stoppedForce = true;
+            }
         }
 
         // Handle sliding
@@ -222,12 +235,13 @@ public class PlayerPhysics
     {
         _rigidbody.AddForce(force, ForceMode.Impulse);
     }
-    public void ForceStopDash()
+
+    public void ForceStopForce()
     {
-        if (IsDashing)
+        if (ForceType != EForce.None)
         {
-            IsDashing = false;
-            _dashTimer = 0;
+            ForceType = EForce.None;
+            _forceTimer = 0;
             _rigidbody.velocity = Vector3.zero;
         }
     }
