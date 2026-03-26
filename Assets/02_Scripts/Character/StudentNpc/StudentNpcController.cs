@@ -99,6 +99,7 @@ public class StudentNpcController : MonoBehaviour
         AnswerController.StartThinking();
         _lightbulbUI.Show();
         _lightbulbUI.SetState(isOn: false);
+        _lightbulbUI.StartFloat();
     }
 
     public void StartAnswering()
@@ -106,6 +107,7 @@ public class StudentNpcController : MonoBehaviour
         _stateText.text = "Answering";
         AnswerController.StartAnswering(progress: 0);
         _lightbulbUI.SetState(isOn: true);
+        _lightbulbUI.PlayShine();
         _lightbulbUI.HideDelayed();
         _studentView.StartAnswering();
     }
