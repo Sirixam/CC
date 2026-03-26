@@ -930,7 +930,8 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _physics.SetMoveDirection(Vector3.zero);
 
         if (_cheatHelper.IsCheating) StopCheating();
-        if (_cheatHelper.IsPeeking) StopPeeking();
+        if (IsPeeking) RestoreInputScope(instant: true);
+        else if (_cheatHelper.IsPeeking) StopPeeking();
 
         _view.OnCaught(transform.position, onComplete: () =>
         {
@@ -1005,10 +1006,9 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         ResetInputState();
         ForceClearInteractionState();
         ForceStopForce();
-        StopPeeking(); //CHECK IF THIS WORKS
-
         if (_cheatHelper.IsCheating) StopCheating();
-        if (_cheatHelper.IsPeeking) StopPeeking();
+        if (IsPeeking) RestoreInputScope(instant: true);
+        else if (_cheatHelper.IsPeeking) StopPeeking();
 
         if (_initialChairController.IsBlocked)
             _initialChairController.Unblock();
