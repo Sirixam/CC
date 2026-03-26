@@ -3825,7 +3825,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &516690974
 Transform:
   m_ObjectHideFlags: 0
@@ -5941,7 +5941,7 @@ MonoBehaviour:
   _answerPeekUI: {fileID: 6370691539431799937, guid: 1a334793d560a9e4299bf607329e66d3, type: 3}
   _peekUIParent: {fileID: 1993191926}
   _maxPeekUIs: 5
-  _requireRePeekForFullInfo: 1
+  _requireRePeekForFullInfo: 0
   _globalDefinition: {fileID: 11400000, guid: 2b0875648e78a8e45b08a646836071ca, type: 2}
 --- !u!4 &846097733 stripped
 Transform:
