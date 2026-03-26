@@ -90,7 +90,6 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private bool _isWalkingBack;
 
-
     private void Awake()
     {
         _physics.Initialize();
@@ -701,14 +700,10 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
         if (IsAnswering && _answerController.ActiveAnswerID != null)
         {
-            //If writing a cheated answer, scale deltaTime to match AnswerDuration
-            // instead of the answer's BaseAnswerDuration
-            float deltaTime = Time.deltaTime;
-            if (_cheatHelper.IsRemembering)
-            {
-                float baseAnswerDuration = _answerController.GetAnsweringDuration();
-                deltaTime *= baseAnswerDuration / _cheatData.AnswerDuration;
-            }
+            // Scale deltaTime so the answer always finishes in _cheatData.AnswerDuration,
+            // regardless of the answer's BaseAnswerDuration.
+            float baseAnswerDuration = _answerController.GetAnsweringDuration();
+            float deltaTime = Time.deltaTime * (baseAnswerDuration / _cheatData.AnswerDuration);
 
             _answerController.UpdateAnswering(deltaTime, out bool finishedAnswering);
 
