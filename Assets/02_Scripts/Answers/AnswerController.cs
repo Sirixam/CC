@@ -121,14 +121,11 @@ public class AnswerController : MonoBehaviour
         AnswerSheet.SetCorrectness(answerID, value);
     }
 
-    public void ShowAnswerSheet()
+    public void ShowOrLiftAnswerSheet()
     {
         if (!HasAnswerSheet || !IsPlayer) return;
         _activeUI.Show();
-
-        if (_activeUI == _semicircleAnswerSheetUI)
-            _testPageView?.Lift();
-
+        _testPageView?.Lift();
     }
 
     public bool TryRestartAnswering(string answerID, bool isThinking)
@@ -250,15 +247,14 @@ public class AnswerController : MonoBehaviour
         }
     }
 
-    public void HideAnswerSheet()
+    public void HideOrLowerAnswerSheet()
     {
         if (!HasAnswerSheet) return;
 
         if (IsPlayer)
         {
             _activeUI.Hide();
-            if (_activeUI == _semicircleAnswerSheetUI)
-                _testPageView?.Lower();
+            _testPageView?.Lower();
         }
         if (IsAnswering)
         {

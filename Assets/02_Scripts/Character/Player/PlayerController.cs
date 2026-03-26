@@ -334,8 +334,17 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     {
         if (_answerController.TryStartAnswering(answerID, correctness, contributorActorID, sourceID))
         {
+            _answerController.TestPageView.Lower();
             _audioHelper.OnStartAnswering();
+            _view.StartWriting();
         }
+    }
+
+    private void ShowAnswerSheet()
+    {
+        if (_answerController == null) return;
+        _answerController.ShowOrLiftAnswerSheet();
+        _view.OnLiftAnswerSheet();
     }
 
     private void HideAnswerSheet()
@@ -343,8 +352,10 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         if (_answerController == null)
             return;
 
-        _answerController.HideAnswerSheet();
+        _answerController.HideOrLowerAnswerSheet();
         _audioHelper.TryStopAnswering();
+        _view.StopWriting();
+        _view.OnLowerAnswerSheet();
     }
 
     private void StopCheating()
@@ -386,7 +397,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _answerController = chairController.AnswerController;
 
         if (_globalDefinition.ShowAnswerSheetOnSit)
-            _answerController.ShowAnswerSheet();
+            ShowAnswerSheet();
     }
 
     private void RequestSitting(ChairController chairController)
@@ -407,7 +418,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _interactionHelper.EnableInteraction();
         if (_answerController != null)
         {
-            _answerController.HideAnswerSheet();
+            HideAnswerSheet();
             _answerController = null;
         }
         StopStaticInteraction();
@@ -507,7 +518,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
                 }
                 else
                 {
-                    _answerController.ShowAnswerSheet();
+                    ShowAnswerSheet();
                 }
             }
             else
@@ -542,7 +553,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             if (!hasMemory)
             {
                 if (_globalDefinition.ShowAnswerSheetOnSit)
-                    _answerController?.HideAnswerSheet();
+                    HideAnswerSheet();
 
                 _craftHelper.TryStartCraftingItem("Paper Ball");
             }
@@ -688,6 +699,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             {
                 _answerController.StartIdle();
                 _audioHelper.OnFinishedCorrectAnswer();
+                _view.StopWriting();
                 if (_cheatHelper.TryGetRememberedAnswer(out string answerID, out float correctness, out string actorID))
                 {
                     if (!_interactionHelper.TryGetPickedUpInteraction(out _))
@@ -1026,7 +1038,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     private void TryShowAnswerSheetOnSit()
     {
         if (_globalDefinition.ShowAnswerSheetOnSit)
-            _answerController?.ShowAnswerSheet();
+            ShowAnswerSheet();
     }
     
     public AnswerSheet GetAnswerSheet()
