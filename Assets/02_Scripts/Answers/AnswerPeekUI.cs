@@ -10,6 +10,7 @@ public class AnswerPeekUI : MonoBehaviour
     [SerializeField] private Image _archetypeIcon;
     [SerializeField] private Image _answerTypeIcon;
     [SerializeField] private Image _answerCloudIcon;
+    [SerializeField] private GameObject _answerTypeRoot;
     [SerializeField] private RectTransform _readyObject;
     [SerializeField] private RectTransform _shakeContainer;
     [SerializeField] private CanvasGroup _canvasGroup;
@@ -19,6 +20,8 @@ public class AnswerPeekUI : MonoBehaviour
     //[SerializeField] private Gradient _progressGradient;
     [SerializeField] private Vector2 _notReadyPosition;
     [SerializeField] private TweenSettings<Vector2> _readyTweenSettings;
+    [SerializeField] private float _completedAlpha = 0.75f;
+
     private Vector2 _originalAnchoredPosition;
     private RectTransform _rect;
     private Tween _readyTween;
@@ -110,13 +113,15 @@ public class AnswerPeekUI : MonoBehaviour
         if (_completedStamp != null)
             _completedStamp.gameObject.SetActive(false);
 
+        _answerTypeRoot.SetActive(true);
+
         AnswerPeek = null;
     }
     public void ShowReady()
     {
         _readyTween.Stop();
 
-        if(_readyObject == null)
+        if (_readyObject == null)
         {
             Debug.LogError("Tween / Ready object is NULL");
             return;
@@ -125,16 +130,16 @@ public class AnswerPeekUI : MonoBehaviour
     }
 
     public Color32 ChangeCloudColor(AnswerPeek answerPeek)
-    { 
+    {
         var currentCorrectness = answerPeek.AnswerController.GetCorrectness(answerPeek.AnswerID);
 
-       switch (currentCorrectness)
-       {
-           case 0: return new Color32(183, 48, 48, 255);
-           case 0.5f: return new Color32(217, 180, 62, 255);
-           case 1f: return new Color32(92, 181, 95, 255);
-       }
-       return new Color32(255, 255, 255, 255);
+        switch (currentCorrectness)
+        {
+            case 0: return new Color32(183, 48, 48, 255);
+            case 0.5f: return new Color32(217, 180, 62, 255);
+            case 1f: return new Color32(92, 181, 95, 255);
+        }
+        return new Color32(255, 255, 255, 255);
     }
 
     private void PlayIntro()
@@ -209,7 +214,9 @@ public class AnswerPeekUI : MonoBehaviour
             return;
         }
 
-        float targetAlpha = completed ? 0.5f : 1f;
+        _answerTypeRoot.SetActive(false);
+
+        float targetAlpha = completed ? _completedAlpha : 1f;
         Tween.Alpha(_canvasGroup, targetAlpha, 0.2f);
 
         if (_completedStamp != null)
