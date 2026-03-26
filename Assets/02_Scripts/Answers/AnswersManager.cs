@@ -32,6 +32,12 @@ public class Answer
 
     public void AddContributor(string contributorID) => _contributors.Add(contributorID);
 
+    public void SetAnsweringDuration(float duration)
+    {
+        if (duration > 0f)
+            _progressPerSecond = 1f / duration;
+    }
+
     public float UpdateProgress(float deltaTime, out bool finishedAnswering)
     {
         bool wasFull = Progress >= 1;
@@ -108,6 +114,14 @@ public class AnswerSheet
             return;
         }
         Debug.LogError("SetCorrectness.AnswerID was not found: " + answerID);
+    }
+
+    public void SetAnsweringDuration(string answerID, float duration)
+    {
+        if (_id2Answer.TryGetValue(answerID, out Answer answer))
+            answer.SetAnsweringDuration(duration);
+        else
+            Debug.LogError("SetAnsweringDuration.AnswerID was not found: " + answerID);
     }
 
     public float UpdateProgress(string answerID, float deltaTime, out bool finishedAnswering)

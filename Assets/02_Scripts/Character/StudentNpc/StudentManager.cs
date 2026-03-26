@@ -29,6 +29,8 @@ public class StudentManager : MonoBehaviour
     [SerializeField] private AnimationCurve _thinkingDurationCurve;
     [Tooltip("When true, X axis is normalized (0 = first student, 1 = last student). When false, X axis is the raw student index.")]
     [SerializeField] private bool _normalizeStudentAxis = true;
+    [Tooltip("If true, answering duration = peek phase duration - thinking duration, so students who think longer have less time to answer.")]
+    [SerializeField] private bool _dynamicAnsweringDuration;
 
     public float PeekPhaseDuration => _peekPhaseDuration;
     public float CheatPhaseDuration => _cheatPhaseDuration;
@@ -118,6 +120,13 @@ public class StudentManager : MonoBehaviour
         return _thinkingDurationCurve.Evaluate(t);
     }
 
+    private float GetAnsweringDuration(float thinkingDuration)
+    {
+        if (_dynamicAnsweringDuration)
+            return Mathf.Max(0f, _peekPhaseDuration - thinkingDuration);
+        return Random.Range(_answeringDurationRange.x, _answeringDurationRange.y);
+    }
+
     private void ShuffleCurveIndices()
     {
         _shuffledCurveIndices = new int[_students.Length];
@@ -147,8 +156,9 @@ public class StudentManager : MonoBehaviour
         {
             student.SetCorrectness(answerID, correctness);
             int studentIndex = Array.IndexOf(_students, student);
-            student.SetDurations(thinkingDuration: GetThinkingDuration(studentIndex),
-                                    answeringDuration: Random.Range(_answeringDurationRange.x, _answeringDurationRange.y),
+            float thinkingDuration = GetThinkingDuration(studentIndex);
+            student.SetDurations(thinkingDuration,
+                                    answeringDuration: GetAnsweringDuration(thinkingDuration),
                                     validatingDuration: _cheatPhaseDuration);
 
             student.StartThinking();
@@ -166,7 +176,7 @@ public class StudentManager : MonoBehaviour
 
     private async UniTask SimulateNPCsAnswering(CancellationToken cancellationToken, StudentNpcController smartStudent, AnswerDefinition correctAnswer)
     {
-        float answeringDuration = Random.Range(_answeringDurationRange.x, _answeringDurationRange.y);
+        float sharedAnsweringDuration = Random.Range(_answeringDurationRange.x, _answeringDurationRange.y);
         float validatingDuration = _cheatPhaseDuration;
 
         for (int i = 0; i < _students.Length; i++)
@@ -180,7 +190,9 @@ public class StudentManager : MonoBehaviour
             if (startedThinking)
             {
                 student.SetCorrectness(answerID, correctness);
-                student.SetDurations(GetThinkingDuration(i), answeringDuration, validatingDuration);
+                float thinkingDuration = GetThinkingDuration(i);
+                float answeringDuration = _dynamicAnsweringDuration ? GetAnsweringDuration(thinkingDuration) : sharedAnsweringDuration;
+                student.SetDurations(thinkingDuration, answeringDuration, validatingDuration);
                 student.StartThinking();
             }
         }

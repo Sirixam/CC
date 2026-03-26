@@ -104,7 +104,7 @@ public class StudentNpcController : MonoBehaviour
 
     public void StartAnswering()
     {
-        _stateText.text = "Answering";
+        _stateText.text = ""; // TODO: REMOVE
         AnswerController.StartAnswering(progress: 0);
         _lightbulbUI.SetState(isOn: true);
         _lightbulbUI.PlayShine();

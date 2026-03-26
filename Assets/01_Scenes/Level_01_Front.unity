@@ -16057,6 +16057,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   _normalizeStudentAxis: 0
+  _dynamicAnsweringDuration: 1
 --- !u!1001 &1850847638
 PrefabInstance:
   m_ObjectHideFlags: 0
