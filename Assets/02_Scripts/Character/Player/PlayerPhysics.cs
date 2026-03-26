@@ -67,7 +67,8 @@ public class PlayerPhysics
     public void StartDashing(Vector3 forward)
     {
         ForceType = EForce.Dash;
-        _force = _inputDirection != Vector3.zero ? _inputDirection : forward * _dashSpeed;
+        Vector3 direction = _inputDirection != Vector3.zero ? _inputDirection : forward;
+        _force = direction * _dashSpeed;
         _forceTimer = _dashDuration;
     }
 
