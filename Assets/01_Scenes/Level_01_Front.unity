@@ -5747,6 +5747,7 @@ MonoBehaviour:
   _answerPeekUI: {fileID: 6370691539431799937, guid: 1a334793d560a9e4299bf607329e66d3, type: 3}
   _peekUIParent: {fileID: 1993191926}
   _maxPeekUIs: 5
+  _requireRePeekForFullInfo: 1
   _globalDefinition: {fileID: 11400000, guid: 2b0875648e78a8e45b08a646836071ca, type: 2}
 --- !u!4 &846097733 stripped
 Transform:
@@ -16017,8 +16018,45 @@ MonoBehaviour:
   - {fileID: 931442537}
   - {fileID: 1029895250}
   - {fileID: 928665874}
-  _globalDefinition: {fileID: 11400000, guid: 2b0875648e78a8e45b08a646836071ca, type: 2}
+  _simulateStudentsIndividually: 1
   _halfCorrectChance: 0.5
+  _thinkingDurationRange: {x: 20, y: 20}
+  _answeringDurationRange: {x: 10, y: 10}
+  _validatingDurationRange: {x: 25, y: 25}
+  _thinkingDurationCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 2
+      inSlope: 0.42417264
+      outSlope: 0.42417264
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 10
+      value: 10
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _normalizeStudentAxis: 0
 --- !u!1001 &1850847638
 PrefabInstance:
   m_ObjectHideFlags: 0
