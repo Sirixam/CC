@@ -174,5 +174,39 @@ namespace AKGaming.Game
                 StartWriting();
             }
         }
+
+#if UNITY_EDITOR
+        private void OnDrawGizmosSelected()
+        {
+            if (_handRoot == null) return;
+
+            Transform parent = _handRoot.parent != null ? _handRoot.parent : _handRoot;
+            Vector3 localPos = Application.isPlaying ? _initialPos : _handRoot.localPosition;
+
+            Vector3 origin   = parent.TransformPoint(localPos);
+            Vector3 writeEnd = parent.TransformPoint(localPos + Vector3.right * _maxDistance);
+            Vector3 liftTop  = parent.TransformPoint(localPos + Vector3.up * _liftHeight);
+            Vector3 corner   = parent.TransformPoint(localPos + Vector3.right * _maxDistance + Vector3.up * _liftHeight);
+
+            // Writing range (horizontal)
+            Gizmos.color = new Color(0.2f, 0.9f, 0.3f);
+            Gizmos.DrawLine(origin, writeEnd);
+            Gizmos.DrawWireSphere(writeEnd, 0.003f);
+
+            // Lift height (vertical)
+            Gizmos.color = new Color(0.3f, 0.6f, 1f);
+            Gizmos.DrawLine(origin, liftTop);
+            Gizmos.DrawWireSphere(liftTop, 0.003f);
+
+            // Boundary rectangle
+            Gizmos.color = new Color(1f, 1f, 1f, 0.4f);
+            Gizmos.DrawLine(writeEnd, corner);
+            Gizmos.DrawLine(liftTop, corner);
+
+            // Rest position
+            Gizmos.color = Color.white;
+            Gizmos.DrawWireSphere(origin, 0.005f);
+        }
+#endif
     }
 }

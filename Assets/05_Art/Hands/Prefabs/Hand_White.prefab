@@ -173,7 +173,7 @@ MonoBehaviour:
   _stroke: {fileID: 6421910442547208266}
   _writingMotion: {fileID: 3097922760986382795}
   _writeDuration: 5
-  _maxDistance: 1
+  _maxDistance: 0.4
   _resetSpeed: 5
   _liftHeight: 0.1
   _returnInfluenceRange: {x: 0.1, y: 0.5}
