@@ -64,6 +64,10 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1535594482896726127, guid: ad9006417494d994081c9e11b544b17e, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 9d4be41a1bffd4c23a37e05fa34360ab, type: 2}
     - target: {fileID: 2028980368172026476, guid: ad9006417494d994081c9e11b544b17e, type: 3}
       propertyPath: m_Name
       value: StudentNpc_Female_Grey
@@ -76,6 +80,10 @@ PrefabInstance:
       propertyPath: _icon
       value: 
       objectReference: {fileID: 21300000, guid: a98172b5e760164469a9db1deb0665e5, type: 3}
+    - target: {fileID: 3836395192803753896, guid: ad9006417494d994081c9e11b544b17e, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 9d4be41a1bffd4c23a37e05fa34360ab, type: 2}
     - target: {fileID: 3927746264195442976, guid: ad9006417494d994081c9e11b544b17e, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
