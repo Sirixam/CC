@@ -1245,9 +1245,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6145138073538733209, guid: 78a735c448e055c409ac5843aba6032f, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6273780791895613550, guid: 78a735c448e055c409ac5843aba6032f, type: 3}
       propertyPath: m_Name
       value: LightbulbUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 6855037100506175033, guid: 78a735c448e055c409ac5843aba6032f, type: 3}
+      propertyPath: _useOffState
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
