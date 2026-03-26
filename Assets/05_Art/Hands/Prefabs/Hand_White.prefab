@@ -176,6 +176,7 @@ MonoBehaviour:
   _maxDistance: 1
   _resetSpeed: 5
   _liftHeight: 0.1
+  _returnInfluenceRange: {x: 0.1, y: 0.5}
 --- !u!114 &3097922760986382795
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -256,7 +257,7 @@ GameObject:
   - component: {fileID: 6976956037761038686}
   - component: {fileID: 1048382899078366566}
   m_Layer: 0
-  m_Name: StylizedHand
+  m_Name: Hand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -490,7 +491,7 @@ GameObject:
   - component: {fileID: 4574946456402926147}
   - component: {fileID: 7008335693930770945}
   m_Layer: 0
-  m_Name: penHolder_pencil
+  m_Name: Pencil
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

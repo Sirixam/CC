@@ -45,6 +45,7 @@ public class AnswerController : MonoBehaviour
     public float AnsweringPercent => 1f - _answeringRemainingTime / _answeringDuration;
     public float ValidatingPercent => 1f - _validatingRemainingTime / _validatingDuration;
     public Transform LookAtPoint => _lookAtPoint;
+    public TestPageView TestPageView => _testPageView;
 
     public event Action<AnswerController, string> OnFinishPeekingEvent;
     public event Action<AnswerController, string> OnFinishAnsweringEvent;

@@ -100,6 +100,7 @@ public class StudentNpcController : MonoBehaviour
         _lightbulbUI.Show();
         _lightbulbUI.SetState(isOn: false);
         _lightbulbUI.StartFloat();
+        _studentView.StartThinking(AnswerController.TestPageView);
     }
 
     public void StartAnswering()
@@ -116,7 +117,7 @@ public class StudentNpcController : MonoBehaviour
     {
         _stateText.text = "Validating";
         AnswerController.StartValidating();
-        _studentView.StartValidating();
+        _studentView.StartValidating(AnswerController.TestPageView);
     }
 
     public async UniTask UpdateRemainingTimeWhileNotDistracted(CancellationToken cancellationToken)

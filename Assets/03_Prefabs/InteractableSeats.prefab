@@ -53,6 +53,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Interactable_Desk
       objectReference: {fileID: 0}
+    - target: {fileID: 7021071637433358550, guid: 5cf2a02741051c440bbec2b1fea47799, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7021071637433358550, guid: 5cf2a02741051c440bbec2b1fea47799, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0.182
+      objectReference: {fileID: 0}
+    - target: {fileID: 7021071637433358550, guid: 5cf2a02741051c440bbec2b1fea47799, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -0.137
+      objectReference: {fileID: 0}
     - target: {fileID: 8537521124919118948, guid: 5cf2a02741051c440bbec2b1fea47799, type: 3}
       propertyPath: m_Layer
       value: 3
