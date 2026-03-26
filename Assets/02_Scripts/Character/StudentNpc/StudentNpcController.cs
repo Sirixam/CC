@@ -125,7 +125,7 @@ public class StudentNpcController : MonoBehaviour
 
     private void OnDistractionStarted()
     {
-        _studentView.StartThinking(testPageView: null);
+        _studentView.StartThinking(AnswerController.TestPageView);
     }
 
     private void OnDistractionEnded()
@@ -133,7 +133,7 @@ public class StudentNpcController : MonoBehaviour
         switch (_handState)
         {
             case EHandState.Answering:  _studentView.StartAnswering(); break;
-            case EHandState.Validating: _studentView.StartValidating(testPageView: null); break;
+            case EHandState.Validating: _studentView.StartValidating(AnswerController.TestPageView); break;
         }
     }
 
