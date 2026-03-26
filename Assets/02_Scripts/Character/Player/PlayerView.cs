@@ -247,6 +247,16 @@ public class PlayerView : MonoBehaviour, IStunView, IChairView
         _handAnimator.SetHidden();
     }
 
+    public void StartCrafting()
+    {
+        _handAnimator.SetCrafting();
+    }
+
+    public void StopCrafting()
+    {
+        _handAnimator.SetHidden();
+    }
+
     public void ResetVisuals()
     {
         _stunVFX.Stop(withChildren: true, ParticleSystemStopBehavior.StopEmittingAndClear);

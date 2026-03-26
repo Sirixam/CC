@@ -3,7 +3,7 @@ using UnityEngine;
 [DefaultExecutionOrder(-10)]
 public class HandAnimator : MonoBehaviour
 {
-    public enum State { Hidden, Writing, Validating }
+    public enum State { Hidden, Writing, Validating, Crafting }
 
     [SerializeField] private EDominantHand _dominantHand;
     [SerializeField] private HandView _leftHand;
@@ -18,6 +18,9 @@ public class HandAnimator : MonoBehaviour
     {
         _isLefty = _dominantHand == EDominantHand.Left ||
                    (_dominantHand == EDominantHand.Random && UnityEngine.Random.value < 0.5f);
+
+        _leftHand.SetIsLefty(true);
+        _rightHand.SetIsLefty(false);
         SetHidden();
     }
 
@@ -33,6 +36,8 @@ public class HandAnimator : MonoBehaviour
         CurrentState = State.Hidden;
         _leftHand.WritingLoopController.enabled = false;
         _rightHand.WritingLoopController.enabled = false;
+        _leftHand.CrumplingController.enabled = false;
+        _rightHand.CrumplingController.enabled = false;
         _leftHand.PinchController.Release();
         _rightHand.PinchController.Release();
         _leftHand.HidePencil();
@@ -49,6 +54,7 @@ public class HandAnimator : MonoBehaviour
         var other = _isLefty ? _rightHand : _leftHand;
 
         other.WritingLoopController.enabled = false;
+        other.CrumplingController.enabled = false;
         other.PinchController.Release();
         other.HidePencil();
         other.Hide();
@@ -64,10 +70,27 @@ public class HandAnimator : MonoBehaviour
         CurrentState = State.Validating;
         _leftHand.WritingLoopController.enabled = false;
         _rightHand.WritingLoopController.enabled = false;
+        _leftHand.CrumplingController.enabled = false;
+        _rightHand.CrumplingController.enabled = false;
         _leftHand.HidePencil();
         _rightHand.HidePencil();
         _leftHand.PinchController.Pinch();
         _rightHand.PinchController.Pinch();
+        _leftHand.Show();
+        _rightHand.Show();
+    }
+
+    public void SetCrafting()
+    {
+        CurrentState = State.Crafting;
+        _leftHand.WritingLoopController.enabled = false;
+        _rightHand.WritingLoopController.enabled = false;
+        _leftHand.HidePencil();
+        _rightHand.HidePencil();
+        _leftHand.PinchController.Pinch();
+        _rightHand.PinchController.Pinch();
+        _leftHand.CrumplingController.enabled = true;
+        _rightHand.CrumplingController.enabled = true;
         _leftHand.Show();
         _rightHand.Show();
     }

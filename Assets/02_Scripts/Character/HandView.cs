@@ -11,6 +11,7 @@ public enum EDominantHand
 public class HandView : MonoBehaviour
 {
     public HandWritingLoopController WritingLoopController;
+    public HandCrumplingController CrumplingController;
     public HandPinchController PinchController;
     public Transform ValidatingTarget;
     public GameObject Pencil;
@@ -20,6 +21,11 @@ public class HandView : MonoBehaviour
 
     public void ShowPencil() { if (Pencil != null) Pencil.SetActive(true); }
     public void HidePencil() { if (Pencil != null) Pencil.SetActive(false); }
+
+    public void SetIsLefty(bool value)
+    {
+        CrumplingController.SetReverseDirection(value);
+    }
 
     public void MoveTowardTarget(float speed)
     {

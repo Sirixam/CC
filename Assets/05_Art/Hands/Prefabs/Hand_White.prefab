@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 2792465293115094078}
   - component: {fileID: 3097922760986382795}
   - component: {fileID: 6421910442547208266}
+  - component: {fileID: 5122249590148139134}
   m_Layer: 0
   m_Name: Hand_White
   m_TagString: Untagged
@@ -54,6 +55,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   WritingLoopController: {fileID: 2792465293115094078}
+  CrumplingController: {fileID: 5122249590148139134}
   PinchController: {fileID: 5352594445115601037}
   ValidatingTarget: {fileID: 0}
   Pencil: {fileID: 2489138004965374989}
@@ -231,6 +233,22 @@ MonoBehaviour:
   _waveAmplitude: 0.5
   _waveFrequency: 2
   _loopRadius: 0.5
+--- !u!114 &5122249590148139134
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 180557533655662575}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac0904dd01ee09f478d7b20b59d5b430, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _handRoot: {fileID: 705561775665358165}
+  _speed: 10
+  _radius: 0.03
+  _reverseDirection: 0
 --- !u!1 &914044531976162097
 GameObject:
   m_ObjectHideFlags: 0

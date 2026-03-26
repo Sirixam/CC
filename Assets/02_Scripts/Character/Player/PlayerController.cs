@@ -131,6 +131,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
         _chairHelper.OnSittingComplete += TryShowAnswerSheetOnSit;
         _craftHelper.OnFinishedCrafting += TryShowAnswerSheetOnSit;
+        _craftHelper.OnFinishedCrafting += _view.StopCrafting;
 
     }
 
@@ -148,6 +149,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
         _chairHelper.OnSittingComplete -= TryShowAnswerSheetOnSit;
         _craftHelper.OnFinishedCrafting -= TryShowAnswerSheetOnSit;
+        _craftHelper.OnFinishedCrafting -= _view.StopCrafting;
     }
 
     private void OnActionRequested(EAction actionType)
@@ -209,7 +211,8 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         else if (actionType == EAction.Utility)
         {
             // TODO: Hide inventory
-            _craftHelper.TryStopCraftingItem();
+            if (_craftHelper.TryStopCraftingItem())
+                _view.StopCrafting();
         }
         else if (actionType == EAction.Help)
         {
@@ -562,7 +565,8 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
                 if (_globalDefinition.ShowAnswerSheetOnSit)
                     HideAnswerSheet();
 
-                _craftHelper.TryStartCraftingItem("Paper Ball");
+                if (_craftHelper.TryStartCraftingItem("Paper Ball"))
+                    _view.StartCrafting();
             }
         }
         else if (actionType == EAction.Help)
@@ -628,7 +632,8 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             if (!isHolding)
             {
                 TryShowAnswerSheetOnSit();
-                _craftHelper.TryStopCraftingItem();
+                if (_craftHelper.TryStopCraftingItem())
+                    _view.StopCrafting();
             }
         }
         else if (actionType == EAction.Help)
@@ -744,9 +749,9 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             if (_cheatHelper.IsCheatBlocked)
             {
                 if (_caughtCheatingForce > 0)
-            {
-                Vector3 forceDirection = (_physics.Position - _cheatHelper.AnswerPosition).normalized;
-                _physics.StartExternalForce(forceDirection * _caughtCheatingForce);
+                {
+                    Vector3 forceDirection = (_physics.Position - _cheatHelper.AnswerPosition).normalized;
+                    _physics.StartExternalForce(forceDirection * _caughtCheatingForce);
                 }
                 StopCheating(); // Trigger after external force
                 return;
