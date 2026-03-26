@@ -30,7 +30,7 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
     [Header("Configurations")]
     [SerializeField] private Vector2 _timeToStandRange = new Vector2(5, 5);
     [SerializeField] private Vector2 _timeToSitRange = new Vector2(10, 10);
-    [SerializeField] private string _seatRouteName = "TeacherSeat";
+    [SerializeField] private string _seatRouteID = "TeacherSeat";
 
     string IActor.ID => IActor.GetStudentNpcID(0); // TODO: Support multiple teachers
     Transform ILookAroundActor.Pivot => transform;
@@ -147,7 +147,7 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
     private void GoToSeat()
     {
         _state = EState.GoToSeat;
-        _navigationHelper.Start(_seatRouteName);
+        _navigationHelper.Start(_seatRouteID);
     }
 
     void ISitActor.ExecuteSit()

@@ -44,9 +44,9 @@ public class NavigationHelper
         GoToRandomDestination();
     }
 
-    public void Start(string routeName)
+    public void Start(string routeID)
     {
-        GoToDestination(routeName);
+        GoToDestination(routeID);
     }
 
     public void Update()
@@ -81,9 +81,9 @@ public class NavigationHelper
         MoveToCurrentWaypoint();
     }
 
-    public void GoToDestination(string routeName)
+    public void GoToDestination(string routeID)
     {
-        _currentRoute = _navigationManager.GetRoute(routeName);
+        _currentRoute = _navigationManager.GetRoute(routeID);
         _currentWaypointIndex = 0;
         MoveToCurrentWaypoint();
     }

@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f76756cebadfc7947933cff3ff21ce35, type: 3}
-  m_Name: DEF_Spawn
+  m_Name: DEF_Spawn_Default
   m_EditorClassIdentifier: 
   Entries:
   - Prefab: {fileID: 3927185728587253108, guid: ef5bb85f61f94c44fb359cbd3c9424eb, type: 3}
     Offset: {x: 0, y: 1, z: 0}
     Weight: 1
-  IntervalRange: {x: 2, y: 5}
-  MaxActive: 10
+  IntervalRange: {x: 30, y: 60}
+  MaxActive: 5

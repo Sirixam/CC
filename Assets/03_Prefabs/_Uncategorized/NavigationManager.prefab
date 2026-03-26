@@ -359,17 +359,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _identifiableRoutesData:
-  - Include: 1
+  - DebugName: 
+    Include: 1
     Type: 1
     Waitpoints:
     - Point: {fileID: 5391851334298706166}
       NextDelay: 0
       ArriveEvent: {fileID: 11400000, guid: b75480429375cd845be3eb39399fdeb0, type: 2}
-    RouteName: 
     ShowOnGizmos: 0
-    Name: TeacherSeat
+    ID: TeacherSeat
   _routesData:
-  - Include: 0
+  - DebugName: 
+    Include: 0
     Type: 1
     Waitpoints:
     - Point: {fileID: 993941903998296245}
@@ -396,9 +397,9 @@ MonoBehaviour:
     - Point: {fileID: 6949845694862210747}
       NextDelay: 0
       ArriveEvent: {fileID: 11400000, guid: d2713f49caa15a9438905b6e28cdfdd9, type: 2}
-    RouteName: 
     ShowOnGizmos: 1
-  - Include: 0
+  - DebugName: 
+    Include: 0
     Type: 1
     Waitpoints:
     - Point: {fileID: 1744474640069974725}
@@ -425,9 +426,9 @@ MonoBehaviour:
     - Point: {fileID: 8214840012617432357}
       NextDelay: 0
       ArriveEvent: {fileID: 11400000, guid: d2713f49caa15a9438905b6e28cdfdd9, type: 2}
-    RouteName: 
     ShowOnGizmos: 1
-  - Include: 0
+  - DebugName: 
+    Include: 0
     Type: 1
     Waitpoints:
     - Point: {fileID: 1937744159715587384}
@@ -457,9 +458,9 @@ MonoBehaviour:
     - Point: {fileID: 8214840012617432357}
       NextDelay: 0
       ArriveEvent: {fileID: 11400000, guid: d2713f49caa15a9438905b6e28cdfdd9, type: 2}
-    RouteName: 
     ShowOnGizmos: 1
-  - Include: 0
+  - DebugName: 
+    Include: 0
     Type: 1
     Waitpoints:
     - Point: {fileID: 1379604803618998413}
@@ -486,9 +487,9 @@ MonoBehaviour:
     - Point: {fileID: 2735492799443929191}
       NextDelay: 0
       ArriveEvent: {fileID: 11400000, guid: d2713f49caa15a9438905b6e28cdfdd9, type: 2}
-    RouteName: 
     ShowOnGizmos: 1
-  - Include: 0
+  - DebugName: 
+    Include: 0
     Type: 1
     Waitpoints:
     - Point: {fileID: 9031829027017115949}
@@ -506,9 +507,9 @@ MonoBehaviour:
     - Point: {fileID: 2567397159656460824}
       NextDelay: 0
       ArriveEvent: {fileID: 0}
-    RouteName: 
     ShowOnGizmos: 1
-  - Include: 0
+  - DebugName: 
+    Include: 0
     Type: 1
     Waitpoints:
     - Point: {fileID: 1744474640069974725}
@@ -529,9 +530,9 @@ MonoBehaviour:
     - Point: {fileID: 6390729573730302592}
       NextDelay: 0
       ArriveEvent: {fileID: 0}
-    RouteName: 
     ShowOnGizmos: 1
-  - Include: 0
+  - DebugName: 
+    Include: 0
     Type: 1
     Waitpoints:
     - Point: {fileID: 1744474640069974725}
@@ -552,9 +553,9 @@ MonoBehaviour:
     - Point: {fileID: 6390729573730302592}
       NextDelay: 0
       ArriveEvent: {fileID: 0}
-    RouteName: 
     ShowOnGizmos: 1
-  - Include: 0
+  - DebugName: 
+    Include: 0
     Type: 1
     Waitpoints:
     - Point: {fileID: 1744474640069974725}
@@ -575,7 +576,6 @@ MonoBehaviour:
     - Point: {fileID: 6390729573730302592}
       NextDelay: 0
       ArriveEvent: {fileID: 0}
-    RouteName: 
     ShowOnGizmos: 1
   _allowGizmos: 1
 --- !u!1 &1798562341932344093

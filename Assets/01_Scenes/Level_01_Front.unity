@@ -1646,16 +1646,32 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5694824683282462777, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}
+      propertyPath: _routesData.Array.data[0].DebugName
+      value: l1_shortLeft
+      objectReference: {fileID: 0}
+    - target: {fileID: 5694824683282462777, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}
       propertyPath: _routesData.Array.data[0].RouteName
       value: l1_shortLeft
+      objectReference: {fileID: 0}
+    - target: {fileID: 5694824683282462777, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}
+      propertyPath: _routesData.Array.data[1].DebugName
+      value: l1_longLeft
       objectReference: {fileID: 0}
     - target: {fileID: 5694824683282462777, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}
       propertyPath: _routesData.Array.data[1].RouteName
       value: l1_longLeft
       objectReference: {fileID: 0}
     - target: {fileID: 5694824683282462777, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}
+      propertyPath: _routesData.Array.data[2].DebugName
+      value: l1_shortRight
+      objectReference: {fileID: 0}
+    - target: {fileID: 5694824683282462777, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}
       propertyPath: _routesData.Array.data[2].RouteName
       value: l1_shortRight
+      objectReference: {fileID: 0}
+    - target: {fileID: 5694824683282462777, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}
+      propertyPath: _routesData.Array.data[3].DebugName
+      value: l1_longRight
       objectReference: {fileID: 0}
     - target: {fileID: 5694824683282462777, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}
       propertyPath: _routesData.Array.data[3].RouteName

@@ -17,18 +17,18 @@ public class NavigationManager : MonoBehaviour
     [Serializable]
     public class IdentifiableRouteData : RouteData
     {
-        public string Name;
+        public string ID;
     }
 
     [Serializable]
     public class RouteData
     {
+        public string DebugName;
         [ToggleButtons("INCLUDE", "IGNORE")]
         public bool Include;
         public ERoute Type;
         public WaypointData[] Waitpoints;
-        public string RouteName;
-        public bool ShowOnGizmos; 
+        public bool ShowOnGizmos;
     }
 
     [Serializable]
@@ -43,16 +43,16 @@ public class NavigationManager : MonoBehaviour
     [SerializeField] private List<RouteData> _routesData;
     [SerializeField] private bool _allowGizmos;
 
-    public WaypointData[] GetRoute(string routeName)
+    public WaypointData[] GetRoute(string routeID)
     {
         foreach (var identifiableRouteData in _identifiableRoutesData)
         {
-            if (identifiableRouteData.Name == routeName)
+            if (identifiableRouteData.ID == routeID)
             {
                 return identifiableRouteData.Waitpoints;
             }
         }
-        Debug.LogError("Route not found: " + routeName);
+        Debug.LogError("Route not found: " + routeID);
         return Array.Empty<WaypointData>();
     }
 
