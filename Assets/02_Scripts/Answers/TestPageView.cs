@@ -50,8 +50,8 @@ public class TestPageView : MonoBehaviour
     {
         _liftPaperSequence.Stop();
         _liftPaperSequence = Sequence.Create()
-            .Group(Tween.LocalPosition(_paper, _restingLocalPosition, _tweenDuration, Ease.OutBack))
-            .Group(Tween.LocalRotation(_paper, _restingRotation, _tweenDuration, Ease.OutBack)
+            .Group(Tween.LocalPosition(_paper, _restingLocalPosition, _tweenDuration, Ease.OutCubic))
+            .Group(Tween.LocalRotation(_paper, _restingRotation, _tweenDuration, Ease.OutCubic)
         );
     }
 
