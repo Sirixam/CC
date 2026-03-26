@@ -44,18 +44,18 @@ public class HandAnimator : MonoBehaviour
     public void SetWriting()
     {
         CurrentState = State.Writing;
-        _leftHand.PinchController.Release();
-        _rightHand.PinchController.Release();
 
         var dominant = _isLefty ? _leftHand : _rightHand;
-        var other    = _isLefty ? _rightHand : _leftHand;
+        var other = _isLefty ? _rightHand : _leftHand;
 
         other.WritingLoopController.enabled = false;
+        other.PinchController.Release();
         other.HidePencil();
         other.Hide();
 
         dominant.Show();
         dominant.ShowPencil();
+        dominant.PinchController.Pinch();
         dominant.WritingLoopController.enabled = true;
     }
 

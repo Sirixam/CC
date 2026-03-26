@@ -108,7 +108,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _lookHelper.Initialize(transform.forward);
         _fieldOfViewController.HideInstant();
         TeleportToInitialChair();
-    
+
     }
 
     public void Inject(IAnswerIconProvider answerIconProvider)
@@ -353,9 +353,15 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             return;
 
         _answerController.HideOrLowerAnswerSheet();
+        _view.OnLowerAnswerSheet();
+        StopAnswering();
+    }
+
+    private void StopAnswering()
+    {
+        _answerController.StopAnswering();
         _audioHelper.TryStopAnswering();
         _view.StopWriting();
-        _view.OnLowerAnswerSheet();
     }
 
     private void StopCheating()
@@ -463,7 +469,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private void OnDirectionalActionRequested(EDirectionalAction actionType, Vector2 input, bool isMouse)
     {
-       // Debug.Log($"Directional input: {actionType} {input}");
+        // Debug.Log($"Directional input: {actionType} {input}");
         if (_skipNextDirectionAction)
         {
             _skipNextDirectionAction = false;
@@ -576,6 +582,11 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
                     {
                         HideAnswerSheet();
                     }
+                    else
+                    {
+                        _answerController.ShowOrLiftAnswerSheet();
+                        StopAnswering();
+                    }
                 }
             }
             else if (_cheatHelper.IsCheating)
@@ -652,7 +663,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private void Update()
     {
-        
+
         if (!GameManager.Instance.GameplayActive)
             return;
 
@@ -925,7 +936,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _stunHelper.ForceStop();
     }
 
-   public void ResetPlayerState()
+    public void ResetPlayerState()
     {
         _isCaught = false;
         _isWalkingBack = false;
@@ -1040,7 +1051,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         if (_globalDefinition.ShowAnswerSheetOnSit)
             ShowAnswerSheet();
     }
-    
+
     public AnswerSheet GetAnswerSheet()
     {
         return _answerController?.AnswerSheet;

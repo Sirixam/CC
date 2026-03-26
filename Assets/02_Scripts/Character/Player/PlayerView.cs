@@ -187,16 +187,9 @@ public class PlayerView : MonoBehaviour, IStunView, IChairView
         // Calculate total shake duration so shrink matches it exactly
         float totalShakeDuration = (_caughtShakeCount + 1) * _caughtShakeDuration;
 
-        _caughtShrinkTween = Tween.Scale(
-            _rendererContainer,
-            Vector3.zero,
-            totalShakeDuration,
-            Ease.InBack,
-            startDelay: _caughtFreezeDuration
-        );
+        _caughtShrinkTween = Tween.Scale(_rendererContainer, Vector3.zero, totalShakeDuration, Ease.InBack, startDelay: _caughtFreezeDuration);
 
-        _caughtSequence = Sequence.Create()
-            .ChainDelay(_caughtFreezeDuration);
+        _caughtSequence = Sequence.Create().ChainDelay(_caughtFreezeDuration);
 
         for (int i = 0; i < _caughtShakeCount; i++)
         {
@@ -206,8 +199,7 @@ public class PlayerView : MonoBehaviour, IStunView, IChairView
             );
         }
 
-        _caughtSequence
-            .Chain(Tween.LocalPositionX(_rendererContainer, 0f, _caughtShakeDuration, Ease.OutQuad))
+        _caughtSequence.Chain(Tween.LocalPositionX(_rendererContainer, 0f, _caughtShakeDuration, Ease.OutQuad))
             .OnComplete(() =>
             {
                 _caughtShrinkTween.Stop();
@@ -234,9 +226,13 @@ public class PlayerView : MonoBehaviour, IStunView, IChairView
     public void StopWriting()
     {
         if (_isAnswerSheetLifted)
+        {
             _handAnimator.SetValidating();
+        }
         else
+        {
             _handAnimator.SetHidden();
+        }
     }
 
     public void OnLiftAnswerSheet()
@@ -263,21 +259,29 @@ public class PlayerView : MonoBehaviour, IStunView, IChairView
         OnLowerAnswerSheet();
 
         foreach (var trail in _dashTrails)
+        {
             trail.emitting = false;
+        }
 
         if (_caughtSymbolsVFX != null)
+        {
             _caughtSymbolsVFX.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        }
     }
     public void PlayCaughtSymbols()
     {
         if (_caughtSymbolsVFX != null)
+        {
             _caughtSymbolsVFX.Play();
+        }
     }
 
     public void StopCaughtSymbols()
     {
         if (_caughtSymbolsVFX != null)
+        {
             _caughtSymbolsVFX.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+        }
     }
 
     public void ShakeHeldItem()

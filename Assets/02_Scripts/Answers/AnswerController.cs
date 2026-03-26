@@ -256,6 +256,10 @@ public class AnswerController : MonoBehaviour
             _activeUI.Hide();
             _testPageView?.Lower();
         }
+    }
+
+    public void StopAnswering()
+    {
         if (IsAnswering)
         {
             string answerID = ActiveAnswerID;
