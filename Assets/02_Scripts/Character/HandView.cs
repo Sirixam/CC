@@ -15,12 +15,6 @@ public class HandView : MonoBehaviour
     public Transform ValidatingTarget;
     public GameObject Pencil;
 
-    private void Awake()
-    {
-        gameObject.SetActive(false);
-        if (Pencil != null) Pencil.SetActive(false);
-    }
-
     public void Show() => gameObject.SetActive(true);
     public void Hide() => gameObject.SetActive(false);
 

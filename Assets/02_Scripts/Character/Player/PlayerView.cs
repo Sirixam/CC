@@ -20,14 +20,8 @@ public class PlayerView : MonoBehaviour, IStunView, IChairView
     [SerializeField] private int _caughtShakeCount = 5;
     [SerializeField] private ParticleSystem _caughtCloudVFXPrefab;
     [SerializeField] private ParticleSystem _caughtSymbolsVFX;
+    [SerializeField] private HandAnimator _handAnimator;
 
-    [Header("Hands")]
-    [SerializeField] private EDominantHand _dominantHand;
-    [SerializeField] private HandView _leftHandView;
-    [SerializeField] private HandView _rightHandView;
-    [SerializeField] private float _handMoveSpeed = 3f;
-
-    private bool _isLefty;
     private bool _isAnswerSheetLifted;
 
     private Sequence _caughtSequence;
@@ -70,8 +64,6 @@ public class PlayerView : MonoBehaviour, IStunView, IChairView
         _caughtShrinkTweenSettings.startFromCurrent = true;
         _stunVFX.Stop(withChildren: true, ParticleSystemStopBehavior.StopEmittingAndClear);
         _meshRenderers = _rendererContainer.GetComponentsInChildren<MeshRenderer>();
-        _isLefty = _dominantHand == EDominantHand.Left ||
-                   (_dominantHand == EDominantHand.Random && UnityEngine.Random.value < 0.5f);
         _initialBoundsExtentsY = GetBounds().extents.y;
         _initialBoundsExtentsZ = GetBounds().extents.z;
 
@@ -234,66 +226,29 @@ public class PlayerView : MonoBehaviour, IStunView, IChairView
             });
     }
 
-    private void Update()
-    {
-        if (!_isAnswerSheetLifted) return;
-        _leftHandView.MoveTowardTarget(_handMoveSpeed);
-        _rightHandView.MoveTowardTarget(_handMoveSpeed);
-    }
-
     public void StartWriting()
     {
-        var dominant = _isLefty ? _leftHandView : _rightHandView;
-        dominant.Show();
-        dominant.ShowPencil();
-        dominant.WritingLoopController.enabled = true;
-
-        var other = _isLefty ? _rightHandView : _leftHandView;
-        other.Hide();
+        _handAnimator.SetWriting();
     }
 
     public void StopWriting()
     {
-        _leftHandView.WritingLoopController.enabled = false;
-        _rightHandView.WritingLoopController.enabled = false;
-        _leftHandView.HidePencil();
-        _rightHandView.HidePencil();
-
         if (_isAnswerSheetLifted)
-        {
-            // Page still up — return to validating pose
-            _leftHandView.PinchController.Pinch();
-            _rightHandView.PinchController.Pinch();
-            _leftHandView.Show();
-            _rightHandView.Show();
-        }
+            _handAnimator.SetValidating();
         else
-        {
-            _leftHandView.Hide();
-            _rightHandView.Hide();
-        }
+            _handAnimator.SetHidden();
     }
 
     public void OnLiftAnswerSheet()
     {
         _isAnswerSheetLifted = true;
-        _leftHandView.WritingLoopController.enabled = false;
-        _rightHandView.WritingLoopController.enabled = false;
-        _leftHandView.HidePencil();
-        _rightHandView.HidePencil();
-        _leftHandView.PinchController.Pinch();
-        _rightHandView.PinchController.Pinch();
-        _leftHandView.Show();
-        _rightHandView.Show();
+        _handAnimator.SetValidating();
     }
 
     public void OnLowerAnswerSheet()
     {
         _isAnswerSheetLifted = false;
-        _leftHandView.PinchController.Release();
-        _rightHandView.PinchController.Release();
-        _leftHandView.Hide();
-        _rightHandView.Hide();
+        _handAnimator.SetHidden();
     }
 
     public void ResetVisuals()
@@ -305,7 +260,6 @@ public class PlayerView : MonoBehaviour, IStunView, IChairView
         _scaleTweenY.Stop();
         _caughtSequence.Stop();
         _caughtShrinkTween.Stop();
-        StopWriting();
         OnLowerAnswerSheet();
 
         foreach (var trail in _dashTrails)

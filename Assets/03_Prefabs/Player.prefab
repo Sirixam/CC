@@ -787,10 +787,7 @@ MonoBehaviour:
   _caughtShakeCount: 100
   _caughtCloudVFXPrefab: {fileID: 265766274217486953, guid: d3015b7eea383f64d8b81f965cc466e7, type: 3}
   _caughtSymbolsVFX: {fileID: 3335995798422473944}
-  _dominantHand: 2
-  _leftHandView: {fileID: 4988431026961828864}
-  _rightHandView: {fileID: 1743866435256264382}
-  _handMoveSpeed: 3
+  _handAnimator: {fileID: 4308116975536461986}
   _caughtShrinkTweenSettings:
     startFromCurrent: 0
     startValue: {x: 0, y: 0, z: 0}
@@ -2130,6 +2127,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9123122298512519571}
+  - component: {fileID: 4308116975536461986}
   m_Layer: 0
   m_Name: Renderer
   m_TagString: Untagged
@@ -2155,6 +2153,22 @@ Transform:
   - {fileID: 1127929184276397490}
   m_Father: {fileID: 365723418938546978}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4308116975536461986
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6932459045926847273}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac5dc71e00786a449b6d211ca2338b07, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _dominantHand: 2
+  _leftHand: {fileID: 4988431026961828864}
+  _rightHand: {fileID: 1743866435256264382}
+  _handMoveSpeed: 3
 --- !u!1 &7191703743985449773
 GameObject:
   m_ObjectHideFlags: 0
