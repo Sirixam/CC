@@ -214,8 +214,6 @@ public class AnswerPeekUI : MonoBehaviour
             return;
         }
 
-        _answerTypeRoot.SetActive(false);
-
         float targetAlpha = completed ? _completedAlpha : 1f;
         Tween.Alpha(_canvasGroup, targetAlpha, 0.2f);
 
@@ -227,7 +225,10 @@ public class AnswerPeekUI : MonoBehaviour
                 // Stamp punch animation
                 _completedStamp.rectTransform.localScale = Vector3.one * 2f;
                 _completedStamp.rectTransform.localRotation = Quaternion.Euler(0, 0, Random.Range(-20f, -10f));
-                Tween.Scale(_completedStamp.rectTransform, Vector3.one, 0.25f, Ease.OutBack);
+                Tween.Scale(_completedStamp.rectTransform, Vector3.one, 0.25f, Ease.OutBack).OnComplete(() =>
+                {
+                    _answerTypeRoot.SetActive(false);
+                });
             }
         }
     }
