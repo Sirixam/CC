@@ -34,6 +34,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     [SerializeField] private float _peekMoveSpeedMultiplier = 0.5f;
     [Header("Push")]
     [SerializeField] private float _pushForce = 5f;
+    [SerializeField] private float _caughtCheatingForce = 15f;
     [Header("TO BE REMOVED")]
     [SerializeField] private bool _dropByHoldingInteract; // Once we decide on the final input scheme, this can be removed
     [SerializeField] private bool _toggleToPeek;
@@ -740,6 +741,17 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         }
         if (_cheatHelper.IsCheating)
         {
+            if (_cheatHelper.IsCheatBlocked)
+            {
+                if (_caughtCheatingForce > 0)
+            {
+                Vector3 forceDirection = (_physics.Position - _cheatHelper.AnswerPosition).normalized;
+                _physics.StartExternalForce(forceDirection * _caughtCheatingForce);
+                }
+                StopCheating(); // Trigger after external force
+                return;
+            }
+
             _cheatHelper.UpdateCheating(out bool finishedCheating);
             if (finishedCheating)
             {

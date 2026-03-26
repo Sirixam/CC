@@ -32,6 +32,8 @@ public class PlayerCheatHelper
     public bool IsPeeking { get; private set; }
     public bool IsCheating { get; private set; }
     public bool IsRemembering => _memoryProgress > 0;
+    public bool IsCheatBlocked => _answerController.IsCheatBlocked;
+    public Vector3 AnswerPosition => _answerController != null ? _answerController.transform.position : Vector3.zero;
 
     public PlayerCheatHelper(Data data, PlayerView playerView)
     {
