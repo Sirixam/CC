@@ -59,6 +59,12 @@ public class AnswerSheet
     private Dictionary<string, Answer> _id2Answer = new();
 
     public Answer[] Answers { get; private set; }
+    public float AccumulatedBoost { get; private set; }
+
+    public void AddGradeBoost(float amount)
+    {
+        AccumulatedBoost += amount;
+    }
 
     public AnswerSheet(AnswerDefinition[] answersDefinitions, bool persistProgress)
     {
@@ -546,6 +552,16 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
     public AnswerController GetPlayerDesk(int index)
     {
         return _playerDesks[index];
+    }
+
+    public AnswerSheet GetPlayerSheet(int index)
+    {
+        return _playerDesks[index].AnswerSheet;
+    }
+
+    public AnswerSheet GetPlayerSheet(string actorID)
+    {
+        return Array.Find(_playerDesks, x => x.ActorID == actorID)?.AnswerSheet;
     }
 
     public void ShakeAllPeekCards()

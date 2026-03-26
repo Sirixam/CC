@@ -285,7 +285,7 @@ public class GameManager : MonoBehaviour
     {
         if (minCorrectness < _globalDefinition.MinCorrectnessToEarlyVictoryFlow) return;
 
-        GradingHelper.CalculateAndPrintGrades(Players);
+        GradingHelper.CalculateAndPrintGrades(Players, _answerManager);
 
         _victoryUI.UpdateAnswerSheets();
         ShowEndMenu(_victoryUI.gameObject);
@@ -293,7 +293,7 @@ public class GameManager : MonoBehaviour
 
     private void OnTimesUp()
     {
-        GradingHelper.CalculateAndPrintGrades(Players);
+        GradingHelper.CalculateAndPrintGrades(Players, _answerManager);
 
         if (_timesUpFeedback.TryGetComponent(out AnswerSheetsDisplayUI answerUI))
         {

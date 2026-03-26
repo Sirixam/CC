@@ -5,7 +5,7 @@ namespace _02_Scripts.Utils
 {
     public class GradingHelper
     {
-        private static(int numeric, string letter) GetGrade(float percentage)
+        private static (int numeric, string letter) GetGrade(float percentage)
         {
             int numeric = Mathf.RoundToInt(percentage * 10f);
 
@@ -25,7 +25,7 @@ namespace _02_Scripts.Utils
         }
 
 
-        public static void CalculateAndPrintGrades(List<PlayerController> players)
+        public static void CalculateAndPrintGrades(List<PlayerController> players, AnswersManager answersManager)
         {
 
             float totalClassPercentage = 0f;
@@ -33,8 +33,8 @@ namespace _02_Scripts.Utils
             for (int i = 0; i < players.Count; i++)
             {
                 var player = players[i];
-                var answerSheet = player.GetAnswerSheet();
 
+                var answerSheet = answersManager.GetPlayerSheet(i);
                 if (answerSheet == null)
                 {
                     Debug.LogWarning($"[GRADE] Player {player.name} has no AnswerSheet");
@@ -50,7 +50,7 @@ namespace _02_Scripts.Utils
                     total += answer.Correctness; // 0, 0.5, 1
                 }
 
-                float percentage = total / answers.Length;
+                float percentage = Mathf.Clamp01(total / answers.Length + answerSheet.AccumulatedBoost);
                 totalClassPercentage += percentage;
 
                 var (numeric, letter) = GetGrade(percentage);

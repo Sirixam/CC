@@ -6,8 +6,7 @@ public class GradeBoostItem : MonoBehaviour
 {
     [Header("Grade Boost")]
     [SerializeField] private GlobalDefinition _globalDefinition;
-    [SerializeField, Range(0f, 1f), Tooltip("Correctness added to the player's worst answer on pickup.")]
-    private float _gradeBoost = 0.5f;
+    [SerializeField] private float _gradeBoost = 0.5f;
 
     [Header("Lifetime")]
     [SerializeField] private float _lifetime = 10f;
@@ -85,26 +84,10 @@ public class GradeBoostItem : MonoBehaviour
 
     private void ApplyGradeBoost(PlayerController player)
     {
-        AnswerSheet sheet = player.GetAnswerSheet();
-        if (sheet == null || sheet.Answers == null) return;
+        AnswerSheet sheet = GameContext.AnswersManager.GetPlayerSheet(player.ID);
+        if (sheet == null) return;
 
-        // Find the answer with the lowest correctness that isn't already full
-        Answer worstAnswer = null;
-        float worstCorrectness = float.MaxValue;
-
-        foreach (var answer in sheet.Answers)
-        {
-            if (answer.Correctness < 1f && answer.Correctness < worstCorrectness)
-            {
-                worstCorrectness = answer.Correctness;
-                worstAnswer = answer;
-            }
-        }
-
-        if (worstAnswer == null) return;
-
-        float boosted = Mathf.Clamp01(worstAnswer.Correctness + _gradeBoost);
-        sheet.SetCorrectness(worstAnswer.ID, boosted);
+        sheet.AddGradeBoost(_gradeBoost);
     }
 
     private void StartFloat()
@@ -112,11 +95,11 @@ public class GradeBoostItem : MonoBehaviour
         _floatTween = Tween.LocalPositionY(
             transform,
             startValue: _restLocalPosition.y - _floatAmplitude,
-            endValue:   _restLocalPosition.y + _floatAmplitude,
-            duration:   _floatDuration,
-            ease:       Ease.InOutSine,
-            cycles:     -1,
-            cycleMode:  CycleMode.Yoyo);
+            endValue: _restLocalPosition.y + _floatAmplitude,
+            duration: _floatDuration,
+            ease: Ease.InOutSine,
+            cycles: -1,
+            cycleMode: CycleMode.Yoyo);
     }
 
     private void StartWarning()
