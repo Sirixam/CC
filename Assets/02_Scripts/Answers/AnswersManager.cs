@@ -404,7 +404,7 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
         AnswerPeek peek = _activePeeks.Find(x => x.AnswerSheet == answerController.AnswerSheet && x.AnswerID == answerID);
         if (peek != null)
         {
-            peek.PeekUI.SetState(answerController.IsThinking ? PeekState.PartialInfo : PeekState.FullInfo);
+            peek.PeekUI.SetState(peek.AnswerController.IsThinking ? PeekState.PartialInfo : PeekState.FullInfo);
             peek.PeekUI.PlayHighlight();
             return;
         }

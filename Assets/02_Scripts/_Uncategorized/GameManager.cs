@@ -112,15 +112,15 @@ public class GameManager : MonoBehaviour
         }
 
         inputHandler.Initialize();
-        
+
         PlayerController playerController = playerInput.GetComponent<PlayerController>();
         playerController.Inject(_answerManager);
-        
+
         var colorComponent = playerInput.GetComponent<ColorComponent>();
         var appearance = _playerAppearances[playerInput.playerIndex];
         colorComponent.SetColor(appearance.ClothesColor, "Clothes");
         colorComponent.SetColor(appearance.HairColor, "Hair");
-        
+
         ChairController chairController = _answerManager.GetPlayerDesk(playerInput.playerIndex).transform.parent.GetComponentInChildren<ChairController>();
         playerController.SetInitialChairController(chairController);
         playerController.OnShowHelp += OnShowHelp;
@@ -133,7 +133,7 @@ public class GameManager : MonoBehaviour
             flashEffect.RefreshRenderers();
             _playerFlashEffects[playerController] = flashEffect;
         }
-            
+
         if (_players.Count >= _answerManager.RequiredPlayersCount ||
             !_globalDefinition.StartGameWhenAllPlayersJoined)
         {
@@ -238,7 +238,7 @@ public class GameManager : MonoBehaviour
         _roundCancellationSource?.Cancel();
         _roundCancellationSource = new CancellationTokenSource();
         _roundTimeHelper.IsLooping = true; // 👈 ensure this is set
-        _roundTimeHelper.Setup(_studentManager.AveragePeekPhaseDuration, _studentManager.AverageAnsweringDuration, _studentManager.AverageValidatingDuration);
+        _roundTimeHelper.Setup(_studentManager.PeekPhaseDuration, answeringDuration: 0, _studentManager.CheatPhaseDuration);
 
         if (_roundTimeUI != null)
             _roundTimeUI.gameObject.SetActive(true);
@@ -257,7 +257,7 @@ public class GameManager : MonoBehaviour
         switch (phaseIndex)
         {
             case 0: // PreAnswering → Answering
-                _audioHelper.OnPhaseChangeAnswer(); 
+                _audioHelper.OnPhaseChangeAnswer();
                 break;
         }
     }
@@ -286,7 +286,7 @@ public class GameManager : MonoBehaviour
         if (minCorrectness < _globalDefinition.MinCorrectnessToEarlyVictoryFlow) return;
 
         GradingHelper.CalculateAndPrintGrades(Players);
-        
+
         _victoryUI.UpdateAnswerSheets();
         ShowEndMenu(_victoryUI.gameObject);
     }
@@ -294,7 +294,7 @@ public class GameManager : MonoBehaviour
     private void OnTimesUp()
     {
         GradingHelper.CalculateAndPrintGrades(Players);
-        
+
         if (_timesUpFeedback.TryGetComponent(out AnswerSheetsDisplayUI answerUI))
         {
             answerUI.UpdateAnswerSheets();
@@ -335,7 +335,7 @@ public class GameManager : MonoBehaviour
             return;
 
         if (owner.IsCaught) return;
-        
+
         LoseLife(owner);
     }
 
@@ -345,8 +345,8 @@ public class GameManager : MonoBehaviour
         _isProcessingLifeLoss = true;
 
         _playerLives--;
-        
-        _livesUI.playLostLifeAnimation(_playerLives, () => 
+
+        _livesUI.playLostLifeAnimation(_playerLives, () =>
         {
             SetLives(_playerLives);
             _isProcessingLifeLoss = false;

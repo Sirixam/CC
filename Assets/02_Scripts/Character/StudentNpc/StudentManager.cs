@@ -20,19 +20,19 @@ public class StudentManager : MonoBehaviour
     [SerializeField] private float _halfCorrectChance = 0.5f;
 
     [Header("Phase Durations")]
-    [Tooltip("Fallback thinking duration range (min/max seconds) used when no curve is set.")]
-    [SerializeField] private Vector2 _thinkingDurationRange = new Vector2(2f, 4f);
+    [Tooltip("Also used as fallback for thinking duration range (min/max seconds) used when no curve is set.")]
+    [SerializeField] private float _peekPhaseDuration = 20f;
+    [SerializeField] private float _cheatPhaseDuration = 20f;
     [SerializeField] private Vector2 _answeringDurationRange = new Vector2(5f, 10f);
-    [SerializeField] private Vector2 _validatingDurationRange = new Vector2(2f, 4f);
 
     [Tooltip("X axis: student index. Y axis: thinking duration in seconds. Overrides the range above when set.")]
     [SerializeField] private AnimationCurve _thinkingDurationCurve;
     [Tooltip("When true, X axis is normalized (0 = first student, 1 = last student). When false, X axis is the raw student index.")]
     [SerializeField] private bool _normalizeStudentAxis = true;
 
-    public float AveragePeekPhaseDuration => (_thinkingDurationRange.x + _thinkingDurationRange.y) / 2f;
+    public float PeekPhaseDuration => _peekPhaseDuration;
+    public float CheatPhaseDuration => _cheatPhaseDuration;
     public float AverageAnsweringDuration => (_answeringDurationRange.x + _answeringDurationRange.y) / 2f;
-    public float AverageValidatingDuration => (_validatingDurationRange.x + _validatingDurationRange.y) / 2f;
 
     private TestDefinition _testDefinition;
     private StudentNpcController _smartStudent;
@@ -87,21 +87,26 @@ public class StudentManager : MonoBehaviour
 
         ShuffleCurveIndices();
 
+        StudentNpcController smartStudent = GetNewSmartStudent();
+        AnswerDefinition correctAnswer = GetCorrectAnswerFromPool();
+
         if (_simulateStudentsIndividually)
         {
             foreach (var student in _students)
-                SimulateNPCAnswering(student, _simulationCancellationSource.Token).Forget();
+            {
+                SimulateNPCAnswering(student, _simulationCancellationSource.Token, smartStudent, correctAnswer).Forget();
+            }
         }
         else
         {
-            SimulateNPCsAnswering(_simulationCancellationSource.Token).Forget();
+            SimulateNPCsAnswering(_simulationCancellationSource.Token, smartStudent, correctAnswer).Forget();
         }
     }
 
     private float GetThinkingDuration(int studentIndex)
     {
         if (_thinkingDurationCurve == null || _thinkingDurationCurve.length == 0)
-            return Random.Range(_thinkingDurationRange.x, _thinkingDurationRange.y);
+            return _peekPhaseDuration;
 
         int curveIndex = (_shuffledCurveIndices != null && studentIndex < _shuffledCurveIndices.Length)
             ? _shuffledCurveIndices[studentIndex]
@@ -131,59 +136,44 @@ public class StudentManager : MonoBehaviour
         _availableCorrectAnswers = new List<AnswerDefinition>(_answerManager.GetNpcAnswerDefinitions());
     }
 
-    private async UniTask SimulateNPCAnswering(StudentNpcController student, CancellationToken cancellationToken)
+    private async UniTask SimulateNPCAnswering(StudentNpcController student, CancellationToken cancellationToken, StudentNpcController smartStudent, AnswerDefinition correctAnswer)
     {
-        AnswerDefinition answerDef = null;
-            answerDef = _answerManager.GetNewStudentAnswer(answerDef);
-            string answerID = answerDef.ID;
-            bool startedThinking = student.AnswerController.TryRestartAnswering(answerID, isThinking: true);
-            if (startedThinking)
-            {
-                student.SetCorrectness(answerID, 1); // TODO: Dynamic correctness algorithm.
-                int studentIndex = Array.IndexOf(_students, student);
-                student.SetDurations(thinkingDuration: GetThinkingDuration(studentIndex),
-                                        answeringDuration: Random.Range(_answeringDurationRange.x, _answeringDurationRange.y),
-                                        validatingDuration: Random.Range(_validatingDurationRange.x, _validatingDurationRange.y));
+        bool isSmartStudent = student == smartStudent;
+        GetAnswerData(isSmartStudent, correctAnswer, out AnswerDefinition answerDef, out float correctness);
 
-                student.StartThinking();
-                await student.UpdateRemainingTimeWhileNotDistracted(cancellationToken: cancellationToken);
+        string answerID = answerDef.ID;
+        bool startedThinking = student.AnswerController.TryRestartAnswering(answerID, isThinking: true);
+        if (startedThinking)
+        {
+            student.SetCorrectness(answerID, correctness);
+            int studentIndex = Array.IndexOf(_students, student);
+            student.SetDurations(thinkingDuration: GetThinkingDuration(studentIndex),
+                                    answeringDuration: Random.Range(_answeringDurationRange.x, _answeringDurationRange.y),
+                                    validatingDuration: _cheatPhaseDuration);
 
-                student.StartAnswering();
-                await student.UpdateAnsweringTaskWhileNotDistracted(cancellationToken: cancellationToken);
+            student.StartThinking();
+            await student.UpdateRemainingTimeWhileNotDistracted(cancellationToken: cancellationToken);
 
-                student.StartValidating();
-                await student.UpdateRemainingTimeWhileNotDistracted(cancellationToken: cancellationToken);
-            }
+            student.StartAnswering();
+            await student.UpdateAnsweringTaskWhileNotDistracted(cancellationToken: cancellationToken);
 
-            await UniTask.Yield(cancellationToken); // Prevent blocking if failed to start answering.
+            student.StartValidating();
+            await student.UpdateRemainingTimeWhileNotDistracted(cancellationToken: cancellationToken);
+        }
+
+        await UniTask.Yield(cancellationToken); // Prevent blocking if failed to start answering.
     }
 
-    private async UniTask SimulateNPCsAnswering(CancellationToken cancellationToken)
+    private async UniTask SimulateNPCsAnswering(CancellationToken cancellationToken, StudentNpcController smartStudent, AnswerDefinition correctAnswer)
     {
         float answeringDuration = Random.Range(_answeringDurationRange.x, _answeringDurationRange.y);
-        float validatingDuration = Random.Range(_validatingDurationRange.x, _validatingDurationRange.y);
-
-        StudentNpcController smartStudent = GetNewSmartStudent();
-        AnswerDefinition correctAnswer = GetCorrectAnswerFromPool();
+        float validatingDuration = _cheatPhaseDuration;
 
         for (int i = 0; i < _students.Length; i++)
         {
             StudentNpcController student = _students[i];
-            AnswerDefinition answerDef;
-            float correctness;
-
-            if (student == smartStudent)
-            {
-                // Clever student always answers the correct answer from the pool
-                answerDef = correctAnswer;
-                correctness = 1f;
-            }
-            else
-            {
-                // Other students answer the same question but with half/wrong correctness
-                answerDef = _answerManager.GetNewStudentAnswer(correctAnswer);
-                correctness = GetNewCorrectness(false);
-            }
+            bool isSmartStudent = student == smartStudent;
+            GetAnswerData(isSmartStudent, correctAnswer, out AnswerDefinition answerDef, out float correctness);
 
             string answerID = answerDef.ID;
             bool startedThinking = student.AnswerController.TryRestartAnswering(answerID, isThinking: true);
@@ -210,6 +200,22 @@ public class StudentManager : MonoBehaviour
         }
 
         await UpdateRemainingTimeOnAllStudents(cancellationToken);
+    }
+
+    private void GetAnswerData(bool isSmartStudent, AnswerDefinition correctAnswer, out AnswerDefinition answerDef, out float correctness)
+    {
+        if (isSmartStudent)
+        {
+            // Clever student always answers the correct answer from the pool
+            answerDef = correctAnswer;
+            correctness = 1f;
+        }
+        else
+        {
+            // Other students answer the same question but with half/wrong correctness
+            answerDef = _answerManager.GetNewStudentAnswer(correctAnswer);
+            correctness = GetNewCorrectness(isSmartStudent: false);
+        }
     }
 
     private float GetNewCorrectness(bool isSmartStudent)

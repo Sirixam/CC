@@ -16020,9 +16020,9 @@ MonoBehaviour:
   - {fileID: 928665874}
   _simulateStudentsIndividually: 1
   _halfCorrectChance: 0.5
-  _thinkingDurationRange: {x: 20, y: 20}
+  _peekPhaseDuration: 20
+  _cheatPhaseDuration: 20
   _answeringDurationRange: {x: 10, y: 10}
-  _validatingDurationRange: {x: 25, y: 25}
   _thinkingDurationCurve:
     serializedVersion: 2
     m_Curve:
