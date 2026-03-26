@@ -165,4 +165,5 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     {
         return _state == EState.MidAir || _state == EState.Idle;
     }
+
 }

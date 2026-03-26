@@ -750,8 +750,9 @@ MonoBehaviour:
     StunnedAudio: {fileID: 11400000, guid: aac6e454b1f8925418af7951309d392f, type: 2}
     CaughtAudio: {fileID: 11400000, guid: 7b76bc579d0f8dd4a83215db49147ec6, type: 2}
   _globalDefinition: {fileID: 11400000, guid: 2b0875648e78a8e45b08a646836071ca, type: 2}
-  _peekMoveSpeedMultiplier: 0.5
+  _peekMoveSpeedMultiplier: 0.3
   _pushForce: 20
+  _caughtCheatingForce: 15
   _dropByHoldingInteract: 0
   _toggleToPeek: 1
   _stopPeekOnDash: 1
@@ -788,26 +789,6 @@ MonoBehaviour:
   _caughtCloudVFXPrefab: {fileID: 265766274217486953, guid: d3015b7eea383f64d8b81f965cc466e7, type: 3}
   _caughtSymbolsVFX: {fileID: 3335995798422473944}
   _handAnimator: {fileID: 4308116975536461986}
-  _caughtShrinkTweenSettings:
-    startFromCurrent: 0
-    startValue: {x: 0, y: 0, z: 0}
-    endValue: {x: 0, y: 0, z: 0}
-    settings:
-      duration: 0.5
-      ease: 26
-      customEase:
-        serializedVersion: 2
-        m_Curve: []
-        m_PreInfinity: 2
-        m_PostInfinity: 2
-        m_RotationOrder: 4
-      cycles: 1
-      cycleMode: 0
-      startDelay: 0
-      endDelay: 0
-      useUnscaledTime: 0
-      _useFixedUpdate: 0
-      _updateType: 0
   _startStunTweenSettings:
     startFromCurrent: 0
     startValue: 0

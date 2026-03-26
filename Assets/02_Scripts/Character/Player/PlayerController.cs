@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
@@ -44,6 +45,8 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     [SerializeField] private bool _applyMovePenaltyOnPeekMode;
     private bool _isCaught;
     public bool IsCaught => _isCaught;
+    private Coroutine _walkBackTimeout;
+
 
     //exposing variables to GM
     public PlayerView View => _view;
@@ -84,6 +87,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     public event Action<EDevice> OnShowHelp;
     public event Action OnHideHelp;
+    private Action _onWalkBackSeated;
     public Transform InitialChairTransform => _initialChairController != null
         ? _initialChairController.SittingPoint
         : null;
@@ -954,6 +958,17 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     {
         _isCaught = false;
         _isWalkingBack = false;
+
+        if (_cheatHelper.IsCheating) StopCheating();
+        if (_cheatHelper.IsPeeking) StopPeeking();
+        if (_cheatHelper.IsRemembering) _cheatHelper.StopRemembering();
+        if (_craftHelper.IsCrafting && _craftHelper.TryStopCraftingItem())
+            _view.StopCrafting();
+
+        _view.HideThrowPreview();
+        HideAnswerSheet();
+        DestroyHeldItem();
+
         _physics.StopFollowingPath();
         ResetInputState();
         ForceClearInteractionState();
@@ -978,7 +993,6 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     }
     public void OnCaughtWalkBack(Action onSeated, Vector3? avoidPosition = null)
     {
-        Debug.Log($"OnCaughtWalkBack called, _isCaught: {_isCaught}");
 
         if (_isCaught) return;
         _isCaught = true;
@@ -991,6 +1005,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         ResetInputState();
         ForceClearInteractionState();
         ForceStopForce();
+        StopPeeking(); //CHECK IF THIS WORKS
 
         if (_cheatHelper.IsCheating) StopCheating();
         if (_cheatHelper.IsPeeking) StopPeeking();
@@ -1020,24 +1035,12 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             return;
         }
 
+        _onWalkBackSeated = onSeated;
+
+        _walkBackTimeout = StartCoroutine(WalkBackTimeoutRoutine());
         _physics.OnArriveEvent += OnArrivedAtChair;
 
-        void OnArrivedAtChair()
-        {
-            _view.PlayCaughtSymbols();
-            _physics.OnArriveEvent -= OnArrivedAtChair;
-            _view.StopCaughtSymbols();
-            _physics.StopFollowingPath();
-            _answerController = _initialChairController.AnswerController;
-            _chairHelper.TeleportToSitting(_initialChairController);
-            _lookHelper.SetLookAt(_initialChairController.LookAtPoint);
-            _lookHelper.RestoreInitialLookDirection();
-            _isCaught = false;
-            _isWalkingBack = false;
-            _inputHandler.PlayerInput.ActivateInput();
-            StartCoroutine(DelayedUnblock());
-            onSeated?.Invoke();
-        }
+
     }
 
     public void OnPushedAside(Vector3 direction)
@@ -1069,5 +1072,44 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     public AnswerSheet GetAnswerSheet()
     {
         return _answerController?.AnswerSheet;
+    }
+    public void DestroyHeldItem()
+    {
+        if (!_interactionHelper.TryGetPickedUpInteraction(out InteractionController interaction))
+            return;
+        
+        _interactionHelper.TryStopInteraction(interaction);
+        _view.OnDrop(interaction.transform);
+        Destroy(interaction.gameObject);
+    }
+
+    private IEnumerator WalkBackTimeoutRoutine()
+    {
+        yield return new WaitForSeconds(7);
+        if (_isWalkingBack)
+            CompleteWalkBack();
+    }
+
+    private void CompleteWalkBack()
+    {
+        _physics.OnArriveEvent -= OnArrivedAtChair;
+        if (_walkBackTimeout != null)
+            StopCoroutine(_walkBackTimeout);
+
+        _view.StopCaughtSymbols();
+        _physics.StopFollowingPath();
+        _answerController = _initialChairController.AnswerController;
+        _chairHelper.TeleportToSitting(_initialChairController);
+        _lookHelper.SetLookAt(_initialChairController.LookAtPoint);
+        _lookHelper.RestoreInitialLookDirection();
+        _isCaught = false;
+        _isWalkingBack = false;
+        _inputHandler.PlayerInput.ActivateInput();
+        StartCoroutine(DelayedUnblock());
+        _onWalkBackSeated?.Invoke();
+    }
+    private void OnArrivedAtChair()
+    {
+        CompleteWalkBack();
     }
 }
