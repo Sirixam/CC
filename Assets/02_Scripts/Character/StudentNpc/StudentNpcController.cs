@@ -23,8 +23,11 @@ public class StudentNpcController : MonoBehaviour
     [SerializeField] private bool _canDetectItems;
     [SerializeField] private bool _canDetectFlyingItems;
 
-    // Runtime    
+    private enum EHandState { Thinking, Answering, Validating }
+
+    // Runtime
     private TestDefinition _testDefinition;
+    private EHandState _handState;
     public bool IsDistracted => _distractionHelper.IsDistracted;
     public bool IsDetecting { get; private set; }
     private ChairController _chairController;
@@ -51,6 +54,8 @@ public class StudentNpcController : MonoBehaviour
         _lookHelper = new LookHelper(_lookData);
         _audioHelper = new StudentAudioHelper(_audioData);
         _distractionHelper = new DistractionHelper(_distractionData, _distractionUI, _fieldOfViewController, _lookHelper, AnswerController, _audioHelper);
+        _distractionHelper.OnDistractionStarted += OnDistractionStarted;
+        _distractionHelper.OnDistractionEnded += OnDistractionEnded;
 
         // Initialize
         InjectTestDefinition(_testDefinitionOverride ?? _testDefinition); // Reinject in case it was injected before awake
@@ -93,6 +98,7 @@ public class StudentNpcController : MonoBehaviour
 
     public void StartThinking()
     {
+        _handState = EHandState.Thinking;
         AnswerController.StartThinking();
         _lightbulbUI.Show();
         _lightbulbUI.SetState(isOn: false);
@@ -102,6 +108,7 @@ public class StudentNpcController : MonoBehaviour
 
     public void StartAnswering()
     {
+        _handState = EHandState.Answering;
         AnswerController.StartAnswering(progress: 0);
         _lightbulbUI.SetState(isOn: true);
         _lightbulbUI.PlayShine();
@@ -111,8 +118,23 @@ public class StudentNpcController : MonoBehaviour
 
     public void StartValidating()
     {
+        _handState = EHandState.Validating;
         AnswerController.StartValidating();
         _studentView.StartValidating(AnswerController.TestPageView);
+    }
+
+    private void OnDistractionStarted()
+    {
+        _studentView.StartThinking(testPageView: null);
+    }
+
+    private void OnDistractionEnded()
+    {
+        switch (_handState)
+        {
+            case EHandState.Answering:  _studentView.StartAnswering(); break;
+            case EHandState.Validating: _studentView.StartValidating(testPageView: null); break;
+        }
     }
 
     public async UniTask UpdateRemainingTimeWhileNotDistracted(CancellationToken cancellationToken)

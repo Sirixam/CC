@@ -38,6 +38,9 @@ public class DistractionHelper
 
     public bool IsDistracted { get; private set; }
 
+    public event Action OnDistractionStarted;
+    public event Action OnDistractionEnded;
+
     public DistractionHelper(Data data, DistractionUI distractionUI, FieldOfViewController fovController, LookHelper lookHelper, AnswerController answerController, StudentAudioHelper audioHelper)
     {
         _data = data;
@@ -69,6 +72,7 @@ public class DistractionHelper
         }
 
         IsDistracted = true;
+        OnDistractionStarted?.Invoke();
         _answerController.UnblockCheat();
         _audioHelper.OnDistracted(level);
         _distractionUI.Show(level);
@@ -99,6 +103,7 @@ public class DistractionHelper
         {
             // Always runs — even if cancelled
             IsDistracted = false;
+            OnDistractionEnded?.Invoke();
             _answerController.BlockCheat();
             _distractionUI.Hide();
             if (levelData.ShowFOV)
