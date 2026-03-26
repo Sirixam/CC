@@ -8,7 +8,6 @@ public class StudentNpcController : MonoBehaviour
 {
     [SerializeField] private FieldOfViewController _fieldOfViewController;
     [SerializeField] private TriggerListener _fieldOfViewTriggerListener;
-    [SerializeField] private TMP_Text _stateText;
     [SerializeField] private DistractionUI _distractionUI;
     [SerializeField] private LightbulbUI _lightbulbUI;
     [SerializeField] private StudentView _studentView;
@@ -54,7 +53,6 @@ public class StudentNpcController : MonoBehaviour
         _distractionHelper = new DistractionHelper(_distractionData, _distractionUI, _fieldOfViewController, _lookHelper, AnswerController, _audioHelper);
 
         // Initialize
-        _stateText.text = "Idle";
         InjectTestDefinition(_testDefinitionOverride ?? _testDefinition); // Reinject in case it was injected before awake
         _lookHelper.Initialize(transform.forward);
         AnswerController.BlockCheat();
@@ -95,7 +93,6 @@ public class StudentNpcController : MonoBehaviour
 
     public void StartThinking()
     {
-        _stateText.text = "Thinking";
         AnswerController.StartThinking();
         _lightbulbUI.Show();
         _lightbulbUI.SetState(isOn: false);
@@ -105,7 +102,6 @@ public class StudentNpcController : MonoBehaviour
 
     public void StartAnswering()
     {
-        _stateText.text = ""; // TODO: REMOVE
         AnswerController.StartAnswering(progress: 0);
         _lightbulbUI.SetState(isOn: true);
         _lightbulbUI.PlayShine();
@@ -115,7 +111,6 @@ public class StudentNpcController : MonoBehaviour
 
     public void StartValidating()
     {
-        _stateText.text = "Validating";
         AnswerController.StartValidating();
         _studentView.StartValidating(AnswerController.TestPageView);
     }
