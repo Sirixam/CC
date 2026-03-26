@@ -92,9 +92,6 @@ public class FieldOfViewController : MonoBehaviour
         // _widthScale controls the arc sweep (0 = pure rectangle, 1 = full binocular).
         // _fieldOfViewWidth stays constant — it is the bridge/square width, independent of the arc angle.
         return FieldOfViewMeshGenerator.Generate(_maxDistance, _fieldOfView * _widthScale, _fieldOfViewWidth, thickness, segments: 20);
-
-        Mesh[] meshes = CreateFieldOfViewMeshes(transform.localPosition, Vector2.up, _maxDistance, _fieldOfView, _fieldOfViewWidth, thickness);
-        return MeshUtils.MergeMeshes(meshes);
     }
 
     private Mesh[] CreateFieldOfViewMeshes(Vector3 origin, Vector2 forward, float maxDistance, float fieldOfView, float fieldOfViewWidth, float thickness)

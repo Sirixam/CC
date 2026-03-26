@@ -392,12 +392,7 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
     private void OnFinishAnswering(AnswerController answerController, string answerID)
     {
 
-        Debug.Log($"[FinishAnswering] Player: {answerController.ActorID} | AnswerID: {answerID}");
-
         bool isFull = HaveAllPlayersAnsweredFully(answerID, out float debugMinCorrectness);
-
-        Debug.Log($"[Check] AnswerID: {answerID} | IsFull: {isFull} | MinCorrectness: {debugMinCorrectness}");
-
 
         if (!answerController.IsPlayer) return;
 

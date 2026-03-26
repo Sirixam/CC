@@ -25,7 +25,6 @@ public class PlayerView : MonoBehaviour, IStunView, IChairView
     private bool _isAnswerSheetLifted;
 
     private Sequence _caughtSequence;
-    [SerializeField] private TweenSettings<Vector3> _caughtShrinkTweenSettings = new();
     private Tween _caughtShrinkTween;
 
     [SerializeField] private TweenSettings<float> _startStunTweenSettings = new();
@@ -61,7 +60,6 @@ public class PlayerView : MonoBehaviour, IStunView, IChairView
         _sittingTweenSettings.startFromCurrent = true;
         _standingTweenSettings.startFromCurrent = true;
         _pickUpTweenSettings.startFromCurrent = true;
-        _caughtShrinkTweenSettings.startFromCurrent = true;
         _stunVFX.Stop(withChildren: true, ParticleSystemStopBehavior.StopEmittingAndClear);
         _meshRenderers = _rendererContainer.GetComponentsInChildren<MeshRenderer>();
         _initialBoundsExtentsY = GetBounds().extents.y;

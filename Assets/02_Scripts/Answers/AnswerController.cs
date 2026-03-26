@@ -72,8 +72,6 @@ public class AnswerController : MonoBehaviour
             _activeUI.Setup(answerSheet.Answers);
         }
 
-        Debug.Log($"AnswerSheetMode: {_globalDefinition.AnswerSheetMode}, ActiveUI: {_activeUI}");
-
         if (IsPlayer)
         {
             _interactionController.Disable();

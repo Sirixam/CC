@@ -34,7 +34,6 @@ public class ThrowPreviewComponent : MonoBehaviour
         _chairHelper = chairHelper;
         _throwData = throwData;
         _collisionMask = GetFlyingCollisionMask(flyingLayer);
-        Debug.Log($"FlyingLayer: {flyingLayer}, CollisionMask: {_collisionMask.value}, Layers: {LayerMaskToString(_collisionMask)}");
     }
 
     /// Triggered by OnValueChanged attribute.
