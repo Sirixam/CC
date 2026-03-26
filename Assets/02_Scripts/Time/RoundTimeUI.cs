@@ -26,15 +26,14 @@ public class RoundTimeUI : MonoBehaviour
     private float _phase2Duration;
     private float _phase3Duration;
 
-    public void Setup(float seconds, GlobalDefinition globalDef)
+    public void Setup(float seconds, float phase1Duration, float phase2Duration, float phase3Duration)
     {
         _fill.fillAmount = 0;
         _maxRoundTimeInSeconds = seconds;
 
-        // Resolve phase durations from GlobalDefinition (using midpoint of each range)
-        _phase1Duration = (globalDef.PreAnsweringDelay.x + globalDef.PreAnsweringDelay.y) / 2f;
-        _phase2Duration = (globalDef.AnsweringDuration.x + globalDef.AnsweringDuration.y) / 2f;
-        _phase3Duration = (globalDef.PostAnsweringDelay.x + globalDef.PostAnsweringDelay.y) / 2f;
+        _phase1Duration = phase1Duration;
+        _phase2Duration = phase2Duration;
+        _phase3Duration = phase3Duration;
 
         BuildPhaseArcs();
     }

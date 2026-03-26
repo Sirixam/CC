@@ -165,8 +165,7 @@ public class GameManager : MonoBehaviour
 
         foreach (var player in _players)
         {
-            float answeringDuration = ((_globalDefinition.AnsweringDuration.x + _globalDefinition.AnsweringDuration.y) / 2f);
-            player.SetAnsweringDuration(answeringDuration);
+            player.SetAnsweringDuration(_studentManager.AverageAnsweringDuration);
         }
         _studentManager.StartStimulation(_gameCancellationSource.Token);
 
@@ -239,7 +238,7 @@ public class GameManager : MonoBehaviour
         _roundCancellationSource?.Cancel();
         _roundCancellationSource = new CancellationTokenSource();
         _roundTimeHelper.IsLooping = true; // 👈 ensure this is set
-        _roundTimeHelper.Setup(_globalDefinition);
+        _roundTimeHelper.Setup(_studentManager.AveragePeekPhaseDuration, _studentManager.AverageAnsweringDuration, _studentManager.AverageValidatingDuration);
 
         if (_roundTimeUI != null)
             _roundTimeUI.gameObject.SetActive(true);

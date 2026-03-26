@@ -13,11 +13,26 @@ public class StudentManager : MonoBehaviour
 
     [SerializeField] private AnswersManager _answerManager;
     [SerializeField] private StudentNpcController[] _students;
-    [SerializeField] private GlobalDefinition _globalDefinition;
 
     [Header("Configurations")]
+    [SerializeField] private bool _simulateStudentsIndividually;
     [Range(0, 1f), Tooltip("What's the chance of getting a half correct answer versus a wrong answer.")]
     [SerializeField] private float _halfCorrectChance = 0.5f;
+
+    [Header("Phase Durations")]
+    [Tooltip("Fallback thinking duration range (min/max seconds) used when no curve is set.")]
+    [SerializeField] private Vector2 _thinkingDurationRange = new Vector2(2f, 4f);
+    [SerializeField] private Vector2 _answeringDurationRange = new Vector2(5f, 10f);
+    [SerializeField] private Vector2 _validatingDurationRange = new Vector2(2f, 4f);
+
+    [Tooltip("X axis: student index. Y axis: thinking duration in seconds. Overrides the range above when set.")]
+    [SerializeField] private AnimationCurve _thinkingDurationCurve;
+    [Tooltip("When true, X axis is normalized (0 = first student, 1 = last student). When false, X axis is the raw student index.")]
+    [SerializeField] private bool _normalizeStudentAxis = true;
+
+    public float AveragePeekPhaseDuration => (_thinkingDurationRange.x + _thinkingDurationRange.y) / 2f;
+    public float AverageAnsweringDuration => (_answeringDurationRange.x + _answeringDurationRange.y) / 2f;
+    public float AverageValidatingDuration => (_validatingDurationRange.x + _validatingDurationRange.y) / 2f;
 
     private TestDefinition _testDefinition;
     private StudentNpcController _smartStudent;
@@ -26,6 +41,7 @@ public class StudentManager : MonoBehaviour
     private StudentNpcController _lastSmartStudent;
     private List<AnswerDefinition> _availableCorrectAnswers;
     private const int MAX_SMART_STREAK = 2;
+    private int[] _shuffledCurveIndices;
 
 
     public Action<PlayerController> OnPlayerDetected;
@@ -69,7 +85,9 @@ public class StudentManager : MonoBehaviour
             RefillCorrectAnswerPool();
         }
 
-        if (_globalDefinition.SimulateStudentsIndividually)
+        ShuffleCurveIndices();
+
+        if (_simulateStudentsIndividually)
         {
             foreach (var student in _students)
                 SimulateNPCAnswering(student, _simulationCancellationSource.Token).Forget();
@@ -77,6 +95,34 @@ public class StudentManager : MonoBehaviour
         else
         {
             SimulateNPCsAnswering(_simulationCancellationSource.Token).Forget();
+        }
+    }
+
+    private float GetThinkingDuration(int studentIndex)
+    {
+        if (_thinkingDurationCurve == null || _thinkingDurationCurve.length == 0)
+            return Random.Range(_thinkingDurationRange.x, _thinkingDurationRange.y);
+
+        int curveIndex = (_shuffledCurveIndices != null && studentIndex < _shuffledCurveIndices.Length)
+            ? _shuffledCurveIndices[studentIndex]
+            : studentIndex;
+
+        float t = _normalizeStudentAxis
+            ? (_students.Length > 1 ? (float)curveIndex / (_students.Length - 1) : 0f)
+            : curveIndex;
+        return _thinkingDurationCurve.Evaluate(t);
+    }
+
+    private void ShuffleCurveIndices()
+    {
+        _shuffledCurveIndices = new int[_students.Length];
+        for (int i = 0; i < _shuffledCurveIndices.Length; i++)
+            _shuffledCurveIndices[i] = i;
+
+        for (int i = _shuffledCurveIndices.Length - 1; i > 0; i--)
+        {
+            int j = Random.Range(0, i + 1);
+            (_shuffledCurveIndices[i], _shuffledCurveIndices[j]) = (_shuffledCurveIndices[j], _shuffledCurveIndices[i]);
         }
     }
 
@@ -94,9 +140,10 @@ public class StudentManager : MonoBehaviour
             if (startedThinking)
             {
                 student.SetCorrectness(answerID, 1); // TODO: Dynamic correctness algorithm.
-                student.SetDurations(thinkingDuration: Random.Range(_globalDefinition.PreAnsweringDelay.x, _globalDefinition.PreAnsweringDelay.y),
-                                        answeringDuration: Random.Range(_globalDefinition.AnsweringDuration.x, _globalDefinition.AnsweringDuration.y),
-                                        validatingDuration: Random.Range(_globalDefinition.PostAnsweringDelay.x, _globalDefinition.PostAnsweringDelay.y));
+                int studentIndex = Array.IndexOf(_students, student);
+                student.SetDurations(thinkingDuration: GetThinkingDuration(studentIndex),
+                                        answeringDuration: Random.Range(_answeringDurationRange.x, _answeringDurationRange.y),
+                                        validatingDuration: Random.Range(_validatingDurationRange.x, _validatingDurationRange.y));
 
                 student.StartThinking();
                 await student.UpdateRemainingTimeWhileNotDistracted(cancellationToken: cancellationToken);
@@ -113,15 +160,15 @@ public class StudentManager : MonoBehaviour
 
     private async UniTask SimulateNPCsAnswering(CancellationToken cancellationToken)
     {
-        float thinkingDuration = Random.Range(_globalDefinition.PreAnsweringDelay.x, _globalDefinition.PreAnsweringDelay.y);
-        float answeringDuration = Random.Range(_globalDefinition.AnsweringDuration.x, _globalDefinition.AnsweringDuration.y);
-        float validatingDuration = Random.Range(_globalDefinition.PostAnsweringDelay.x, _globalDefinition.PostAnsweringDelay.y);
+        float answeringDuration = Random.Range(_answeringDurationRange.x, _answeringDurationRange.y);
+        float validatingDuration = Random.Range(_validatingDurationRange.x, _validatingDurationRange.y);
 
         StudentNpcController smartStudent = GetNewSmartStudent();
         AnswerDefinition correctAnswer = GetCorrectAnswerFromPool();
 
-        foreach (var student in _students)
+        for (int i = 0; i < _students.Length; i++)
         {
+            StudentNpcController student = _students[i];
             AnswerDefinition answerDef;
             float correctness;
 
@@ -143,7 +190,7 @@ public class StudentManager : MonoBehaviour
             if (startedThinking)
             {
                 student.SetCorrectness(answerID, correctness);
-                student.SetDurations(thinkingDuration, answeringDuration, validatingDuration);
+                student.SetDurations(GetThinkingDuration(i), answeringDuration, validatingDuration);
                 student.StartThinking();
             }
         }
@@ -246,7 +293,6 @@ public class StudentManager : MonoBehaviour
 
     public void RestartStimulation()
     {
-
         StartStimulation(CancellationToken.None);
     }
 

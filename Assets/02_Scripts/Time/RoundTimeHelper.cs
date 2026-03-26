@@ -43,11 +43,11 @@ public class RoundTimeHelper
         _roundTimeUI = roundTimeUI;
     }
 
-    public void Setup(GlobalDefinition globalDef)
+    public void Setup(float peekPhaseDuration, float answeringDuration, float validatingDuration)
     {
-        _p1 = (globalDef.PreAnsweringDelay.x + globalDef.PreAnsweringDelay.y) / 2f;
-        _p2 = (globalDef.AnsweringDuration.x + globalDef.AnsweringDuration.y) / 2f;
-        _p3 = (globalDef.PostAnsweringDelay.x + globalDef.PostAnsweringDelay.y) / 2f;
+        _p1 = peekPhaseDuration;
+        _p2 = answeringDuration;
+        _p3 = validatingDuration;
         _totalRoundDuration = _p1 + _p2 + _p3;
 
         _roundRemainingTime = _totalRoundDuration;
@@ -58,7 +58,7 @@ public class RoundTimeHelper
         _currentPhaseIndex = 0;
         _lastBeepSecond = -1;
 
-        _roundTimeUI.Setup(_roundRemainingTime, globalDef);
+        _roundTimeUI.Setup(_roundRemainingTime, _p1, _p2, _p3);
     }
 
     // NEW: extracted so we can call it on loop restart too

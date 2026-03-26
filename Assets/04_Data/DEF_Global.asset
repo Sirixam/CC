@@ -15,13 +15,9 @@ MonoBehaviour:
   StartGameWhenAllPlayersJoined: 0
   CanUseAnyPlayerChair: 1
   PersistAnswerProgress: 0
-  SimulateStudentsIndividually: 0
   ShowAnswerSheetOnSit: 1
   MinCorrectnessToEarlyVictoryFlow: 1
   PlayerLives: 3
-  PreAnsweringDelay: {x: 2, y: 2}
-  AnsweringDuration: {x: 2, y: 2}
-  PostAnsweringDelay: {x: 25, y: 25}
   CaughtMode: 1
   AnswerSheetMode: 1
   PlayerTag: Player

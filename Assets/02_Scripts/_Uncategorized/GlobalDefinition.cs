@@ -6,14 +6,10 @@ public class GlobalDefinition : ScriptableObject
     public bool StartGameWhenAllPlayersJoined;
     public bool CanUseAnyPlayerChair;
     public bool PersistAnswerProgress;
-    public bool SimulateStudentsIndividually;
     public bool ShowAnswerSheetOnSit;
     [Range(0f, 1f)]
     public float MinCorrectnessToEarlyVictoryFlow;
     public int PlayerLives;
-    public Vector2 PreAnsweringDelay;
-    public Vector2 AnsweringDuration;
-    public Vector2 PostAnsweringDelay;
     public enum ECaughtMode { Teleport, WalkBack }
     public ECaughtMode CaughtMode;
     public enum EAnswerSheetMode
