@@ -171,6 +171,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             else if (_chairHelper.IsSitting)
             {
                 HideAnswerSheet();
+                TryShowAnswerSheetOnSit();
             }
             else
             {
@@ -212,6 +213,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             // TODO: Hide inventory
             if (_craftHelper.TryStopCraftingItem())
                 _view.StopCrafting();
+            TryShowAnswerSheetOnSit();
         }
         else if (actionType == EAction.Help)
         {
