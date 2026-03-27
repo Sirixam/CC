@@ -6,18 +6,21 @@ using System.IO;
 
 public class CharacterPortraitWindow : EditorWindow
 {
-    private const string NpcsFolder = "Assets/03_Prefabs/NPCs";
     private const string IgnoredPrefab = "StudentNpc.prefab";
     private const float OffscreenY = -10000f;
 
     [SerializeField] private GameObject _characterPrefab;
+    [SerializeField] private string _sourceFolder = "Assets/03_Prefabs/NPCs";
+    [SerializeField] private bool _includeNestedFolders = true;
     [SerializeField] private string _outputFolder = "Assets/PortraitOutput";
-    [SerializeField] private int _resolution = 512;
+    [SerializeField] private int _resolutionWidth = 512;
+    [SerializeField] private int _resolutionHeight = 512;
     [SerializeField] private float _cameraDistance = 2f;
     [SerializeField] private float _cameraHeight = 1.1f;
     [SerializeField] private float _fieldOfView = 35f;
     [SerializeField] private float _characterRotationY = 0f;
     [SerializeField] private Vector3 _characterOffset = Vector3.zero;
+    [SerializeField] private Vector3 _characterOffsetFemale = Vector3.zero;
 
     private Texture2D _preview;
 
@@ -34,11 +37,14 @@ public class CharacterPortraitWindow : EditorWindow
         EditorGUILayout.Space(6);
 
         _characterPrefab = (GameObject)EditorGUILayout.ObjectField("Character Prefab", _characterPrefab, typeof(GameObject), false);
+        _sourceFolder = EditorGUILayout.TextField("Source Folder", _sourceFolder);
+        _includeNestedFolders = EditorGUILayout.Toggle("Include Nested Folders", _includeNestedFolders);
         _outputFolder = EditorGUILayout.TextField("Output Folder", _outputFolder);
 
         EditorGUILayout.Space(4);
         EditorGUILayout.LabelField("Camera", EditorStyles.miniBoldLabel);
-        _resolution = EditorGUILayout.IntField("Resolution", _resolution);
+        _resolutionWidth = EditorGUILayout.IntField("Width", _resolutionWidth);
+        _resolutionHeight = EditorGUILayout.IntField("Height", _resolutionHeight);
         _cameraDistance = EditorGUILayout.FloatField("Distance", _cameraDistance);
         _cameraHeight = EditorGUILayout.FloatField("Height", _cameraHeight);
         _fieldOfView = EditorGUILayout.FloatField("Field of View", _fieldOfView);
@@ -47,6 +53,7 @@ public class CharacterPortraitWindow : EditorWindow
         EditorGUILayout.LabelField("Character", EditorStyles.miniBoldLabel);
         _characterRotationY = EditorGUILayout.Slider("Rotation Y", _characterRotationY, -180f, 180f);
         _characterOffset = EditorGUILayout.Vector3Field("Position Offset", _characterOffset);
+        _characterOffsetFemale = EditorGUILayout.Vector3Field("Position Offset (Female)", _characterOffsetFemale);
 
         EditorGUILayout.Space(10);
 
@@ -85,14 +92,13 @@ public class CharacterPortraitWindow : EditorWindow
         Texture2D tex = RenderPrefab(prefab);
         SaveTexture(tex, outputPath);
         SetPreview(tex);
-        AssetDatabase.Refresh();
         Debug.Log($"[CharacterPortrait] Saved: {outputPath}");
     }
 
     private void RenderAll()
     {
         EnsureOutputFolder();
-        string[] guids = AssetDatabase.FindAssets("t:Prefab", new[] { NpcsFolder });
+        string[] guids = AssetDatabase.FindAssets("t:Prefab", new[] { _sourceFolder });
         int count = 0;
         Texture2D lastTex = null;
 
@@ -100,6 +106,8 @@ public class CharacterPortraitWindow : EditorWindow
         {
             string assetPath = AssetDatabase.GUIDToAssetPath(guid);
             if (Path.GetFileName(assetPath) == IgnoredPrefab)
+                continue;
+            if (!_includeNestedFolders && Path.GetDirectoryName(assetPath).Replace('\\', '/') != _sourceFolder.TrimEnd('/'))
                 continue;
 
             GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
@@ -116,7 +124,6 @@ public class CharacterPortraitWindow : EditorWindow
         }
 
         SetPreview(lastTex);
-        AssetDatabase.Refresh();
         Debug.Log($"[CharacterPortrait] Rendered {count} portraits to '{_outputFolder}'.");
     }
 
@@ -126,11 +133,46 @@ public class CharacterPortraitWindow : EditorWindow
         instance.transform.SetPositionAndRotation(new Vector3(0, OffscreenY, 0), Quaternion.Euler(0f, _characterRotationY, 0f));
         instance.hideFlags = HideFlags.HideAndDontSave;
 
+        // Deactivate all children except the capsule and its ancestors
+        GameObject capsule = FindCapsuleChild(instance);
+        foreach (Transform child in instance.transform)
+        {
+            bool keepActive = capsule != null &&
+                (child.gameObject == capsule || capsule.transform.IsChildOf(child));
+            if (!keepActive)
+            {
+                var renderers = child.GetComponentsInChildren<Renderer>();
+                foreach (var renderer in renderers)
+                {
+                    renderer.enabled = false;
+                }
+                child.gameObject.SetActive(false);
+            }
+        }
+
+        // Deactivate siblings of the capsule within its parent
+        if (capsule != null)
+        {
+            foreach (Transform sibling in capsule.transform.parent)
+            {
+                if (sibling.gameObject != capsule)
+                {
+                    var renderers = sibling.GetComponentsInChildren<Renderer>();
+                    foreach (var renderer in renderers)
+                    {
+                        renderer.enabled = false;
+                    }
+                    sibling.gameObject.SetActive(false);
+                }
+            }
+        }
+
         // Compute bounds before applying offset so the camera angle is unaffected by position changes
-        Bounds bounds = GetRendererBounds(instance);
+        Bounds bounds = capsule != null ? GetRendererBounds(capsule) : GetRendererBounds(instance);
         Vector3 center = bounds.center;
 
-        instance.transform.position += _characterOffset;
+        bool isFemale = prefab.name.Contains("Female");
+        instance.transform.position += isFemale ? _characterOffsetFemale : _characterOffset;
 
         // Camera — character faces +Z so we approach from -Z
         GameObject cameraGO = EditorUtility.CreateGameObjectWithHideFlags(
@@ -164,7 +206,7 @@ public class CharacterPortraitWindow : EditorWindow
         lightGO.transform.rotation = Quaternion.Euler(50f, -30f, 0f);
 
         // Render
-        RenderTexture rt = new RenderTexture(_resolution, _resolution, 32, RenderTextureFormat.ARGB32)
+        RenderTexture rt = new RenderTexture(_resolutionWidth, _resolutionHeight, 32, RenderTextureFormat.ARGB32)
         {
             antiAliasing = 1
         };
@@ -173,8 +215,8 @@ public class CharacterPortraitWindow : EditorWindow
         camera.Render();
 
         RenderTexture.active = rt;
-        Texture2D tex = new Texture2D(_resolution, _resolution, TextureFormat.ARGB32, false);
-        tex.ReadPixels(new Rect(0, 0, _resolution, _resolution), 0, 0);
+        Texture2D tex = new Texture2D(_resolutionWidth, _resolutionHeight, TextureFormat.ARGB32, false);
+        tex.ReadPixels(new Rect(0, 0, _resolutionWidth, _resolutionHeight), 0, 0);
         tex.Apply();
         RenderTexture.active = null;
 
@@ -190,6 +232,14 @@ public class CharacterPortraitWindow : EditorWindow
     {
         byte[] bytes = tex.EncodeToPNG();
         File.WriteAllBytes(outputPath, bytes);
+
+        AssetDatabase.ImportAsset(outputPath);
+        var importer = AssetImporter.GetAtPath(outputPath) as TextureImporter;
+        if (importer != null && importer.textureType != TextureImporterType.Sprite)
+        {
+            importer.textureType = TextureImporterType.Sprite;
+            importer.SaveAndReimport();
+        }
     }
 
     private void SetPreview(Texture2D tex)
@@ -204,6 +254,21 @@ public class CharacterPortraitWindow : EditorWindow
     {
         if (!Directory.Exists(_outputFolder))
             Directory.CreateDirectory(_outputFolder);
+    }
+
+    private static GameObject FindCapsuleChild(GameObject instance)
+    {
+        Transform rendererParent = instance.transform.Find("Renderer");
+        if (rendererParent == null)
+            return null;
+
+        foreach (Transform child in rendererParent)
+        {
+            if (child.name.StartsWith("capsule_"))
+                return child.gameObject;
+        }
+
+        return null;
     }
 
     private static Bounds GetRendererBounds(GameObject go)

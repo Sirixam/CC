@@ -123,9 +123,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _fieldOfViewController: {fileID: 6954222443602317400}
   _fieldOfViewTriggerListener: {fileID: 4059308774448494572}
-  _stateText: {fileID: 7892339153719555269}
   _distractionUI: {fileID: 7935385901730637187}
   _lightbulbUI: {fileID: 3536736530774656665}
+  _studentView: {fileID: 0}
   _lookData:
     LookSpeed: 200
   _distractionData:
@@ -138,18 +138,21 @@ MonoBehaviour:
       LookSpeedMultiplier: 0
       Rotate: 0
       ShowFOV: 0
+      FOVGrowDuration: 0
     - MinDistraction: 2
       DistractionDuration: 1
       DistractionRotationDelay: 0
       LookSpeedMultiplier: 0
       Rotate: 0
       ShowFOV: 1
+      FOVGrowDuration: 0
     - MinDistraction: 3
       DistractionDuration: 5
       DistractionRotationDelay: 1
       LookSpeedMultiplier: 1.5
       Rotate: 1
       ShowFOV: 1
+      FOVGrowDuration: 0
   _audioData:
     GrumblingAudiosByLevel:
     - {fileID: 11400000, guid: abde8afe069e4ec4492223ae149e3dd9, type: 2}
@@ -157,7 +160,7 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 72824e033a980e541a6e4d2fdf9f21a0, type: 2}
   _globalDefinition: {fileID: 11400000, guid: 2b0875648e78a8e45b08a646836071ca, type: 2}
   _testDefinitionOverride: {fileID: 0}
-  _icon: {fileID: 21300000, guid: 445f914bffe526e4d9c67e5ea23f8924, type: 3}
+  _icon: {fileID: 21300000, guid: 5b7242b8a1276034b898d6042169bd74, type: 3}
   _archetypeIcon: {fileID: 21300000, guid: 3528cca18f771b84c8590c96ee49d06f, type: 3}
   _canDetectItems: 1
   _canDetectFlyingItems: 1
@@ -203,24 +206,31 @@ MonoBehaviour:
   _renderersData:
   - Renderer: {fileID: 3511069856976066070}
     ColorPropertyName: _Color
+    tag: _Tag
     Ignore: 0
   - Renderer: {fileID: 1632251572904300399}
     ColorPropertyName: _Color
+    tag: _Tag
     Ignore: 0
   - Renderer: {fileID: 5185246247675971853}
     ColorPropertyName: _Color
+    tag: _Tag
     Ignore: 0
   - Renderer: {fileID: 1574369477850917298}
     ColorPropertyName: _Color
+    tag: _Tag
     Ignore: 0
   - Renderer: {fileID: 3945766663388351932}
     ColorPropertyName: _Color
+    tag: _Tag
     Ignore: 0
   - Renderer: {fileID: 1363812805814672505}
     ColorPropertyName: _Color
+    tag: _Tag
     Ignore: 0
   - Renderer: {fileID: 6967629285112109257}
     ColorPropertyName: _Color
+    tag: _Tag
     Ignore: 0
   EDITOR_RenderersParent: {fileID: 0}
   EDITOR_IncludeInactive: 1
@@ -496,8 +506,12 @@ MonoBehaviour:
   _maxDistance: 3
   _fieldOfView: 60
   _fieldOfViewWidth: 0.5
+  _widthScale: 1
   _visualThickness: 0.01
   _physicsThickness: 1
+  _safeColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  _dangerColor: {r: 1, g: 0, b: 0, a: 1}
+  _colorProperty: _BaseColor
 --- !u!33 &368862458362584757
 MeshFilter:
   m_ObjectHideFlags: 0
