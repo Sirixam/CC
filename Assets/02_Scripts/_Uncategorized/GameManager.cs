@@ -321,20 +321,17 @@ public class GameManager : MonoBehaviour
             return;
 
         //Sitting players are safe ONLY if the ball was NOT thrown
-        foreach (var player in _players)
+        bool hasBeenThrown = paperBall.HasBeenThrown();
+        PlayerController owner = _players.Find(x => hasBeenThrown ? x.ID == paperBall.LastOwnerID : x.ID == paperBall.OwnerID);
+        if (owner != null && owner.IsSitting && !hasBeenThrown) return;
+
+        // Confiscate ball
+        if (paperBall.IsBeingHeld)
         {
-            if (player.IsSitting && !paperBall.HasBeenThrown())
-                return;
+            paperBall.Destroy();
         }
 
-        //Confiscate thrown paperballs
-        paperBall.OnDetectedByTeacher();
-
-        //Punish owner if known
-        if (!TryGetPlayerController(itemController.LastOwnerID, out PlayerController owner))
-            return;
-
-        if (owner.IsCaught) return;
+        if (owner.IsCaught || paperBall.IsIdle) return;
 
         LoseLife(owner);
     }

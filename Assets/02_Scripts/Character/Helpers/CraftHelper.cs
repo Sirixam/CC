@@ -19,6 +19,7 @@ public class CraftHelper
         public float CraftPercent => 1 - RemainingTime / CraftDuration;
     }
 
+    private IActor _actor;
     private PlayerView _actorView;
     private InteractionHelper _interactionHelper;
     private ICraftService _craftService;
@@ -30,8 +31,9 @@ public class CraftHelper
 
     public bool IsCrafting { get; private set; }
 
-    public CraftHelper(PlayerView actorView, InteractionHelper interactionHelper, ICraftService craftService)
+    public CraftHelper(IActor actor, PlayerView actorView, InteractionHelper interactionHelper, ICraftService craftService)
     {
+        _actor = actor;
         _actorView = actorView;
         _interactionHelper = interactionHelper;
         _craftService = craftService;
@@ -112,6 +114,10 @@ public class CraftHelper
         {
             _interactionHelper.AddInteraction(interactionOwner.InteractionController);
             _interactionHelper.StartInteraction(interactionOwner.InteractionController);
+        }
+        if (itemInstance.TryGetComponent(out IPickUpInteractionOwner pickUpInteraction))
+        {
+            pickUpInteraction.OnPickedUp(_actor.ID);
         }
         OnFinishedCrafting?.Invoke();
     }

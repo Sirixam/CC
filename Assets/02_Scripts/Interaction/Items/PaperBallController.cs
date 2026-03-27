@@ -24,6 +24,7 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     private string _contributorActorID;
     private float _remainingTimeToDestroyOnIdle;
     private EState _state;
+    private string _ownerID;
     private string _lastOwnerID;
     private bool _hasHitGround;
     public bool HasHitGround => _hasHitGround;
@@ -34,10 +35,14 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     public float Correctness => !string.IsNullOrWhiteSpace(_answerID) ? _correctness : _defaultCorrectness;
     public string ContributorActorID => !string.IsNullOrWhiteSpace(_answerID) ? _contributorActorID : null;
 
+    public bool IsIdle => _state == EState.Idle;
+    public bool IsMidAir => _state == EState.MidAir;
+    public bool IsBeingHeld => _state == EState.PickedUp;
+
     public InteractionController InteractionController => GetComponentInChildren<InteractionController>();
 
-    string IItemController.LastOwnerID => _lastOwnerID;
-    public EState State => _state;
+    public string OwnerID => _ownerID;
+    public string LastOwnerID => _lastOwnerID;
 
     private void Awake()
     {
@@ -132,33 +137,25 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     // IPickUpInteractionOwner
     void IPickUpInteractionOwner.OnPickedUp(string actorID)
     {
-        _lastOwnerID = actorID;
+        _ownerID = actorID;
         _state = EState.PickedUp;
     }
     void IPickUpInteractionOwner.OnDropped()
     {
+        _lastOwnerID = _ownerID;
+        _ownerID = null;
         SetIdleState();
     }
     void IPickUpInteractionOwner.OnThrowed()
     {
+        _lastOwnerID = _ownerID;
+        _ownerID = null;
         _state = EState.MidAir;
         _hasHitGround = false;
     }
 
-    public void OnDetectedByTeacher()
+    public void Destroy()
     {
-        bool isHeld =
-            InteractionController != null &&
-            !InteractionController.enabled;
-
-        Debug.Log(
-            $"[PaperBall] OnDetectedByTeacher | Held={isHeld} | State={_state} | Owner={_lastOwnerID}",
-            this
-        );
-
-        if (isHeld)
-            return;
-
         Destroy(gameObject);
     }
 

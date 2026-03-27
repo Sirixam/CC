@@ -105,7 +105,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _lookHelper = new LookHelper(_lookData);
         _audioHelper = new PlayerAudioHelper(_audioData);
         _dashHelper = new DashHelper(_dashData, _view, _physics, _lookHelper, _audioHelper);
-        _craftHelper = new CraftHelper(_view, _interactionHelper, GameContext.ItemsManager);
+        _craftHelper = new CraftHelper(this, _view, _interactionHelper, GameContext.ItemsManager);
 
         // Initialize
         _view.InitializeThrowPreview(_chairHelper, _throwData, _globalDefinition.FlyingLayer);
