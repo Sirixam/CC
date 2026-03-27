@@ -2,7 +2,7 @@ using PrimeTween;
 using UnityEngine;
 using UnityEngine.UI;
 
-public enum PeekState { PartialInfo, FullInfo }
+public enum EPeekState { PartialInfo, FullInfo }
 
 public class AnswerPeekUI : MonoBehaviour
 {
@@ -29,7 +29,7 @@ public class AnswerPeekUI : MonoBehaviour
     private Sequence _shakeTween;
     private bool _isFull;
     private bool _isCompleted;
-    private PeekState _state = PeekState.FullInfo;
+    private EPeekState _state = EPeekState.FullInfo;
 
     public AnswerPeek AnswerPeek { get; private set; }
 
@@ -60,7 +60,7 @@ public class AnswerPeekUI : MonoBehaviour
         UpdateProgress(setup: true);
     }
 
-    public void SetState(PeekState state)
+    public void SetState(EPeekState state)
     {
         if (_state == state) return;
         _state = state;
@@ -70,7 +70,7 @@ public class AnswerPeekUI : MonoBehaviour
     private void ApplyState()
     {
         if (AnswerPeek == null) return;
-        _answerCloudIcon.color = _state == PeekState.FullInfo
+        _answerCloudIcon.color = _state == EPeekState.FullInfo
             ? ChangeCloudColor(AnswerPeek)
             : new Color32(255, 255, 255, 255);
     }

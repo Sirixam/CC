@@ -253,6 +253,7 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
     [SerializeField] private int _maxPeekUIs = 5;
     [Tooltip("If true, a card stays at PartialInfo until the player peeks again — state is never auto-upgraded to FullInfo.")]
     [SerializeField] private bool _requireRePeekForFullInfo = true;
+    [SerializeField] private bool _showFullInfoWhileWriting = true;
     private Queue<AnswerPeekUI> _activePeekUIs = new();
 
     [SerializeField] private GlobalDefinition _globalDefinition;
@@ -330,16 +331,23 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
             if (_requireRePeekForFullInfo)
             {
                 // Only downgrade to PartialInfo automatically; FullInfo requires a fresh peek.
-                if (peek.AnswerController.IsThinking)
+                if (GetPeekState(peek.AnswerController) == EPeekState.PartialInfo)
                 {
-                    answerPeekUI.SetState(PeekState.PartialInfo);
+                    answerPeekUI.SetState(EPeekState.PartialInfo);
                 }
             }
             else
             {
-                answerPeekUI.SetState(peek.AnswerController.IsThinking ? PeekState.PartialInfo : PeekState.FullInfo);
+                answerPeekUI.SetState(GetPeekState(peek.AnswerController));
             }
         }
+    }
+
+    private EPeekState GetPeekState(AnswerController answerController)
+    {
+        if (answerController.IsThinking) return EPeekState.PartialInfo;
+        if (answerController.IsValidating) return EPeekState.FullInfo;
+        return _showFullInfoWhileWriting ? EPeekState.FullInfo : EPeekState.PartialInfo;
     }
 
     public void InjectTestDefinition(TestDefinition testDefinition)
@@ -419,7 +427,7 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
         AnswerPeek peek = _activePeeks.Find(x => x.AnswerSheet == answerController.AnswerSheet && x.AnswerID == answerID);
         if (peek != null)
         {
-            peek.PeekUI.SetState(peek.AnswerController.IsThinking ? PeekState.PartialInfo : PeekState.FullInfo);
+            peek.PeekUI.SetState(GetPeekState(peek.AnswerController));
             peek.PeekUI.PlayHighlight();
             return;
         }
@@ -452,7 +460,7 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
 
         Sprite answerTypeIcon = GetAnswerTypeIcon(answerID);
         peekUI.Setup(peek, characterIcon, archetypeIcon, answerTypeIcon);
-        peekUI.SetState(answerController.IsThinking ? PeekState.PartialInfo : PeekState.FullInfo);
+        peekUI.SetState(answerController.IsThinking ? EPeekState.PartialInfo : EPeekState.FullInfo); //
         if (HaveAllPlayersAnsweredFully(answerID, out float minCorrectness) && minCorrectness >= 1f)
         {
             peekUI.SetCompleted(ShouldMarkAsCompleted(answerID));

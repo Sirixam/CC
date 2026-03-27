@@ -5942,6 +5942,7 @@ MonoBehaviour:
   _peekUIParent: {fileID: 1993191926}
   _maxPeekUIs: 5
   _requireRePeekForFullInfo: 1
+  _showFullInfoWhileWriting: 0
   _globalDefinition: {fileID: 11400000, guid: 2b0875648e78a8e45b08a646836071ca, type: 2}
 --- !u!4 &846097733 stripped
 Transform:
