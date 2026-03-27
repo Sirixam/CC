@@ -326,7 +326,7 @@ public class GameManager : MonoBehaviour
         if (owner != null && owner.IsSitting && !hasBeenThrown) return;
 
         // Confiscate ball
-        if (paperBall.IsBeingHeld)
+        if (paperBall.IsBeingHeld || paperBall.IsMidAir)
         {
             paperBall.Destroy();
         }
