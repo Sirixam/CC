@@ -5941,7 +5941,7 @@ MonoBehaviour:
   _answerPeekUI: {fileID: 6370691539431799937, guid: 1a334793d560a9e4299bf607329e66d3, type: 3}
   _peekUIParent: {fileID: 1993191926}
   _maxPeekUIs: 5
-  _requireRePeekForFullInfo: 0
+  _requireRePeekForFullInfo: 1
   _globalDefinition: {fileID: 11400000, guid: 2b0875648e78a8e45b08a646836071ca, type: 2}
 --- !u!4 &846097733 stripped
 Transform:
@@ -16282,7 +16282,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   _normalizeStudentAxis: 0
-  _dynamicAnsweringDuration: 1
+  _dynamicAnsweringDuration: 0
 --- !u!1001 &1850847638
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -1985,7 +1985,7 @@ MonoBehaviour:
   _lineAnimationSpeed: -1
   _particleFrecuency: 0.75
   _maxBounces: 1
-  _bounciness: 0.8
+  _bounciness: 0.1
 --- !u!120 &3361659025060047718
 LineRenderer:
   serializedVersion: 2

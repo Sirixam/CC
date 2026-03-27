@@ -106,6 +106,7 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
 
     private void OnCollisionEnter(Collision collision)
     {
+        Debug.Log("collided with + : " + collision.collider);
         if (collision.gameObject.layer == LayerMask.NameToLayer("Environment")
             || collision.gameObject.layer == LayerMask.NameToLayer("Floor")
             || collision.gameObject.CompareTag("NPC"))
