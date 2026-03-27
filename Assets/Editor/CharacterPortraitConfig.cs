@@ -19,4 +19,8 @@ public class CharacterPortraitConfig : ScriptableObject
     public float CharacterRotationY = 0f;
     public Vector3 CharacterOffset = Vector3.zero;
     public Vector3 CharacterOffsetFemale = Vector3.zero;
+
+    [Header("Lighting")]
+    public float LightIntensity = 1.2f;
+    public Vector3 LightRotation = new Vector3(50, -30, 0f);
 }

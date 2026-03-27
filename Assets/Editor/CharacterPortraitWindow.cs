@@ -73,6 +73,11 @@ public class CharacterPortraitWindow : EditorWindow
         EditorGUILayout.PropertyField(so.FindProperty(nameof(CharacterPortraitConfig.CharacterOffset)));
         EditorGUILayout.PropertyField(so.FindProperty(nameof(CharacterPortraitConfig.CharacterOffsetFemale)));
 
+        EditorGUILayout.Space(4);
+        EditorGUILayout.LabelField("Light", EditorStyles.miniBoldLabel);
+        EditorGUILayout.PropertyField(so.FindProperty(nameof(CharacterPortraitConfig.LightIntensity)));
+        EditorGUILayout.PropertyField(so.FindProperty(nameof(CharacterPortraitConfig.LightRotation)));
+
         if (so.ApplyModifiedProperties())
             EditorUtility.SetDirty(_config);
 
@@ -233,8 +238,8 @@ public class CharacterPortraitWindow : EditorWindow
             "PortraitLight", HideFlags.HideAndDontSave, typeof(Light));
         Light light = lightGO.GetComponent<Light>();
         light.type = LightType.Directional;
-        light.intensity = 1.2f;
-        lightGO.transform.rotation = Quaternion.Euler(50f, -30f, 0f);
+        light.intensity = _config.LightIntensity;
+        lightGO.transform.rotation = Quaternion.Euler(_config.LightRotation);
 
         RenderTexture rt = new RenderTexture(_config.ResolutionWidth, _config.ResolutionHeight, 32, RenderTextureFormat.ARGB32)
         {

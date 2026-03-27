@@ -23,3 +23,5 @@ MonoBehaviour:
   CharacterRotationY: 180
   CharacterOffset: {x: 0, y: -0.1, z: 0}
   CharacterOffsetFemale: {x: 0, y: 0, z: 0}
+  LightIntensity: 0.5
+  LightRotation: {x: 50, y: -30, z: 0}
