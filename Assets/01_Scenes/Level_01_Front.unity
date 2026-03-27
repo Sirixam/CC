@@ -1623,11 +1623,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5694824683282462777, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}
       propertyPath: _routesData.Array.data[0].Include
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5694824683282462777, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}
       propertyPath: _routesData.Array.data[1].Include
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5694824683282462777, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}
       propertyPath: _routesData.Array.data[2].Include
@@ -1635,7 +1635,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5694824683282462777, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}
       propertyPath: _routesData.Array.data[3].Include
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5694824683282462777, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}
       propertyPath: _routesData.Array.data[4].Include
@@ -15462,7 +15462,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_NotificationBehavior: 2
-  m_MaxPlayerCount: 1
+  m_MaxPlayerCount: 2
   m_AllowJoining: 1
   m_JoinBehavior: 0
   m_PlayerJoinedEvent:
@@ -16246,9 +16246,9 @@ MonoBehaviour:
   - {fileID: 928665874}
   _simulateStudentsIndividually: 1
   _halfCorrectChance: 0.5
-  _peekPhaseDuration: 20
-  _cheatPhaseDuration: 20
-  _answeringDurationRange: {x: 10, y: 10}
+  _peekPhaseDuration: 10
+  _cheatPhaseDuration: 45
+  _answeringDurationRange: {x: 5, y: 5}
   _thinkingDurationCurve:
     serializedVersion: 2
     m_Curve:
@@ -16269,6 +16269,15 @@ MonoBehaviour:
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 8
+      value: 8
+      inSlope: 0.029337684
+      outSlope: 0.029337684
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.21134008
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 10

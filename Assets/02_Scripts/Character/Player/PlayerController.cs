@@ -1018,8 +1018,6 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             avoidPosition
         );
 
-        Debug.Log($"Path found: {pathFound}");
-
         if (!pathFound)
         {
             // Fallback to teleport if no valid path
@@ -1034,13 +1032,10 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
             return;
         }
-
         _onWalkBackSeated = onSeated;
 
         _walkBackTimeout = StartCoroutine(WalkBackTimeoutRoutine());
         _physics.OnArriveEvent += OnArrivedAtChair;
-
-
     }
 
     public void OnPushedAside(Vector3 direction)
@@ -1085,7 +1080,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private IEnumerator WalkBackTimeoutRoutine()
     {
-        yield return new WaitForSeconds(7);
+        yield return new WaitForSeconds(3);
         if (_isWalkingBack)
             CompleteWalkBack();
     }
@@ -1094,7 +1089,9 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     {
         _physics.OnArriveEvent -= OnArrivedAtChair;
         if (_walkBackTimeout != null)
+        {
             StopCoroutine(_walkBackTimeout);
+        }
 
         _view.StopCaughtSymbols();
         _physics.StopFollowingPath();
@@ -1107,6 +1104,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _inputHandler.PlayerInput.ActivateInput();
         StartCoroutine(DelayedUnblock());
         _onWalkBackSeated?.Invoke();
+
     }
     private void OnArrivedAtChair()
     {

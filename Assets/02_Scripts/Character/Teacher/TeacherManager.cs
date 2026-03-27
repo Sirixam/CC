@@ -80,7 +80,6 @@ public class TeacherManager : MonoBehaviour
     {
         for (int i = 0; i < _teachers.Length; i++)
         {
-            Debug.Log($"Teacher collider is: {_teachers[i].Collider}");
             if (_teachers[i].Collider == null) continue;
             foreach (var playerCollider in playerColliders)
             {
