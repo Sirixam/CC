@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5675337313791856986}
   m_Layer: 0
-  m_Name: answerBall
+  m_Name: Renderer_AnswerBall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

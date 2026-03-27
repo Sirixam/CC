@@ -1458,7 +1458,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 379004243048570373, guid: 95902d6851119e04fa7d25d288a1470a, type: 3}
       propertyPath: m_Name
-      value: paperball
+      value: Renderer
       objectReference: {fileID: 0}
     - target: {fileID: 5675337313791856986, guid: 95902d6851119e04fa7d25d288a1470a, type: 3}
       propertyPath: m_LocalPosition.x

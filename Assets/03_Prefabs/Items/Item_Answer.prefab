@@ -1459,7 +1459,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 379004243048570373, guid: 477f8c89aba808849a3e7c6085ffaec1, type: 3}
       propertyPath: m_Name
-      value: answerBall
+      value: Renderer
       objectReference: {fileID: 0}
     - target: {fileID: 5675337313791856986, guid: 477f8c89aba808849a3e7c6085ffaec1, type: 3}
       propertyPath: m_LocalPosition.x
