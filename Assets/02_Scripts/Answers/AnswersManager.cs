@@ -264,7 +264,6 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
     private List<AnswerController> _answerControllers = new();
     private List<AnswerPeek> _activePeeks = new();
 
-    public int RequiredPlayersCount => _playerDesks.Length;
     public AnswerDefinition[] GetNpcAnswerDefinitions() => _npcAnswersDefinitions;
 
     private bool _isShaking;

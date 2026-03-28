@@ -276,6 +276,7 @@ public partial class PlayerInputHandler
             actions[ACTION_ACTION].started += _inputHandler.OnAction;
             actions[ACTION_ACTION].canceled += _inputHandler.OnAction;
 
+            actions[DASH_ACTION].performed += _inputHandler.OnDash;
             actions[CANCEL_ACTION].performed += _inputHandler.OnCancel;
             actions[PAUSE_ACTION].performed += _inputHandler.OnPause;
 
@@ -295,6 +296,7 @@ public partial class PlayerInputHandler
             actions[ACTION_ACTION].started -= _inputHandler.OnAction;
             actions[ACTION_ACTION].canceled -= _inputHandler.OnAction;
 
+            actions[DASH_ACTION].performed -= _inputHandler.OnDash;
             actions[CANCEL_ACTION].performed -= _inputHandler.OnCancel;
             actions[PAUSE_ACTION].performed -= _inputHandler.OnPause;
 

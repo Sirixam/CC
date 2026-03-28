@@ -134,8 +134,7 @@ public class GameManager : MonoBehaviour
             _playerFlashEffects[playerController] = flashEffect;
         }
 
-        if (_players.Count >= _answerManager.RequiredPlayersCount ||
-            !_globalDefinition.StartGameWhenAllPlayersJoined)
+        if (_players.Count >= _globalDefinition.RequiredPlayerCount)
         {
             StartGame();
         }
