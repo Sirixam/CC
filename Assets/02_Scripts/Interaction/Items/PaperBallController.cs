@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItemController
@@ -17,6 +18,12 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     [SerializeField] private float _timeToDestroyOnIdle = 5f;
     [SerializeField] private bool _destroyOnIdle = true;
     [SerializeField] private GlobalDefinition _globalDefinition;
+    [SerializeField] private bool _isLobShot;
+    [SerializeField] private float _destroyAfterHitDelay = 0.5f;
+    private bool _hasBeenThrown;
+    private bool _destroyScheduled;
+
+    public bool IsLobShot => _isLobShot;
 
     //private ItemAudioHelper _audioHelper;
     private string _answerID;
@@ -113,7 +120,12 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
 
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("collided with + : " + collision.collider);
+        if (_hasBeenThrown && !_destroyScheduled)
+        {
+            _destroyScheduled = true;
+            StartCoroutine(DestroyAfterDelay());
+        }
+
         if (collision.gameObject.layer == LayerMask.NameToLayer("Environment")
             || collision.gameObject.layer == LayerMask.NameToLayer("Floor")
             || collision.gameObject.CompareTag("NPC"))
@@ -160,6 +172,7 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     }
     void IPickUpInteractionOwner.OnThrowed()
     {
+        _hasBeenThrown = true;
         _lastOwnerID = _ownerID;
         _ownerID = null;
         _state = EState.MidAir;
@@ -175,6 +188,11 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     public bool HasBeenThrown()
     {
         return _state == EState.MidAir || _state == EState.Idle;
+    }
+    private IEnumerator DestroyAfterDelay()
+    {
+        yield return new WaitForSeconds(_destroyAfterHitDelay);
+        Destroy(gameObject);
     }
 
 }

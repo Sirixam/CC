@@ -1191,7 +1191,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 935b485b7e347e4488ba37a14cc3d716, type: 2}
   _globalDefinition: {fileID: 11400000, guid: 2b0875648e78a8e45b08a646836071ca, type: 2}
   _maxTimeInSeconds: 300
-  _caughtDoorPoint: {fileID: 1850757766}
+  _caughtDoorPoint: {fileID: 0}
   _eventSystem: {fileID: 366332586}
   _playerInputManager: {fileID: 1683781321}
   _audioData:
@@ -1206,6 +1206,7 @@ MonoBehaviour:
   _testDefinition: {fileID: 11400000, guid: f0dce2a82100aaf47a1245b7ec539ec4, type: 2}
   _testRouteOnDetected: 
   _testRouteDelay: 1
+  _restartKey: 32
 --- !u!1 &160446707
 GameObject:
   m_ObjectHideFlags: 0

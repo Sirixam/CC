@@ -182,12 +182,12 @@ MonoBehaviour:
       ShowFOV: 1
       FOVGrowDuration: 1
     - MinDistraction: 3
-      DistractionDuration: 5
-      DistractionRotationDelay: 1
-      LookSpeedMultiplier: 1.5
+      DistractionDuration: 2
+      DistractionRotationDelay: 0
+      LookSpeedMultiplier: 2
       Rotate: 1
       ShowFOV: 1
-      FOVGrowDuration: 0.5
+      FOVGrowDuration: 0.05
   _audioData:
     GrumblingAudiosByLevel:
     - {fileID: 11400000, guid: abde8afe069e4ec4492223ae149e3dd9, type: 2}

@@ -24,11 +24,14 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     [Header("Data")]
     [SerializeField] private InteractionHelper.Data _interactionData;
     [SerializeField] private ThrowHelper.Data _throwData;
+    [SerializeField] private LobThrowHelper.Data _lobThrowData;
     [SerializeField] private StunHelper.Data _stunData;
     [SerializeField] private PlayerCheatHelper.Data _cheatData;
     [SerializeField] private DashHelper.Data _dashData;
     [SerializeField] private LookHelper.Data _lookData;
     [SerializeField] private PlayerAudioHelper.Data _audioData;
+
+
 
     [SerializeField] private GlobalDefinition _globalDefinition;
     [Header("Peek")]
@@ -43,6 +46,8 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     [SerializeField] private bool _stopPeekOnTeleport;
     [Tooltip("If TRUE penalty will apply while peek mode is active, if FALSE it will apply only while peeking a student.")]
     [SerializeField] private bool _applyMovePenaltyOnPeekMode;
+
+    private LobThrowHelper _lobThrowHelper;
     private bool _isCaught;
     public bool IsCaught => _isCaught;
     private Coroutine _walkBackTimeout;
@@ -105,10 +110,14 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _lookHelper = new LookHelper(_lookData);
         _audioHelper = new PlayerAudioHelper(_audioData);
         _dashHelper = new DashHelper(_dashData, _view, _physics, _lookHelper, _audioHelper);
-        _craftHelper = new CraftHelper(this, _view, _interactionHelper, GameContext.ItemsManager);
+        _craftHelper = new CraftHelper(this, _view, _interactionHelper, GameContext.ItemsManager, _globalDefinition);
+        _lobThrowHelper = new LobThrowHelper(_lobThrowData, this, _interactionHelper, _globalDefinition.FlyingLayer);
+
 
         // Initialize
         _view.InitializeThrowPreview(_chairHelper, _throwData, _globalDefinition.FlyingLayer);
+        _view.InitializeLobThrowPreview(_chairHelper, _lobThrowHelper, _globalDefinition.FlyingLayer);
+
         _lookHelper.Initialize(transform.forward);
         _fieldOfViewController.HideInstant();
         TeleportToInitialChair();
@@ -197,6 +206,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
                 RestoreInputScope();
                 _inputHandler.CancelActionHold();
                 _view.HideThrowPreview();
+                _view.HideLobThrowPreview();
                 TryShowAnswerSheetOnSit();
             }
             else if (_inputHandler.ScopeType == EInputScope.PlayerSitting)
@@ -588,7 +598,11 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
                 if (_globalDefinition.ShowAnswerSheetOnSit)
                     HideAnswerSheet();
 
-                if (_craftHelper.TryStartCraftingItem("Paper Ball"))
+                string craftItem = _globalDefinition.CraftedPaperBallType == GlobalDefinition.EPaperBallType.LobShot
+                    ? "Paper Ball LobShot"
+                    : "Paper Ball";
+
+                if (_craftHelper.TryStartCraftingItem(craftItem))
                     _view.StartCrafting();
             }
         }
@@ -635,7 +649,15 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             {
                 TryShowAnswerSheetOnSit();
                 RestoreInputScope();
-                _throwHelper.TryTriggerThrow();
+                _view.HideLobThrowPreview();
+                _view.HideThrowPreview();
+                if (!_lobThrowHelper.TryTriggerThrow())
+                    _throwHelper.TryTriggerThrow();
+            }
+            else if (_lobThrowHelper.CanShowPreview())
+            {
+                _view.ShowLobThrowPreview();
+                HideAnswerSheet();
             }
             else if (_throwHelper.CanShowPreview())
             {
@@ -964,6 +986,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             _view.StopCrafting();
 
         _view.HideThrowPreview();
+        _view.HideLobThrowPreview();
         HideAnswerSheet();
         DestroyHeldItem();
 

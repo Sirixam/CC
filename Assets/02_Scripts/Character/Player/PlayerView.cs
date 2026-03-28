@@ -21,6 +21,10 @@ public class PlayerView : MonoBehaviour, IStunView, IChairView
     [SerializeField] private ParticleSystem _caughtCloudVFXPrefab;
     [SerializeField] private ParticleSystem _caughtSymbolsVFX;
     [SerializeField] private HandAnimator _handAnimator;
+    [SerializeField] private LobThrowPreviewComponent _lobThrowPreview;
+
+    public void ShowLobThrowPreview() => _lobThrowPreview.Show();
+    public void HideLobThrowPreview() => _lobThrowPreview.Hide();
 
     private bool _isAnswerSheetLifted;
 
@@ -145,6 +149,7 @@ public class PlayerView : MonoBehaviour, IStunView, IChairView
     public void OnThrow(Transform item)
     {
         _throwPreview.Hide();
+        _lobThrowPreview.Hide();
         item.SetParent(null, worldPositionStays: true);
         _positionTween.Stop();
     }
@@ -316,4 +321,9 @@ public class PlayerView : MonoBehaviour, IStunView, IChairView
     {
         _throwPreview.Initialize(chairHelper, throwData, flyingLayer);
     }
+    public void InitializeLobThrowPreview(ChairHelper chairHelper, LobThrowHelper lobThrowHelper, int flyingLayer)
+    {
+        _lobThrowPreview.Initialize(chairHelper, lobThrowHelper, flyingLayer);
+    }
+    
 }

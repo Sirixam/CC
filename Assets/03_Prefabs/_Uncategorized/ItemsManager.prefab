@@ -54,3 +54,7 @@ MonoBehaviour:
     Icon: {fileID: 0}
     Prefab: {fileID: 5219355494168577670, guid: 0e2fd31554e12e34c85e6608faae33a4, type: 3}
     CraftDuration: 1
+  - Name: Paper Ball LobShot
+    Icon: {fileID: 0}
+    Prefab: {fileID: 5219355494168577670, guid: 8b8e779844369b44bade229e6494019e, type: 3}
+    CraftDuration: 1

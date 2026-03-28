@@ -23,6 +23,8 @@ public class CraftHelper
     private PlayerView _actorView;
     private InteractionHelper _interactionHelper;
     private ICraftService _craftService;
+    private GlobalDefinition _globalDefinition;
+
     private CraftData _craftData;
     private bool _shouldDropBeforeCraft;
     private Vector3 PickUpPosition => _actorView.PickUpPosition + Vector3.up; // Slightly above to highlight briefly.
@@ -31,12 +33,12 @@ public class CraftHelper
 
     public bool IsCrafting { get; private set; }
 
-    public CraftHelper(IActor actor, PlayerView actorView, InteractionHelper interactionHelper, ICraftService craftService)
+    public CraftHelper(PlayerController owner, PlayerView actorView, InteractionHelper interactionHelper, ICraftService craftService, GlobalDefinition globalDefinition)
     {
-        _actor = actor;
         _actorView = actorView;
         _interactionHelper = interactionHelper;
         _craftService = craftService;
+        _globalDefinition = globalDefinition;
     }
 
     public void UpdateCrafting(float deltaTime)
@@ -108,16 +110,25 @@ public class CraftHelper
 
     public void CraftItem(string itemName)
     {
+        if (_craftService == null)
+        {
+            Debug.LogError("CraftService is null!");
+            return;
+        }
+
         GameObject itemInstance = _craftService.InstantiateItem(itemName, PickUpPosition, Quaternion.identity, parent: null);
+        if (itemInstance == null)
+        {
+            Debug.LogError($"Failed to instantiate item: {itemName}");
+            OnFinishedCrafting?.Invoke();
+            return;
+        }
+
         _actorView.OnPickUp(itemInstance.transform);
         if (itemInstance.TryGetComponent(out IInteractionOwner interactionOwner))
         {
             _interactionHelper.AddInteraction(interactionOwner.InteractionController);
             _interactionHelper.StartInteraction(interactionOwner.InteractionController);
-        }
-        if (itemInstance.TryGetComponent(out IPickUpInteractionOwner pickUpInteraction))
-        {
-            pickUpInteraction.OnPickedUp(_actor.ID);
         }
         OnFinishedCrafting?.Invoke();
     }
