@@ -188,6 +188,7 @@ public class GameManager : MonoBehaviour
         StopGame();
         StopRoundTimer();
 
+        _answerManager.StopAllPeekCardShakes();
         _answerManager.CleanActivePeeks();
         _answerManager.ResetProgress();
 
@@ -332,8 +333,13 @@ public class GameManager : MonoBehaviour
             paperBall.Destroy();
         }
 
-        if (owner.IsCaught || paperBall.IsIdle) return;
+        if(owner == null)
+        {
+            Debug.LogWarning("When does this occurr? Add comment here.");
+            return;
+        }
 
+        if (owner.IsCaught || paperBall.IsIdle) return;
         LoseLife(owner);
     }
 
