@@ -53,6 +53,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TestDefinition _testDefinition;
     [SerializeField] private string _testRouteOnDetected;
     [SerializeField] private float _testRouteDelay = 1f;
+    [SerializeField] private Key _restartKey = Key.R;
 
     private GameAudioHelper _audioHelper;
 
@@ -63,6 +64,12 @@ public class GameManager : MonoBehaviour
         InitializeRestartButtons();
         InitializeHelpers();
         InjectTestDefinitionsIfNeeded();
+    }
+
+    private void Update()
+    {
+        if (Keyboard.current != null && Keyboard.current[_restartKey].wasPressedThisFrame)
+            RestartGame();
     }
 
     private void OnEnable()
