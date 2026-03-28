@@ -43,7 +43,7 @@ public class NavigationManager : MonoBehaviour
     [SerializeField] private List<RouteData> _routesData;
     [SerializeField] private bool _allowGizmos;
 
-    public WaypointData[] GetRoute(string routeID)
+    public WaypointData[] GetRoute(string routeID, bool searchByNameFallback = true)
     {
         foreach (var identifiableRouteData in _identifiableRoutesData)
         {
@@ -52,7 +52,31 @@ public class NavigationManager : MonoBehaviour
                 return identifiableRouteData.Waitpoints;
             }
         }
-        Debug.LogError("Route not found: " + routeID);
+
+        if (!searchByNameFallback)
+        {
+            Debug.LogError("Route not found: " + routeID);
+            return Array.Empty<WaypointData>();
+        }
+
+        // Fallback
+        foreach (var identifiableRouteData in _identifiableRoutesData)
+        {
+            if (identifiableRouteData.DebugName == routeID)
+            {
+                Debug.Log("Fallback route found: " + routeID);
+                return identifiableRouteData.Waitpoints;
+            }
+        }
+        foreach (var routeData in _routesData)
+        {
+            if (routeData.DebugName == routeID)
+            {
+                Debug.Log("Fallback route found: " + routeID);
+                return routeData.Waitpoints;
+            }
+        }
+        Debug.LogError("Route not found nor fallback: " + routeID);
         return Array.Empty<WaypointData>();
     }
 
