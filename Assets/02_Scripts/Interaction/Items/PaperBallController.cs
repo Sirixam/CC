@@ -27,6 +27,7 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     private string _ownerID;
     private string _lastOwnerID;
     private bool _hasHitGround;
+    private Collider[] _colliders;
     public bool HasHitGround => _hasHitGround;
 
     public string ID { get; private set; }
@@ -48,6 +49,7 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     {
         //_audioHelper = new ItemAudioHelper(_audioData);
         ID = GameContext.ItemsManager.GetNewItemID();
+        _colliders = GetComponentsInChildren<Collider>();
     }
 
     private void Start()
@@ -134,16 +136,26 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
         _remainingTimeToDestroyOnIdle = _timeToDestroyOnIdle;
     }
 
+    private void SetCollidersEnabled(bool enabled)
+    {
+        foreach (var col in _colliders)
+        {
+            col.enabled = enabled;
+        }
+    }
+
     // IPickUpInteractionOwner
     void IPickUpInteractionOwner.OnPickedUp(string actorID)
     {
         _ownerID = actorID;
         _state = EState.PickedUp;
+        SetCollidersEnabled(false);
     }
     void IPickUpInteractionOwner.OnDropped()
     {
         _lastOwnerID = _ownerID;
         _ownerID = null;
+        SetCollidersEnabled(true);
         SetIdleState();
     }
     void IPickUpInteractionOwner.OnThrowed()
@@ -152,6 +164,7 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
         _ownerID = null;
         _state = EState.MidAir;
         _hasHitGround = false;
+        SetCollidersEnabled(true);
     }
 
     public void Destroy()
