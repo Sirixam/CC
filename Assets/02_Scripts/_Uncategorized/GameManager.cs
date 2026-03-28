@@ -50,6 +50,8 @@ public class GameManager : MonoBehaviour
 
     [Header("TEST ONLY")]
     [SerializeField] private TestDefinition _testDefinition;
+    [SerializeField] private string _testRouteOnDetected;
+    [SerializeField] private float _testRouteDelay = 1f;
 
     private GameAudioHelper _audioHelper;
 
@@ -340,6 +342,9 @@ public class GameManager : MonoBehaviour
         if (_isProcessingLifeLoss) return;
         _isProcessingLifeLoss = true;
 
+        if (!string.IsNullOrEmpty(_testRouteOnDetected) && _teacherManager != null)
+            StartCoroutine(DelayedStartRoute(_testRouteOnDetected, _testRouteDelay));
+
         _playerLives--;
 
         _livesUI.playLostLifeAnimation(_playerLives, () =>
@@ -613,6 +618,12 @@ public class GameManager : MonoBehaviour
             _studentManager.InjectTestDefinition(_testDefinition);
         }
     }
+    private IEnumerator DelayedStartRoute(string routeID, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        _teacherManager.StartRoute(routeID);
+    }
+
     private IEnumerator DelayedWalkBack(PlayerController playerController)
     {
         yield return new WaitForSeconds(0.3f);

@@ -254,6 +254,30 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
 
     }
 
+    public void StartRoute(string routeID)
+    {
+        StopAllCoroutines();
+        _navigationHelper.Reset();
+
+        if (_walkBackObstacle != null)
+            _walkBackObstacle.enabled = false;
+
+        if (!_navMeshAgent.enabled)
+        {
+            _navMeshAgent.enabled = true;
+            if (UnityEngine.AI.NavMesh.SamplePosition(transform.position, out UnityEngine.AI.NavMeshHit hit, 2f, UnityEngine.AI.NavMesh.AllAreas))
+                _navMeshAgent.Warp(hit.position);
+            else
+                _navMeshAgent.Warp(transform.position);
+        }
+
+        _navMeshAgent.isStopped = false;
+        _navMeshAgent.updateRotation = true;
+        _isActive = true;
+        _state = EState.Patrol;
+        _navigationHelper.Start(routeID);
+    }
+
     public void StartPatrolling()
     {
         _isActive = true;

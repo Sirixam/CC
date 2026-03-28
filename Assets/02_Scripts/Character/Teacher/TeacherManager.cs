@@ -54,6 +54,12 @@ public class TeacherManager : MonoBehaviour
         }
     }
 
+    public void StartRoute(string routeID)
+    {
+        for (int i = 0; i < _teachers.Length; i++)
+            _teachers[i].StartRoute(routeID);
+    }
+
     public void StartPatrolling()
     {
         for (int i = 0; i < _teachers.Length; i++)
