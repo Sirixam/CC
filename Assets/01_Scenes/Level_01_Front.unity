@@ -1202,6 +1202,8 @@ MonoBehaviour:
     BackgroundMusic: {fileID: 8300000, guid: 898231edb4d0feb45849fa716d402ec7, type: 3}
     MusicVolume: 0.8
   _testDefinition: {fileID: 11400000, guid: f0dce2a82100aaf47a1245b7ec539ec4, type: 2}
+  _testRouteOnDetected: 
+  _testRouteDelay: 1
 --- !u!1 &160446707
 GameObject:
   m_ObjectHideFlags: 0

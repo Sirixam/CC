@@ -409,6 +409,7 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
         _navMeshAgent.updateRotation = true;
         _navMeshAgent.isStopped = false;
         _isActive = true;
+        _fieldOfViewController.Show();
 
         _state = EState.Patrol;
         _remainingTime = UnityEngine.Random.Range(_timeToSitRange.x, _timeToSitRange.y);
