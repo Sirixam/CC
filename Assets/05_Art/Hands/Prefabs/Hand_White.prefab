@@ -248,7 +248,6 @@ MonoBehaviour:
   _handRoot: {fileID: 705561775665358165}
   _speed: 10
   _radius: 0.03
-  _reverseDirection: 0
 --- !u!1 &914044531976162097
 GameObject:
   m_ObjectHideFlags: 0
@@ -333,7 +332,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 370e93876c8724bc1877b021fef179da, type: 2}
+  - {fileID: 2100000, guid: eb8ecf74bec24ad44acdec8f6196c79e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
