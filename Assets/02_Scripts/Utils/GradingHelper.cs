@@ -5,7 +5,7 @@ namespace _02_Scripts.Utils
 {
     public class GradingHelper
     {
-        private static (int numeric, string letter) GetGrade(float percentage)
+        public static (int numeric, string letter) GetGrade(float percentage)
         {
             int numeric = Mathf.RoundToInt(percentage * 10f);
 
@@ -23,7 +23,61 @@ namespace _02_Scripts.Utils
 
             return (numeric, letter);
         }
+        
+        public static List<(string playerName, string letterGrade)> GetPlayerGrades(List<PlayerController> players, AnswersManager answersManager)
+        {
+            var results = new List<(string playerName, string letterGrade)>();
 
+            for (int i = 0; i < players.Count; i++)
+            {
+                var answerSheet = answersManager.GetPlayerSheet(i);
+                if (answerSheet == null)
+                {
+                    results.Add(($"Player {i + 1}", "?"));
+                    continue;
+                }
+
+                var answers = answerSheet.Answers;
+                float total = 0f;
+                foreach (var answer in answers)
+                {
+                    total += answer.Correctness;
+                }
+
+                float percentage = Mathf.Clamp01(total / answers.Length + answerSheet.AccumulatedBoost);
+                var (numeric, letter) = GetGrade(percentage);
+                results.Add(($"Player {i + 1}", letter));
+            }
+
+            return results;
+        }
+
+        public static float GetAverageGrade(List<PlayerController> players, AnswersManager answersManager)
+        {
+            float totalClassPercentage = 0f;
+            
+            for (int i = 0; i < players.Count; i++)
+            {
+                var player = players[i];
+                var answerSheet = answersManager.GetPlayerSheet(i);
+                var answers = answerSheet.Answers;
+                float total = 0f;
+
+                foreach (var answer in answers)
+                {
+                    total += answer.Correctness; // 0, 0.5, 1
+                }
+                float percentage = Mathf.Clamp01(total / answers.Length + answerSheet.AccumulatedBoost);
+                totalClassPercentage += percentage;
+            }
+            if (players.Count > 0)
+            {
+                float classAverage = totalClassPercentage / players.Count;
+                return(classAverage * 100f);
+            }
+            return 0f;
+        }
+        
 
         public static void CalculateAndPrintGrades(List<PlayerController> players, AnswersManager answersManager)
         {

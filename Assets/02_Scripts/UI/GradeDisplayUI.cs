@@ -1,15 +1,32 @@
-﻿using UnityEngine;
+﻿using _02_Scripts.Utils;
+using UnityEngine;
 using TMPro;
 
 namespace _02_Scripts.UI
 {
     public class GradeDisplayUI : MonoBehaviour
     {
-        [SerializeField] private TMP_Text _gradeText;
+        [SerializeField] private PlayerGradeUI _gradePrefab;
+        [SerializeField] private Transform _container;
 
-        public void SetGrade(int numeric, string letter)
+        public void ShowGrades()
         {
-            _gradeText.text = $"{numeric} ({letter})";
+            // Clear old grades
+            foreach (Transform child in _container)
+            {
+                Destroy(child.gameObject);
+            }
+
+            var players = GameManager.Instance.Players;
+            var answersManager = GameManager.Instance.AnswerManager;
+            var grades = GradingHelper.GetPlayerGrades(players, answersManager);
+
+            foreach (var (playerName, letterGrade) in grades)
+            {
+                var gradeUI = Instantiate(_gradePrefab, _container);
+                gradeUI.Setup(playerName, letterGrade);
+            }
         }
     }
+    
 }

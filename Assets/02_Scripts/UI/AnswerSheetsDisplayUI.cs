@@ -9,12 +9,13 @@ namespace _02_Scripts.UI
 
         public void UpdateAnswerSheets()
         {
+            
             var players = GameManager.Instance.Players;
-
+            Debug.Log($"[SHEETS] Players count: {players.Count}");
             for (int i = 0; i < players.Count; i++)
             {
-                var answerSheet = players[i].GetAnswerSheet();
-
+                var answerSheet = GameManager.Instance.AnswerManager.GetPlayerSheet(i);
+                Debug.Log($"[SHEETS] Player {i} answerSheet: {(answerSheet != null ? "found" : "NULL")}");
                 if (answerSheet != null)
                 {
                     _answerSheetsUI[i].Setup(answerSheet.Answers);

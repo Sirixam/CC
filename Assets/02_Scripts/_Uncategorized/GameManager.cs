@@ -7,22 +7,22 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
 using System.Collections;
+using _02_Scripts._Uncategorized;
 using _02_Scripts.Utils;
 
 
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private AnswersManager _answerManager;
+    public AnswersManager AnswerManager => _answerManager;
     [SerializeField] private StudentManager _studentManager;
     [SerializeField] private TeacherManager _teacherManager;
 
-    [SerializeField] private GameObject _defeatFeedback;
-    [SerializeField] private VictoryUI _victoryUI;
+    [SerializeField] private ResultScreenUI _resultScreen;
     [SerializeField] private TimeUI _timeUI;
     [SerializeField] private RoundTimeUI _roundTimeUI;
     [SerializeField] private LivesUI _livesUI;
     [SerializeField] private HelpUI _helpUI;
-    [SerializeField] private GameObject _timesUpFeedback;
     [SerializeField] private ButtonListener[] _restartButtons;
     [SerializeField] private PlayerAppearanceSO[] _playerAppearances;
 
@@ -210,12 +210,8 @@ public class GameManager : MonoBehaviour
 
         if (_teacherManager != null)
             _teacherManager.ResetTeachers();
-        if (_defeatFeedback != null)
-            _defeatFeedback.SetActive(false);
-        if (_victoryUI != null)
-            _victoryUI.Hide();
-        if (_timesUpFeedback != null)
-            _timesUpFeedback.SetActive(false);
+        if (_resultScreen != null)
+            _resultScreen.Hide();
         if (_studentManager != null)
             _studentManager.ResetForNewGame();
 
@@ -312,19 +308,18 @@ public class GameManager : MonoBehaviour
 
         GradingHelper.CalculateAndPrintGrades(Players, _answerManager);
 
-        _victoryUI.UpdateAnswerSheets();
-        ShowEndMenu(_victoryUI.gameObject);
+        _resultScreen.ShowGrades();
+        _resultScreen.Show(ResultType.Victory, GradingHelper.GetAverageGrade(_players, _answerManager));
+        ShowEndMenu(_resultScreen.gameObject);
     }
 
     private void OnTimesUp()
     {
         GradingHelper.CalculateAndPrintGrades(Players, _answerManager);
 
-        if (_timesUpFeedback.TryGetComponent(out AnswerSheetsDisplayUI answerUI))
-        {
-            answerUI.UpdateAnswerSheets();
-        }
-        ShowEndMenu(_timesUpFeedback);
+        _resultScreen.ShowGrades();
+        _resultScreen.Show(ResultType.TimesUp, GradingHelper.GetAverageGrade(_players, _answerManager));
+        ShowEndMenu(_resultScreen.gameObject);
         StopRoundTimer();
     }
     private async void OnRoundTimesUp()
@@ -449,8 +444,9 @@ public class GameManager : MonoBehaviour
                 player.gameObject.SetActive(false);
             });
         }
-
-        ShowEndMenu(_defeatFeedback);
+        _resultScreen.ShowGrades();
+        _resultScreen.Show(ResultType.Defeat, GradingHelper.GetAverageGrade(_players, _answerManager));
+        ShowEndMenu(_resultScreen.gameObject);
     }
     private void SetLives(int value)
     {
@@ -580,17 +576,10 @@ public class GameManager : MonoBehaviour
 
     private void InitializeUIState()
     {
-        if (_defeatFeedback != null)
+
+        if (_resultScreen != null)
         {
-            _defeatFeedback.SetActive(false);
-        }
-        if (_victoryUI != null)
-        {
-            _victoryUI.Hide();
-        }
-        if (_timesUpFeedback != null)
-        {
-            _timesUpFeedback.SetActive(false);
+            _resultScreen.gameObject.SetActive(false);
         }
         if (_timeUI != null)
         {
