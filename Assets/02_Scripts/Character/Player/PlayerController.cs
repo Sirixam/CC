@@ -279,16 +279,16 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     {
         if (interaction.TryGetComponent(out ChairController chairController))
         {
-            if (chairController.CanPlayerSit)
+            if (chairController.CanPlayerSit && CanApproachChair(chairController))
             {
                 RequestSitting(chairController);
+                return true;
             }
-            return true;
+            return false;  // ← blocked approach or can't sit
         }
 
         if (interaction.TryGetComponent<AnswerController>(out _))
         {
-            // Empty for now
             return false;
         }
 
@@ -840,29 +840,6 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             }
         }
 
-        // Dash-to-sit logic
-        if (!_physics.IsDashing) return;
-        if (_chairHelper.IsSitting) return;
-
-        ChairController chair = collision.gameObject.GetComponentInParent<ChairController>();
-        if (chair == null) return;
-        if (!chair.CanPlayerSit) return;
-
-        // Check approach angle — reject from behind
-        Vector3 toChair = (chair.SittingPoint.position - transform.position).normalized;
-        Vector3 chairRight = chair.transform.right;
-        float sideAlignment = Mathf.Abs(Vector3.Dot(toChair, chairRight));
-
-        // sideAlignment > 0.3 means approaching from the sides
-        // Also allow from the front (dot with chair.forward)
-        float frontAlignment = Vector3.Dot(toChair, chair.transform.forward);
-
-        if (sideAlignment < 0.3f && frontAlignment < 0.3f)
-            return; // approaching from behind, don't allow
-
-        // Stop dash and sit instantly
-        ForceStopForce();
-        RequestSitting(chair);
     }
 
     private void OnInteractionTriggerEnter(Collider other)
@@ -1129,5 +1106,28 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     private void OnArrivedAtChair()
     {
         CompleteWalkBack();
+    }
+    private bool CanApproachChair(ChairController chair)
+    {
+        Vector3 toChair = (chair.SittingPoint.position - transform.position).normalized;
+        float behindDot = Vector3.Dot(toChair, -chair.transform.forward);
+
+        // behindDot > 0.5 means player is mostly behind the chair
+        return behindDot < 0.8f;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!_physics.IsDashing) return;
+        if (_chairHelper.IsSitting) return;
+        if (other.gameObject.name != "DashSitTrigger") return;
+
+        ChairController chair = other.GetComponentInParent<ChairController>();
+        if (chair == null) return;
+        if (!chair.CanPlayerSit) return;
+        if (!CanApproachChair(chair)) return;
+
+        ForceStopForce();
+        RequestSitting(chair);
     }
 }
