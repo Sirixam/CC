@@ -25,6 +25,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     [SerializeField] private InteractionHelper.Data _interactionData;
     [SerializeField] private ThrowHelper.Data _throwData;
     [SerializeField] private LobThrowHelper.Data _lobThrowData;
+    [SerializeField] private DynamicLobThrowHelper.Data _dynamicLobThrowData;
     [SerializeField] private StunHelper.Data _stunData;
     [SerializeField] private PlayerCheatHelper.Data _cheatData;
     [SerializeField] private DashHelper.Data _dashData;
@@ -48,6 +49,8 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     [SerializeField] private bool _applyMovePenaltyOnPeekMode;
 
     private LobThrowHelper _lobThrowHelper;
+    private DynamicLobThrowHelper _dynamicLobThrowHelper;
+
     private bool _isCaught;
     public bool IsCaught => _isCaught;
     private Coroutine _walkBackTimeout;
@@ -112,11 +115,15 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _dashHelper = new DashHelper(_dashData, _view, _physics, _lookHelper, _audioHelper);
         _craftHelper = new CraftHelper(this, _view, _interactionHelper, GameContext.ItemsManager, _globalDefinition);
         _lobThrowHelper = new LobThrowHelper(_lobThrowData, this, _interactionHelper, _globalDefinition.FlyingLayer);
+        _dynamicLobThrowHelper = new DynamicLobThrowHelper(_dynamicLobThrowData, this, _interactionHelper, _globalDefinition.FlyingLayer);
+
 
 
         // Initialize
         _view.InitializeThrowPreview(_chairHelper, _throwData, _globalDefinition.FlyingLayer);
         _view.InitializeLobThrowPreview(_chairHelper, _lobThrowHelper, _globalDefinition.FlyingLayer);
+        _view.InitializeDynamicLobThrowPreview(_chairHelper, _dynamicLobThrowHelper, _globalDefinition.FlyingLayer);
+
 
         _lookHelper.Initialize(transform.forward);
         _fieldOfViewController.HideInstant();
@@ -203,10 +210,12 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         {
             if (_inputHandler.ScopeType == EInputScope.PlayerAiming)
             {
+                _dynamicLobThrowHelper.StopCharging();
                 RestoreInputScope();
                 _inputHandler.CancelActionHold();
                 _view.HideThrowPreview();
                 _view.HideLobThrowPreview();
+                _view.HideDynamicLobThrowPreview();
                 TryShowAnswerSheetOnSit();
             }
             else if (_inputHandler.ScopeType == EInputScope.PlayerSitting)
@@ -224,7 +233,6 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         }
         else if (actionType == EAction.Utility)
         {
-            // TODO: Hide inventory
             if (_craftHelper.TryStopCraftingItem())
                 _view.StopCrafting();
             TryShowAnswerSheetOnSit();
@@ -598,9 +606,12 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
                 if (_globalDefinition.ShowAnswerSheetOnSit)
                     HideAnswerSheet();
 
-                string craftItem = _globalDefinition.CraftedPaperBallType == GlobalDefinition.EPaperBallType.LobShot
-                    ? "Paper Ball LobShot"
-                    : "Paper Ball";
+                string craftItem = _globalDefinition.CraftedPaperBallType switch
+                {
+                    GlobalDefinition.EPaperBallType.LobShot => "Paper Ball LobShot",
+                    GlobalDefinition.EPaperBallType.DynamicLobShot => "Paper Ball DynamicLobShot",
+                    _ => "Paper Ball"
+                };
 
                 if (_craftHelper.TryStartCraftingItem(craftItem))
                     _view.StartCrafting();
@@ -650,9 +661,17 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
                 TryShowAnswerSheetOnSit();
                 RestoreInputScope();
                 _view.HideLobThrowPreview();
+                _view.HideDynamicLobThrowPreview();
                 _view.HideThrowPreview();
-                if (!_lobThrowHelper.TryTriggerThrow())
-                    _throwHelper.TryTriggerThrow();
+                if (!_dynamicLobThrowHelper.TryTriggerThrow())
+                    if (!_lobThrowHelper.TryTriggerThrow())
+                        _throwHelper.TryTriggerThrow();
+            }
+            else if (_dynamicLobThrowHelper.CanShowPreview())
+            {
+                _dynamicLobThrowHelper.StartCharging();
+                _view.ShowDynamicLobThrowPreview();
+                HideAnswerSheet();
             }
             else if (_lobThrowHelper.CanShowPreview())
             {
@@ -760,12 +779,10 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
                 _view.StopWriting();
                 if (_cheatHelper.TryGetRememberedAnswer(out string answerID, out float correctness, out string actorID))
                 {
-                    if (!_interactionHelper.TryGetPickedUpInteraction(out _))
-                    {
-                        _cheatHelper.StopRemembering();
-                        PaperBallController answerInstance = _craftHelper.CraftAnswer(answerID, correctness, actorID);
-                        _answerController.AddContributor(answerID, answerInstance.ID);
-                    }
+                    TryDropItem(); // drop whatever is held
+                    _cheatHelper.StopRemembering();
+                    PaperBallController answerInstance = _craftHelper.CraftAnswer(answerID, correctness, actorID);
+                    _answerController.AddContributor(answerID, answerInstance.ID);
                 }
             }
         }
@@ -808,6 +825,10 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         if (_cheatHelper.IsRemembering && !IsAnswering)
         {
             _cheatHelper.UpdateMemory(out _);
+        }
+        if (_dynamicLobThrowHelper.IsCharging)
+        {
+            _dynamicLobThrowHelper.UpdateCharging();
         }
         if (_craftHelper.IsCrafting)
         {
@@ -987,6 +1008,8 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
         _view.HideThrowPreview();
         _view.HideLobThrowPreview();
+        _view.HideDynamicLobThrowPreview();
+
         HideAnswerSheet();
         DestroyHeldItem();
 

@@ -1628,11 +1628,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5694824683282462777, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}
       propertyPath: _routesData.Array.data[0].Include
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5694824683282462777, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}
       propertyPath: _routesData.Array.data[1].Include
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5694824683282462777, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}
       propertyPath: _routesData.Array.data[2].Include
@@ -1640,7 +1640,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5694824683282462777, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}
       propertyPath: _routesData.Array.data[3].Include
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5694824683282462777, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}
       propertyPath: _routesData.Array.data[4].Include
@@ -8471,6 +8471,22 @@ PrefabInstance:
     - target: {fileID: 5037138280125954597, guid: 8d6c8104f4fd9ee4da070c1ef6ac57f9, type: 3}
       propertyPath: m_Name
       value: ItemsManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 5489921417720654080, guid: 8d6c8104f4fd9ee4da070c1ef6ac57f9, type: 3}
+      propertyPath: _itemsData.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5489921417720654080, guid: 8d6c8104f4fd9ee4da070c1ef6ac57f9, type: 3}
+      propertyPath: _itemsData.Array.data[3].Name
+      value: Paper Ball DynamicLobShot
+      objectReference: {fileID: 0}
+    - target: {fileID: 5489921417720654080, guid: 8d6c8104f4fd9ee4da070c1ef6ac57f9, type: 3}
+      propertyPath: _itemsData.Array.data[3].Prefab
+      value: 
+      objectReference: {fileID: 5219355494168577670, guid: f606ebbcc6d7d8f489c245f904cde6d9, type: 3}
+    - target: {fileID: 5489921417720654080, guid: 8d6c8104f4fd9ee4da070c1ef6ac57f9, type: 3}
+      propertyPath: _itemsData.Array.data[3].CraftDuration
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6961697550944100687, guid: 8d6c8104f4fd9ee4da070c1ef6ac57f9, type: 3}
       propertyPath: m_LocalPosition.x

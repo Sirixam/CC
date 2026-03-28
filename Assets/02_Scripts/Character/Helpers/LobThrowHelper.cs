@@ -9,6 +9,7 @@ public class LobThrowHelper
         public float FixedRange = 8f;    // horizontal distance to landing point
         [Tooltip("1 = normal, 0.5 = arrives in half the time, 2 = twice as slow")]
         public float FlightDuration = 1f; // direct control over total time
+        public float SpinForce = 10f;
     }
 
     private Data _data;
@@ -53,6 +54,14 @@ public class LobThrowHelper
 
         Vector3 velocity = CalculateLobVelocity(throwDirection);
         stoppedInteraction.Rigidbody.AddForce(velocity, ForceMode.VelocityChange);
+        
+            // Add spin
+            Vector3 randomTorque = new Vector3(
+                UnityEngine.Random.Range(-1f, 1f),
+                UnityEngine.Random.Range(-1f, 1f),
+                UnityEngine.Random.Range(-1f, 1f)
+            ).normalized * _data.SpinForce;
+            stoppedInteraction.Rigidbody.AddTorque(randomTorque.normalized * _data.SpinForce, ForceMode.VelocityChange);
 
         // Flying layer + collision ignore (same as ThrowHelper)
         CollisionComponent collisionComponent = stoppedInteraction.GetComponentInChildren<CollisionComponent>();

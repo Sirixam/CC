@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40d90e2970b957e4d8dae8e9f0f2f052, type: 3}
   m_Name: DEF_Global
   m_EditorClassIdentifier: 
-  CraftedPaperBallType: 1
+  CraftedPaperBallType: 2
   RequiredPlayerCount: 2
   CanUseAnyPlayerChair: 1
   PersistAnswerProgress: 0

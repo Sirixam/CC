@@ -19,11 +19,15 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     [SerializeField] private bool _destroyOnIdle = true;
     [SerializeField] private GlobalDefinition _globalDefinition;
     [SerializeField] private bool _isLobShot;
+    [SerializeField] private bool _isDynamicLobShot;
+    [SerializeField] private bool _isAnswer;
     [SerializeField] private float _destroyAfterHitDelay = 0.5f;
     private bool _hasBeenThrown;
     private bool _destroyScheduled;
 
     public bool IsLobShot => _isLobShot;
+    public bool IsDynamicLobShot => _isDynamicLobShot;
+
 
     //private ItemAudioHelper _audioHelper;
     private string _answerID;
@@ -120,7 +124,7 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (_hasBeenThrown && !_destroyScheduled)
+        if (_hasBeenThrown && !_destroyScheduled && !_isAnswer)
         {
             _destroyScheduled = true;
             StartCoroutine(DestroyAfterDelay());

@@ -15,7 +15,8 @@ public class GlobalDefinition : ScriptableObject
         Classic,      // current UI behavior
         SemiCircle    // new world-space semicircle
     }
-    public enum EPaperBallType { Normal, LobShot }
+    public enum EPaperBallType { Normal, LobShot, DynamicLobShot }
+
     public EPaperBallType CraftedPaperBallType;
 
     [PlayerCountButtons] public int RequiredPlayerCount = 1;

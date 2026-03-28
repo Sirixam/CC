@@ -14,6 +14,7 @@ public class ThrowHelper
     {
         public float Speed = 10f; // Meters per second
         public float PitchAngle = 15f; // Degrees
+        public float SpinForce = 10f;
     }
 
     private Data _data;
@@ -50,7 +51,13 @@ public class ThrowHelper
             throwDirection.y = Mathf.Tan(_data.PitchAngle * Mathf.Deg2Rad);
             throwDirection.Normalize();
 
-            stoppedInteraction.Rigidbody.AddForce(throwDirection * _data.Speed, ForceMode.VelocityChange);
+            // Add spin
+            Vector3 randomTorque = new Vector3(
+                UnityEngine.Random.Range(-1f, 1f),
+                UnityEngine.Random.Range(-1f, 1f),
+                UnityEngine.Random.Range(-1f, 1f)
+            ).normalized * _data.SpinForce;
+            stoppedInteraction.Rigidbody.AddTorque(randomTorque.normalized * _data.SpinForce, ForceMode.VelocityChange);
 
             CollisionComponent collisionComponent = stoppedInteraction.GetComponentInChildren<CollisionComponent>();
 

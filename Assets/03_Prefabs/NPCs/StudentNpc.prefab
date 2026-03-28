@@ -168,20 +168,6 @@ MonoBehaviour:
     DistractionReductionSpeed: 0.2
     Levels:
     - MinDistraction: 1
-      DistractionDuration: 0.5
-      DistractionRotationDelay: 0
-      LookSpeedMultiplier: 0
-      Rotate: 0
-      ShowFOV: 0
-      FOVGrowDuration: 0
-    - MinDistraction: 2
-      DistractionDuration: 1.5
-      DistractionRotationDelay: 0
-      LookSpeedMultiplier: 0
-      Rotate: 0
-      ShowFOV: 1
-      FOVGrowDuration: 1
-    - MinDistraction: 3
       DistractionDuration: 2
       DistractionRotationDelay: 0
       LookSpeedMultiplier: 2
