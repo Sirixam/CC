@@ -415,6 +415,24 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             ShowAnswerSheet();
     }
 
+    public void TeleportToDoor(Transform doorPoint)
+    {
+        if (_stopPeekOnTeleport)
+        {
+            RestoreInputScope(instant: true);
+        }
+
+        _lookHelper.ClearLookAt();
+        _chairHelper.TeleportToStanding(doorPoint);
+        _interactionHelper.EnableInteraction();
+
+        if (_answerController != null)
+        {
+            HideAnswerSheet();
+            _answerController = null;
+        }
+    }
+
     private void RequestSitting(ChairController chairController)
     {
         _lookHelper.SetLookAt(chairController.LookAtPoint);
@@ -916,7 +934,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         return _interactionHelper.TryGetPickedUpInteraction(out _);
     }
 
-    public void OnCaught(Action onAfterTeleport)
+    public void OnCaught(Action onAfterTeleport, Transform doorPoint = null)
     {
         if (_isCaught) return;
         _isCaught = true;
@@ -938,7 +956,10 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             _isCaught = false;
             _inputHandler.PlayerInput.ActivateInput();
             ResetInputState();
-            TeleportToInitialChair();
+            if (doorPoint != null)
+                TeleportToDoor(doorPoint);
+            else
+                TeleportToInitialChair();
             StartCoroutine(DelayedUnblock());
             onAfterTeleport?.Invoke();
         });

@@ -1156,7 +1156,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1850757766}
   m_Father: {fileID: 2087049571}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &147876398
@@ -1190,6 +1191,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 935b485b7e347e4488ba37a14cc3d716, type: 2}
   _globalDefinition: {fileID: 11400000, guid: 2b0875648e78a8e45b08a646836071ca, type: 2}
   _maxTimeInSeconds: 300
+  _caughtDoorPoint: {fileID: 1850757766}
   _eventSystem: {fileID: 366332586}
   _playerInputManager: {fileID: 1683781321}
   _audioData:
@@ -16186,6 +16188,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 9048844363647294716, guid: 1a0c9d8a998aaed4fb6b6d9196e1f700, type: 3}
   m_PrefabInstance: {fileID: 1840785385}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1850757765
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1850757766}
+  m_Layer: 0
+  m_Name: CaughtDoorPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: -5442936267250999957, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1850757766
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1850757765}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 8.9, y: 0, z: 1.1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 147876396}
+  m_LocalEulerAnglesHint: {x: -0.009, y: 0.229, z: 0.974}
 --- !u!1 &1850831636
 GameObject:
   m_ObjectHideFlags: 0

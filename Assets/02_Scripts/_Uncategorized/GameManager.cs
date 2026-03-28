@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour
     [Header("Configurations")]
     [SerializeField] private GlobalDefinition _globalDefinition;
     [SerializeField] private float _maxTimeInSeconds = 30;
+    [SerializeField] private Transform _caughtDoorPoint;
     // [SerializeField] private float _maxRoundTimeInSeconds = 30;
 
     private TimeHelper _timeHelper;
@@ -389,9 +390,13 @@ public class GameManager : MonoBehaviour
 
                 StartCoroutine(DelayedWalkBack(playerController));
             }
-            else
+            else if (_globalDefinition.CaughtMode == GlobalDefinition.ECaughtMode.TeleportToDoor)
             {
-                playerController.OnCaught(onAfterTeleport: null);
+                playerController.OnCaught(onAfterTeleport: null, doorPoint: _caughtDoorPoint);
+            }
+            else // TeleportToChair
+            {
+                playerController.OnCaught(onAfterTeleport: null); 
             }
             return;
         }

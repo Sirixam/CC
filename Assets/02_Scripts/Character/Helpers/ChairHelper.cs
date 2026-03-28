@@ -51,6 +51,24 @@ public class ChairHelper
         OnSittingComplete?.Invoke(); //callback to handle showing the answersheet upon sitting
     }
 
+    public void TeleportToStanding(Transform standingPoint)
+    {
+        if (IsSitting)
+        {
+            _chairController?.Unblock();
+            _actorPhysics.OnArriveEvent -= OnArrive;
+            _actorPhysics.SetTargetPoint(null);
+        }
+
+        _chairController = null;
+        IsTransitioning = false;
+        IsSitting = false;
+
+        _actorView.OnStanding();
+        _actorPhysics.TeleportToPoint(standingPoint);
+        _inputHandler.SetScope(EInputScope.PlayerStanding);
+    }
+
     public void StartSitting(ChairController chairController)
     {
         _chairController = chairController;
