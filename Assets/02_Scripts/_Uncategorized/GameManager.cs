@@ -56,6 +56,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Key _restartKey = Key.R;
 
     private GameAudioHelper _audioHelper;
+    private List<InputDevice[]> _playerDevicePairings = new();
+
 
     private void Awake()
     {
@@ -153,8 +155,14 @@ public class GameManager : MonoBehaviour
     private void StartGame()
     {
         GameplayActive = true;
-
         DisablePlayerJoining();
+
+        // Capture device pairings while they're still valid
+        _playerDevicePairings.Clear();
+        foreach (var player in _players)
+        {
+            _playerDevicePairings.Add(player.InputHandler.PlayerInput.devices.ToArray());
+        }
 
         if (_teacherManager != null)
         {
@@ -201,24 +209,22 @@ public class GameManager : MonoBehaviour
         _answerManager.ResetProgress();
 
         if (_teacherManager != null)
-        {
             _teacherManager.ResetTeachers();
-        }
         if (_defeatFeedback != null)
-        {
             _defeatFeedback.SetActive(false);
-        }
         if (_victoryUI != null)
-        {
             _victoryUI.Hide();
-        }
         if (_timesUpFeedback != null)
-        {
             _timesUpFeedback.SetActive(false);
-        }
         if (_studentManager != null)
-        {
             _studentManager.ResetForNewGame();
+
+        // Store device pairings BEFORE reactivating
+        var playerDevices = new List<InputDevice[]>();
+        foreach (var player in _players)
+        {
+            var devices = player.InputHandler.PlayerInput.devices.ToArray();
+            playerDevices.Add(devices);
         }
 
         foreach (var player in _players)
@@ -228,6 +234,15 @@ public class GameManager : MonoBehaviour
             player.ResetPlayerState();
             player.View.ResetVisuals();
             player.TeleportToInitialChair();
+        }
+
+        // Restore device pairings
+        for (int i = 0; i < _players.Count; i++)
+        {
+            if (i < _playerDevicePairings.Count && _playerDevicePairings[i].Length > 0)
+            {
+                _players[i].InputHandler.PlayerInput.SwitchCurrentControlScheme(_playerDevicePairings[i]);
+            }
         }
 
         StartGame();
