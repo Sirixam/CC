@@ -23,6 +23,7 @@ public class GlobalDefinition : ScriptableObject
     public bool CanUseAnyPlayerChair;
     public bool PersistAnswerProgress;
     public bool ShowAnswerSheetOnSit;
+    public bool CanThrowWhileSeated;
     [Range(0f, 1f)]
     public float MinCorrectnessToEarlyVictoryFlow;
     public int PlayerLives;

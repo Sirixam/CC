@@ -905,7 +905,7 @@ MonoBehaviour:
     MaxHeight: 4
     CycleSpeed: 2
     SpeedMultiplier: 1.5
-    SpinForce: 40
+    SpinForce: 5
     PingPong: 1
   _stunData:
     HardStunDuration: 1

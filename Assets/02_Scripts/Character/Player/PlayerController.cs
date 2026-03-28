@@ -579,6 +579,9 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         }
         else if (actionType == EAction.Action)
         {
+            if (_chairHelper.IsSitting && !_globalDefinition.CanThrowWhileSeated)
+                return;
+
             if (_interactionHelper.TryGetPickedUpInteraction(out _))
             {
                 _lookHelper.ClearLookAt();
@@ -656,6 +659,9 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         }
         else if (actionType == EAction.Action)
         {
+            if (_chairHelper.IsSitting && !_globalDefinition.CanThrowWhileSeated)
+                return;
+
             if (!isHolding)
             {
                 TryShowAnswerSheetOnSit();

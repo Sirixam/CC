@@ -17,6 +17,7 @@ MonoBehaviour:
   CanUseAnyPlayerChair: 1
   PersistAnswerProgress: 0
   ShowAnswerSheetOnSit: 1
+  CanThrowWhileSeated: 0
   MinCorrectnessToEarlyVictoryFlow: 1
   PlayerLives: 3
   CaughtMode: 1
