@@ -408,6 +408,7 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        // Last Life Lost... L,L,Loser! :D
         if (_teacherManager != null)
         {
             _teacherManager.PlayAngryVFX();

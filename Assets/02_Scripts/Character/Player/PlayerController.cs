@@ -927,7 +927,6 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _interactionHelper?.DisableInteraction();
         _inputHandler.CancelActionHold();
         _inputHandler.CancelPeekHold();
-        _interactionsInsideFoV.Clear();
     }
     private bool IsHoldingItem()
     {
