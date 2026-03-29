@@ -2,7 +2,9 @@ using UnityEngine;
 
 public class ExtraGravity : MonoBehaviour
 {
-    public float Scale;
+  
+    public float RiseScale;
+    public float FallScale;
     private Rigidbody _rb;
 
     private void Awake()
@@ -12,6 +14,7 @@ public class ExtraGravity : MonoBehaviour
 
     private void FixedUpdate()
     {
-        _rb.AddForce(Physics.gravity * Scale, ForceMode.Acceleration);
+        float scale = _rb.velocity.y >= 0f ? RiseScale : FallScale;
+        _rb.AddForce(Physics.gravity * scale, ForceMode.Acceleration);
     }
 }

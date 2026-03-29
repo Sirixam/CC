@@ -903,10 +903,11 @@ MonoBehaviour:
     MinRange: 5
     MaxRange: 10
     MaxHeight: 4
-    CycleSpeed: 2
-    SpeedMultiplier: 1.5
+    CycleSpeed: 1
+    SpeedMultiplier: 1.3
     SpinForce: 5
     PingPong: 1
+    FallGravityMultiplier: 1.8
   _stunData:
     HardStunDuration: 1
     SoftStunDuration: 0.5

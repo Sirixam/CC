@@ -49,9 +49,23 @@ public class DynamicLobThrowPreviewComponent : MonoBehaviour
         forward.Normalize();
 
         Vector3 velocity = _dynamicLobThrowHelper.CalculateLobVelocity(forward);
-        float totalTime = _dynamicLobThrowHelper.GetFlightDuration();
+        Vector3 riseGravity = _dynamicLobThrowHelper.GetEffectiveGravity();
+        Vector3 fallGravity = _dynamicLobThrowHelper.GetFallEffectiveGravity();
+
+        // Find peak time: when vertical velocity hits zero
+        // vy + riseGravity.y * tPeak = 0
+        float tPeak = -velocity.y / riseGravity.y;
+        // Peak position
+        Vector3 peakPos = startPos + velocity * tPeak + 0.5f * riseGravity * tPeak * tPeak;
+        // Velocity at peak (horizontal only, vy ≈ 0)
+        Vector3 peakVelocity = velocity + riseGravity * tPeak;
+
+        // Estimate total time: rise phase + fall phase
+        // Fall from peak height back to start height: peakPos.y - startPos.y = 0.5 * |fallG| * tFall^2
+        float fallHeight = peakPos.y - startPos.y;
+        float tFall = Mathf.Sqrt(2f * fallHeight / Mathf.Abs(fallGravity.y));
+        float totalTime = tPeak + tFall;
         float timeStep = totalTime / _maxPointsCount;
-        Vector3 effectiveGravity = _dynamicLobThrowHelper.GetEffectiveGravity();
 
         Vector3 previousPosition = startPos;
         int pointIndex = 0;
@@ -60,12 +74,25 @@ public class DynamicLobThrowPreviewComponent : MonoBehaviour
         for (int i = 0; i < _maxPointsCount; i++)
         {
             float t = timeStep * i;
-            Vector3 nextPosition = startPos + velocity * t + 0.5f * effectiveGravity * t * t;
+            Vector3 nextPosition;
+
+            if (t <= tPeak)
+            {
+                // Rising phase — use rise gravity
+                nextPosition = startPos + velocity * t + 0.5f * riseGravity * t * t;
+            }
+            else
+            {
+                // Falling phase — start from peak with peak velocity, use fall gravity
+                float dt = t - tPeak;
+                nextPosition = peakPos + peakVelocity * dt + 0.5f * fallGravity * dt * dt;
+            }
 
             Vector3 heading = nextPosition - previousPosition;
             float maxDistance = heading.magnitude;
 
-            if (maxDistance > 0.001f && Physics.SphereCast(previousPosition, _sphereCastRadius, heading.normalized, out RaycastHit hit, maxDistance, _collisionMask))
+            if (maxDistance > 0.001f && Physics.SphereCast(previousPosition, _sphereCastRadius, heading.normalized,
+                    out RaycastHit hit, maxDistance, _collisionMask))
             {
                 _points[pointIndex] = previousPosition + heading.normalized * hit.distance;
                 pointIndex++;
@@ -80,13 +107,13 @@ public class DynamicLobThrowPreviewComponent : MonoBehaviour
             pointIndex++;
             previousPosition = nextPosition;
         }
+        
 
         _lineRenderer.startColor = willHitPlayer ? _hitPlayerColor : _defaultColor;
         _lineRenderer.endColor = willHitPlayer ? _hitPlayerColor : _defaultColor;
         _lineRenderer.positionCount = pointIndex;
         _lineRenderer.SetPositions(_points);
     }
-
     private LayerMask GetFlyingCollisionMask(int flyingLayer)
     {
         int mask = 0;
@@ -97,5 +124,4 @@ public class DynamicLobThrowPreviewComponent : MonoBehaviour
         }
         return mask;
     }
-
 }

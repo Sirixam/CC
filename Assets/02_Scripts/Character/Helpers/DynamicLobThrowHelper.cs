@@ -15,7 +15,8 @@ public class DynamicLobThrowHelper
         [Tooltip("If true, range ping-pongs. If false, resets to min after reaching max")]
         public float SpinForce = 10f;
         public bool PingPong = true;
-        
+        [Tooltip("Extra gravity multiplier when falling. 2 = falls twice as fast. Only affects descent.")]
+        public float FallGravityMultiplier = 2f;
     }
 
     private Data _data;
@@ -116,6 +117,7 @@ public class DynamicLobThrowHelper
         throwDirection.Normalize();
 
         Vector3 velocity = CalculateLobVelocity(throwDirection);
+        stoppedInteraction.Rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
         stoppedInteraction.Rigidbody.AddForce(velocity, ForceMode.VelocityChange);
 
         // Add spin
@@ -126,13 +128,11 @@ public class DynamicLobThrowHelper
         ).normalized * _data.SpinForce;
         stoppedInteraction.Rigidbody.AddTorque(randomTorque.normalized * _data.SpinForce, ForceMode.VelocityChange);
 
-        // Add extra gravity component
-        float extraGravityScale = _data.SpeedMultiplier * _data.SpeedMultiplier - 1f;
-        if (extraGravityScale > 0f)
-        {
-            var extraGravity = stoppedInteraction.gameObject.AddComponent<ExtraGravity>();
-            extraGravity.Scale = extraGravityScale;
-        }
+        // Add asymmetric extra gravity component
+        float baseScale = _data.SpeedMultiplier * _data.SpeedMultiplier;
+        var extraGravity = stoppedInteraction.gameObject.AddComponent<ExtraGravity>();
+        extraGravity.RiseScale = baseScale - 1f;
+        extraGravity.FallScale = baseScale * _data.FallGravityMultiplier - 1f;
 
         CollisionComponent collisionComponent = stoppedInteraction.GetComponentInChildren<CollisionComponent>();
         foreach (var collider in _actor.Colliders)
@@ -154,5 +154,10 @@ public class DynamicLobThrowHelper
     public Vector3 GetEffectiveGravity()
     {
         return Physics.gravity * _data.SpeedMultiplier * _data.SpeedMultiplier;
+    }
+    
+    public Vector3 GetFallEffectiveGravity()
+    {
+        return Physics.gravity * _data.SpeedMultiplier * _data.SpeedMultiplier * _data.FallGravityMultiplier;
     }
 }

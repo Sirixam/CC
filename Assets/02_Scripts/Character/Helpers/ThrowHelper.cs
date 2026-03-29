@@ -50,6 +50,7 @@ public class ThrowHelper
             Vector3 throwDirection = _actor.LookDirection;
             throwDirection.y = Mathf.Tan(_data.PitchAngle * Mathf.Deg2Rad);
             throwDirection.Normalize();
+            stoppedInteraction.Rigidbody.AddForce(throwDirection * _data.Speed, ForceMode.VelocityChange);
 
             // Add spin
             Vector3 randomTorque = new Vector3(
