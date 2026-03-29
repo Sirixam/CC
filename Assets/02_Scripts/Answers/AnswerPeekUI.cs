@@ -21,6 +21,7 @@ public class AnswerPeekUI : MonoBehaviour
     [SerializeField] private Vector2 _notReadyPosition;
     [SerializeField] private TweenSettings<Vector2> _readyTweenSettings;
     [SerializeField] private float _completedAlpha = 0.75f;
+    [SerializeField] private float _collapseDelay = 2f;
 
     private Vector2 _originalAnchoredPosition;
     private RectTransform _rect;
@@ -222,12 +223,17 @@ public class AnswerPeekUI : MonoBehaviour
             _completedStamp.gameObject.SetActive(completed);
             if (completed)
             {
-                // Stamp punch animation
                 _completedStamp.rectTransform.localScale = Vector3.one * 2f;
                 _completedStamp.rectTransform.localRotation = Quaternion.Euler(0, 0, Random.Range(-20f, -10f));
                 Tween.Scale(_completedStamp.rectTransform, Vector3.one, 0.25f, Ease.OutBack).OnComplete(() =>
                 {
                     _answerTypeRoot.SetActive(false);
+
+                    // Collapse after delay
+                    Tween.Delay(_collapseDelay).OnComplete(() =>
+                    {
+                        PlayExitAnimation(() => Hide());
+                    });
                 });
             }
         }

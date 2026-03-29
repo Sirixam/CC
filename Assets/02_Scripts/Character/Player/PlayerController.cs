@@ -1057,9 +1057,11 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
         _inputHandler.Block();
         _inputHandler.PlayerInput.DeactivateInput();
+
         ResetInputState();
         ForceClearInteractionState();
         ForceStopForce();
+
         if (_cheatHelper.IsCheating) StopCheating();
         if (IsPeeking) RestoreInputScope(instant: true);
         else if (_cheatHelper.IsPeeking) StopPeeking();
