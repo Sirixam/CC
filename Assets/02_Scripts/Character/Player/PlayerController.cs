@@ -101,6 +101,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         : null;
 
     private bool _isWalkingBack;
+    private bool _isAiming;
 
     private void Awake()
     {
@@ -525,12 +526,16 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             _physics.SetMoveDirection(new Vector3(input.x, 0, input.y));
             if (!IsPeeking || !_lastAimInput.IsMouse)
             {
-                _physics.SetInputDirection(new Vector3(input.x, 0, input.y));
-                _lookHelper.SetLookInput(input);
+                if (!_isAiming)
+                {
+                    _physics.SetInputDirection(new Vector3(input.x, 0, input.y));
+                    _lookHelper.SetLookInput(input);
+                }
             }
         }
         else if (actionType == EDirectionalAction.Aim)
         {
+            _isAiming = input.sqrMagnitude > 0.01f;
             ProcessAimInput(input, isMouse);
             _lastAimInput = new AimInput { Input = input, IsMouse = isMouse };
         }
