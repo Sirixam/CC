@@ -176,12 +176,9 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     {
         if (actionType == EAction.Dash)
         {
+            if (IsPeeking) return;
             if (!_dashHelper.CanDash()) return;
             _dashHelper.StartDash();
-            if (IsPeeking && _stopPeekOnDash)
-            {
-                RestoreInputScope();
-            }
         }
         else if (actionType == EAction.Interact)
         {
