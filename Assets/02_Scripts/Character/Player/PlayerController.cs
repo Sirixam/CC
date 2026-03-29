@@ -948,6 +948,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     public void ResetInputState()
     {
+        _isAiming = false;
         _physics.SetInputDirection(Vector3.zero);
         _physics.SetMoveDirection(Vector3.zero);
         _lookHelper.SetLookInput(Vector2.zero);
