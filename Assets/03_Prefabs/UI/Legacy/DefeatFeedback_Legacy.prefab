@@ -280,7 +280,7 @@ GameObject:
   - component: {fileID: 6767172372137064172}
   - component: {fileID: 1480931158711092260}
   m_Layer: 5
-  m_Name: DefeatFeedback
+  m_Name: DefeatFeedback_Legacy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

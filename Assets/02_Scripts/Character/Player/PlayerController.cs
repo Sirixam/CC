@@ -968,10 +968,16 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     {
         if (_isCaught) return;
         _isCaught = true;
+
         _inputHandler.Block();
+        _inputHandler.CancelActionHold();
         _inputHandler.PlayerInput.DeactivateInput();
+        
         ResetInputState();
+        ResetPlayerView();
+        DestroyHeldItem();
         ForceClearInteractionState();
+
         _physics.ForceStopForce();
         _view.OnStopForce();
         _physics.SetInputDirection(Vector3.zero);
@@ -1021,13 +1027,21 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _view.HideLobThrowPreview();
         _view.HideDynamicLobThrowPreview();
 
+        ResetPlayerView();
         HideAnswerSheet();
         DestroyHeldItem();
+        ForceClearInteractionState();
 
         _physics.StopFollowingPath();
         ResetInputState();
-        ForceClearInteractionState();
         ForceStopStun();
+
+        // Reset input scope to standing (TeleportToInitialChair will set it to sitting)
+        _inputHandler.SetScope(EInputScope.PlayerStanding);
+        _fieldOfViewController.HideInstant();
+
+        // Re-initialize look direction
+        _lookHelper.Initialize(transform.forward);
     }
 
     private System.Collections.IEnumerator DelayedUnblock()
@@ -1056,10 +1070,16 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _view.PlayCaughtSymbols();
 
         _inputHandler.Block();
+        _inputHandler.CancelActionHold();
         _inputHandler.PlayerInput.DeactivateInput();
 
         ResetInputState();
+
+        ResetPlayerView();
+        DestroyHeldItem();
+        
         ForceClearInteractionState();
+        
         ForceStopForce();
 
         if (_cheatHelper.IsCheating) StopCheating();
@@ -1160,7 +1180,6 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _inputHandler.PlayerInput.ActivateInput();
         StartCoroutine(DelayedUnblock());
         _onWalkBackSeated?.Invoke();
-
     }
     private void OnArrivedAtChair()
     {
@@ -1188,5 +1207,12 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
         ForceStopForce();
         RequestSitting(chair);
+    }
+
+    public void ResetPlayerView(){
+        _dynamicLobThrowHelper.StopCharging();
+        _view.HideThrowPreview();
+        _view.HideLobThrowPreview();
+        _view.HideDynamicLobThrowPreview();
     }
 }

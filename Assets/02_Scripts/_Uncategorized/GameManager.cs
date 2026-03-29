@@ -230,6 +230,7 @@ public class GameManager : MonoBehaviour
             player.ResetPlayerState();
             player.View.ResetVisuals();
             player.TeleportToInitialChair();
+            player.ResetPlayerView();
         }
 
         // Restore device pairings
@@ -431,8 +432,11 @@ public class GameManager : MonoBehaviour
         foreach (var player in _players)
         {
             player.InputHandler.Block();
+            player.InputHandler.CancelActionHold();
             player.InputHandler.PlayerInput.DeactivateInput();
             player.ResetInputState();
+            player.ResetPlayerView();
+            player.DestroyHeldItem();
             player.ForceClearInteractionState();
             player.ForceStopForce();
 

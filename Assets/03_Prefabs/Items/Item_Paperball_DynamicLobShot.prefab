@@ -1464,6 +1464,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Renderer
       objectReference: {fileID: 0}
+    - target: {fileID: 379004243048570373, guid: 95902d6851119e04fa7d25d288a1470a, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2590178116926666899, guid: 95902d6851119e04fa7d25d288a1470a, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4103576638708046150, guid: 95902d6851119e04fa7d25d288a1470a, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -1526,6 +1534,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3316289737042317936}
     m_Modifications:
+    - target: {fileID: 3125908671727172092, guid: 8f78660580e68ab4b836de1fc3934afe, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3125908671876608229, guid: 8f78660580e68ab4b836de1fc3934afe, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1569,6 +1581,10 @@ PrefabInstance:
     - target: {fileID: 3125908671876608230, guid: 8f78660580e68ab4b836de1fc3934afe, type: 3}
       propertyPath: m_Name
       value: DestroyVFX
+      objectReference: {fileID: 0}
+    - target: {fileID: 3125908671876608230, guid: 8f78660580e68ab4b836de1fc3934afe, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

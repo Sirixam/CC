@@ -694,7 +694,7 @@ GameObject:
   - component: {fileID: 5033398559385497912}
   - component: {fileID: 6531805367608663843}
   m_Layer: 5
-  m_Name: VictoryUI
+  m_Name: VictoryUI_Legacy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
