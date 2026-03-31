@@ -22,11 +22,16 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     [SerializeField] private bool _isDynamicLobShot;
     [SerializeField] private bool _isAnswer;
     [SerializeField] private float _destroyAfterHitDelay = 0.5f;
+    [SerializeField] private bool _isPlane;
+    
     private bool _hasBeenThrown;
     private bool _destroyScheduled;
+    private bool _hasDropped;
+
 
     public bool IsLobShot => _isLobShot;
     public bool IsDynamicLobShot => _isDynamicLobShot;
+    public bool IsPlane => _isPlane;
 
 
     //private ItemAudioHelper _audioHelper;
@@ -82,6 +87,17 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
 
     private void Update()
     {
+        // Plane velocity check — drop if too slow
+        if (_isPlane && _hasBeenThrown && !_hasDropped)
+        {
+            Rigidbody rb = GetComponent<Rigidbody>();
+            if (rb.velocity.magnitude < 0.5f)
+            {
+                _hasDropped = true;
+                rb.useGravity = true;
+            }
+        }
+
         if (_state == EState.Idle && _destroyOnIdle)
         {
             _remainingTimeToDestroyOnIdle -= Time.deltaTime;
@@ -124,6 +140,13 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
 
     private void OnCollisionEnter(Collision collision)
     {
+        if (_isPlane && _hasBeenThrown && !_hasDropped)
+        {
+            _hasDropped = true;
+            GetComponent<Rigidbody>().useGravity = true;
+            GetComponent<Rigidbody>().velocity = Vector3.zero;
+        }
+
         if (_hasBeenThrown && !_destroyScheduled && !_isAnswer)
         {
             _destroyScheduled = true;
@@ -177,6 +200,7 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     void IPickUpInteractionOwner.OnThrowed()
     {
         _hasBeenThrown = true;
+        _hasDropped = false;
         _lastOwnerID = _ownerID;
         _ownerID = null;
         _state = EState.MidAir;

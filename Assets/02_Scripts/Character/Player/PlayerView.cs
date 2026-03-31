@@ -23,12 +23,17 @@ public class PlayerView : MonoBehaviour, IStunView, IChairView
     [SerializeField] private HandAnimator _handAnimator;
     [SerializeField] private LobThrowPreviewComponent _lobThrowPreview;
     [SerializeField] private DynamicLobThrowPreviewComponent _dynamicLobThrowPreview;
+    [SerializeField] private PlaneThrowPreviewComponent _planeThrowPreview;
+
 
 
     public void ShowLobThrowPreview() => _lobThrowPreview.Show();
     public void HideLobThrowPreview() => _lobThrowPreview.Hide();
     public void ShowDynamicLobThrowPreview() => _dynamicLobThrowPreview.Show();
     public void HideDynamicLobThrowPreview() => _dynamicLobThrowPreview.Hide();
+    public void ShowPlaneThrowPreview() => _planeThrowPreview.Show();
+    public void HidePlaneThrowPreview() => _planeThrowPreview.Hide();
+
 
     private bool _isAnswerSheetLifted;
 
@@ -130,6 +135,7 @@ public class PlayerView : MonoBehaviour, IStunView, IChairView
     public void OnPickUp(Transform item)
     {
         item.SetParent(_itemContainer, worldPositionStays: true);
+        item.localRotation = Quaternion.identity;
         _positionTween.Stop();
         _positionTween = Tween.LocalPosition(item, _pickUpTweenSettings);
     }
@@ -155,6 +161,7 @@ public class PlayerView : MonoBehaviour, IStunView, IChairView
         _throwPreview.Hide();
         _lobThrowPreview.Hide();
         _dynamicLobThrowPreview.Hide();
+        _planeThrowPreview.Hide();
         item.SetParent(null, worldPositionStays: true);
         _positionTween.Stop();
     }
@@ -333,6 +340,10 @@ public class PlayerView : MonoBehaviour, IStunView, IChairView
     public void InitializeDynamicLobThrowPreview(ChairHelper chairHelper, DynamicLobThrowHelper helper, int flyingLayer)
     {
         _dynamicLobThrowPreview.Initialize(chairHelper, helper, flyingLayer);
+    }
+    public void InitializePlaneThrowPreview(ChairHelper chairHelper, PlaneThrowHelper helper, int flyingLayer)
+    {
+        _planeThrowPreview.Initialize(chairHelper, helper, flyingLayer);
     }
 
 }

@@ -168,7 +168,7 @@ MonoBehaviour:
     DistractionReductionSpeed: 0.2
     Levels:
     - MinDistraction: 1
-      DistractionDuration: 2
+      DistractionDuration: 3
       DistractionRotationDelay: 0
       LookSpeedMultiplier: 2
       Rotate: 1

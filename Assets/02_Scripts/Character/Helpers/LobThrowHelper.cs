@@ -16,7 +16,6 @@ public class LobThrowHelper
     private IThrowActor _actor;
     private InteractionHelper _interactionHelper;
     private int _flyingLayer;
-
     public Data GetData() => _data;
 
     public LobThrowHelper(Data data, IThrowActor actor, InteractionHelper interactionHelper, int flyingLayer)
