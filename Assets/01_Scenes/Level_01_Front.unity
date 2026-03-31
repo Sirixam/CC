@@ -18569,6 +18569,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Item_AnswerPlane
       objectReference: {fileID: 0}
+    - target: {fileID: 5816675701770643356, guid: 53c527aea8637a84f898e2557486bb85, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.22192632
+      objectReference: {fileID: 0}
     - target: {fileID: 7322142745343497653, guid: 53c527aea8637a84f898e2557486bb85, type: 3}
       propertyPath: _isPlane
       value: 1

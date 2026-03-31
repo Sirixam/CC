@@ -11,7 +11,6 @@ public class PlaneThrowPreviewComponent : MonoBehaviour
     [SerializeField] private Color _defaultColor = Color.yellow;
     [SerializeField] private LayerMask _playerMask;
 
-    private Vector3[] _points;
     private LineRenderer _lineRenderer;
     private PlaneThrowHelper _planeThrowHelper;
     private ChairHelper _chairHelper;
@@ -21,7 +20,6 @@ public class PlaneThrowPreviewComponent : MonoBehaviour
     {
         _lineRenderer = GetComponent<LineRenderer>();
         _lineRenderer.enabled = false;
-        _points = new Vector3[_maxPointsCount];
     }
 
     public void Initialize(ChairHelper chairHelper, PlaneThrowHelper planeThrowHelper, int flyingLayer)

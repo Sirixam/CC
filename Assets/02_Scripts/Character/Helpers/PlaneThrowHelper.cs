@@ -6,12 +6,15 @@ public class PlaneThrowHelper
     [Serializable]
     public class Data
     {
-        public float Speed = 1f;
+        public float Speed = 5f;
+
     }
     private Data _data;
     private IThrowActor _actor;
     private InteractionHelper _interactionHelper;
     private int _flyingLayer;
+    public Data GetData() => _data;
+
 
 
     public PlaneThrowHelper(Data data, IThrowActor actor, InteractionHelper interactionHelper, int flyingLayer)
@@ -22,8 +25,16 @@ public class PlaneThrowHelper
         _flyingLayer = flyingLayer;
     }
 
+    public float GetHeldItemDrag()
+    {
+        if (_interactionHelper.TryGetPickedUpInteraction(out InteractionController interaction))
+            return interaction.Rigidbody.drag;
+        return 1f; // fallback
+    }
+
     public Vector3 CalculateVelocity(Vector3 horizontalDirection)
     {
+        float drag = GetHeldItemDrag();
         return horizontalDirection * _data.Speed;
     }
 
@@ -44,22 +55,39 @@ public class PlaneThrowHelper
             throwDirection.y = 0;
             throwDirection.Normalize();
 
-            stoppedInteraction.Rigidbody.AddForce(throwDirection * _data.Speed, ForceMode.VelocityChange);
+            Vector3 velocity = CalculateVelocity(throwDirection);
+            stoppedInteraction.Rigidbody.AddForce(velocity, ForceMode.VelocityChange);
 
-            stoppedInteraction.Rigidbody.useGravity = false;
+            var flight = stoppedInteraction.gameObject.AddComponent<PlaneFlightBehavior>();
+            flight.Initialize(_data.Speed, throwDirection);
 
             CollisionComponent collisionComponent = stoppedInteraction.GetComponentInChildren<CollisionComponent>();
 
             foreach (var collider in _actor.Colliders)
-            {
                 collisionComponent.IgnoreCollision(collider, ignore: true);
-            }
-            collisionComponent.SetLayer(_flyingLayer);
-            collisionComponent.OnCollisionExitEvent += OnCollisionExit;
 
+            collisionComponent.SetLayer(_flyingLayer);
+
+            // Restore layer after a short delay so the plane can collide with environment
+            stoppedInteraction.GetComponent<MonoBehaviour>().StartCoroutine(
+                DelayedLayerRestore(collisionComponent, stoppedInteraction)
+            );
             return true;
         }
         return false;
+    }
+    private System.Collections.IEnumerator DelayedLayerRestore(
+    CollisionComponent collisionComponent,
+    InteractionController interaction)
+    {
+        yield return new WaitForSeconds(0.1f); // enough time to clear player colliders
+
+        if (collisionComponent == null) yield break;
+
+        collisionComponent.RestoreLayer();
+
+        foreach (var collider in _actor.Colliders)
+            collisionComponent.IgnoreCollision(collider, ignore: false);
     }
 
     public bool CanShowPreview()

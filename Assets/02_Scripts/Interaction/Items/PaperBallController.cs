@@ -140,13 +140,6 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (_isPlane && _hasBeenThrown && !_hasDropped)
-        {
-            _hasDropped = true;
-            GetComponent<Rigidbody>().useGravity = true;
-            GetComponent<Rigidbody>().velocity = Vector3.zero;
-        }
-
         if (_hasBeenThrown && !_destroyScheduled && !_isAnswer)
         {
             _destroyScheduled = true;
