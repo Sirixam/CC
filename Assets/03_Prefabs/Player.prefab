@@ -942,6 +942,8 @@ MonoBehaviour:
   _stopPeekOnDash: 1
   _stopPeekOnTeleport: 1
   _applyMovePenaltyOnPeekMode: 1
+  _gamepadAimMaxSpeed: 0.5
+  _gamepadAimCurveExponent: 4
 --- !u!114 &1863892939415744151
 MonoBehaviour:
   m_ObjectHideFlags: 0

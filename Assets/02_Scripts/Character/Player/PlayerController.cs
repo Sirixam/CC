@@ -47,6 +47,9 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     [SerializeField] private bool _stopPeekOnTeleport;
     [Tooltip("If TRUE penalty will apply while peek mode is active, if FALSE it will apply only while peeking a student.")]
     [SerializeField] private bool _applyMovePenaltyOnPeekMode;
+    [Header("Aim")]
+    [SerializeField, Range(0.1f, 1f)] private float _gamepadAimMaxSpeed = 0.5f;
+    [SerializeField, Range(0.01f, 1f)] private float _gamepadAimSensitivity = 0.25f;
 
     private LobThrowHelper _lobThrowHelper;
     private DynamicLobThrowHelper _dynamicLobThrowHelper;
@@ -102,7 +105,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private bool _isWalkingBack;
     private bool _isAiming;
-
+    
     private void Awake()
     {
         _physics.Initialize();
@@ -483,6 +486,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private void RestoreInputScope(bool instant = false)
     {
+        _lookHelper.SetAimMultiplier(1f);
         // Handle specific cases
         if (_inputHandler.ScopeType == EInputScope.PlayerPeeking)
         {
@@ -588,6 +592,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             {
                 _lookHelper.ClearLookAt();
                 _inputHandler.SetScope(EInputScope.PlayerAiming);
+                _lookHelper.SetAimMultiplier(_gamepadAimSensitivity);
             }
         }
         else if (actionType == EAction.Peek)
@@ -767,7 +772,6 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
                 _lookHelper.SetLookInput(new Vector2(dir.x, dir.z));
             }
         }
-
         _lookHelper.UpdateRotation(transform);
         _interactionHelper.UpdateBestInteraction();
 

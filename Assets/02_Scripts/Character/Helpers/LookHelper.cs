@@ -20,6 +20,7 @@ public class LookHelper
     private Vector3 _lookDirection;
     private Transform _lookAtPoint;
     private Action _onRotationRestoredCallback;
+    private float _aimMultiplier = 1f;
 
     public LookHelper(Data data)
     {
@@ -54,7 +55,17 @@ public class LookHelper
         if (_lookDirection != Vector3.zero)
         {
             Quaternion targetRotation = Quaternion.LookRotation(_lookDirection, Vector3.up);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, _data.LookSpeed * _computedLookMultiplier * Time.deltaTime);
+            float angleToTarget = Quaternion.Angle(transform.rotation, targetRotation);
+        
+            // When _aimMultiplier < 1 (aiming), ease into target: fast far away, slow up close
+            float easing = 1f;
+            if (_aimMultiplier < 1f)
+            {
+                easing = Mathf.Clamp(angleToTarget / 45f, 0.05f, 1f);
+            }
+        
+            float speed = _data.LookSpeed * _computedLookMultiplier * _aimMultiplier * easing * Time.deltaTime;
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, speed);
 
             if (_onRotationRestoredCallback != null && Quaternion.Angle(transform.rotation, targetRotation) < 0.5f)
             {
@@ -76,6 +87,8 @@ public class LookHelper
         _lookMultipliers.Add(value);
         ComputeLookMultiplier();
     }
+    
+    public void SetAimMultiplier(float value) => _aimMultiplier = value;
 
     public void RemoveLookMultiplier(float value)
     {
