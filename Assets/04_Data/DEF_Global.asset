@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: DEF_Global
   m_EditorClassIdentifier: 
   CraftedPaperBallType: 2
-  RequiredPlayerCount: 1
+  RequiredPlayerCount: 2
   CanUseAnyPlayerChair: 1
   PersistAnswerProgress: 0
   ShowAnswerSheetOnSit: 1
