@@ -20,7 +20,8 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     [SerializeField] private TriggerListener _interactionTriggerListener;
     [SerializeField] private TriggerListener _fovTriggerListener;
     [SerializeField] private TriggerListener _selfTriggerListener; // passive — others detect the player through this
-
+    [SerializeField] private TriggerListener _catchTriggerListener;
+    
     [Header("Data")]
     [SerializeField] private InteractionHelper.Data _interactionData;
     [SerializeField] private ThrowHelper.Data _throwData;
@@ -156,6 +157,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _craftHelper.OnFinishedCrafting += TryShowAnswerSheetOnSit;
         _craftHelper.OnFinishedCrafting += _view.StopCrafting;
 
+        _catchTriggerListener.OnEnter += OnCatchTriggerEnter;
     }
 
     private void OnDisable()
@@ -173,6 +175,8 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _chairHelper.OnSittingComplete -= TryShowAnswerSheetOnSit;
         _craftHelper.OnFinishedCrafting -= TryShowAnswerSheetOnSit;
         _craftHelper.OnFinishedCrafting -= _view.StopCrafting;
+        
+        _catchTriggerListener.OnEnter -= OnCatchTriggerEnter;
     }
 
     private void OnActionRequested(EAction actionType)
@@ -902,7 +906,6 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
                 return;
             }
         }
-
     }
 
     private void OnInteractionTriggerEnter(Collider other)
@@ -1226,5 +1229,81 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _view.HideLobThrowPreview();
         _view.HideDynamicLobThrowPreview();
         _view.HidePlaneThrowPreview();
+    }
+    
+    private void OnCatchTriggerEnter(Collider other)
+    {
+        PaperBallController paperBall = other.GetComponentInParent<PaperBallController>();
+        if (paperBall == null || !paperBall.IsMidAir)
+            return;
+
+        Rigidbody ballRb = paperBall.GetComponent<Rigidbody>();
+        if (ballRb == null)
+            return;
+
+        if (IsFacingIncomingProjectile(ballRb.velocity))
+        {
+            TryAutoCatch(paperBall, ballRb);
+        }
+    }
+
+    private bool IsFacingIncomingProjectile(Vector3 projectileVelocity)
+    {
+        Vector3 ballDir = projectileVelocity;
+        ballDir.y = 0;
+        if (ballDir.sqrMagnitude < 0.001f) return false;
+        ballDir.Normalize();
+
+        Vector3 playerForward = transform.forward;
+        playerForward.y = 0;
+        playerForward.Normalize();
+
+        return Vector3.Dot(playerForward, ballDir) < -0.3f;
+    }
+
+    private void TryAutoCatch(PaperBallController paperBall, Rigidbody ballRb)
+    {
+        if (IsHoldingItem()) return;
+        if (_isCaught) return;
+        if (_stunHelper.IsStunned) return;
+
+        InteractionController interaction = paperBall.InteractionController;
+        if (interaction == null) return;
+
+        // Stop the ball physics
+        ballRb.velocity = Vector3.zero;
+        ballRb.angularVelocity = Vector3.zero;
+
+        // Remove PlaneFlightBehavior if it's a plane
+        PlaneFlightBehavior flight = paperBall.GetComponent<PlaneFlightBehavior>();
+        if (flight != null)
+        {
+            flight.Land();
+            Destroy(flight);
+        }
+
+        // Remove ExtraGravity if it's a dynamic lob shot
+        ExtraGravity extraGravity = paperBall.GetComponent<ExtraGravity>();
+        if (extraGravity != null)
+        {
+            Destroy(extraGravity);
+        }
+
+        // Restore layer before pickup
+        CollisionComponent collisionComponent = interaction.GetComponentInChildren<CollisionComponent>();
+        if (collisionComponent != null)
+        {
+            collisionComponent.RestoreLayer();
+        }
+
+        // Run the same pickup sequence as TryStartInteraction
+        _view.OnPickUp(interaction.transform);
+        _interactionHelper.StartInteraction(interaction);
+        _audioHelper.OnPickUp();
+
+        if (interaction.TryGetComponent(out IPickUpInteractionOwner interactionOwner))
+        {
+            interactionOwner.OnPickedUp(ID);
+        }
     }
 }

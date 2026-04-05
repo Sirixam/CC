@@ -181,6 +181,9 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     {
         _ownerID = actorID;
         _state = EState.PickedUp;
+        _destroyScheduled = false;
+        _hasBeenThrown = false;
+        StopAllCoroutines(); // Cancel any pending DestroyAfterDelay
         SetCollidersEnabled(false);
     }
     void IPickUpInteractionOwner.OnDropped()
