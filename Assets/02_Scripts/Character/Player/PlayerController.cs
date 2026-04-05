@@ -1237,6 +1237,14 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         if (paperBall == null || !paperBall.IsMidAir)
             return;
 
+        // Ignore projectiles we just threw
+        if (paperBall.LastOwnerID == ID)
+            return;
+
+        // Ignore projectiles thrown too recently (still near thrower)
+        if (Time.time - paperBall.ThrownTime < 0.3f)
+            return;
+
         Rigidbody ballRb = paperBall.GetComponent<Rigidbody>();
         if (ballRb == null)
             return;
@@ -1244,6 +1252,20 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         if (IsFacingIncomingProjectile(ballRb.velocity))
         {
             TryAutoCatch(paperBall, ballRb);
+        }
+        else
+        {
+            // Not facing — force the projectile to drop
+            PlaneFlightBehavior flight = paperBall.GetComponent<PlaneFlightBehavior>();
+            if (flight != null)
+            {
+                flight.Land();
+                Destroy(flight);
+            }
+
+            ballRb.velocity = Vector3.zero;
+            ballRb.angularVelocity = Vector3.zero;
+            ballRb.useGravity = true;
         }
     }
 

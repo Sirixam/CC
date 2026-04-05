@@ -27,7 +27,8 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     private bool _hasBeenThrown;
     private bool _destroyScheduled;
     private bool _hasDropped;
-
+    private float _thrownTime;
+    public float ThrownTime => _thrownTime;
 
     public bool IsLobShot => _isLobShot;
     public bool IsDynamicLobShot => _isDynamicLobShot;
@@ -201,6 +202,7 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
         _ownerID = null;
         _state = EState.MidAir;
         _hasHitGround = false;
+        _thrownTime = Time.time;
         SetCollidersEnabled(true);
     }
 
