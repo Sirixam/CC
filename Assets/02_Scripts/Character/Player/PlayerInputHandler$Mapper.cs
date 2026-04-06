@@ -327,6 +327,10 @@ public partial class PlayerInputHandler
             actions[AIM_ACTION].performed += _inputHandler.OnAim;
             actions[AIM_ACTION].canceled += _inputHandler.OnAim;
 
+            actions[ACTION_ACTION].started += _inputHandler.OnAction;
+            actions[ACTION_ACTION].performed += _inputHandler.OnAction;
+            actions[ACTION_ACTION].canceled += _inputHandler.OnAction;
+
             actions[PEEK_ACTION].started += _inputHandler.OnPeek;
             actions[PEEK_ACTION].performed += _inputHandler.OnPeek;
             actions[PEEK_ACTION].canceled += _inputHandler.OnPeek;
@@ -360,6 +364,10 @@ public partial class PlayerInputHandler
 
             actions[AIM_ACTION].performed -= _inputHandler.OnAim;
             actions[AIM_ACTION].canceled -= _inputHandler.OnAim;
+
+            actions[ACTION_ACTION].started -= _inputHandler.OnAction;
+            actions[ACTION_ACTION].performed -= _inputHandler.OnAction;
+            actions[ACTION_ACTION].canceled -= _inputHandler.OnAction;
 
             actions[PEEK_ACTION].started -= _inputHandler.OnPeek;
             actions[PEEK_ACTION].performed -= _inputHandler.OnPeek;

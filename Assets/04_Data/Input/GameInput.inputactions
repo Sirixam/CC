@@ -904,6 +904,15 @@
                     "initialStateCheck": true
                 },
                 {
+                    "name": "Action",
+                    "type": "Button",
+                    "id": "3dd17055-b5cb-4ffd-ae63-45bb0232a54b",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
                     "name": "Aim",
                     "type": "Value",
                     "id": "401decc8-377e-4a1e-b9c4-4bac0a8001d4",
@@ -1057,6 +1066,39 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "Help",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "994ae3a7-edaa-4060-9a08-384a196a275b",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "Action",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "81ed8d25-6a0c-4117-898d-9e15181ab75e",
+                    "path": "<Joystick>/trigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Joystick",
+                    "action": "Action",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "71ff914e-bc51-4db2-863a-bdaa77cd2dee",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Action",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

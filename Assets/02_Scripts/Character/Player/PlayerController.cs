@@ -596,6 +596,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
             if (_interactionHelper.TryGetPickedUpInteraction(out _))
             {
+                RestoreInputScope();
                 _lookHelper.ClearLookAt();
                 _inputHandler.SetScope(EInputScope.PlayerAiming);
                 _lookHelper.SetAimMultiplier(_gamepadAimSensitivity);
@@ -673,7 +674,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         else if (actionType == EAction.Action)
         {
             if (_chairHelper.IsSitting && !_globalDefinition.CanThrowWhileSeated)
-                return;
+                return;            
 
             if (!isHolding)
             {
