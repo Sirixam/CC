@@ -64,10 +64,10 @@ public class PlayerPhysics
         _moveDirection = value;
     }
 
-    public void StartDashing(Vector3 forward)
+    public void StartDashing(Vector3 forward, bool allowMoveDirection)
     {
         ForceType = EForce.Dash;
-        Vector3 direction = _inputDirection != Vector3.zero ? _inputDirection : forward;
+        Vector3 direction = allowMoveDirection && _moveDirection != Vector3.zero ? _moveDirection : _inputDirection != Vector3.zero ? _inputDirection : forward;
         _force = direction * _dashSpeed;
         _forceTimer = _dashDuration;
     }

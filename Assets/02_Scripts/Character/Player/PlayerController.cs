@@ -21,7 +21,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     [SerializeField] private TriggerListener _fovTriggerListener;
     [SerializeField] private TriggerListener _selfTriggerListener; // passive — others detect the player through this
     [SerializeField] private TriggerListener _catchTriggerListener;
-    
+
     [Header("Data")]
     [SerializeField] private InteractionHelper.Data _interactionData;
     [SerializeField] private ThrowHelper.Data _throwData;
@@ -46,12 +46,14 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     [SerializeField] private bool _dropByHoldingInteract; // Once we decide on the final input scheme, this can be removed
     [SerializeField] private bool _toggleToPeek;
     [SerializeField] private bool _stopPeekOnDash;
+    [SerializeField] private bool _allowMoveDirectionOnDashWhilePeeking;
     [SerializeField] private bool _stopPeekOnTeleport;
     [Tooltip("If TRUE penalty will apply while peek mode is active, if FALSE it will apply only while peeking a student.")]
     [SerializeField] private bool _applyMovePenaltyOnPeekMode;
     [Header("Aim")]
     [SerializeField, Range(0.1f, 1f)] private float _gamepadAimMaxSpeed = 0.5f;
     [SerializeField, Range(0.01f, 1f)] private float _gamepadAimSensitivity = 0.25f;
+    [SerializeField, Range(0f, 1f)] private float _gamepadAimMinDistance = 0.1f;
 
     private bool _isCaught;
     public bool IsCaught => _isCaught;
@@ -106,8 +108,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         : null;
 
     private bool _isWalkingBack;
-    private bool _isAiming;
-    
+
     private void Awake()
     {
         _physics.Initialize();
@@ -175,7 +176,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _chairHelper.OnSittingComplete -= TryShowAnswerSheetOnSit;
         _craftHelper.OnFinishedCrafting -= TryShowAnswerSheetOnSit;
         _craftHelper.OnFinishedCrafting -= _view.StopCrafting;
-        
+
         _catchTriggerListener.OnEnter -= OnCatchTriggerEnter;
     }
 
@@ -183,9 +184,9 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     {
         if (actionType == EAction.Dash)
         {
-            if (IsPeeking) return;
             if (!_dashHelper.CanDash()) return;
-            _dashHelper.StartDash();
+            _dashHelper.StartDash(IsPeeking && _allowMoveDirectionOnDashWhilePeeking);
+            if (IsPeeking && _stopPeekOnDash) RestoreInputScope(instant: true); // [AKP] Restore after start dash to prevent input issues.
         }
         else if (actionType == EAction.Interact)
         {
@@ -530,18 +531,18 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         if (actionType == EDirectionalAction.Move)
         {
             _physics.SetMoveDirection(new Vector3(input.x, 0, input.y));
-            if (!IsPeeking || !_lastAimInput.IsMouse)
+            if (!IsPeeking || (!_lastAimInput.IsMouse && _lastAimInput.Input != Vector2.zero))
             {
-                if (!_isAiming)
-                {
-                    _physics.SetInputDirection(new Vector3(input.x, 0, input.y));
-                    _lookHelper.SetLookInput(input);
-                }
+                _physics.SetInputDirection(new Vector3(input.x, 0, input.y));
+                _lookHelper.SetLookInput(input);
             }
         }
         else if (actionType == EDirectionalAction.Aim)
         {
-            _isAiming = input.sqrMagnitude > 0.01f;
+            if (!isMouse && input.magnitude < _gamepadAimMinDistance)
+            {
+                input = Vector2.zero;
+            }
             ProcessAimInput(input, isMouse);
             _lastAimInput = new AimInput { Input = input, IsMouse = isMouse };
         }
@@ -960,7 +961,6 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     public void ResetInputState()
     {
-        _isAiming = false;
         _physics.SetInputDirection(Vector3.zero);
         _physics.SetMoveDirection(Vector3.zero);
         _lookHelper.SetLookInput(Vector2.zero);
@@ -985,7 +985,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _inputHandler.Block();
         _inputHandler.CancelActionHold();
         _inputHandler.PlayerInput.DeactivateInput();
-        
+
         ResetInputState();
         ResetPlayerView();
         DestroyHeldItem();
@@ -1091,9 +1091,9 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
         ResetPlayerView();
         DestroyHeldItem();
-        
+
         ForceClearInteractionState();
-        
+
         ForceStopForce();
 
         if (_cheatHelper.IsCheating) StopCheating();
@@ -1162,7 +1162,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     {
         if (!_interactionHelper.TryGetPickedUpInteraction(out InteractionController interaction))
             return;
-        
+
         _interactionHelper.TryStopInteraction(interaction);
         _view.OnDrop(interaction.transform);
         Destroy(interaction.gameObject);
@@ -1223,14 +1223,15 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         RequestSitting(chair);
     }
 
-    public void ResetPlayerView(){
+    public void ResetPlayerView()
+    {
         _dynamicLobThrowHelper.StopCharging();
         _view.HideThrowPreview();
         _view.HideLobThrowPreview();
         _view.HideDynamicLobThrowPreview();
         _view.HidePlaneThrowPreview();
     }
-    
+
     private void OnCatchTriggerEnter(Collider other)
     {
         PaperBallController paperBall = other.GetComponentInParent<PaperBallController>();

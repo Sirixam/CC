@@ -31,10 +31,10 @@ public class DashHelper
         return _dashCooldownTimer <= 0;
     }
 
-    public void StartDash()
+    public void StartDash(bool allowMoveDirection)
     {
         _view.OnStartForce();
-        _physics.StartDashing(_view.transform.forward);
+        _physics.StartDashing(_view.transform.forward, allowMoveDirection);
         _dashCooldownTimer = _data.DashCooldown;
         _audioHelper.OnStartDash();
     }

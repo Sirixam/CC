@@ -1046,10 +1046,12 @@ MonoBehaviour:
   _dropByHoldingInteract: 0
   _toggleToPeek: 1
   _stopPeekOnDash: 1
+  _allowMoveDirectionOnDashWhilePeeking: 1
   _stopPeekOnTeleport: 1
   _applyMovePenaltyOnPeekMode: 1
   _gamepadAimMaxSpeed: 1
   _gamepadAimSensitivity: 1
+  _gamepadAimMinDistance: 0.1
 --- !u!114 &1863892939415744151
 MonoBehaviour:
   m_ObjectHideFlags: 0
