@@ -5,7 +5,8 @@ Shader "Custom/DashedLineURP"
         _MainTex ("Texture", 2D) = "white" {}
         _Color ("Color", Color) = (1,1,1,1)
         _Speed ("Scroll Speed", Float) = 1
-        _EmissionColor ("Emission Color", Color) = (1,1,1,1) 
+        _EmissionColor ("Emission Color", Color) = (1,1,1,1)
+        [Enum(UnityEngine.Rendering.CompareFunction)] _ZTest ("Z Test", Float) = 4
     }
     SubShader
     {
@@ -19,6 +20,7 @@ Shader "Custom/DashedLineURP"
 
             Blend SrcAlpha OneMinusSrcAlpha
             ZWrite Off
+            ZTest [_ZTest]
             Cull Off
 
             HLSLPROGRAM

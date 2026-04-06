@@ -41,20 +41,16 @@ public class PlaneThrowPreviewComponent : MonoBehaviour
 
     private void RenderPath()
     {
-        Vector3 startPos = _initialPoint.position;
-        Vector3 forward = _initialPoint.forward;
-        forward.y = 0;
-        forward.Normalize();
-
+        Vector3 startPos = _initialPoint.position;        
         Vector3 endPos;
-
-        if (Physics.SphereCast(startPos, _sphereCastRadius, forward, out RaycastHit hit, _maxDistance, _collisionMask))
+        _planeThrowHelper.CalculateThrowVelocity(out Vector3 direction);
+        if (Physics.SphereCast(startPos, _sphereCastRadius, direction, out RaycastHit hit, _maxDistance, _collisionMask))
         {
-            endPos = startPos + forward * hit.distance;
+            endPos = startPos + direction * hit.distance;
         }
         else
         {
-            endPos = startPos + forward * _maxDistance;
+            endPos = startPos + direction * _maxDistance;
         }
 
         _lineRenderer.positionCount = 2;

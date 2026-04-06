@@ -32,7 +32,15 @@ public class PlaneThrowHelper
         return 1f; // fallback
     }
 
-    public Vector3 CalculateVelocity(Vector3 horizontalDirection)
+    public Vector3 CalculateThrowVelocity(out Vector3 direction)
+    {
+        direction = _actor.LookDirection;
+        direction.y = 0;
+        direction.Normalize();
+        return CalculateThrowVelocity(direction);
+    }
+
+    public Vector3 CalculateThrowVelocity(Vector3 horizontalDirection)
     {
         float drag = GetHeldItemDrag();
         return horizontalDirection * _data.Speed;
@@ -51,11 +59,7 @@ public class PlaneThrowHelper
 
             _actor.OnThrow(stoppedInteraction.transform);
 
-            Vector3 throwDirection = _actor.LookDirection;
-            throwDirection.y = 0;
-            throwDirection.Normalize();
-
-            Vector3 velocity = CalculateVelocity(throwDirection);
+            Vector3 velocity = CalculateThrowVelocity(out Vector3 throwDirection);
             stoppedInteraction.Rigidbody.AddForce(velocity, ForceMode.VelocityChange);
 
             var flight = stoppedInteraction.gameObject.AddComponent<PlaneFlightBehavior>();

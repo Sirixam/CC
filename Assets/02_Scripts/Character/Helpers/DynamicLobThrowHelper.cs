@@ -79,7 +79,15 @@ public class DynamicLobThrowHelper
         _currentRange = Mathf.Lerp(_data.MinRange, _data.MaxRange, t);
     }
 
-    public Vector3 CalculateLobVelocity(Vector3 horizontalDirection)
+    public Vector3 CalculateThrowVelocity()
+    {
+        Vector3 throwDirection = _actor.LookDirection;
+        throwDirection.y = 0;
+        throwDirection.Normalize();
+        return CalculateThrowVelocity(throwDirection);
+    }
+
+    public Vector3 CalculateThrowVelocity(Vector3 horizontalDirection)
     {
         float g = Mathf.Abs(Physics.gravity.y);
         float effectiveG = g * _data.SpeedMultiplier * _data.SpeedMultiplier;
@@ -112,11 +120,7 @@ public class DynamicLobThrowHelper
 
         _actor.OnThrow(stoppedInteraction.transform);
 
-        Vector3 throwDirection = _actor.LookDirection;
-        throwDirection.y = 0;
-        throwDirection.Normalize();
-
-        Vector3 velocity = CalculateLobVelocity(throwDirection);
+        Vector3 velocity = CalculateThrowVelocity();
         stoppedInteraction.Rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
         stoppedInteraction.Rigidbody.AddForce(velocity, ForceMode.VelocityChange);
 

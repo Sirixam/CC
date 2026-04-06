@@ -44,11 +44,7 @@ public class DynamicLobThrowPreviewComponent : MonoBehaviour
     private void RenderLobPath()
     {
         Vector3 startPos = _initialPoint.position;
-        Vector3 forward = _initialPoint.forward;
-        forward.y = 0;
-        forward.Normalize();
-
-        Vector3 velocity = _dynamicLobThrowHelper.CalculateLobVelocity(forward);
+        Vector3 velocity = _dynamicLobThrowHelper.CalculateThrowVelocity();
         Vector3 riseGravity = _dynamicLobThrowHelper.GetEffectiveGravity();
         Vector3 fallGravity = _dynamicLobThrowHelper.GetFallEffectiveGravity();
 

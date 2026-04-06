@@ -46,12 +46,7 @@ public class LobThrowHelper
 
         _actor.OnThrow(stoppedInteraction.transform);
 
-        // Calculate velocity for fixed range and height
-        Vector3 throwDirection = _actor.LookDirection;
-        throwDirection.y = 0;
-        throwDirection.Normalize();
-
-        Vector3 velocity = CalculateLobVelocity(throwDirection);
+        Vector3 velocity = CalculateThrowVelocity();
         stoppedInteraction.Rigidbody.AddForce(velocity, ForceMode.VelocityChange);
         
             // Add spin
@@ -72,7 +67,16 @@ public class LobThrowHelper
         return true;
     }
 
-    public Vector3 CalculateLobVelocity(Vector3 horizontalDirection)
+    public Vector3 CalculateThrowVelocity()
+    {
+        // Calculate velocity for fixed range and height
+        Vector3 throwDirection = _actor.LookDirection;
+        throwDirection.y = 0;
+        throwDirection.Normalize();
+        return CalculateThrowVelocity(throwDirection);
+    }
+
+    public Vector3 CalculateThrowVelocity(Vector3 horizontalDirection)
     {
         float g = Mathf.Abs(Physics.gravity.y);
         float totalTime = _data.FlightDuration;
