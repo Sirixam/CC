@@ -3,7 +3,7 @@ using UnityEngine;
 public class LobThrowPreviewComponent : MonoBehaviour
 {
     [SerializeField] private Transform _initialPoint;
-    [SerializeField] private bool _renderTrajectory = false;
+    [SerializeField] private TrajectoryPreviewType _trajectoryPreview = TrajectoryPreviewType.Undefined;
     [SerializeField] private bool _renderLanding = false;
     [SerializeField] private LineRenderer _trajectoryLineRenderer;
     [SerializeField] private LineRenderer _landingLineRenderer;
@@ -26,13 +26,9 @@ public class LobThrowPreviewComponent : MonoBehaviour
     private void Awake()
     {
         if (_trajectoryLineRenderer != null)
-        {
             _trajectoryLineRenderer.enabled = false;
-        }
         if (_landingLineRenderer != null)
-        {
             _landingLineRenderer.enabled = false;
-        }
         _points = new Vector3[_maxPointsCount];
         _circlePoints = new Vector3[_landingSegments];
     }
@@ -48,35 +44,32 @@ public class LobThrowPreviewComponent : MonoBehaviour
     {
         _visible = true;
         if (_trajectoryLineRenderer != null)
-        {
-            _trajectoryLineRenderer.enabled = _renderTrajectory;
-        }
+            _trajectoryLineRenderer.enabled = _trajectoryPreview != TrajectoryPreviewType.Undefined;
         if (_landingLineRenderer != null)
-        {
             _landingLineRenderer.enabled = _renderLanding;
-        }
     }
 
     public void Hide()
     {
         _visible = false;
         if (_trajectoryLineRenderer != null)
-        {
             _trajectoryLineRenderer.enabled = false;
-        }
         if (_landingLineRenderer != null)
-        {
             _landingLineRenderer.enabled = false;
-        }
     }
 
     private void LateUpdate()
     {
         if (!_visible) return;
 
-        if (_renderTrajectory)
+        if (_trajectoryPreview == TrajectoryPreviewType.Trajectory)
         {
             RenderTrajectory();
+            _trajectoryLineRenderer.material.mainTextureOffset += new Vector2(Time.deltaTime * _lineAnimationSpeed, 0f);
+        }
+        else if (_trajectoryPreview == TrajectoryPreviewType.Line)
+        {
+            RenderLine();
             _trajectoryLineRenderer.material.mainTextureOffset += new Vector2(Time.deltaTime * _lineAnimationSpeed, 0f);
         }
 
@@ -87,7 +80,7 @@ public class LobThrowPreviewComponent : MonoBehaviour
         }
     }
 
-    private void RenderLanding()
+    private Vector3 SimulateToLanding(out bool willHitPlayer)
     {
         Vector3 startPos = _initialPoint.position;
         Vector3 velocity = _lobThrowHelper.CalculateThrowVelocity();
@@ -96,7 +89,7 @@ public class LobThrowPreviewComponent : MonoBehaviour
 
         Vector3 previousPosition = startPos;
         Vector3 landingPosition = startPos;
-        bool willHitPlayer = false;
+        willHitPlayer = false;
 
         for (int i = 0; i < _maxPointsCount; i++)
         {
@@ -111,36 +104,18 @@ public class LobThrowPreviewComponent : MonoBehaviour
                 landingPosition = previousPosition + heading.normalized * hit.distance;
                 if (((1 << hit.collider.gameObject.layer) & _playerMask) != 0)
                     willHitPlayer = true;
-                Debug.LogError("Hit: " + hit.transform.name + ", parent: " + hit.transform.parent.name);
-                break;
+                return landingPosition;
             }
 
             landingPosition = nextPosition;
             previousPosition = nextPosition;
         }
 
-        Color color = willHitPlayer ? _hitPlayerColor : _defaultColor;
-        _landingLineRenderer.startColor = color;
-        _landingLineRenderer.endColor = color;
-        _landingLineRenderer.loop = true;
-        _landingLineRenderer.positionCount = _landingSegments;
-
-        for (int i = 0; i < _landingSegments; i++)
-        {
-            float angle = 2f * Mathf.PI * i / _landingSegments;
-            _circlePoints[i] = new Vector3(
-                landingPosition.x + _landingRadius * Mathf.Cos(angle),
-                landingPosition.y,
-                landingPosition.z + _landingRadius * Mathf.Sin(angle)
-            );
-        }
-
-        _landingLineRenderer.SetPositions(_circlePoints);
+        return landingPosition;
     }
 
     private void RenderTrajectory()
     {
-        _trajectoryLineRenderer.loop = false;
         Vector3 startPos = _initialPoint.position;
         Vector3 velocity = _lobThrowHelper.CalculateThrowVelocity();
         float totalTime = _lobThrowHelper.GetData().FlightDuration;
@@ -174,10 +149,47 @@ public class LobThrowPreviewComponent : MonoBehaviour
             previousPosition = nextPosition;
         }
 
+        _trajectoryLineRenderer.loop = false;
         _trajectoryLineRenderer.startColor = willHitPlayer ? _hitPlayerColor : _defaultColor;
         _trajectoryLineRenderer.endColor = willHitPlayer ? _hitPlayerColor : _defaultColor;
         _trajectoryLineRenderer.positionCount = pointIndex;
         _trajectoryLineRenderer.SetPositions(_points);
+    }
+
+    private void RenderLine()
+    {
+        Vector3 landingPosition = SimulateToLanding(out bool willHitPlayer);
+
+        Color color = willHitPlayer ? _hitPlayerColor : _defaultColor;
+        _trajectoryLineRenderer.loop = false;
+        _trajectoryLineRenderer.startColor = color;
+        _trajectoryLineRenderer.endColor = color;
+        _trajectoryLineRenderer.positionCount = 2;
+        _trajectoryLineRenderer.SetPosition(0, _initialPoint.position);
+        _trajectoryLineRenderer.SetPosition(1, landingPosition);
+    }
+
+    private void RenderLanding()
+    {
+        Vector3 landingPosition = SimulateToLanding(out bool willHitPlayer);
+
+        Color color = willHitPlayer ? _hitPlayerColor : _defaultColor;
+        _landingLineRenderer.startColor = color;
+        _landingLineRenderer.endColor = color;
+        _landingLineRenderer.loop = true;
+        _landingLineRenderer.positionCount = _landingSegments;
+
+        for (int i = 0; i < _landingSegments; i++)
+        {
+            float angle = 2f * Mathf.PI * i / _landingSegments;
+            _circlePoints[i] = new Vector3(
+                landingPosition.x + _landingRadius * Mathf.Cos(angle),
+                landingPosition.y,
+                landingPosition.z + _landingRadius * Mathf.Sin(angle)
+            );
+        }
+
+        _landingLineRenderer.SetPositions(_circlePoints);
     }
 
     private LayerMask GetFlyingCollisionMask(int flyingLayer)
