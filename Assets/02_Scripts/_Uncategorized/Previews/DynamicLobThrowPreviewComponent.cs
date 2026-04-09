@@ -12,7 +12,7 @@ public class DynamicLobThrowPreviewComponent : MonoBehaviour
     [SerializeField] private float _sphereCastRadius = 0.05f;
     [SerializeField] private Color _defaultColor = Color.yellow;
     [SerializeField] private Color _hitPlayerColor = Color.green;
-    [SerializeField] private LayerMask _playerMask;
+    [SerializeField] private LayerMask _validMask;
     [SerializeField] private float _landingRadius = 0.5f;
     [SerializeField] private int _landingSegments = 24;
 
@@ -108,7 +108,7 @@ public class DynamicLobThrowPreviewComponent : MonoBehaviour
         return peakPos + peakVelocity * dt + 0.5f * fallGravity * dt * dt;
     }
 
-    private Vector3 SimulateToLanding(out bool willHitPlayer)
+    private Vector3 SimulateToLanding(out bool willHitValidTarget)
     {
         Vector3 startPos = _initialPoint.position;
         GetPhaseData(out Vector3 velocity, out Vector3 riseGravity, out Vector3 fallGravity,
@@ -117,7 +117,7 @@ public class DynamicLobThrowPreviewComponent : MonoBehaviour
         float timeStep = totalTime / _maxPointsCount;
         Vector3 previousPosition = startPos;
         Vector3 landingPosition = startPos;
-        willHitPlayer = false;
+        willHitValidTarget = false;
 
         for (int i = 0; i < _maxPointsCount; i++)
         {
@@ -131,8 +131,8 @@ public class DynamicLobThrowPreviewComponent : MonoBehaviour
                     out RaycastHit hit, maxDistance, _collisionMask))
             {
                 landingPosition = previousPosition + heading.normalized * hit.distance;
-                if (((1 << hit.collider.gameObject.layer) & _playerMask) != 0)
-                    willHitPlayer = true;
+                if (((1 << hit.collider.gameObject.layer) & _validMask) != 0)
+                    willHitValidTarget = true;
                 return landingPosition;
             }
 
@@ -168,7 +168,7 @@ public class DynamicLobThrowPreviewComponent : MonoBehaviour
                 _points[pointIndex] = previousPosition + heading.normalized * hit.distance;
                 pointIndex++;
 
-                if (((1 << hit.collider.gameObject.layer) & _playerMask) != 0)
+                if (((1 << hit.collider.gameObject.layer) & _validMask) != 0)
                     willHitPlayer = true;
 
                 break;

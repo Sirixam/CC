@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: -2608370264754535214}
   m_Layer: 0
   m_Name: Item_GradeBoost
-  m_TagString: Untagged
+  m_TagString: Distraction
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

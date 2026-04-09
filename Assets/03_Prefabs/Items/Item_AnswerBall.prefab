@@ -576,7 +576,7 @@ GameObject:
   - component: {fileID: 4323039434840745593}
   m_Layer: 0
   m_Name: Item_AnswerBall
-  m_TagString: Untagged
+  m_TagString: Distraction
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -622,6 +622,7 @@ MonoBehaviour:
   _isDynamicLobShot: 0
   _isAnswer: 1
   _destroyAfterHitDelay: 0.5
+  _isPlane: 0
 --- !u!114 &3311442955737208034
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -24,6 +24,10 @@ public class ChairController : MonoBehaviour
     private void Awake()
     {
         AnswerController = transform.parent.GetComponentInChildren<AnswerController>();
+        if (!AnswerController.IsPlayer)
+        {
+            AnswerController.GetComponent<CollisionComponent>().OnCollisionEnterEvent += OnCollisionEnterAnswer; // [AKP] Include desks from students to propagate distraction.
+        }
     }
 
     private void Start()
@@ -46,6 +50,11 @@ public class ChairController : MonoBehaviour
     public void Unblock()
     {
         IsBlocked = false;
+    }
+
+    private void OnCollisionEnterAnswer(CollisionComponent collisionComponent, Collision collision)
+    {
+        OnCollisionEnterEvent?.Invoke(collision);
     }
 
     private void OnCollisionEnter(Collision collision)

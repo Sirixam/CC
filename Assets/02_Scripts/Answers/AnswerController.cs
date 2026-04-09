@@ -76,7 +76,6 @@ public class AnswerController : MonoBehaviour
         {
             _interactionController.Disable();
         }
-
     }
 
     public void UpdateRemainingTime(float deltaTime, out bool finished)

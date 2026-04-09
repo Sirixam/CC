@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3372036648344291618}
-  m_Layer: 3
+  m_Layer: 10
   m_Name: StandingPoint_Right
   m_TagString: Untagged
   m_Icon: {fileID: 3306451490063965843, guid: 0000000000000000d000000000000000, type: 0}
@@ -40,7 +40,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6003775662665571311}
-  m_Layer: 3
+  m_Layer: 10
   m_Name: StandingPoint_Left
   m_TagString: Untagged
   m_Icon: {fileID: 3306451490063965843, guid: 0000000000000000d000000000000000, type: 0}
@@ -76,7 +76,7 @@ GameObject:
   - component: {fileID: 2965237648783132036}
   - component: {fileID: 6070362407725568382}
   - component: {fileID: 503250908574053430}
-  m_Layer: 3
+  m_Layer: 10
   m_Name: Interactable_Chair
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -782,7 +782,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 521513966310175544}
-  m_Layer: 3
+  m_Layer: 10
   m_Name: Renderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -814,7 +814,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7143904386498343974}
-  m_Layer: 3
+  m_Layer: 10
   m_Name: SittingPoint
   m_TagString: Untagged
   m_Icon: {fileID: 3306451490063965843, guid: 0000000000000000d000000000000000, type: 0}
@@ -845,7 +845,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 84607046470278236}
-  m_Layer: 3
+  m_Layer: 10
   m_Name: LookAtPoint
   m_TagString: Untagged
   m_Icon: {fileID: 3306451490063965843, guid: 0000000000000000d000000000000000, type: 0}
@@ -919,14 +919,30 @@ PrefabInstance:
       propertyPath: m_Name
       value: chair_MSA
       objectReference: {fileID: 0}
+    - target: {fileID: 614019088669295722, guid: a8439cddb34f7024bb1e0e5dffdffa51, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 2283380928237936185, guid: a8439cddb34f7024bb1e0e5dffdffa51, type: 3}
       propertyPath: m_Material
       value: 
       objectReference: {fileID: 13400000, guid: 867dde34d442dd34d8c71b43fabe256e, type: 2}
+    - target: {fileID: 2304630286928211128, guid: a8439cddb34f7024bb1e0e5dffdffa51, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2644663586161063364, guid: a8439cddb34f7024bb1e0e5dffdffa51, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 5774500387026163696, guid: a8439cddb34f7024bb1e0e5dffdffa51, type: 3}
       propertyPath: m_Material
       value: 
       objectReference: {fileID: 13400000, guid: 867dde34d442dd34d8c71b43fabe256e, type: 2}
+    - target: {fileID: 9193157079534650246, guid: a8439cddb34f7024bb1e0e5dffdffa51, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

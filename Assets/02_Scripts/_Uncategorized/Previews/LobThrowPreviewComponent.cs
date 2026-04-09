@@ -12,7 +12,7 @@ public class LobThrowPreviewComponent : MonoBehaviour
     [SerializeField] private float _sphereCastRadius = 0.05f;
     [SerializeField] private Color _defaultColor = Color.yellow;
     [SerializeField] private Color _hitPlayerColor = Color.green;
-    [SerializeField] private LayerMask _playerMask;
+    [SerializeField] private LayerMask _validMask;
     [SerializeField] private float _landingRadius = 0.5f;
     [SerializeField] private int _landingSegments = 24;
 
@@ -102,7 +102,7 @@ public class LobThrowPreviewComponent : MonoBehaviour
             if (maxDistance > 0.001f && Physics.SphereCast(previousPosition, _sphereCastRadius, heading.normalized, out RaycastHit hit, maxDistance, _collisionMask))
             {
                 landingPosition = previousPosition + heading.normalized * hit.distance;
-                if (((1 << hit.collider.gameObject.layer) & _playerMask) != 0)
+                if (((1 << hit.collider.gameObject.layer) & _validMask) != 0)
                     willHitPlayer = true;
                 return landingPosition;
             }
@@ -123,7 +123,7 @@ public class LobThrowPreviewComponent : MonoBehaviour
 
         Vector3 previousPosition = startPos;
         int pointIndex = 0;
-        bool willHitPlayer = false;
+        bool willHitValidTaret = false;
 
         for (int i = 0; i < _maxPointsCount; i++)
         {
@@ -138,8 +138,8 @@ public class LobThrowPreviewComponent : MonoBehaviour
                 _points[pointIndex] = previousPosition + heading.normalized * hit.distance;
                 pointIndex++;
 
-                if (((1 << hit.collider.gameObject.layer) & _playerMask) != 0)
-                    willHitPlayer = true;
+                if (((1 << hit.collider.gameObject.layer) & _validMask) != 0)
+                    willHitValidTaret = true;
 
                 break;
             }
@@ -150,8 +150,8 @@ public class LobThrowPreviewComponent : MonoBehaviour
         }
 
         _trajectoryLineRenderer.loop = false;
-        _trajectoryLineRenderer.startColor = willHitPlayer ? _hitPlayerColor : _defaultColor;
-        _trajectoryLineRenderer.endColor = willHitPlayer ? _hitPlayerColor : _defaultColor;
+        _trajectoryLineRenderer.startColor = willHitValidTaret ? _hitPlayerColor : _defaultColor;
+        _trajectoryLineRenderer.endColor = willHitValidTaret ? _hitPlayerColor : _defaultColor;
         _trajectoryLineRenderer.positionCount = pointIndex;
         _trajectoryLineRenderer.SetPositions(_points);
     }

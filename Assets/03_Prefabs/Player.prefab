@@ -218,9 +218,9 @@ MonoBehaviour:
   _sphereCastRadius: 0.2
   _defaultColor: {r: 0.62352943, g: 0, b: 0.3372549, a: 1}
   _hitPlayerColor: {r: 0.08627451, g: 0.43529412, b: 0.011764706, a: 1}
-  _playerMask:
+  _validMask:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 1088
   _landingRadius: 0.2
   _landingSegments: 24
 --- !u!1 &721078951414472420
@@ -2884,9 +2884,9 @@ MonoBehaviour:
   _sphereCastRadius: 0.2
   _defaultColor: {r: 0.6226415, g: 0, b: 0.33913776, a: 1}
   _hitPlayerColor: {r: 0.087405935, g: 0.4339623, b: 0.0102349585, a: 1}
-  _playerMask:
+  _validMask:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 1088
   _landingRadius: 0.2
   _landingSegments: 24
 --- !u!1 &6932459045926847273
