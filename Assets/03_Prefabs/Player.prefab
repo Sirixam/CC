@@ -953,7 +953,7 @@ MonoBehaviour:
     startValue: 0
     endValue: 0.1
     settings:
-      duration: 0.15
+      duration: 0.1
       ease: 0
       customEase:
         serializedVersion: 2

@@ -220,7 +220,7 @@ public class PlayerPhysics
 
     public bool IsFrontalCollision(Vector3 collisionNormal)
     {
-        float alignment = Vector3.Dot(Direction, -collisionNormal);
+        float alignment = Vector3.Dot(Direction.normalized, -collisionNormal);
         alignment = Mathf.Clamp(alignment, -1f, 1f); // Clamp just in case of float precision errors
 
         float angle = Mathf.Acos(alignment) * Mathf.Rad2Deg;
