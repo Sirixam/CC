@@ -522,7 +522,6 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private void OnDirectionalActionRequested(EDirectionalAction actionType, Vector2 input, bool isMouse)
     {
-        // Debug.Log($"Directional input: {actionType} {input}");
         if (_skipNextDirectionAction)
         {
             _skipNextDirectionAction = false;
@@ -530,8 +529,14 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         }
         if (actionType == EDirectionalAction.Move)
         {
+            if (_inputHandler.ScopeType == EInputScope.PlayerAiming)
+                return; // no movement while aiming
+            
             _physics.SetMoveDirection(new Vector3(input.x, 0, input.y));
-            if (!IsPeeking || (!_lastAimInput.IsMouse && _lastAimInput.Input != Vector2.zero))
+        
+            // Only update look direction from move input if there's no active aim input
+            bool hasActiveAimInput = _lastAimInput.Input.magnitude > _gamepadAimMinDistance;
+            if (!hasActiveAimInput || _lastAimInput.IsMouse)
             {
                 _physics.SetInputDirection(new Vector3(input.x, 0, input.y));
                 _lookHelper.SetLookInput(input);
@@ -600,6 +605,8 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
                 _lookHelper.ClearLookAt();
                 _inputHandler.SetScope(EInputScope.PlayerAiming);
                 _lookHelper.SetAimMultiplier(_gamepadAimSensitivity);
+                ResetInputState();        // clears movement
+                _lastAimInput = default;  // clears previous aim memory
             }
         }
         else if (actionType == EAction.Peek)
