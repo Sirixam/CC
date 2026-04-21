@@ -32,6 +32,11 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     [SerializeField] private ParticleSystem _confiscateVFXPrefab;
     [SerializeField] private float _confiscateShrinkDuration = 0.4f;
 
+    [Header("Warning")]
+    [SerializeField] private float _warningTime = 2f;
+    [SerializeField] private float _warningPulseScale = 1.25f;
+    [SerializeField] private float _warningPulseDuration = 0.15f;
+
     [Tooltip("Use 0 if there's no answer in this paper ball")]
     [SerializeField] private AnswerDefinition _defaultAnswerDefinition;
     [SerializeField] private float _defaultCorrectness;
@@ -44,6 +49,8 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     [SerializeField] private bool _isPlane;
 
     private Tween _confiscateTween;
+    private Sequence _warningSequence;
+    private bool _warningStarted;
     private Action _onConfiscationFreed;
 
     private bool _hasBeenThrown;
@@ -133,6 +140,11 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
             {
                 Destroy(gameObject);
             }
+            else if (!_warningStarted && _remainingTimeToDestroyOnIdle <= _warningTime)
+            {
+                _warningStarted = true;
+                StartWarning();
+            }
         }
     }
 
@@ -186,6 +198,7 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
 
     private void SetIdleState(EIdleSource source)
     {
+        StopWarning();
         _state = EState.Idle;
         DestroyData destroyData = Array.Find(_destroyData, x => x.Type == source);
         _remainingTimeToDestroyOnIdle = destroyData != null ? destroyData.Delay : null;
@@ -203,6 +216,7 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     // IPickUpInteractionOwner
     void IPickUpInteractionOwner.OnPickedUp(string actorID)
     {
+        StopWarning();
         _onConfiscationFreed?.Invoke();
         _onConfiscationFreed = null;
         _ownerID = actorID;
@@ -220,6 +234,7 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     }
     void IPickUpInteractionOwner.OnThrowed()
     {
+        StopWarning();
         _hasBeenThrown = true;
         _hasDropped = false;
         _lastOwnerID = _ownerID;
@@ -230,11 +245,27 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
         SetCollidersEnabled(true);
     }
 
+    private void StartWarning()
+    {
+        _warningSequence = Sequence.Create(cycles: -1)
+            .Chain(Tween.Scale(_rendererContainer, Vector3.one * _warningPulseScale, _warningPulseDuration, Ease.OutQuad))
+            .Chain(Tween.Scale(_rendererContainer, Vector3.one, _warningPulseDuration, Ease.InQuad));
+    }
+
+    private void StopWarning()
+    {
+        _warningSequence.Stop();
+        _warningStarted = false;
+        if (_rendererContainer != null)
+            _rendererContainer.localScale = Vector3.one;
+    }
+
     public void Confiscate(Transform point, Action onFreed)
     {
         if (_state == EState.Confiscated) return;
 
         _confiscateTween.Stop();
+        StopWarning();
         _onConfiscationFreed = onFreed;
         _state = EState.Confiscated;
 
