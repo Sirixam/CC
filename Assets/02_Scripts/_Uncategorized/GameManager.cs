@@ -352,7 +352,7 @@ public class GameManager : MonoBehaviour
             paperBall.Destroy();
         }
 
-        if(owner == null)
+        if (owner == null)
         {
             Debug.LogWarning("When does this occurr? Add comment here.");
             return;
@@ -414,7 +414,7 @@ public class GameManager : MonoBehaviour
             }
             else // TeleportToChair
             {
-                playerController.OnCaught(onAfterTeleport: null); 
+                playerController.OnCaught(onAfterTeleport: null);
             }
             return;
         }
@@ -653,14 +653,15 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator DelayedWalkBack(PlayerController playerController)
     {
+        playerController.InputHandler.Block();
+        playerController.InputHandler.CancelActionHold();
+        playerController.InputHandler.PlayerInput.DeactivateInput();
+
         yield return new WaitForSeconds(0.3f);
 
-        if (_teacherManager != null)
-            _teacherManager.IgnoreCollisionWith(playerController.GetColliders(), true);
+        _teacherManager?.IgnoreCollisionWith(playerController.GetColliders(), true);
 
-        Vector3? teacherPos = _teacherManager != null
-            ? _teacherManager.GetTeacherPosition()
-            : null;
+        Vector3? teacherPos = _teacherManager?.GetTeacherPosition();
 
         playerController.OnCaughtWalkBack(
             onSeated: () =>

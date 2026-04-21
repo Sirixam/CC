@@ -531,9 +531,9 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         {
             if (_inputHandler.ScopeType == EInputScope.PlayerAiming)
                 return; // no movement while aiming
-            
+
             _physics.SetMoveDirection(new Vector3(input.x, 0, input.y));
-        
+
             // Only update look direction from move input if there's no active aim input
             bool hasActiveAimInput = _lastAimInput.Input.magnitude > _gamepadAimMinDistance;
             if (!hasActiveAimInput || _lastAimInput.IsMouse)
@@ -681,7 +681,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         else if (actionType == EAction.Action)
         {
             if (_chairHelper.IsSitting && !_globalDefinition.CanThrowWhileSeated)
-                return;            
+                return;
 
             if (!isHolding)
             {
@@ -1072,16 +1072,19 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         yield return null; // wait another frame
         _inputHandler.Unblock();
     }
+
     public void ForceStopForce()
     {
         _physics.ForceStopForce();
         _view.OnStopForce();
     }
+
     public void SetAnsweringDuration(float duration)
     {
         if (_answerController != null)
             _answerController.SetDurations(0, duration, 0);
     }
+
     public void OnCaughtWalkBack(Action onSeated, Vector3? avoidPosition = null)
     {
 

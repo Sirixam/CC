@@ -164,6 +164,8 @@ public partial class PlayerInputHandler : MonoBehaviour
 
     private void Update()
     {
+        if (_isBlocked) return;
+
         _actionHoldState.OnUpdate(out bool beginHoldAction);
         if (beginHoldAction)
         {
@@ -262,7 +264,6 @@ public partial class PlayerInputHandler : MonoBehaviour
     private void OnInteract(InputAction.CallbackContext context)
     {
         HandleHoldAction(context, _interactHoldState, EAction.Interact);
-
     }
 
     private void OnDash(InputAction.CallbackContext context)
@@ -298,6 +299,7 @@ public partial class PlayerInputHandler : MonoBehaviour
 
     private void RequestDirectionalAction(EDirectionalAction actionType, Vector2 input, bool isMouse)
     {
+        if (_isBlocked) return;
         DirectionalActionEvent?.Invoke(actionType, input, isMouse);
 #if LOG_ACTIONS
          Debug.Log($"{actionType} requested with input: {input}, isMouse: {isMouse}");
@@ -311,6 +313,7 @@ public partial class PlayerInputHandler : MonoBehaviour
             holdState.OnPressInput(out bool canProcessInput);
             if (!canProcessInput) return;
 
+            if (_isBlocked) return;
             PreHoldActionEvent?.Invoke(actionType);
         }
         else if (context.canceled && !_mapper.SupressCancelOnScopeChange(actionType))
@@ -331,6 +334,7 @@ public partial class PlayerInputHandler : MonoBehaviour
 
     private void RequestHoldAction(EAction actionType, bool isHolding)
     {
+        if (_isBlocked) return;
         HoldActionEvent?.Invoke(actionType, isHolding);
 #if LOG_ACTIONS
         if (isHolding)
