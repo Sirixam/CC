@@ -201,7 +201,7 @@ public class StudentNpcController : MonoBehaviour
             {
                 Debug.LogError("Other collider has item tag, but has not implemented item controller. Name: " + other.name);
             }
-            else
+            else if (!itemController.IsConfiscated)
             {
                 OnItemDetected?.Invoke(itemController);
             }

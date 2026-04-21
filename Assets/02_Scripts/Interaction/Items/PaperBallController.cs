@@ -10,6 +10,7 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
         Idle,
         MidAir,
         BeingHeld,
+        Confiscated,
     }
 
     [SerializeField] private Transform _rendererContainer;
@@ -63,6 +64,7 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     public bool IsIdle => _state == EState.Idle;
     public bool IsMidAir => _state == EState.MidAir;
     public bool IsBeingHeld => _state == EState.BeingHeld;
+    public bool IsConfiscated => _state == EState.Confiscated;
 
     public InteractionController InteractionController => GetComponentInChildren<InteractionController>();
 
@@ -220,6 +222,7 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     public void Confiscate(Transform point)
     {
         _confiscateTween.Stop();
+        _state = EState.Confiscated;
 
         Vector3 spawnPosition = transform.position;
 
