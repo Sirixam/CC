@@ -30,6 +30,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GlobalDefinition _globalDefinition;
     [SerializeField] private float _maxTimeInSeconds = 30;
     [SerializeField] private Transform _caughtDoorPoint;
+    [SerializeField] private Transform _confiscationPoint;
     // [SerializeField] private float _maxRoundTimeInSeconds = 30;
 
     private TimeHelper _timeHelper;
@@ -83,11 +84,11 @@ public class GameManager : MonoBehaviour
         _roundTimeHelper.OnLoopRestarted += HandleLoopRestarted;
         _answerManager.OnAllPlayersFinishedAllAnswers += OnAllPlayersFinishedAllAnswers;
         _studentManager.OnPlayerDetected += OnPlayerDetected;
-        _studentManager.OnItemDetected += OnItemDetected;
+        _studentManager.OnItemDetected += OnItemDetectedByStudent;
         if (_teacherManager != null)
         {
             _teacherManager.OnPlayerDetected += OnPlayerDetected;
-            _teacherManager.OnItemDetected += OnItemDetected;
+            _teacherManager.OnItemDetected += OnItemDetectedByTeacher;
         }
     }
 
@@ -100,11 +101,11 @@ public class GameManager : MonoBehaviour
         _roundTimeHelper.OnLoopRestarted -= HandleLoopRestarted;
         _answerManager.OnAllPlayersFinishedAllAnswers -= OnAllPlayersFinishedAllAnswers;
         _studentManager.OnPlayerDetected -= OnPlayerDetected;
-        _studentManager.OnItemDetected -= OnItemDetected;
+        _studentManager.OnItemDetected -= OnItemDetectedByStudent;
         if (_teacherManager != null)
         {
             _teacherManager.OnPlayerDetected -= OnPlayerDetected;
-            _teacherManager.OnItemDetected -= OnItemDetected;
+            _teacherManager.OnItemDetected -= OnItemDetectedByTeacher;
         }
     }
 
@@ -336,7 +337,7 @@ public class GameManager : MonoBehaviour
         LoseLife(playerController);
     }
 
-    private void OnItemDetected(IItemController itemController)
+    private void OnItemDetectedByStudent(IItemController itemController)
     {
         if (itemController is not PaperBallController paperBall)
             return;
@@ -346,11 +347,8 @@ public class GameManager : MonoBehaviour
         PlayerController owner = _players.Find(x => hasBeenThrown ? x.ID == paperBall.LastOwnerID : x.ID == paperBall.OwnerID);
         if (owner != null && owner.IsSitting && !hasBeenThrown) return;
 
-        // Confiscate ball
         if (paperBall.IsBeingHeld || paperBall.IsMidAir)
-        {
             paperBall.Destroy();
-        }
 
         if (owner == null)
         {
@@ -359,6 +357,35 @@ public class GameManager : MonoBehaviour
         }
 
         if (owner.IsCaught || paperBall.IsIdle) return;
+        LoseLife(owner);
+    }
+
+    private void OnItemDetectedByTeacher(IItemController itemController)
+    {
+        if (itemController is not PaperBallController paperBall)
+            return;
+
+        //Sitting players are safe ONLY if the ball was NOT thrown
+        bool hasBeenThrown = paperBall.HasBeenThrown();
+        PlayerController owner = _players.Find(x => hasBeenThrown ? x.ID == paperBall.LastOwnerID : x.ID == paperBall.OwnerID);
+        if (owner != null && owner.IsSitting && !hasBeenThrown) return;
+
+        if (paperBall.IsIdle)
+        {
+            paperBall.Confiscate(_confiscationPoint);
+            return;
+        }
+
+        if (paperBall.IsBeingHeld || paperBall.IsMidAir)
+            paperBall.Destroy();
+
+        if (owner == null)
+        {
+            Debug.LogWarning("When does this occurr? Add comment here.");
+            return;
+        }
+
+        if (owner.IsCaught) return;
         LoseLife(owner);
     }
 

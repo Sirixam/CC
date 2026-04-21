@@ -8,7 +8,7 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
         Undefined,
         Idle,
         MidAir,
-        PickedUp,
+        BeingHeld,
     }
 
     [Tooltip("Use 0 if there's no answer in this paper ball")]
@@ -23,7 +23,7 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     [SerializeField] private bool _isAnswer;
     [SerializeField] private float _destroyAfterHitDelay = 0.5f;
     [SerializeField] private bool _isPlane;
-    
+
     private bool _hasBeenThrown;
     private bool _destroyScheduled;
     private bool _hasDropped;
@@ -55,7 +55,7 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
 
     public bool IsIdle => _state == EState.Idle;
     public bool IsMidAir => _state == EState.MidAir;
-    public bool IsBeingHeld => _state == EState.PickedUp;
+    public bool IsBeingHeld => _state == EState.BeingHeld;
 
     public InteractionController InteractionController => GetComponentInChildren<InteractionController>();
 
@@ -181,7 +181,7 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     void IPickUpInteractionOwner.OnPickedUp(string actorID)
     {
         _ownerID = actorID;
-        _state = EState.PickedUp;
+        _state = EState.BeingHeld;
         _destroyScheduled = false;
         _hasBeenThrown = false;
         StopAllCoroutines(); // Cancel any pending DestroyAfterDelay
@@ -204,6 +204,23 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
         _hasHitGround = false;
         _thrownTime = Time.time;
         SetCollidersEnabled(true);
+    }
+
+    public void Confiscate(Transform point)
+    {
+        if (point == null)
+        {
+            Debug.LogError("Confiscate point is null.");
+            return;
+        }
+
+        transform.position = point.position;
+        if (TryGetComponent<Rigidbody>(out var rb))
+        {
+            rb.velocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+        }
+        _remainingTimeToDestroyOnIdle = _timeToDestroyOnIdle;
     }
 
     public void Destroy()
