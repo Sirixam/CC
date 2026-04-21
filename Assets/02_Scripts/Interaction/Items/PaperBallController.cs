@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using PrimeTween;
 using UnityEngine;
@@ -13,6 +14,20 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
         Confiscated,
     }
 
+    public enum EIdleSource
+    {
+        FromStart,
+        FromMidAir,
+        FromDrop
+    }
+
+    [Serializable]
+    public class DestroyData
+    {
+        public EIdleSource Type;
+        public float Delay;
+    }
+
     [SerializeField] private Transform _rendererContainer;
     [SerializeField] private ParticleSystem _confiscateVFXPrefab;
     [SerializeField] private float _confiscateShrinkDuration = 0.4f;
@@ -21,19 +36,16 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     [SerializeField] private AnswerDefinition _defaultAnswerDefinition;
     [SerializeField] private float _defaultCorrectness;
     //[SerializeField] private ItemAudioHelper.Data _audioData;
-    [SerializeField] private float _timeToDestroyOnIdle = 5f;
-    [SerializeField] private bool _destroyOnIdle = true;
     [SerializeField] private GlobalDefinition _globalDefinition;
     [SerializeField] private bool _isLobShot;
     [SerializeField] private bool _isDynamicLobShot;
     [SerializeField] private bool _isAnswer;
-    [SerializeField] private float _destroyAfterHitDelay = 0.5f;
+    [SerializeField] private DestroyData[] _destroyData;
     [SerializeField] private bool _isPlane;
 
     private Tween _confiscateTween;
 
     private bool _hasBeenThrown;
-    private bool _destroyScheduled;
     private bool _hasDropped;
     private float _thrownTime;
     public float ThrownTime => _thrownTime;
@@ -47,8 +59,9 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     private string _answerID;
     private float _correctness;
     private string _contributorActorID;
-    private float _remainingTimeToDestroyOnIdle;
+    private float? _remainingTimeToDestroyOnIdle;
     private EState _state;
+    private EIdleSource _idleSource;
     private string _ownerID;
     private string _lastOwnerID;
     private bool _hasHitGround;
@@ -82,7 +95,7 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     {
         if (_state == EState.Undefined)
         {
-            _state = EState.Idle;
+            SetIdleState(EIdleSource.FromStart);
         }
         if (HasAnswer && GameContext.HasAnswersManager)
         {
@@ -112,7 +125,7 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
             }
         }
 
-        if (_state == EState.Idle && _destroyOnIdle)
+        if (_state == EState.Idle && _remainingTimeToDestroyOnIdle.HasValue)
         {
             _remainingTimeToDestroyOnIdle -= Time.deltaTime;
             if (_remainingTimeToDestroyOnIdle <= 0f)
@@ -154,12 +167,6 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (_hasBeenThrown && !_destroyScheduled && !_isAnswer)
-        {
-            _destroyScheduled = true;
-            StartCoroutine(DestroyAfterDelay());
-        }
-
         if (collision.gameObject.layer == LayerMask.NameToLayer("Environment")
             || collision.gameObject.layer == LayerMask.NameToLayer("Floor")
             || collision.gameObject.CompareTag("NPC"))
@@ -171,15 +178,17 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
 
             if (_state == EState.MidAir)
             {
-                SetIdleState();
+                SetIdleState(EIdleSource.FromMidAir);
             }
         }
     }
 
-    private void SetIdleState()
+    private void SetIdleState(EIdleSource source)
     {
         _state = EState.Idle;
-        _remainingTimeToDestroyOnIdle = _timeToDestroyOnIdle;
+        DestroyData destroyData = Array.Find(_destroyData, x => x.Type == source);
+        _remainingTimeToDestroyOnIdle = destroyData != null ? destroyData.Delay : null;
+        _idleSource = source;
     }
 
     private void SetCollidersEnabled(bool enabled)
@@ -195,7 +204,6 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     {
         _ownerID = actorID;
         _state = EState.BeingHeld;
-        _destroyScheduled = false;
         _hasBeenThrown = false;
         StopAllCoroutines(); // Cancel any pending DestroyAfterDelay
         SetCollidersEnabled(false);
@@ -205,7 +213,7 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
         _lastOwnerID = _ownerID;
         _ownerID = null;
         SetCollidersEnabled(true);
-        SetIdleState();
+        SetIdleState(EIdleSource.FromDrop);
     }
     void IPickUpInteractionOwner.OnThrowed()
     {
@@ -221,6 +229,8 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
 
     public void Confiscate(Transform point)
     {
+        if (_state == EState.Confiscated) return;
+
         _confiscateTween.Stop();
         _state = EState.Confiscated;
 
@@ -242,7 +252,6 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
                     rb.angularVelocity = Vector3.zero;
                 }
                 _rendererContainer.localScale = Vector3.one;
-                _remainingTimeToDestroyOnIdle = _timeToDestroyOnIdle;
             });
     }
 
@@ -255,10 +264,4 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     {
         return _state == EState.MidAir || _state == EState.Idle;
     }
-    private IEnumerator DestroyAfterDelay()
-    {
-        yield return new WaitForSeconds(_destroyAfterHitDelay);
-        Destroy(gameObject);
-    }
-
 }

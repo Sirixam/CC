@@ -625,6 +625,7 @@ MonoBehaviour:
   _isDynamicLobShot: 0
   _isAnswer: 1
   _destroyAfterHitDelay: 0.5
+  _destroyData: []
   _isPlane: 0
 --- !u!114 &3311442955737208034
 MonoBehaviour:

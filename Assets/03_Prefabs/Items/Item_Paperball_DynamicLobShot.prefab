@@ -164,13 +164,15 @@ MonoBehaviour:
   _confiscateShrinkDuration: 0.4
   _defaultAnswerDefinition: {fileID: 0}
   _defaultCorrectness: 0
-  _timeToDestroyOnIdle: 5
-  _destroyOnIdle: 1
   _globalDefinition: {fileID: 11400000, guid: 2b0875648e78a8e45b08a646836071ca, type: 2}
   _isLobShot: 0
   _isDynamicLobShot: 1
   _isAnswer: 0
-  _destroyAfterHitDelay: 0.5
+  _destroyData:
+  - Type: 1
+    Delay: 0.5
+  - Type: 2
+    Delay: 10
   _isPlane: 0
 --- !u!114 &3311442955737208034
 MonoBehaviour:
