@@ -30,7 +30,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GlobalDefinition _globalDefinition;
     [SerializeField] private float _maxTimeInSeconds = 30;
     [SerializeField] private Transform _caughtDoorPoint;
-    [SerializeField] private Transform _confiscationPoint;
+    [SerializeField] private ConfiscationSlot[] _confiscationSlots;
     // [SerializeField] private float _maxRoundTimeInSeconds = 30;
 
     private TimeHelper _timeHelper;
@@ -372,7 +372,16 @@ public class GameManager : MonoBehaviour
 
         if (paperBall.IsIdle)
         {
-            paperBall.Confiscate(_confiscationPoint);
+            ConfiscationSlot slot = GetAvailableConfiscationSlot();
+            if (slot != null)
+            {
+                slot.Occupy();
+                paperBall.Confiscate(slot.Point, slot.Free);
+            }
+            else
+            {
+                paperBall.Destroy();
+            }
             return;
         }
 
@@ -387,6 +396,15 @@ public class GameManager : MonoBehaviour
 
         if (owner.IsCaught) return;
         LoseLife(owner);
+    }
+
+    private ConfiscationSlot GetAvailableConfiscationSlot()
+    {
+        foreach (var slot in _confiscationSlots)
+        {
+            if (!slot.IsOccupied) return slot;
+        }
+        return null;
     }
 
     private void LoseLife(PlayerController playerController)
@@ -705,4 +723,15 @@ public class GameManager : MonoBehaviour
             avoidPosition: teacherPos
         );
     }
+}
+
+[System.Serializable]
+public class ConfiscationSlot
+{
+    [SerializeField] private Transform _point;
+    public Transform Point => _point;
+    public bool IsOccupied { get; private set; }
+
+    public void Occupy() => IsOccupied = true;
+    public void Free() => IsOccupied = false;
 }

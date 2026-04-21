@@ -44,6 +44,7 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     [SerializeField] private bool _isPlane;
 
     private Tween _confiscateTween;
+    private Action _onConfiscationFreed;
 
     private bool _hasBeenThrown;
     private bool _hasDropped;
@@ -202,6 +203,8 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     // IPickUpInteractionOwner
     void IPickUpInteractionOwner.OnPickedUp(string actorID)
     {
+        _onConfiscationFreed?.Invoke();
+        _onConfiscationFreed = null;
         _ownerID = actorID;
         _state = EState.BeingHeld;
         _hasBeenThrown = false;
@@ -227,11 +230,12 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
         SetCollidersEnabled(true);
     }
 
-    public void Confiscate(Transform point)
+    public void Confiscate(Transform point, Action onFreed)
     {
         if (_state == EState.Confiscated) return;
 
         _confiscateTween.Stop();
+        _onConfiscationFreed = onFreed;
         _state = EState.Confiscated;
 
         Vector3 spawnPosition = transform.position;
