@@ -1,5 +1,58 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &410852410757725091
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1405866240690391637}
+  - component: {fileID: 3247669464518821099}
+  m_Layer: 10
+  m_Name: InteractionTrigger
+  m_TagString: Interaction
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1405866240690391637
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 410852410757725091}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 9141138853756055693}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &3247669464518821099
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 410852410757725091}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2, y: 2, z: 2}
+  m_Center: {x: -1, y: 1, z: 0}
 --- !u!1 &1023534439818818587
 GameObject:
   m_ObjectHideFlags: 0
@@ -196,7 +249,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2794252811251585438}
   m_LocalRotation: {x: 0.5393873, y: 0.4572323, z: -0.5393873, w: 0.4572323}
-  m_LocalPosition: {x: 0, y: 0, z: -0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.004582138, y: 0.004582138, z: 0.004582138}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -204,7 +257,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 90, y: 90, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.178, y: -0.158}
+  m_AnchoredPosition: {x: 0.182, y: -0.137}
   m_SizeDelta: {x: 144.18231, y: 196.8843}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7268967721234741186
@@ -511,6 +564,7 @@ Transform:
   - {fileID: 1460755950517498471}
   - {fileID: 4773489411899792547}
   - {fileID: 2906417860678159557}
+  - {fileID: 1405866240690391637}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!114 &3401357592815470036
@@ -544,7 +598,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _triggers:
-  - {fileID: 5264359567647864891}
+  - {fileID: 3247669464518821099}
   _rigidbody: {fileID: 8630432724720451707}
   _data:
     Type: 2
@@ -1377,6 +1431,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 7947367143266621746, guid: bfab905240348ae4c85a5d625b3b4c49, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 13400000, guid: 867dde34d442dd34d8c71b43fabe256e, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
