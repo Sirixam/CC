@@ -1,4 +1,5 @@
 using System.Collections;
+using PrimeTween;
 using UnityEngine;
 
 public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItemController
@@ -10,6 +11,10 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
         MidAir,
         BeingHeld,
     }
+
+    [SerializeField] private Transform _rendererContainer;
+    [SerializeField] private ParticleSystem _confiscateVFXPrefab;
+    [SerializeField] private float _confiscateShrinkDuration = 0.4f;
 
     [Tooltip("Use 0 if there's no answer in this paper ball")]
     [SerializeField] private AnswerDefinition _defaultAnswerDefinition;
@@ -23,6 +28,8 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     [SerializeField] private bool _isAnswer;
     [SerializeField] private float _destroyAfterHitDelay = 0.5f;
     [SerializeField] private bool _isPlane;
+
+    private Tween _confiscateTween;
 
     private bool _hasBeenThrown;
     private bool _destroyScheduled;
@@ -71,6 +78,10 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
 
     private void Start()
     {
+        if (_state == EState.Undefined)
+        {
+            _state = EState.Idle;
+        }
         if (HasAnswer && GameContext.HasAnswersManager)
         {
             GameContext.AnswersManager.OnAllPlayersFinishedAnswer -= OnAllPlayersAnsweredFullyEvent;
@@ -208,19 +219,28 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
 
     public void Confiscate(Transform point)
     {
-        if (point == null)
-        {
-            Debug.LogError("Confiscate point is null.");
-            return;
-        }
+        _confiscateTween.Stop();
 
-        transform.position = point.position;
-        if (TryGetComponent<Rigidbody>(out var rb))
-        {
-            rb.velocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
-        }
-        _remainingTimeToDestroyOnIdle = _timeToDestroyOnIdle;
+        Vector3 spawnPosition = transform.position;
+
+        _confiscateTween = Tween.Scale(_rendererContainer, Vector3.zero, _confiscateShrinkDuration, Ease.InBack)
+            .OnComplete(() =>
+            {
+                if (_confiscateVFXPrefab != null)
+                {
+                    ParticleSystem cloud = Instantiate(_confiscateVFXPrefab, spawnPosition, Quaternion.identity);
+                    Destroy(cloud.gameObject, cloud.main.duration + cloud.main.startLifetime.constantMax);
+                }
+
+                transform.position = point.position;
+                if (TryGetComponent<Rigidbody>(out var rb))
+                {
+                    rb.velocity = Vector3.zero;
+                    rb.angularVelocity = Vector3.zero;
+                }
+                _rendererContainer.localScale = Vector3.one;
+                _remainingTimeToDestroyOnIdle = _timeToDestroyOnIdle;
+            });
     }
 
     public void Destroy()

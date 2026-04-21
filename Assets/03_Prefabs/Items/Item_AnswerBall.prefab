@@ -613,6 +613,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62cc9cf1b42289342a36a224f12c773a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _rendererContainer: {fileID: 8139479431681188695}
+  _confiscateVFXPrefab: {fileID: 265766274217486953, guid: acb4546cb0fb96c448ba95a80ca40723, type: 3}
+  _confiscateShrinkDuration: 0.4
   _defaultAnswerDefinition: {fileID: 0}
   _defaultCorrectness: 0
   _timeToDestroyOnIdle: 5
@@ -707,7 +710,7 @@ MonoBehaviour:
   _groundFriction: 10
   _groundLayer:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 512
   _raycastMaxDistance: 0.3
 --- !u!114 &186350260128373654
 MonoBehaviour:

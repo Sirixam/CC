@@ -159,6 +159,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62cc9cf1b42289342a36a224f12c773a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _rendererContainer: {fileID: 0}
+  _confiscateVFXPrefab: {fileID: 0}
+  _confiscateShrinkDuration: 0.4
   _defaultAnswerDefinition: {fileID: 0}
   _defaultCorrectness: 0
   _timeToDestroyOnIdle: 5
@@ -252,7 +255,7 @@ MonoBehaviour:
   _groundFriction: 10
   _groundLayer:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 512
   _raycastMaxDistance: 0.3
 --- !u!114 &315868154328462021
 MonoBehaviour:
