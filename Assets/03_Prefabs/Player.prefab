@@ -910,6 +910,7 @@ MonoBehaviour:
   _stopPeekOnDash: 1
   _allowMoveDirectionOnDashWhilePeeking: 1
   _stopPeekOnTeleport: 1
+  _exitPeekModeOnComplete: 1
   _applyMovePenaltyOnPeekMode: 1
   _gamepadAimMaxSpeed: 1
   _gamepadAimSensitivity: 1

@@ -48,6 +48,8 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     [SerializeField] private bool _stopPeekOnDash;
     [SerializeField] private bool _allowMoveDirectionOnDashWhilePeeking;
     [SerializeField] private bool _stopPeekOnTeleport;
+    [Tooltip("If TRUE, peek mode (FOV scope) will end when the peek progress completes.")]
+    [SerializeField] private bool _exitPeekModeOnComplete;
     [Tooltip("If TRUE penalty will apply while peek mode is active, if FALSE it will apply only while peeking a student.")]
     [SerializeField] private bool _applyMovePenaltyOnPeekMode;
     [Header("Aim")]
@@ -832,7 +834,10 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             _cheatHelper.UpdatePeeking(out bool finishedPeeking);
             if (finishedPeeking)
             {
-                StopPeeking();
+                if (_exitPeekModeOnComplete)
+                    RestoreInputScope();
+                else
+                    StopPeeking();
             }
         }
         if (_cheatHelper.IsCheating)
