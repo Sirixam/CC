@@ -60,6 +60,8 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     private bool _isCaught;
     public bool IsCaught => _isCaught;
     private Coroutine _walkBackTimeout;
+    private bool _pendingStandingRequest;
+    private float _pendingStandingRequestTime;
 
 
     //exposing variables to GM
@@ -157,6 +159,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _fovTriggerListener.OnExit += OnFovTriggerExit;
 
         _chairHelper.OnSittingComplete += TryShowAnswerSheetOnSit;
+        _chairHelper.OnSittingComplete += OnSittingCompleteForStanding;
         _craftHelper.OnFinishedCrafting += TryShowAnswerSheetOnSit;
         _craftHelper.OnFinishedCrafting += _view.StopCrafting;
 
@@ -176,6 +179,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _fovTriggerListener.OnExit -= OnFovTriggerExit;
 
         _chairHelper.OnSittingComplete -= TryShowAnswerSheetOnSit;
+        _chairHelper.OnSittingComplete -= OnSittingCompleteForStanding;
         _craftHelper.OnFinishedCrafting -= TryShowAnswerSheetOnSit;
         _craftHelper.OnFinishedCrafting -= _view.StopCrafting;
 
@@ -472,6 +476,14 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private void RequestStanding()
     {
+        if (_chairHelper.IsTransitioning)
+        {
+            _pendingStandingRequest = true;
+            _pendingStandingRequestTime = Time.time;
+            return;
+        }
+
+        _pendingStandingRequest = false;
         Vector2 inputDir = _inputHandler.LastMoveInput;
         _lookHelper.ClearLookAt();
         _chairHelper.StartStanding(inputDir);
@@ -482,6 +494,14 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             _answerController = null;
         }
         StopStaticInteraction();
+    }
+
+    private void OnSittingCompleteForStanding()
+    {
+        if (!_pendingStandingRequest) return;
+        bool expired = Time.time - _pendingStandingRequestTime > _globalDefinition.PendingActionTimeout;
+        _pendingStandingRequest = false;
+        if (!expired) RequestStanding();
     }
 
     private void StopStaticInteraction()
@@ -1042,6 +1062,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     {
         _isCaught = false;
         _isWalkingBack = false;
+        _pendingStandingRequest = false;
 
         if (_cheatHelper.IsCheating) StopCheating();
         if (_cheatHelper.IsPeeking) StopPeeking();

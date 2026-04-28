@@ -30,6 +30,10 @@ public class GlobalDefinition : ScriptableObject
     public ECaughtMode CaughtMode;
     public EAnswerSheetMode AnswerSheetMode;    
 
+    [Header("ACTIONS")]
+    [Tooltip("Max seconds a deferred action request will wait before being discarded.")]
+    public float PendingActionTimeout = 0.5f;
+
     [Header("STUDENTS")]
     public float LightBulbAnticipation = 2f;
 

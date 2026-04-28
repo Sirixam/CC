@@ -154,17 +154,16 @@ public class ChairHelper
             return; // don't unsubscribe yet, wait for second arrival
         }
 
-        if (IsSitting)
-        {
-            _actorView.OnSitting();
-            OnSittingComplete?.Invoke();
-        }
-
         _sitPhase = ESitPhase.None;
         _actorPhysics.OnArriveEvent -= OnArrive;
         IsTransitioning = false;
         _actorPhysics.SetTargetPoint(null);
 
+        if (IsSitting)
+        {
+            _actorView.OnSitting();
+            OnSittingComplete?.Invoke(); // Trigger at the end
+        }
     }
 
     private Transform GetBestApproachPoint(ChairController chairController)
@@ -189,6 +188,6 @@ public class ChairHelper
     }
 
 
-    
+
 }
 

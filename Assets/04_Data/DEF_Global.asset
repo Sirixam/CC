@@ -22,6 +22,7 @@ MonoBehaviour:
   PlayerLives: 3
   CaughtMode: 1
   AnswerSheetMode: 1
+  PendingActionTimeout: 1000
   LightBulbAnticipation: 2
   DiagonalDirectionHint: 2
   PlayerTag: Player
