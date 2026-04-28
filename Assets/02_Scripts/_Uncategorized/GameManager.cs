@@ -370,24 +370,10 @@ public class GameManager : MonoBehaviour
         PlayerController owner = _players.Find(x => hasBeenThrown ? x.ID == paperBall.LastOwnerID : x.ID == paperBall.OwnerID);
         if (owner != null && owner.IsSitting && !hasBeenThrown) return;
 
-        if (paperBall.IsIdle || paperBall.IsMidAir)
+        if (paperBall.IsIdle || paperBall.IsMidAir || paperBall.IsBeingHeld)
         {
-            ConfiscationSlot slot = GetAvailableConfiscationSlot();
-            if (slot != null && paperBall.CanConfiscate())
-            {
-                slot.Occupy();
-                paperBall.Confiscate(slot.Point, slot.Free);
-            }
-            else
-            {
-                paperBall.Destroy();
-            }
-
+            ConfiscateOrDestroyItem(paperBall);
             if (paperBall.IsIdle) return; // DO NOT lose life when idle
-        }
-        else if (paperBall.IsBeingHeld)
-        {
-            paperBall.Destroy();
         }
 
         if (owner == null)
@@ -398,6 +384,20 @@ public class GameManager : MonoBehaviour
 
         if (owner.IsCaught) return;
         LoseLife(owner);
+    }
+
+    public void ConfiscateOrDestroyItem(IItemController item)
+    {
+        ConfiscationSlot slot = GetAvailableConfiscationSlot();
+        if (slot != null && item.CanConfiscate())
+        {
+            slot.Occupy();
+            item.Confiscate(slot.Point, slot.Free);
+        }
+        else
+        {
+            item.Destroy();
+        }
     }
 
     private ConfiscationSlot GetAvailableConfiscationSlot()
@@ -457,11 +457,11 @@ public class GameManager : MonoBehaviour
             }
             else if (_globalDefinition.CaughtMode == GlobalDefinition.ECaughtMode.TeleportToDoor)
             {
-                playerController.OnCaught(onAfterTeleport: null, doorPoint: _caughtDoorPoint);
+                playerController.OnCaught(onAfterTeleport: null, doorPoint: _caughtDoorPoint, confiscateItem: ConfiscateOrDestroyItem);
             }
             else // TeleportToChair
             {
-                playerController.OnCaught(onAfterTeleport: null);
+                playerController.OnCaught(onAfterTeleport: null, confiscateItem: ConfiscateOrDestroyItem);
             }
             return;
         }
@@ -722,7 +722,8 @@ public class GameManager : MonoBehaviour
                     _teacherManager.StopAngryVFX();
                 }
             },
-            avoidPosition: teacherPos
+            avoidPosition: teacherPos,
+            confiscateItem: ConfiscateOrDestroyItem
         );
     }
 }

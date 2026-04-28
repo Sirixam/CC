@@ -1010,7 +1010,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         return _interactionHelper.TryGetPickedUpInteraction(out _);
     }
 
-    public void OnCaught(Action onAfterTeleport, Transform doorPoint = null)
+    public void OnCaught(Action onAfterTeleport, Transform doorPoint = null, Action<IItemController> confiscateItem = null)
     {
         if (_isCaught) return;
         _isCaught = true;
@@ -1021,7 +1021,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
         ResetInputState();
         ResetPlayerView();
-        DestroyHeldItem();
+        ConfiscateOrDestroyHeldItem(confiscateItem);
         ForceClearInteractionState();
 
         _physics.ForceStopForce();
@@ -1111,7 +1111,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             _answerController.SetDurations(0, duration, 0);
     }
 
-    public void OnCaughtWalkBack(Action onSeated, Vector3? avoidPosition = null)
+    public void OnCaughtWalkBack(Action onSeated, Vector3? avoidPosition = null, Action<IItemController> confiscateItem = null)
     {
 
         if (_isCaught) return;
@@ -1127,7 +1127,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         ResetInputState();
 
         ResetPlayerView();
-        DestroyHeldItem();
+        ConfiscateOrDestroyHeldItem(confiscateItem);
 
         ForceClearInteractionState();
 
@@ -1195,6 +1195,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     {
         return _answerController?.AnswerSheet;
     }
+
     public void DestroyHeldItem()
     {
         if (!_interactionHelper.TryGetPickedUpInteraction(out InteractionController interaction))
@@ -1203,6 +1204,24 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _interactionHelper.TryStopInteraction(interaction);
         _view.OnDrop(interaction.transform);
         Destroy(interaction.gameObject);
+    }
+
+    private void ConfiscateOrDestroyHeldItem(Action<IItemController> confiscateItem)
+    {
+        if (!_interactionHelper.TryGetPickedUpInteraction(out InteractionController interaction))
+            return;
+
+        IItemController itemController = interaction.GetComponentInParent<IItemController>();
+        if (itemController != null && itemController.CanConfiscate())
+        {
+            _interactionHelper.TryStopInteraction(interaction); // OnDropped returns early (Confiscated guard)
+            _view.OnDrop(interaction.transform);
+            confiscateItem(itemController);                          // sets state to Confiscated first
+        }
+        else
+        {
+            DestroyHeldItem();
+        }
     }
 
     private IEnumerator WalkBackTimeoutRoutine()
