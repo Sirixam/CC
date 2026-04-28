@@ -220,7 +220,7 @@ MonoBehaviour:
   _offState: {fileID: 6067139007865732778}
   _onState: {fileID: 6818912680372669143}
   _initialState: 2
-  _defaultHideDelay: 5
+  _defaultHideDelay: 4
   _useOffState: 1
   _shineOverlay: {fileID: 8819477148568688067}
   _shineDuration: 0.5
