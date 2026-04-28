@@ -186,12 +186,9 @@ public class PlayerPhysics
         float distance = toTarget.magnitude;
         Vector3 direction = toTarget.normalized;
 
-        Vector3 newPosition = _rigidbody.position + direction * _moveSpeed * Time.fixedDeltaTime;
-        hasArrived = (newPosition - target.position).sqrMagnitude >= distance * distance;
-        if (hasArrived)
-        {
-            newPosition = target.position; // Prevent overshooting
-        }
+        float step = _moveSpeed * Time.fixedDeltaTime;
+        hasArrived = step >= distance;
+        Vector3 newPosition = hasArrived ? target.position : _rigidbody.position + direction * step;
         _rigidbody.MovePosition(newPosition);
     }
 
