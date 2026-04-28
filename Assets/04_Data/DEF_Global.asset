@@ -22,7 +22,7 @@ MonoBehaviour:
   PlayerLives: 3
   CaughtMode: 1
   AnswerSheetMode: 1
-  ShowDirectionOnSameType: 1
+  LightBulbAnticipation: 2
   DiagonalDirectionHint: 2
   PlayerTag: Player
   DistractionTag: Distraction

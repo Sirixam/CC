@@ -13,13 +13,13 @@ public class StudentManager : MonoBehaviour
 
     [SerializeField] private AnswersManager _answerManager;
     [SerializeField] private StudentNpcController[] _students;
+    [SerializeField] private GlobalDefinition _globalDefinition;
 
     [Header("Configurations")]
     [SerializeField] private bool _simulateStudentsIndividually;
     [Range(0, 1f), Tooltip("What's the chance of getting a half correct answer versus a wrong answer.")]
     [SerializeField] private float _halfCorrectChance = 0.5f;
-    [Tooltip("How many seconds before starting to write is the lightbulb shown")]
-    [SerializeField] private float _lightBulbAnticipation = 2f;
+
 
     [Header("Phase Durations")]
     [Tooltip("Also used as fallback for thinking duration range (min/max seconds) used when no curve is set.")]
@@ -168,7 +168,7 @@ public class StudentManager : MonoBehaviour
             await student.UpdateRemainingTimeWhileNotDistracted(cancellationToken: cancellationToken, thinkingPercent =>
             {
                 float remaininigSeconds = thinkingDuration * (1 - thinkingPercent);
-                if (remaininigSeconds <= _lightBulbAnticipation && !student.IsLightBulbShown)
+                if (remaininigSeconds <= _globalDefinition.LightBulbAnticipation && !student.IsLightBulbShown)
                 {
                     student.ShowLightBulb();
                 }

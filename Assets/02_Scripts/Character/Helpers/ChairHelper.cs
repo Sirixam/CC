@@ -105,7 +105,6 @@ public class ChairHelper
 
     public void StartStanding(Vector2 inputDirection)
     {
-
         Transform standingPoint = GetBestStandingPoint(_chairController, inputDirection);
         IsTransitioning = true;
         IsSitting = false;

@@ -30,6 +30,9 @@ public class GlobalDefinition : ScriptableObject
     public ECaughtMode CaughtMode;
     public EAnswerSheetMode AnswerSheetMode;    
 
+    [Header("STUDENTS")]
+    public float LightBulbAnticipation = 2f;
+
     [Header("ANSWER PEEK")]
     public EDiagonalDirectionHint DiagonalDirectionHint;
 

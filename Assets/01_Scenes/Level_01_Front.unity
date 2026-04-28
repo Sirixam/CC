@@ -16346,6 +16346,7 @@ MonoBehaviour:
   - {fileID: 931442537}
   - {fileID: 1029895250}
   - {fileID: 928665874}
+  _globalDefinition: {fileID: 11400000, guid: 2b0875648e78a8e45b08a646836071ca, type: 2}
   _simulateStudentsIndividually: 1
   _halfCorrectChance: 0.5
   _peekPhaseDuration: 10
