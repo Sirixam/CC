@@ -9,6 +9,7 @@ public class AnswerPeekUI : MonoBehaviour
     [SerializeField] private Image _characterIcon;
     [SerializeField] private Image _archetypeIcon;
     [SerializeField] private Image _answerTypeIcon;
+    [SerializeField] private Image _answerDirectionIcon;
     [SerializeField] private Image _answerCloudIcon;
     [SerializeField] private GameObject _answerTypeRoot;
     [SerializeField] private RectTransform _readyObject;
@@ -33,6 +34,7 @@ public class AnswerPeekUI : MonoBehaviour
     private EPeekState _state = EPeekState.FullInfo;
 
     public AnswerPeek AnswerPeek { get; private set; }
+    public EPeekState State => _state;
 
     private void Awake()
     {
@@ -115,9 +117,27 @@ public class AnswerPeekUI : MonoBehaviour
             _completedStamp.gameObject.SetActive(false);
 
         _answerTypeRoot.SetActive(true);
+        SetDirectionHint(null);
 
         AnswerPeek = null;
     }
+
+    // Shows arrow pointing from this student toward correctWorldPos (XZ→XY mapping).
+    // Pass null to revert to the answer type icon.
+    public void SetDirectionHint(Vector3? correctWorldPos)
+    {
+        bool showDirection = correctWorldPos.HasValue;
+        _answerTypeIcon.gameObject.SetActive(!showDirection);
+        _answerDirectionIcon.gameObject.SetActive(showDirection);
+
+        if (!showDirection || AnswerPeek == null) return;
+
+        Vector3 from = AnswerPeek.AnswerController.transform.position;
+        Vector3 dir = correctWorldPos.Value - from;
+        float angle = Mathf.Atan2(dir.z, dir.x) * Mathf.Rad2Deg;
+        _answerDirectionIcon.rectTransform.localRotation = Quaternion.Euler(0f, 0f, angle);
+    }
+
     public void ShowReady()
     {
         _readyTween.Stop();

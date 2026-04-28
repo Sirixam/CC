@@ -161,6 +161,11 @@ public class AnswerSheet
         return Array.Exists(Answers, x => x.ID == answerID);
     }
 
+    public bool HasCorrectAnswer()
+    {
+        return Array.Exists(Answers, x => x.Correctness == AnswerDefinition.PERFECT_CORRECTNESS);
+    }
+
     public bool IsAnswerFull(string answerID, out float progress, out float correctness)
     {
         if (_id2Answer.TryGetValue(answerID, out Answer answer))
@@ -254,6 +259,7 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
     [Tooltip("If true, a card stays at PartialInfo until the player peeks again — state is never auto-upgraded to FullInfo.")]
     [SerializeField] private bool _requireRePeekForFullInfo = true;
     [SerializeField] private bool _showFullInfoWhileWriting = true;
+    [SerializeField] private bool _showDirectionOnSameType = true;
     private Queue<AnswerPeekUI> _activePeekUIs = new();
 
     [SerializeField] private GlobalDefinition _globalDefinition;
@@ -339,7 +345,47 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
             {
                 answerPeekUI.SetState(GetPeekState(peek.AnswerController));
             }
+
+            if (answerPeekUI.State == EPeekState.FullInfo && peek.AnswerController.GetCorrectness(peek.AnswerID) == 0f)
+            {
+                AnswerController target = _showDirectionOnSameType ? FindNearestCorrectController(peek.AnswerController, peek.AnswerID) : FindNearestCorrectController(peek.AnswerController);
+                answerPeekUI.SetDirectionHint(target != null ? target.transform.position : (Vector3?)null);
+            }
+            else
+            {
+                answerPeekUI.SetDirectionHint(null);
+            }
         }
+    }
+
+    private AnswerController FindNearestCorrectController(AnswerController source, string answerID = null)
+    {
+        AnswerController nearest = null;
+        float nearestSqrDist = float.MaxValue;
+        Vector3 sourcePos = source.transform.position;
+        foreach (var controller in _answerControllers)
+        {
+            if (controller == source || controller.AnswerSheet == null) continue;
+
+            if (!string.IsNullOrWhiteSpace(answerID))
+            {
+                if (!controller.AnswerSheet.HasAnswer(answerID)) continue;
+                float correctness = controller.GetCorrectness(answerID);
+                if (correctness != AnswerDefinition.PERFECT_CORRECTNESS) continue;
+            }
+            else
+            {
+                if (!controller.AnswerSheet.HasCorrectAnswer()) continue;
+            }
+
+            float sqrDist = (controller.transform.position - sourcePos).sqrMagnitude;
+            if (sqrDist < nearestSqrDist)
+            {
+                nearestSqrDist = sqrDist;
+                nearest = controller;
+            }
+        }
+        return nearest;
     }
 
     private EPeekState GetPeekState(AnswerController answerController)
@@ -460,7 +506,7 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
         Sprite answerTypeIcon = GetAnswerTypeIcon(answerID);
         peekUI.Setup(peek, characterIcon, archetypeIcon, answerTypeIcon);
         peekUI.SetState(answerController.IsThinking ? EPeekState.PartialInfo : EPeekState.FullInfo); //
-        if (HaveAllPlayersAnsweredFully(answerID, out float minCorrectness) && minCorrectness >= 1f)
+        if (HaveAllPlayersAnsweredFully(answerID, out float minCorrectness) && minCorrectness >= AnswerDefinition.PERFECT_CORRECTNESS)
         {
             peekUI.SetCompleted(ShouldMarkAsCompleted(answerID));
         }
@@ -583,6 +629,6 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
     private bool ShouldMarkAsCompleted(string answerID)
     {
         return HaveAllPlayersAnsweredFully(answerID, out float minCorrectness)
-               && minCorrectness >= 1f;
+               && minCorrectness >= AnswerDefinition.PERFECT_CORRECTNESS;
     }
 }
