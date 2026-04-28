@@ -208,11 +208,11 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         }
         else if (actionType == EAction.Action)
         {
-            if (!_dropByHoldingInteract)
-            {
-                RestoreInputScope();
-                TryDropItem();
-            }
+            if (_dropByHoldingInteract) return;
+            if (_chairHelper.IsSitting && !_globalDefinition.CanThrowWhileSeated) return;
+
+            RestoreInputScope();
+            TryDropItem();
         }
         else if (actionType == EAction.Cancel)
         {
