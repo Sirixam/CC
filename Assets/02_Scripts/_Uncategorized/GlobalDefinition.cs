@@ -31,7 +31,6 @@ public class GlobalDefinition : ScriptableObject
     public EAnswerSheetMode AnswerSheetMode;    
 
     [Header("ANSWER PEEK")]
-    public bool ShowDirectionOnSameType;
     public EDiagonalDirectionHint DiagonalDirectionHint;
 
     [Header("TAGS")]

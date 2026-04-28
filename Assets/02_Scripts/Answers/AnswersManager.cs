@@ -349,7 +349,7 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
 
             if (answerPeekUI.State == EPeekState.FullInfo && peek.AnswerController.GetCorrectness(peek.AnswerID) == 0f)
             {
-                AnswerController target = _globalDefinition.ShowDirectionOnSameType ? FindNearestSmartController(peek.AnswerController, peek.AnswerID) : FindNearestSmartController(peek.AnswerController);
+                AnswerController target = FindNearestSmartController(peek.AnswerController);
                 answerPeekUI.SetDirectionHint(target != null ? target.transform.position : (Vector3?)null, _globalDefinition.DiagonalDirectionHint);
             }
             else
@@ -359,14 +359,8 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
         }
     }
 
-    private AnswerController FindNearestSmartController(AnswerController source, string answerID = null)
+    private AnswerController FindNearestSmartController(AnswerController source)
     {
-        if (_smartStudentController == null || _smartStudentController == source) return null;
-        if (!string.IsNullOrWhiteSpace(answerID))
-        {
-            if (_smartStudentController.AnswerSheet == null) return null;
-            if (!_smartStudentController.AnswerSheet.HasAnswer(answerID)) return null;
-        }
         return _smartStudentController;
     }
 
