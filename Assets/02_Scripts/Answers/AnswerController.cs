@@ -78,6 +78,22 @@ public class AnswerController : MonoBehaviour
         }
     }
 
+    public float GetRemainingTimePercent()
+    {
+        switch (_state)
+        {
+            case EState.Thinking:
+                return ThinkingPercent;
+            case EState.Answering:
+                return AnsweringPercent;
+            case EState.Validating:
+                return ValidatingPercent;
+            default:
+                Debug.LogError("State is not being handled: " + _state);
+                return 0;
+        }
+    }
+
     public void UpdateRemainingTime(float deltaTime, out bool finished)
     {
         if (_state == EState.Thinking)

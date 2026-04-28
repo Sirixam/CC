@@ -45,6 +45,8 @@ public class StudentNpcController : MonoBehaviour
     public Action<IItemController> OnItemDetected;
     public event Action OnAnsweringEnded;
 
+    public bool IsLightBulbShown => _lightbulbUI.IsShown;
+
     private void Awake()
     {
         AnswerController = transform.parent.GetComponentInChildren<AnswerController>();
@@ -96,13 +98,19 @@ public class StudentNpcController : MonoBehaviour
         AnswerController.SetCorrectness(answerID, value);
     }
 
+    public void ShowLightBulb()
+    {
+        _lightbulbUI.Show();
+        _lightbulbUI.SetState(isOn: true);
+        _lightbulbUI.StartFloat();
+        _lightbulbUI.PlayShine();
+        _lightbulbUI.HideDelayed();
+    }
+
     public void StartThinking()
     {
         _handState = EHandState.Thinking;
         AnswerController.StartThinking();
-        _lightbulbUI.Show();
-        _lightbulbUI.SetState(isOn: false);
-        _lightbulbUI.StartFloat();
         _studentView.StartThinking(AnswerController.TestPageView);
     }
 
@@ -110,9 +118,6 @@ public class StudentNpcController : MonoBehaviour
     {
         _handState = EHandState.Answering;
         AnswerController.StartAnswering(progress: 0);
-        _lightbulbUI.SetState(isOn: true);
-        _lightbulbUI.PlayShine();
-        _lightbulbUI.HideDelayed();
         _studentView.StartAnswering();
     }
 
@@ -132,12 +137,12 @@ public class StudentNpcController : MonoBehaviour
     {
         switch (_handState)
         {
-            case EHandState.Answering:  _studentView.StartAnswering(); break;
+            case EHandState.Answering: _studentView.StartAnswering(); break;
             case EHandState.Validating: _studentView.StartValidating(AnswerController.TestPageView); break;
         }
     }
 
-    public async UniTask UpdateRemainingTimeWhileNotDistracted(CancellationToken cancellationToken)
+    public async UniTask UpdateRemainingTimeWhileNotDistracted(CancellationToken cancellationToken, Action<float> onProgressUpdated = null)
     {
         bool finished = false;
         while (!finished && !cancellationToken.IsCancellationRequested)
@@ -145,6 +150,7 @@ public class StudentNpcController : MonoBehaviour
             if (!IsDistracted)
             {
                 AnswerController.UpdateRemainingTime(Time.deltaTime, out finished);
+                onProgressUpdated?.Invoke(AnswerController.GetRemainingTimePercent());
             }
             await UniTask.Yield(cancellationToken);
         }

@@ -18,6 +18,8 @@ public class StudentManager : MonoBehaviour
     [SerializeField] private bool _simulateStudentsIndividually;
     [Range(0, 1f), Tooltip("What's the chance of getting a half correct answer versus a wrong answer.")]
     [SerializeField] private float _halfCorrectChance = 0.5f;
+    [Tooltip("How many seconds before starting to write is the lightbulb shown")]
+    [SerializeField] private float _lightBulbAnticipation = 2f;
 
     [Header("Phase Durations")]
     [Tooltip("Also used as fallback for thinking duration range (min/max seconds) used when no curve is set.")]
@@ -163,7 +165,14 @@ public class StudentManager : MonoBehaviour
                                     validatingDuration: _cheatPhaseDuration);
 
             student.StartThinking();
-            await student.UpdateRemainingTimeWhileNotDistracted(cancellationToken: cancellationToken);
+            await student.UpdateRemainingTimeWhileNotDistracted(cancellationToken: cancellationToken, thinkingPercent =>
+            {
+                float remaininigSeconds = thinkingDuration * (1 - thinkingPercent);
+                if (remaininigSeconds <= _lightBulbAnticipation && !student.IsLightBulbShown)
+                {
+                    student.ShowLightBulb();
+                }
+            });
 
             student.StartAnswering();
             await student.UpdateAnsweringTaskWhileNotDistracted(cancellationToken: cancellationToken);
