@@ -22,6 +22,8 @@ MonoBehaviour:
   PlayerLives: 3
   CaughtMode: 1
   AnswerSheetMode: 1
+  ShowDirectionOnSameType: 0
+  DiagonalDirectionHint: 2
   PlayerTag: Player
   DistractionTag: Distraction
   ItemLayer: 7

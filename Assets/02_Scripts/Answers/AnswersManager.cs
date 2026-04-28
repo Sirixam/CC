@@ -259,7 +259,6 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
     [Tooltip("If true, a card stays at PartialInfo until the player peeks again — state is never auto-upgraded to FullInfo.")]
     [SerializeField] private bool _requireRePeekForFullInfo = true;
     [SerializeField] private bool _showFullInfoWhileWriting = true;
-    [SerializeField] private bool _showDirectionOnSameType = true;
     private Queue<AnswerPeekUI> _activePeekUIs = new();
 
     [SerializeField] private GlobalDefinition _globalDefinition;
@@ -348,8 +347,8 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
 
             if (answerPeekUI.State == EPeekState.FullInfo && peek.AnswerController.GetCorrectness(peek.AnswerID) == 0f)
             {
-                AnswerController target = _showDirectionOnSameType ? FindNearestCorrectController(peek.AnswerController, peek.AnswerID) : FindNearestCorrectController(peek.AnswerController);
-                answerPeekUI.SetDirectionHint(target != null ? target.transform.position : (Vector3?)null);
+                AnswerController target = _globalDefinition.ShowDirectionOnSameType ? FindNearestCorrectController(peek.AnswerController, peek.AnswerID) : FindNearestCorrectController(peek.AnswerController);
+                answerPeekUI.SetDirectionHint(target != null ? target.transform.position : (Vector3?)null, _globalDefinition.DiagonalDirectionHint);
             }
             else
             {

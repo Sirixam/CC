@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public enum EPeekState { PartialInfo, FullInfo }
+public enum EDiagonalDirectionHint { Precise, Random, Both }
 
 public class AnswerPeekUI : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class AnswerPeekUI : MonoBehaviour
     [SerializeField] private Image _archetypeIcon;
     [SerializeField] private Image _answerTypeIcon;
     [SerializeField] private Image _answerDirectionIcon;
+    [SerializeField] private Image _answerDirectionIcon2;
     [SerializeField] private Image _answerCloudIcon;
     [SerializeField] private GameObject _answerTypeRoot;
     [SerializeField] private RectTransform _readyObject;
@@ -23,6 +25,8 @@ public class AnswerPeekUI : MonoBehaviour
     [SerializeField] private TweenSettings<Vector2> _readyTweenSettings;
     [SerializeField] private float _completedAlpha = 0.75f;
     [SerializeField] private float _collapseDelay = 2f;
+    [Tooltip("Both mode: minimum ratio (0–1) of an axis component to total XZ magnitude before that arrow is shown.")]
+    [SerializeField] [Range(0f, 1f)] private float _bothAxisMinRatio = 0.2f;
 
     private Vector2 _originalAnchoredPosition;
     private RectTransform _rect;
@@ -32,6 +36,8 @@ public class AnswerPeekUI : MonoBehaviour
     private bool _isFull;
     private bool _isCompleted;
     private EPeekState _state = EPeekState.FullInfo;
+    private bool _directionHintActive;
+    private bool _randomAxisIsHorizontal;
 
     public AnswerPeek AnswerPeek { get; private set; }
     public EPeekState State => _state;
@@ -124,18 +130,63 @@ public class AnswerPeekUI : MonoBehaviour
 
     // Shows arrow pointing from this student toward correctWorldPos (XZ→XY mapping).
     // Pass null to revert to the answer type icon.
-    public void SetDirectionHint(Vector3? correctWorldPos)
+    public void SetDirectionHint(Vector3? correctWorldPos, EDiagonalDirectionHint mode = EDiagonalDirectionHint.Precise)
     {
-        bool showDirection = correctWorldPos.HasValue;
-        _answerTypeIcon.gameObject.SetActive(!showDirection);
-        _answerDirectionIcon.gameObject.SetActive(showDirection);
+        if (!correctWorldPos.HasValue)
+        {
+            _answerTypeIcon.gameObject.SetActive(true);
+            _answerDirectionIcon.gameObject.SetActive(false);
+            _answerDirectionIcon2.gameObject.SetActive(false);
+            _directionHintActive = false;
+            return;
+        }
 
-        if (!showDirection || AnswerPeek == null) return;
+        if (!_directionHintActive && mode == EDiagonalDirectionHint.Random)
+            _randomAxisIsHorizontal = Random.value > 0.5f;
 
-        Vector3 from = AnswerPeek.AnswerController.transform.position;
-        Vector3 dir = correctWorldPos.Value - from;
-        float angle = Mathf.Atan2(dir.z, dir.x) * Mathf.Rad2Deg;
-        _answerDirectionIcon.rectTransform.localRotation = Quaternion.Euler(0f, 0f, angle);
+        _directionHintActive = true;
+        _answerTypeIcon.gameObject.SetActive(false);
+
+        if (AnswerPeek == null) return;
+
+        Vector3 dir = correctWorldPos.Value - AnswerPeek.AnswerController.transform.position;
+
+        float xzMag = new Vector2(dir.x, dir.z).magnitude;
+        bool validH = xzMag > 0f && Mathf.Abs(dir.x) / xzMag >= _bothAxisMinRatio;
+        bool validV = xzMag > 0f && Mathf.Abs(dir.z) / xzMag >= _bothAxisMinRatio;
+
+        switch (mode)
+        {
+            case EDiagonalDirectionHint.Precise:
+                _answerDirectionIcon.gameObject.SetActive(true);
+                _answerDirectionIcon2.gameObject.SetActive(false);
+                _answerDirectionIcon.rectTransform.localRotation =
+                    Quaternion.Euler(0f, 0f, Mathf.Atan2(dir.z, dir.x) * Mathf.Rad2Deg);
+                break;
+
+            case EDiagonalDirectionHint.Random:
+            {
+                bool useH = (validH && validV) ? _randomAxisIsHorizontal
+                          : validH             ? true
+                          : validV             ? false
+                          : Mathf.Abs(dir.x) >= Mathf.Abs(dir.z); // fallback: dominant axis
+                _answerDirectionIcon.gameObject.SetActive(true);
+                _answerDirectionIcon2.gameObject.SetActive(false);
+                _answerDirectionIcon.rectTransform.localRotation =
+                    Quaternion.Euler(0f, 0f, useH ? (dir.x >= 0f ? 0f : 180f)
+                                                   : (dir.z >= 0f ? 90f : -90f));
+                break;
+            }
+
+            case EDiagonalDirectionHint.Both:
+                _answerDirectionIcon.gameObject.SetActive(validH);
+                _answerDirectionIcon2.gameObject.SetActive(validV);
+                if (validH) _answerDirectionIcon.rectTransform.localRotation =
+                    Quaternion.Euler(0f, 0f, dir.x >= 0f ? 0f : 180f);
+                if (validV) _answerDirectionIcon2.rectTransform.localRotation =
+                    Quaternion.Euler(0f, 0f, dir.z >= 0f ? 90f : -90f);
+                break;
+        }
     }
 
     public void ShowReady()

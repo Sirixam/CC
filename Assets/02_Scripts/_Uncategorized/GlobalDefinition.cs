@@ -30,6 +30,10 @@ public class GlobalDefinition : ScriptableObject
     public ECaughtMode CaughtMode;
     public EAnswerSheetMode AnswerSheetMode;    
 
+    [Header("ANSWER PEEK")]
+    public bool ShowDirectionOnSameType;
+    public EDiagonalDirectionHint DiagonalDirectionHint;
+
     [Header("TAGS")]
     [Tag] public string PlayerTag;
     [Tag] public string DistractionTag;
