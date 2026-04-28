@@ -614,17 +614,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rendererContainer: {fileID: 8139479431681188695}
+  _canBeConfiscated: 1
   _confiscateVFXPrefab: {fileID: 265766274217486953, guid: acb4546cb0fb96c448ba95a80ca40723, type: 3}
   _confiscateShrinkDuration: 0.4
+  _warningTime: 2
+  _warningPulseScale: 1.25
+  _warningPulseDuration: 0.15
   _defaultAnswerDefinition: {fileID: 0}
   _defaultCorrectness: 0
-  _timeToDestroyOnIdle: 5
-  _destroyOnIdle: 0
   _globalDefinition: {fileID: 11400000, guid: 2b0875648e78a8e45b08a646836071ca, type: 2}
   _isLobShot: 0
   _isDynamicLobShot: 0
   _isAnswer: 1
-  _destroyAfterHitDelay: 0.5
   _destroyData: []
   _isPlane: 0
 --- !u!114 &3311442955737208034

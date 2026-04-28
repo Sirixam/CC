@@ -373,7 +373,7 @@ public class GameManager : MonoBehaviour
         if (paperBall.IsIdle)
         {
             ConfiscationSlot slot = GetAvailableConfiscationSlot();
-            if (slot != null)
+            if (slot != null && paperBall.CanConfiscate())
             {
                 slot.Occupy();
                 paperBall.Confiscate(slot.Point, slot.Free);

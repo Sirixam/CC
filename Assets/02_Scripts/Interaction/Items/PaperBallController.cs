@@ -29,6 +29,9 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     }
 
     [SerializeField] private Transform _rendererContainer;
+
+    [Header("Confiscate")]
+    [SerializeField] private bool _canBeConfiscated;
     [SerializeField] private ParticleSystem _confiscateVFXPrefab;
     [SerializeField] private float _confiscateShrinkDuration = 0.4f;
 
@@ -260,10 +263,13 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
             _rendererContainer.localScale = Vector3.one;
     }
 
+    public bool CanConfiscate()
+    {
+        return _canBeConfiscated && _state != EState.Confiscated;
+    }
+
     public void Confiscate(Transform point, Action onFreed)
     {
-        if (_state == EState.Confiscated) return;
-
         _confiscateTween.Stop();
         StopWarning();
         _onConfiscationFreed = onFreed;
