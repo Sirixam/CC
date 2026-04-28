@@ -90,6 +90,7 @@ public class StudentManager : MonoBehaviour
         ShuffleCurveIndices();
 
         StudentNpcController smartStudent = GetNewSmartStudent();
+        _answerManager.SetSmartStudentController(smartStudent.AnswerController);
         AnswerDefinition correctAnswer = GetCorrectAnswerFromPool();
 
         if (_simulateStudentsIndividually)

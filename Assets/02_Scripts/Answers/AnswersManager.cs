@@ -268,8 +268,10 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
     private Dictionary<string, AnswerSheet> _actorId2AnswerSheet;
     private List<AnswerController> _answerControllers = new();
     private List<AnswerPeek> _activePeeks = new();
+    private AnswerController _smartStudentController;
 
     public AnswerDefinition[] GetNpcAnswerDefinitions() => _npcAnswersDefinitions;
+    public void SetSmartStudentController(AnswerController controller) => _smartStudentController = controller;
 
     private bool _isShaking;
 
@@ -347,7 +349,7 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
 
             if (answerPeekUI.State == EPeekState.FullInfo && peek.AnswerController.GetCorrectness(peek.AnswerID) == 0f)
             {
-                AnswerController target = _globalDefinition.ShowDirectionOnSameType ? FindNearestCorrectController(peek.AnswerController, peek.AnswerID) : FindNearestCorrectController(peek.AnswerController);
+                AnswerController target = _globalDefinition.ShowDirectionOnSameType ? FindNearestSmartController(peek.AnswerController, peek.AnswerID) : FindNearestSmartController(peek.AnswerController);
                 answerPeekUI.SetDirectionHint(target != null ? target.transform.position : (Vector3?)null, _globalDefinition.DiagonalDirectionHint);
             }
             else
@@ -357,34 +359,15 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
         }
     }
 
-    private AnswerController FindNearestCorrectController(AnswerController source, string answerID = null)
+    private AnswerController FindNearestSmartController(AnswerController source, string answerID = null)
     {
-        AnswerController nearest = null;
-        float nearestSqrDist = float.MaxValue;
-        Vector3 sourcePos = source.transform.position;
-        foreach (var controller in _answerControllers)
+        if (_smartStudentController == null || _smartStudentController == source) return null;
+        if (!string.IsNullOrWhiteSpace(answerID))
         {
-            if (controller == source || controller.AnswerSheet == null) continue;
-
-            if (!string.IsNullOrWhiteSpace(answerID))
-            {
-                if (!controller.AnswerSheet.HasAnswer(answerID)) continue;
-                float correctness = controller.GetCorrectness(answerID);
-                if (correctness != AnswerDefinition.PERFECT_CORRECTNESS) continue;
-            }
-            else
-            {
-                if (!controller.AnswerSheet.HasCorrectAnswer()) continue;
-            }
-
-            float sqrDist = (controller.transform.position - sourcePos).sqrMagnitude;
-            if (sqrDist < nearestSqrDist)
-            {
-                nearestSqrDist = sqrDist;
-                nearest = controller;
-            }
+            if (_smartStudentController.AnswerSheet == null) return null;
+            if (!_smartStudentController.AnswerSheet.HasAnswer(answerID)) return null;
         }
-        return nearest;
+        return _smartStudentController;
     }
 
     private EPeekState GetPeekState(AnswerController answerController)
