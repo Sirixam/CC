@@ -76,6 +76,7 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
     private string _ownerID;
     private string _lastOwnerID;
     private bool _hasHitGround;
+    private Rigidbody _rigidbody;
     private Collider[] _colliders;
     public bool HasHitGround => _hasHitGround;
 
@@ -100,6 +101,7 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
         //_audioHelper = new ItemAudioHelper(_audioData);
         ID = GameContext.ItemsManager.GetNewItemID();
         _colliders = GetComponentsInChildren<Collider>();
+        _rigidbody = GetComponent<Rigidbody>();
     }
 
     private void Start()
@@ -128,11 +130,10 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
         // Plane velocity check — drop if too slow
         if (_isPlane && _hasBeenThrown && !_hasDropped)
         {
-            Rigidbody rb = GetComponent<Rigidbody>();
-            if (rb.velocity.magnitude < 0.5f)
+            if (_rigidbody.velocity.magnitude < 0.5f)
             {
                 _hasDropped = true;
-                rb.useGravity = true;
+                _rigidbody.useGravity = true;
             }
         }
 
@@ -270,13 +271,16 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
 
     public void Confiscate(Transform point, Action onFreed)
     {
-        _confiscateTween.Stop();
-        StopWarning();
         _onConfiscationFreed = onFreed;
+
+        // Reset
+        StopWarning();
+        _ownerID = null;
+        _confiscateTween.Stop();
+
+        // Start confiscate
         _state = EState.Confiscated;
-
         Vector3 spawnPosition = transform.position;
-
         _confiscateTween = Tween.Scale(_rendererContainer, Vector3.zero, _confiscateShrinkDuration, Ease.InBack)
             .OnComplete(() =>
             {
@@ -287,10 +291,24 @@ public class PaperBallController : MonoBehaviour, IPickUpInteractionOwner, IItem
                 }
 
                 transform.position = point.position;
-                if (TryGetComponent<Rigidbody>(out var rb))
+
+                SetCollidersEnabled(true);
+                PlaneFlightBehavior planeFlight = GetComponent<PlaneFlightBehavior>();
+                if (planeFlight != null)
                 {
-                    rb.velocity = Vector3.zero;
-                    rb.angularVelocity = Vector3.zero;
+                    planeFlight.Land();
+                    Destroy(planeFlight);
+                }
+                ExtraGravity extraGravity = GetComponent<ExtraGravity>();
+                if (extraGravity != null)
+                {
+                    Destroy(extraGravity);
+                }
+
+                if (_rigidbody != null)
+                {
+                    _rigidbody.velocity = Vector3.zero;
+                    _rigidbody.angularVelocity = Vector3.zero;
                 }
                 _rendererContainer.localScale = Vector3.one;
             });

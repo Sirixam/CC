@@ -370,7 +370,7 @@ public class GameManager : MonoBehaviour
         PlayerController owner = _players.Find(x => hasBeenThrown ? x.ID == paperBall.LastOwnerID : x.ID == paperBall.OwnerID);
         if (owner != null && owner.IsSitting && !hasBeenThrown) return;
 
-        if (paperBall.IsIdle)
+        if (paperBall.IsIdle || paperBall.IsMidAir)
         {
             ConfiscationSlot slot = GetAvailableConfiscationSlot();
             if (slot != null && paperBall.CanConfiscate())
@@ -382,11 +382,13 @@ public class GameManager : MonoBehaviour
             {
                 paperBall.Destroy();
             }
-            return;
-        }
 
-        if (paperBall.IsBeingHeld || paperBall.IsMidAir)
+            if (paperBall.IsIdle) return; // DO NOT lose life when idle
+        }
+        else if (paperBall.IsBeingHeld)
+        {
             paperBall.Destroy();
+        }
 
         if (owner == null)
         {
