@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private RoundTimeUI _roundTimeUI;
     [SerializeField] private LivesUI _livesUI;
     [SerializeField] private HelpUI _helpUI;
+    [SerializeField] private SeatedGroupInputUI[] _seatedGroupUIs;
     [SerializeField] private ButtonListener[] _restartButtons;
     [SerializeField] private PlayerAppearanceSO[] _playerAppearances;
 
@@ -138,6 +139,11 @@ public class GameManager : MonoBehaviour
         playerController.SetInitialChairController(chairController);
         playerController.OnShowHelp += OnShowHelp;
         playerController.OnHideHelp += OnHideHelp;
+
+        int playerIndex = playerInput.playerIndex;
+        if (_seatedGroupUIs != null && playerIndex < _seatedGroupUIs.Length && _seatedGroupUIs[playerIndex] != null)
+            _seatedGroupUIs[playerIndex].Setup(playerController);
+
         _players.Add(playerController);
 
         FlashEffect flashEffect = playerController.GetComponent<FlashEffect>();

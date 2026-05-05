@@ -5,6 +5,7 @@ public class InputWorldspaceUI : MonoBehaviour
 {
     [SerializeField] private Image _icon;
     [SerializeField] private Vector3 _positionOffset = new Vector3(0f, 1.5f, 0f);
+    [SerializeField] private bool _hideOnAwake = true;
 
     [Header("Overlay")]
     [SerializeField] private bool _useOverlay;
@@ -18,7 +19,10 @@ public class InputWorldspaceUI : MonoBehaviour
     {
         _mainCamera = Camera.main;
         ApplyMaterial();
-        gameObject.SetActive(false);
+        if (_hideOnAwake)
+        {
+            gameObject.SetActive(false);
+        }
     }
 
     public void SetTarget(Transform target)

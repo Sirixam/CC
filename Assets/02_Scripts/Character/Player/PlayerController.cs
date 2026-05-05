@@ -104,14 +104,17 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     Vector3 IThrowActor.LookDirection => _view.transform.forward;
     Collider[] IThrowActor.Colliders => _physics.Colliders;
 
+    public event Action OnFinishedInitialization;
     public event Action<EDevice> OnShowHelp;
     public event Action OnHideHelp;
+    public event Action OnSittingComplete;
+    public event Action OnStandingStarted;
     private Action _onWalkBackSeated;
-    public Transform InitialChairTransform => _initialChairController != null
-        ? _initialChairController.SittingPoint
-        : null;
+    public Transform InitialChairTransform => _initialChairController != null ? _initialChairController.SittingPoint : null;
 
     private bool _isWalkingBack;
+
+    public bool IsInitialized { get; private set; }
 
     private void Awake()
     {
@@ -138,7 +141,8 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _lookHelper.Initialize(transform.forward);
         _fieldOfViewController.HideInstant();
         TeleportToInitialChair();
-
+        IsInitialized = true;
+        OnFinishedInitialization?.Invoke();
     }
 
     public void Inject(IAnswerIconProvider answerIconProvider)
@@ -160,6 +164,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
         _chairHelper.OnSittingComplete += TryShowAnswerSheetOnSit;
         _chairHelper.OnSittingComplete += OnSittingCompleteForStanding;
+        _chairHelper.OnSittingComplete += ForwardOnSittingComplete;
         _craftHelper.OnFinishedCrafting += TryShowAnswerSheetOnSit;
         _craftHelper.OnFinishedCrafting += _view.StopCrafting;
 
@@ -180,6 +185,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
         _chairHelper.OnSittingComplete -= TryShowAnswerSheetOnSit;
         _chairHelper.OnSittingComplete -= OnSittingCompleteForStanding;
+        _chairHelper.OnSittingComplete -= ForwardOnSittingComplete;
         _craftHelper.OnFinishedCrafting -= TryShowAnswerSheetOnSit;
         _craftHelper.OnFinishedCrafting -= _view.StopCrafting;
 
@@ -453,6 +459,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
             RestoreInputScope(instant: true);
         }
 
+        OnStandingStarted?.Invoke();
         _lookHelper.ClearLookAt();
         _chairHelper.TeleportToStanding(doorPoint);
         _interactionHelper.EnableInteraction();
@@ -484,6 +491,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         }
 
         _pendingStandingRequest = false;
+        OnStandingStarted?.Invoke();
         Vector2 inputDir = _inputHandler.LastMoveInput;
         _lookHelper.ClearLookAt();
         _chairHelper.StartStanding(inputDir);
@@ -1187,6 +1195,8 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
     {
         _audioHelper.OnCaught();
     }
+
+    private void ForwardOnSittingComplete() => OnSittingComplete?.Invoke();
 
     //refactor to avoid having 2 similar functions
     private void TryShowAnswerSheetOnSit()
