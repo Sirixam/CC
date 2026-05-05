@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class AnswerController : MonoBehaviour
+public class AnswerController : MonoBehaviour, IInteractionFilter
 {
     public enum EState
     {
@@ -41,6 +41,8 @@ public class AnswerController : MonoBehaviour
     public bool IsThinking => _state == EState.Thinking;
     public bool IsAnswering => _state == EState.Answering;
     public bool IsValidating => _state == EState.Validating;
+    public bool CanStartPeeking => IsThinking || IsAnswering || IsValidating;
+    public bool CanStartCheating => IsValidating && !IsCheatBlocked;
     public float ThinkingPercent => 1f - _thinkingRemainingTime / _thinkingDuration;
     public float AnsweringPercent => 1f - _answeringRemainingTime / _answeringDuration;
     public float ValidatingPercent => 1f - _validatingRemainingTime / _validatingDuration;
@@ -49,6 +51,16 @@ public class AnswerController : MonoBehaviour
 
     public event Action<AnswerController, string> OnFinishPeekingEvent;
     public event Action<AnswerController, string> OnFinishAnsweringEvent;
+
+    public bool IsValidForInteraction(IActor actor)
+    {
+        if (actor is PlayerController player)
+        {
+            return (player.IsPeeking && CanStartPeeking) || CanStartCheating;
+        }
+        Debug.LogError("Actor is not a PlayerController: " + actor);
+        return false;
+    }
 
     private void Awake()
     {
@@ -185,11 +197,13 @@ public class AnswerController : MonoBehaviour
     public void StartThinking()
     {
         _state = EState.Thinking;
+        _interactionController.NotifyAvailabilityChanged();
     }
 
     public void StartAnswering(float progress)
     {
         _state = EState.Answering;
+        _interactionController.NotifyAvailabilityChanged();
         if (IsPlayer)
         {
             string answerID = ActiveAnswerID;
@@ -201,11 +215,13 @@ public class AnswerController : MonoBehaviour
     public void StartValidating()
     {
         _state = EState.Validating;
+        _interactionController.NotifyAvailabilityChanged();
     }
 
     public void StartIdle()
     {
         _state = EState.Idle;
+        _interactionController.NotifyAvailabilityChanged();
     }
 
     public float GetCorrectness(string answerID)

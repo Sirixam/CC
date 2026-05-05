@@ -22,6 +22,11 @@ public interface IInteractionOwner
     InteractionController InteractionController { get; }
 }
 
+public interface IInteractionFilter
+{
+    bool IsValidForInteraction(IActor actor);
+}
+
 public class InteractionController : MonoBehaviour
 {
     [Serializable]
@@ -75,6 +80,7 @@ public class InteractionController : MonoBehaviour
     public event Action<InteractionController> OnDestroyEvent;
     public event Action OnBestInteractionStart;
     public event Action OnBestInteractionStop;
+    public event Action OnAvailabilityChanged;
 
     private void Awake()
     {
@@ -139,6 +145,11 @@ public class InteractionController : MonoBehaviour
     public bool CanInteract(string actorID)
     {
         return _whiteListedActorIDs.Count == 0 || _whiteListedActorIDs.Contains(actorID);
+    }
+
+    public void NotifyAvailabilityChanged()
+    {
+        OnAvailabilityChanged?.Invoke();
     }
 
     public void Enable()

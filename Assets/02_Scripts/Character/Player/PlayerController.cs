@@ -76,7 +76,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private AimInput _lastAimInput;
     private bool _skipNextDirectionAction;
-    private bool IsPeeking => _inputHandler.ScopeType == EInputScope.PlayerPeeking;
+    public bool IsPeeking => _inputHandler.ScopeType == EInputScope.PlayerPeeking;
     private bool IsAnswering => _answerController != null && _answerController.IsAnswering;
     public bool IsSitting => _chairHelper.IsSitting;
     public TriggerListener SelfTriggerListener => _selfTriggerListener;

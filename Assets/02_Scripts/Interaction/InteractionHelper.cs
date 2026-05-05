@@ -122,6 +122,7 @@ public class InteractionHelper
     {
         interaction.OnDisableEvent += RemoveInteraction;
         interaction.OnDestroyEvent += OnDestroyInteraction;
+        interaction.OnAvailabilityChanged += UpdateBestInteraction;
         _interactions.Add(interaction);
         UpdateBestInteraction();
     }
@@ -130,6 +131,7 @@ public class InteractionHelper
     {
         interaction.OnDisableEvent -= RemoveInteraction;
         interaction.OnDestroyEvent -= OnDestroyInteraction;
+        interaction.OnAvailabilityChanged -= UpdateBestInteraction;
         _interactions.Remove(interaction);
         UpdateBestInteraction();
     }
@@ -142,6 +144,8 @@ public class InteractionHelper
         bool isCarrying = _activeInteractions.Exists(x => x.Type == EInteraction.PickUp);
         InteractionController bestInteraction = ComputeBestInteraction(_interactions, isValid: interaction =>
         {
+            if (interaction.TryGetComponent<IInteractionFilter>(out var filter) && !filter.IsValidForInteraction(_actor))
+                return false;
             return !isCarrying || interaction.Type != EInteraction.PickUp;
         }, computeScore: interaction =>
         {
