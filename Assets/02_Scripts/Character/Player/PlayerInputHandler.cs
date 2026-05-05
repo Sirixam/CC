@@ -94,10 +94,14 @@ public partial class PlayerInputHandler : MonoBehaviour
     private class DeviceManager
     {
         public EDevice LastKnownDeviceType { get; private set; }
+        public Action<EDevice> OnDeviceChanged;
 
         public void UpdateLastKnownDevice(InputDevice device)
         {
-            LastKnownDeviceType = GetDeviceFromContext(device);
+            EDevice detected = GetDeviceFromContext(device);
+            if (detected == LastKnownDeviceType) return;
+            LastKnownDeviceType = detected;
+            OnDeviceChanged?.Invoke(detected);
         }
 
         public EDevice GetDeviceFromContext(InputDevice device)
@@ -140,12 +144,14 @@ public partial class PlayerInputHandler : MonoBehaviour
     public Action<EAction> PreHoldActionEvent;
     public Action<EAction, bool> HoldActionEvent;
     public Action<EDirectionalAction, Vector2, bool> DirectionalActionEvent;
+    public Action<EDevice> DeviceChangedEvent;
 
     public void Initialize()
     {
         PlayerInput = GetComponent<PlayerInput>();
         _mapper = new Mapper(_mapperData, this);
         _deviceManager = new DeviceManager();
+        _deviceManager.OnDeviceChanged += device => DeviceChangedEvent?.Invoke(device);
         Debug.Log("Current control scheme: " + PlayerInput.currentControlScheme);
         _isBlocked = false;
     }

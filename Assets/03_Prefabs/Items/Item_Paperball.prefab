@@ -117,6 +117,7 @@ GameObject:
   - component: {fileID: 3316289737042317936}
   - component: {fileID: 5231854230987738200}
   - component: {fileID: 3311442955737208034}
+  - component: {fileID: -4347412397324980845}
   - component: {fileID: -5984599180916989715}
   - component: {fileID: 315868154328462021}
   - component: {fileID: 7130793065122747167}
@@ -160,6 +161,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rendererContainer: {fileID: 6267865738357271327}
+  _canBeConfiscated: 0
   _confiscateVFXPrefab: {fileID: 0}
   _confiscateShrinkDuration: 0.4
   _warningTime: 2
@@ -245,6 +247,22 @@ MonoBehaviour:
   _interactableTag: Interaction
   _notInteractableTag: Untagged
   _isEnabledByDefault: 1
+--- !u!114 &-4347412397324980845
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5219355494168577670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f21dd8ebff712f4fb0ee7ae85f2932e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interaction: {fileID: 3311442955737208034}
+  _uiPrefab: {fileID: 2879333628410197245, guid: 00be838780f88714089eed61b0f82b6a, type: 3}
+  _action: 1
+  _config: {fileID: 11400000, guid: d99550c9171855b4ab84db8b7127f764, type: 2}
 --- !u!114 &-5984599180916989715
 MonoBehaviour:
   m_ObjectHideFlags: 0

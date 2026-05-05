@@ -58,9 +58,11 @@ public class InteractionController : MonoBehaviour
     [SerializeField] private bool _isEnabledByDefault = true;
 
     private int _bestInteractionCount;
+    private bool _isBestInteraction;
     private Tween _scaleTween;
     private List<string> _whiteListedActorIDs = new(); // [AKP] If empty, all actors can interact with this.
     public bool IsEnabled { get; private set; }
+    public bool IsBestInteraction => _isBestInteraction;
 
     public EInteraction Type => _data.Type;
     public int BaseScore => _data.BaseScore;
@@ -71,6 +73,8 @@ public class InteractionController : MonoBehaviour
 
     public event Action<InteractionController> OnDisableEvent;
     public event Action<InteractionController> OnDestroyEvent;
+    public event Action OnBestInteractionStart;
+    public event Action OnBestInteractionStop;
 
     private void Awake()
     {
@@ -168,6 +172,13 @@ public class InteractionController : MonoBehaviour
 
     private void TriggerBestInteractionTween(bool isBestInteraction)
     {
+        if (_isBestInteraction != isBestInteraction)
+        {
+            _isBestInteraction = isBestInteraction;
+            if (isBestInteraction) OnBestInteractionStart?.Invoke();
+            else OnBestInteractionStop?.Invoke();
+        }
+
         if (_bestInteractionViewData.UseOutline)
         {
             _bestInteractionViewData.Outline.enabled = isBestInteraction;

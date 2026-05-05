@@ -944,7 +944,11 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private void OnInteractionTriggerEnter(Collider other)
     {
-        _interactionHelper.TryAddInteraction(other, out _);
+        if (_interactionHelper.TryAddInteraction(other, out InteractionController interaction))
+        {
+            if (interaction.TryGetComponent(out InteractionInputUI inputUI))
+                inputUI.Setup(_inputHandler);
+        }
     }
 
     private void OnInteractionTriggerExit(Collider other)
