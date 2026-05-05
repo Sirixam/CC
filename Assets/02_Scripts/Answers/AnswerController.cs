@@ -52,11 +52,23 @@ public class AnswerController : MonoBehaviour, IInteractionFilter
     public event Action<AnswerController, string> OnFinishPeekingEvent;
     public event Action<AnswerController, string> OnFinishAnsweringEvent;
 
-    public bool IsValidForInteraction(IActor actor)
+    public void OnStartPeeking()
+    {
+        _interactionController.NotifyAvailabilityChanged();
+        _interactionController.SetOutline(true);
+    }
+
+    public void OnStopPeeking()
+    {
+        _interactionController.SetOutline(false);
+        _interactionController.NotifyAvailabilityChanged();
+    }
+
+    bool IInteractionFilter.IsValidForInteraction(IActor actor)
     {
         if (actor is PlayerController player)
         {
-            return (player.IsPeeking && CanStartPeeking) || CanStartCheating;
+            return !player.IsPeeking && CanStartCheating;
         }
         Debug.LogError("Actor is not a PlayerController: " + actor);
         return false;

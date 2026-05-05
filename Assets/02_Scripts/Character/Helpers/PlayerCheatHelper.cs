@@ -43,7 +43,7 @@ public class PlayerCheatHelper
 
     public bool CanStartPeeking(AnswerController answerController)
     {
-        return answerController.IsThinking || answerController.IsAnswering || answerController.IsValidating;
+        return answerController.CanStartPeeking;
     }
 
     public bool CanStopPeeking(AnswerController answerController)
@@ -53,7 +53,7 @@ public class PlayerCheatHelper
 
     public bool CanStartCheating(AnswerController answerController)
     {
-        return answerController.IsValidating && !answerController.IsCheatBlocked;
+        return answerController.CanStartCheating;
     }
 
     public void StartPeeking(AnswerController answerController)
@@ -61,6 +61,7 @@ public class PlayerCheatHelper
         bool isSameTarget = _answerController == answerController;
         _answerController = answerController;
         IsPeeking = true;
+        answerController.OnStartPeeking();
         if (!isSameTarget)
         {
             PeekingProgress = 0;
@@ -89,11 +90,12 @@ public class PlayerCheatHelper
 
     public void StopPeeking()
     {
+        IsPeeking = false;
+        _answerController?.OnStopPeeking();
         if (!_data.KeepPeekProgress)
         {
             _answerController = null;
         }
-        IsPeeking = false;
         _playerView.PeekUI.Hide();
     }
 

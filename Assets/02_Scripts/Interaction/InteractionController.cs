@@ -152,6 +152,12 @@ public class InteractionController : MonoBehaviour
         OnAvailabilityChanged?.Invoke();
     }
 
+    public void SetOutline(bool enabled)
+    {
+        if (_bestInteractionViewData.UseOutline)
+            _bestInteractionViewData.Outline.enabled = enabled;
+    }
+
     public void Enable()
     {
         SetIsEnabled(true);

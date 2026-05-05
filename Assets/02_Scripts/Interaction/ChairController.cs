@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class ChairController : MonoBehaviour
+public class ChairController : MonoBehaviour, IInteractionFilter
 {
     [SerializeField] private InteractionController _interactionController;
     [SerializeField] private Transform _sittingPoint;
@@ -40,6 +40,16 @@ public class ChairController : MonoBehaviour
         {
             _interactionController.AddPlayerToWhitelist(AnswerController.ActorID);
         }
+    }
+
+    bool IInteractionFilter.IsValidForInteraction(IActor actor)
+    {
+        if (actor is PlayerController player)
+        {
+            return !player.IsPeeking;
+        }
+        Debug.LogError("Actor is not a PlayerController: " + actor);
+        return false;
     }
 
     public void Block()

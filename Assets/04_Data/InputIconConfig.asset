@@ -13,9 +13,6 @@ MonoBehaviour:
   m_Name: InputIconConfig
   m_EditorClassIdentifier: 
   _entries:
-  - Action: 0
-    GamepadSprite: {fileID: 21300000, guid: 3b97fc217dc2a8e4f8e8ccc44edaaaab, type: 3}
-    KeyboardSprite: {fileID: 21300000, guid: 3b97fc217dc2a8e4f8e8ccc44edaaaab, type: 3}
   - Action: 1
     GamepadSprite: {fileID: 21300000, guid: ba23aa8a6a39f3f45aa9db97d6ecbb89, type: 3}
     KeyboardSprite: {fileID: 21300000, guid: ba23aa8a6a39f3f45aa9db97d6ecbb89, type: 3}
