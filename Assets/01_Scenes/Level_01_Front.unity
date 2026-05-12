@@ -5447,13 +5447,13 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 8978040332893936153, guid: 85af59eaff2ce9c4188dcc991e383aee, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
     - targetCorrespondingSourceObject: {fileID: 2652638077117744486, guid: 85af59eaff2ce9c4188dcc991e383aee, type: 3}
       insertIndex: -1
       addedObject: {fileID: 0}
     - targetCorrespondingSourceObject: {fileID: 4051824922808943087, guid: 85af59eaff2ce9c4188dcc991e383aee, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 0}
+    - targetCorrespondingSourceObject: {fileID: 8978040332893936153, guid: 85af59eaff2ce9c4188dcc991e383aee, type: 3}
       insertIndex: -1
       addedObject: {fileID: 0}
   m_SourcePrefab: {fileID: 100100000, guid: 85af59eaff2ce9c4188dcc991e383aee, type: 3}
@@ -16501,8 +16501,8 @@ MonoBehaviour:
   _globalDefinition: {fileID: 11400000, guid: 2b0875648e78a8e45b08a646836071ca, type: 2}
   _simulateStudentsIndividually: 1
   _halfCorrectChance: 0.5
-  _peekPhaseDuration: 10
-  _cheatPhaseDuration: 45
+  _peekPhaseDuration: 5
+  _cheatPhaseDuration: 15
   _answeringDurationRange: {x: 5, y: 5}
   _thinkingDurationCurve:
     serializedVersion: 2
@@ -19085,13 +19085,13 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 8978040332893936153, guid: 85af59eaff2ce9c4188dcc991e383aee, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
     - targetCorrespondingSourceObject: {fileID: 2652638077117744486, guid: 85af59eaff2ce9c4188dcc991e383aee, type: 3}
       insertIndex: -1
       addedObject: {fileID: 0}
     - targetCorrespondingSourceObject: {fileID: 4051824922808943087, guid: 85af59eaff2ce9c4188dcc991e383aee, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 0}
+    - targetCorrespondingSourceObject: {fileID: 8978040332893936153, guid: 85af59eaff2ce9c4188dcc991e383aee, type: 3}
       insertIndex: -1
       addedObject: {fileID: 0}
   m_SourcePrefab: {fileID: 100100000, guid: 85af59eaff2ce9c4188dcc991e383aee, type: 3}

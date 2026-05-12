@@ -23,6 +23,7 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
     [SerializeField] private Collider _collider;
     [SerializeField] private TeacherView _teacherView;
     [SerializeField] private float _detectionDwellTime = 0.3f;
+    [SerializeField] private bool _hideFovWhilePassive;
     private PlayerController _playerInsideFOV;
     private float _dwellTimer;
     public Collider Collider => _collider;
@@ -160,6 +161,9 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
         _fieldOfViewController.Hide();
         _remainingTime = UnityEngine.Random.Range(_timeToStandRange.x, _timeToStandRange.y);
         transform.rotation = Quaternion.LookRotation(Vector3.forward);
+
+        if (_isInPassivePhase)
+            _teacherView.ShowNewspaper();
     }
 
     private void Stand()
@@ -217,6 +221,7 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
     {
         StopAllCoroutines();
         _teacherView.StopAngryVFX();
+        _teacherView.HideNewspaper();
 
         _playerInsideFOV = null;
         _dwellTimer = 0f;
@@ -293,18 +298,22 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
     public void EnterPassivePhase()
     {
         _isInPassivePhase = true;
-        _fieldOfViewController.Hide();
+        if (_hideFovWhilePassive)
+        {
+            _fieldOfViewController.Hide();
+        }
         StopAllCoroutines();
 
-        if (_state == EState.Patrol)
-        {
+        if (_state == EState.Sit)
+            _teacherView.ShowNewspaper();
+        else if (_state == EState.Patrol)
             GoToSeat();
-        }
     }
 
     public void EnterPatrolPhase()
     {
         _isInPassivePhase = false;
+        _teacherView.HideNewspaper();
         if (!_isActive) return;
 
         if (_state == EState.Sit)
