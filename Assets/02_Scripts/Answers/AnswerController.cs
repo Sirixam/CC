@@ -185,7 +185,7 @@ public class AnswerController : MonoBehaviour, IInteractionFilter
             return false; // No answer sheet in this desk
         }
         if (AnswerSheet.IsAnswerFull(answerID, out progress, out float oldCorrectness) && oldCorrectness == 1) return false; // Already answered correctly
-        //if (!string.IsNullOrEmpty(contributorActorID) && AnswerSheet.HasContributor(answerID, contributorActorID)) return false; // Same source already contributed
+        if (!string.IsNullOrEmpty(contributorActorID) && AnswerSheet.HasContributor(answerID, contributorActorID)) return false; // Same source already contributed
         if (!string.IsNullOrEmpty(sourceID) && AnswerSheet.HasContributor(answerID, sourceID)) return false; // Same source 
         return true;
     }
