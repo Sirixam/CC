@@ -351,13 +351,17 @@ public class GameManager : MonoBehaviour
         if (itemController is not PaperBallController paperBall)
             return;
 
+        if (paperBall.IsBeingHeld) return; // Ignore items being held.
+
         //Sitting players are safe ONLY if the ball was NOT thrown
         bool hasBeenThrown = paperBall.HasBeenThrown();
         PlayerController owner = _players.Find(x => hasBeenThrown ? x.ID == paperBall.LastOwnerID : x.ID == paperBall.OwnerID);
         if (owner != null && owner.IsSitting && !hasBeenThrown) return;
 
-        if (paperBall.IsBeingHeld || paperBall.IsMidAir)
+        if (paperBall.IsMidAir)
+        {
             paperBall.Destroy();
+        }
 
         if (owner == null)
         {
@@ -374,12 +378,14 @@ public class GameManager : MonoBehaviour
         if (itemController is not PaperBallController paperBall)
             return;
 
+        if (paperBall.IsBeingHeld) return; // Ignore items being held.
+
         //Sitting players are safe ONLY if the ball was NOT thrown
         bool hasBeenThrown = paperBall.HasBeenThrown();
         PlayerController owner = _players.Find(x => hasBeenThrown ? x.ID == paperBall.LastOwnerID : x.ID == paperBall.OwnerID);
         if (owner != null && owner.IsSitting && !hasBeenThrown) return;
 
-        if (paperBall.IsIdle || paperBall.IsMidAir || paperBall.IsBeingHeld)
+        if (paperBall.IsIdle || paperBall.IsMidAir)
         {
             ConfiscateOrDestroyItem(paperBall);
             if (paperBall.IsIdle) return; // DO NOT lose life when idle

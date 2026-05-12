@@ -35,6 +35,7 @@ public class CraftHelper
 
     public CraftHelper(PlayerController owner, PlayerView actorView, InteractionHelper interactionHelper, ICraftService craftService, GlobalDefinition globalDefinition)
     {
+        _actor = owner;
         _actorView = actorView;
         _interactionHelper = interactionHelper;
         _craftService = craftService;
@@ -129,6 +130,10 @@ public class CraftHelper
         {
             _interactionHelper.AddInteraction(interactionOwner.InteractionController);
             _interactionHelper.StartInteraction(interactionOwner.InteractionController);
+        }
+        if (itemInstance.TryGetComponent(out IPickUpInteractionOwner pickUpInteractionOwner))
+        {
+            pickUpInteractionOwner.OnPickedUp(_actor.ID);
         }
         OnFinishedCrafting?.Invoke();
     }
