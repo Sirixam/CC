@@ -385,10 +385,11 @@ public class GameManager : MonoBehaviour
         PlayerController owner = _players.Find(x => hasBeenThrown ? x.ID == paperBall.LastOwnerID : x.ID == paperBall.OwnerID);
         if (owner != null && owner.IsSitting && !hasBeenThrown) return;
 
-        if (paperBall.IsIdle || paperBall.IsMidAir)
+        bool isIdle = paperBall.IsIdle;
+        if (isIdle || paperBall.IsMidAir)
         {
             ConfiscateOrDestroyItem(paperBall);
-            if (paperBall.IsIdle) return; // DO NOT lose life when idle
+            if (isIdle) return; // DO NOT lose life when idle
         }
 
         if (owner == null)
