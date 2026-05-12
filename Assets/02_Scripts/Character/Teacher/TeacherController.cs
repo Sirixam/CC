@@ -39,13 +39,14 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
     private float _remainingTime;
     private bool _goToSeatOnArrive;
     private bool _isActive;
+    private bool _isInPassivePhase;
 
     private NavigationHelper _navigationHelper;
     private TeacherAudioHelper _audioHelper;
 
     public Action<PlayerController> OnPlayerDetected;
     public Action<IItemController> OnItemDetected;
-    
+
     private Vector3 _initialPosition;
     private Quaternion _initialRotation;
     private float _detectionCooldown;
@@ -57,7 +58,7 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
     {
         _initialPosition = transform.position;
         _initialRotation = transform.rotation;
-        
+
         _audioHelper = new TeacherAudioHelper(_audioData);
         _fieldOfViewController.HideInstant();
         _detectionTriggerListener.OnEnter += OnDetectionTriggerEnter;
@@ -117,9 +118,12 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
         {
             if (_state == EState.Sit)
             {
-                Stand();
-                _state = EState.Patrol;
-                _navigationHelper.GoToRandomDestination();
+                if (!_isInPassivePhase)
+                {
+                    Stand();
+                    _state = EState.Patrol;
+                    _navigationHelper.GoToRandomDestination();
+                }
             }
             else
             {
@@ -216,7 +220,7 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
 
         _playerInsideFOV = null;
         _dwellTimer = 0f;
-        
+
         _navigationHelper.Reset();
         _detectionCooldown = 0f;
 
@@ -245,7 +249,8 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
         // Reset state machine
         _state = EState.Sit;
         _goToSeatOnArrive = false;
-        
+        _isInPassivePhase = false;
+
         // Reset teacher
         _isActive = false;
 
@@ -283,6 +288,31 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
         _isActive = true;
         _state = EState.Sit;
         _remainingTime = 1f;
+    }
+
+    public void EnterPassivePhase()
+    {
+        _isInPassivePhase = true;
+        _fieldOfViewController.Hide();
+        StopAllCoroutines();
+
+        if (_state == EState.Patrol)
+        {
+            GoToSeat();
+        }
+    }
+
+    public void EnterPatrolPhase()
+    {
+        _isInPassivePhase = false;
+        if (!_isActive) return;
+
+        if (_state == EState.Sit)
+        {
+            Stand();
+            _state = EState.Patrol;
+            _navigationHelper.GoToRandomDestination();
+        }
     }
 
     public void PauseAndLookAt(Transform target, float duration, System.Action onComplete)

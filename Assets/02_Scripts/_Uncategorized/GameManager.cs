@@ -174,6 +174,7 @@ public class GameManager : MonoBehaviour
         if (_teacherManager != null)
         {
             _teacherManager.StartPatrolling();
+            _teacherManager.EnterPassivePhase();
         }
 
         if (_livesUI != null)
@@ -285,8 +286,9 @@ public class GameManager : MonoBehaviour
     {
         switch (phaseIndex)
         {
-            case 0: // PreAnswering → Answering
+            case 0: // Thinking → Cheat/Validating: teacher starts patrolling
                 _audioHelper.OnPhaseChangeAnswer();
+                _teacherManager?.EnterPatrolPhase();
                 break;
         }
     }
@@ -297,6 +299,7 @@ public class GameManager : MonoBehaviour
         _studentManager.RestartStimulation();
         _answerManager.StopAllPeekCardShakes();
         _answerManager.CleanActivePeeks();
+        _teacherManager?.EnterPassivePhase();
     }
     private void HandleCountdownBeep(int phaseIndex, int secondsLeft)
     {

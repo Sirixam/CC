@@ -66,6 +66,18 @@ public class TeacherManager : MonoBehaviour
             _teachers[i].StartPatrolling();
         }
     }
+
+    public void EnterPassivePhase()
+    {
+        for (int i = 0; i < _teachers.Length; i++)
+            _teachers[i].EnterPassivePhase();
+    }
+
+    public void EnterPatrolPhase()
+    {
+        for (int i = 0; i < _teachers.Length; i++)
+            _teachers[i].EnterPatrolPhase();
+    }
     public void PauseAndLookAt(Transform target, float duration, System.Action onComplete)
     {
         for (int i = 0; i < _teachers.Length; i++)
