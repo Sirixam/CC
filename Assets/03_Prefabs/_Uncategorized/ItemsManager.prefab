@@ -46,10 +46,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _answerItemName: Answer
   _itemsData:
-  - Name: Answer
-    Icon: {fileID: 0}
-    Prefab: {fileID: 5219355494168577670, guid: 1a918e96e086428419e3a9e7e1c16e9d, type: 3}
-    CraftDuration: 3
   - Name: Paper Ball
     Icon: {fileID: 0}
     Prefab: {fileID: 5219355494168577670, guid: 0e2fd31554e12e34c85e6608faae33a4, type: 3}
@@ -58,3 +54,15 @@ MonoBehaviour:
     Icon: {fileID: 0}
     Prefab: {fileID: 5219355494168577670, guid: 8b8e779844369b44bade229e6494019e, type: 3}
     CraftDuration: 1
+  - Name: Paper Ball DynamicLobShot
+    Icon: {fileID: 0}
+    Prefab: {fileID: 5219355494168577670, guid: f606ebbcc6d7d8f489c245f904cde6d9, type: 3}
+    CraftDuration: 1
+  - Name: Answer
+    Icon: {fileID: 0}
+    Prefab: {fileID: 5219355494168577670, guid: 53c527aea8637a84f898e2557486bb85, type: 3}
+    CraftDuration: 3
+  - Name: Answer Plane
+    Icon: {fileID: 0}
+    Prefab: {fileID: 5219355494168577670, guid: 53c527aea8637a84f898e2557486bb85, type: 3}
+    CraftDuration: 3
