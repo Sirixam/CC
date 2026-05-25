@@ -1317,15 +1317,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5694824683282462777, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}
       propertyPath: _routesData.Array.data[0].Include
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5694824683282462777, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}
       propertyPath: _routesData.Array.data[1].Include
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5694824683282462777, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}
       propertyPath: _routesData.Array.data[2].Include
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5694824683282462777, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}
       propertyPath: _routesData.Array.data[3].Include
@@ -5244,13 +5244,9 @@ MonoBehaviour:
   _playerAnswersDefinitions:
   - {fileID: 11400000, guid: 688d70872986a7848a8364babff9f90d, type: 2}
   - {fileID: 11400000, guid: 9f67efe7b42baa2448cdc123a36988cb, type: 2}
-  - {fileID: 11400000, guid: 506ce7810c85be34aaa2ecd4571f5faf, type: 2}
-  - {fileID: 11400000, guid: 7d9e8d81f2c6b3b4ab63797a91605dc6, type: 2}
   _npcAnswersDefinitions:
   - {fileID: 11400000, guid: 688d70872986a7848a8364babff9f90d, type: 2}
   - {fileID: 11400000, guid: 9f67efe7b42baa2448cdc123a36988cb, type: 2}
-  - {fileID: 11400000, guid: 506ce7810c85be34aaa2ecd4571f5faf, type: 2}
-  - {fileID: 11400000, guid: 7d9e8d81f2c6b3b4ab63797a91605dc6, type: 2}
   _playerDesks:
   - {fileID: 511216279}
   - {fileID: 848438152}
