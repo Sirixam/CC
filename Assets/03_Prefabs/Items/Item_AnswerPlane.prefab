@@ -205,8 +205,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _interaction: {fileID: 3311442955737208034}
   _uiPrefab: {fileID: 2879333628410197245, guid: 00be838780f88714089eed61b0f82b6a, type: 3}
+  _uiParentOverride: {fileID: 0}
   _action: 1
   _config: {fileID: 11400000, guid: d99550c9171855b4ab84db8b7127f764, type: 2}
+  _isStatic: 0
 --- !u!114 &3884154065179673130
 MonoBehaviour:
   m_ObjectHideFlags: 0
