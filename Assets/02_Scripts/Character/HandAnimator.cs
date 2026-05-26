@@ -8,6 +8,7 @@ public class HandAnimator : MonoBehaviour
     [SerializeField] private EDominantHand _dominantHand;
     [SerializeField] private HandView _leftHand;
     [SerializeField] private HandView _rightHand;
+    [SerializeField] private HandSlapController _slapController;
     [SerializeField] private float _handMoveSpeed = 3f;
 
     public State CurrentState { get; private set; }
@@ -78,6 +79,14 @@ public class HandAnimator : MonoBehaviour
         _rightHand.PinchController.Pinch();
         _leftHand.Show();
         _rightHand.Show();
+    }
+
+    [Button("Play Slap")]
+    public void PlaySlap() => PlaySlap(transform.position + transform.forward);
+
+    public void PlaySlap(Vector3 targetWorldPos)
+    {
+        _slapController.Play(transform, targetWorldPos);
     }
 
     public void SetCrafting()

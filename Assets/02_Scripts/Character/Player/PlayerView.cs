@@ -233,6 +233,11 @@ public class PlayerView : MonoBehaviour, IStunView, IChairView
             });
     }
 
+    public void OnHandSlapped(Vector3 targetWorldPos)
+    {
+        _handAnimator.PlaySlap(targetWorldPos);
+    }
+
     public void StartWriting()
     {
         _handAnimator.SetWriting();
