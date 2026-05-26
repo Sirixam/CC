@@ -373,4 +373,4 @@ MonoBehaviour:
   _hideOnAwake: 1
   _useOverlay: 1
   _overlayMaterial: {fileID: 2100000, guid: 71e8b8dc2d68fd94b9410bf5dd32223c, type: 2}
-  _defaultMaterial: {fileID: 0}
+  _defaultMaterial: {fileID: 2100000, guid: cc61440558b35fe4fbba2455df980c89, type: 2}

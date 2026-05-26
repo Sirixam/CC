@@ -14,6 +14,7 @@ public class InputWorldspaceUI : MonoBehaviour
 
     private Transform _followTarget;
     private Camera _mainCamera;
+    private bool _canRotateCamera;
 
     private void Awake()
     {
@@ -25,7 +26,12 @@ public class InputWorldspaceUI : MonoBehaviour
         }
     }
 
-    public void SetTarget(Transform target)
+    public void Setup(bool canRotateCamera)
+    {
+        _canRotateCamera = canRotateCamera;
+    }
+
+    public void SetFollowTarget(Transform target)
     {
         _followTarget = target;
     }
@@ -44,10 +50,13 @@ public class InputWorldspaceUI : MonoBehaviour
     private void LateUpdate()
     {
         if (_followTarget != null)
+        {
             transform.position = _followTarget.position + _positionOffset;
-
-        if (_mainCamera != null)
+        }
+        if (_canRotateCamera && _mainCamera != null)
+        {
             transform.rotation = Quaternion.LookRotation(transform.position - _mainCamera.transform.position);
+        }
     }
 
     private void ApplyMaterial()

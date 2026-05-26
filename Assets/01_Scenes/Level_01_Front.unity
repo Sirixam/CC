@@ -5370,33 +5370,9 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1348851333}
     m_Modifications:
-    - target: {fileID: 1598068972486321352, guid: 85af59eaff2ce9c4188dcc991e383aee, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -0.0000005038944
-      objectReference: {fileID: 0}
-    - target: {fileID: 1598068972486321352, guid: 85af59eaff2ce9c4188dcc991e383aee, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: -1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2721754777818018438, guid: 85af59eaff2ce9c4188dcc991e383aee, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -0.0000005038944
-      objectReference: {fileID: 0}
-    - target: {fileID: 2721754777818018438, guid: 85af59eaff2ce9c4188dcc991e383aee, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: -1
-      objectReference: {fileID: 0}
     - target: {fileID: 3952499672537461933, guid: 85af59eaff2ce9c4188dcc991e383aee, type: 3}
       propertyPath: m_Name
       value: InputWorldspaceUI_SeatedGroup_02
-      objectReference: {fileID: 0}
-    - target: {fileID: 5992451070866021903, guid: 85af59eaff2ce9c4188dcc991e383aee, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5992451070866021903, guid: 85af59eaff2ce9c4188dcc991e383aee, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 8880701763857708145, guid: 85af59eaff2ce9c4188dcc991e383aee, type: 3}
       propertyPath: m_LocalPosition.x
