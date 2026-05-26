@@ -123,7 +123,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
         _throwHelper = new ThrowHelper(_throwData, this, _interactionHelper, _globalDefinition.FlyingLayer);
         _chairHelper = new ChairHelper(_inputHandler, _view, _physics);
         _stunHelper = new StunHelper(_stunData, _view);
-        _cheatHelper = new PlayerCheatHelper(_cheatData, _view);
+        _cheatHelper = new PlayerCheatHelper(_cheatData, _view, _inputHandler.PlayerInput.playerIndex);
         _lookHelper = new LookHelper(_lookData);
         _audioHelper = new PlayerAudioHelper(_audioData);
         _dashHelper = new DashHelper(_dashData, _view, _physics, _lookHelper, _audioHelper);

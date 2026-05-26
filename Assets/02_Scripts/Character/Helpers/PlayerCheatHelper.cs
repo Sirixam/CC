@@ -22,7 +22,8 @@ public class PlayerCheatHelper
 
     private Data _data;
     private PlayerView _playerView;
-    private AnswerController _answerController;
+    private AnswerController _targetAnswerController;
+    private AnswerController _selfAnswerController;
 
     public float PeekingProgress { get; private set; }
     private float _cheatingProgress;
@@ -32,13 +33,14 @@ public class PlayerCheatHelper
     public bool IsPeeking { get; private set; }
     public bool IsCheating { get; private set; }
     public bool IsRemembering => _memoryProgress > 0;
-    public bool IsCheatBlocked => _answerController.IsCheatBlocked;
-    public Vector3 AnswerPosition => _answerController != null ? _answerController.transform.position : Vector3.zero;
+    public bool IsCheatBlocked => _targetAnswerController.IsCheatBlocked;
+    public Vector3 AnswerPosition => _targetAnswerController != null ? _targetAnswerController.transform.position : Vector3.zero;
 
-    public PlayerCheatHelper(Data data, PlayerView playerView)
+    public PlayerCheatHelper(Data data, PlayerView playerView, int playerIndex)
     {
         _data = data;
         _playerView = playerView;
+        _selfAnswerController = GameContext.AnswersManager.GetPlayerDesk(playerIndex);
     }
 
     public bool CanStartPeeking(AnswerController answerController)
@@ -48,7 +50,7 @@ public class PlayerCheatHelper
 
     public bool CanStopPeeking(AnswerController answerController)
     {
-        return IsPeeking && _answerController == answerController;
+        return IsPeeking && _targetAnswerController == answerController;
     }
 
     public bool CanStartCheating(AnswerController answerController)
@@ -58,8 +60,8 @@ public class PlayerCheatHelper
 
     public void StartPeeking(AnswerController answerController)
     {
-        bool isSameTarget = _answerController == answerController;
-        _answerController = answerController;
+        bool isSameTarget = _targetAnswerController == answerController;
+        _targetAnswerController = answerController;
         IsPeeking = true;
         answerController.OnStartPeeking();
         if (!isSameTarget)
@@ -72,7 +74,7 @@ public class PlayerCheatHelper
 
     public void StartCheating(AnswerController answerController)
     {
-        _answerController = answerController;
+        _targetAnswerController = answerController;
         IsCheating = true;
         _cheatingProgress = 0;
         _playerView.CheatUI.Show();
@@ -81,20 +83,28 @@ public class PlayerCheatHelper
 
     public void StartRemembering(string answerID, float correctness, string actorID)
     {
-        _memoryProgress = 1;
-        _rememberedAnswer = new RememberedAnswer() { ID = answerID, Correctness = correctness, ActorID = actorID };
-        _playerView.MemoryUI.Show();
-        _playerView.MemoryUI.SetAnswerID(answerID);
-        _playerView.MemoryUI.SetPercent(_memoryProgress);
+        if (!_selfAnswerController.CanStartAnswering(answerID, correctness, actorID, sourceID: null, out _)) // Source is null because it's answered from memory (not from an item).
+        {
+            _playerView.MemoryUI.ShowAlreadyAnswered();
+        }
+        else
+        {
+            _memoryProgress = 1;
+            _rememberedAnswer = new RememberedAnswer() { ID = answerID, Correctness = correctness, ActorID = actorID };
+
+            _playerView.MemoryUI.Show();
+            _playerView.MemoryUI.SetAnswerID(answerID);
+            _playerView.MemoryUI.SetPercent(_memoryProgress);
+        }
     }
 
     public void StopPeeking()
     {
         IsPeeking = false;
-        _answerController?.OnStopPeeking();
+        _targetAnswerController?.OnStopPeeking();
         if (!_data.KeepPeekProgress)
         {
-            _answerController = null;
+            _targetAnswerController = null;
         }
         _playerView.PeekUI.Hide();
     }
@@ -102,7 +112,7 @@ public class PlayerCheatHelper
     public void StopCheating()
     {
         //_deskController?.HideAnswersSheet();
-        _answerController = null;
+        _targetAnswerController = null;
         IsCheating = false;
         _playerView.CheatUI.Hide();
     }
@@ -124,7 +134,7 @@ public class PlayerCheatHelper
         if (finished)
         {
             PeekingProgress = 0; // Reset so the same target can be peeked fresh next time.
-            _answerController.TriggerFinishedPeeking();
+            _targetAnswerController.TriggerFinishedPeeking();
         }
     }
 
@@ -137,9 +147,9 @@ public class PlayerCheatHelper
 
         if (finished)
         {
-            string answerID = _answerController.LastFinishedAnswerID;
-            float correctness = _answerController.GetCorrectness(answerID);
-            StartRemembering(answerID, correctness, _answerController.ActorID);
+            string answerID = _targetAnswerController.LastFinishedAnswerID;
+            float correctness = _targetAnswerController.GetCorrectness(answerID);
+            StartRemembering(answerID, correctness, _targetAnswerController.ActorID);
         }
     }
 

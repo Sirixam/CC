@@ -344,6 +344,7 @@ GameObject:
   - component: {fileID: 8751832865302533391}
   - component: {fileID: 6829198419989293833}
   - component: {fileID: 7248097970032376343}
+  - component: {fileID: 1807958875128621159}
   m_Layer: 5
   m_Name: Memory
   m_TagString: Untagged
@@ -388,6 +389,9 @@ MonoBehaviour:
   _fill: {fileID: 5971400095842788302}
   _answerTypeIcon: {fileID: 6401406683026602670}
   _answerID: {fileID: 2010130403538341331}
+  _alreadyAnsweredFadeTarget: {fileID: 1807958875128621159}
+  _alreadyAnsweredFadeDelay: 1.2
+  _alreadyAnsweredFadeDuration: 0.4
 --- !u!222 &6829198419989293833
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -426,6 +430,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!225 &1807958875128621159
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 760170972911130011}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &812704050363304296
 GameObject:
   m_ObjectHideFlags: 0
