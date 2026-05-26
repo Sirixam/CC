@@ -2958,6 +2958,7 @@ MonoBehaviour:
   _dominantHand: 2
   _leftHand: {fileID: 4988431026961828864}
   _rightHand: {fileID: 1743866435256264382}
+  _slapController: {fileID: 0}
   _handMoveSpeed: 3
 --- !u!1 &7191703743985449773
 GameObject:

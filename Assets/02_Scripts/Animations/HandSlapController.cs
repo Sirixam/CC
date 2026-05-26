@@ -8,31 +8,42 @@ public class HandSlapController : MonoBehaviour
     [SerializeField] private HandSlapMotion _frontMotion;
     [SerializeField, Range(0f, 90f)] private float _frontHalfAngle = 45f;
 
-    public void Play(Transform playerTransform, Vector3 targetWorldPos, Action onComplete = null)
+    private bool _isLefty;
+    private HandView _leftHand;
+    private HandView _rightHand;
+
+    public void Initialize(bool isLefty, HandView leftHand, HandView rightHand)
     {
-        HandSlapMotion selected = SelectMotion(playerTransform, targetWorldPos);
-        selected.gameObject.SetActive(true);
-        selected.Play(() =>
-        {
-            selected.gameObject.SetActive(false);
-            onComplete?.Invoke();
-        });
+        _isLefty = isLefty;
+        _leftHand = leftHand;
+        _rightHand = rightHand;
     }
 
-    private HandSlapMotion SelectMotion(Transform playerTransform, Vector3 targetWorldPos)
+    public HandView Play(Transform playerTransform, Vector3 targetWorldPos, Action onComplete = null)
+    {
+        (HandSlapMotion motion, HandView hand) = Select(playerTransform, targetWorldPos);
+        motion.Play(onComplete);
+        return hand;
+    }
+
+    private (HandSlapMotion, HandView) Select(Transform playerTransform, Vector3 targetWorldPos)
     {
         Vector3 dir = targetWorldPos - playerTransform.position;
         dir.y = 0f;
-        if (dir.sqrMagnitude < 0.001f) return _frontMotion;
+        if (dir.sqrMagnitude < 0.001f)
+            return (_frontMotion, _isLefty ? _leftHand : _rightHand);
         dir.Normalize();
 
         Vector3 forward = playerTransform.forward; forward.y = 0f;
         if (forward.sqrMagnitude > 0.001f) forward.Normalize();
 
         float angle = Mathf.Acos(Mathf.Clamp(Vector3.Dot(dir, forward), -1f, 1f)) * Mathf.Rad2Deg;
-        if (angle <= _frontHalfAngle) return _frontMotion;
+        if (angle <= _frontHalfAngle)
+            return (_frontMotion, _isLefty ? _leftHand : _rightHand);
 
         Vector3 right = playerTransform.right; right.y = 0f;
-        return Vector3.Dot(dir, right) >= 0f ? _rightMotion : _leftMotion;
+        return Vector3.Dot(dir, right) >= 0f
+            ? (_rightMotion, _rightHand)
+            : (_leftMotion, _leftHand);
     }
 }

@@ -4,6 +4,8 @@ public class StudentView : MonoBehaviour
 {
     [SerializeField] private HandAnimator _handAnimator;
 
+    public void OnHandSlapped(Vector3 targetWorldPos) => _handAnimator.PlaySlap(targetWorldPos);
+
     public void StartThinking(TestPageView testPageView)
     {
         _handAnimator.SetHidden();

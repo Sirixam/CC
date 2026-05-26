@@ -54,6 +54,7 @@ public class MemoryUI : MonoBehaviour
         gameObject.SetActive(true);
 
         if (_alreadyAnsweredFadeTarget == null) return;
+        _alreadyAnsweredFadeTarget.alpha = 1f;
         _alreadyAnsweredTween = Tween.Alpha(_alreadyAnsweredFadeTarget, endValue: 0f, _alreadyAnsweredFadeDuration, startDelay: _alreadyAnsweredFadeDelay);
     }
 

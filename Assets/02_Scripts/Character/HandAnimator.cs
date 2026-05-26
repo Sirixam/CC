@@ -22,6 +22,7 @@ public class HandAnimator : MonoBehaviour
 
         _leftHand.SetIsLefty(true);
         _rightHand.SetIsLefty(false);
+        _slapController?.Initialize(_isLefty, _leftHand, _rightHand);
         SetHidden();
     }
 
@@ -86,7 +87,29 @@ public class HandAnimator : MonoBehaviour
 
     public void PlaySlap(Vector3 targetWorldPos)
     {
-        _slapController.Play(transform, targetWorldPos);
+        if (_slapController == null)
+        {
+            Debug.LogError("Slap controller is not assigned: " + name, gameObject);
+            return;
+        }
+
+        HandView hand = _slapController.Play(transform, targetWorldPos, ReapplyCurrentState);
+        hand.WritingLoopController.enabled = false;
+        hand.CrumplingController.enabled = false;
+        hand.PinchController.Release();
+        hand.HidePencil();
+        hand.Show();
+    }
+
+    private void ReapplyCurrentState()
+    {
+        switch (CurrentState)
+        {
+            case State.Hidden: SetHidden(); break;
+            case State.Writing: SetWriting(); break;
+            case State.Validating: SetValidating(); break;
+            case State.Crafting: SetCrafting(); break;
+        }
     }
 
     public void SetCrafting()

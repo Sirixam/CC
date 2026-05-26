@@ -35,6 +35,7 @@ public class PlayerCheatHelper
     public bool IsRemembering => _memoryProgress > 0;
     public bool IsCheatBlocked => _targetAnswerController.IsCheatBlocked;
     public Vector3 AnswerPosition => _targetAnswerController != null ? _targetAnswerController.transform.position : Vector3.zero;
+    public AnswerController TargetAnswerController => _targetAnswerController;
 
     public PlayerCheatHelper(Data data, PlayerView playerView, int playerIndex)
     {
