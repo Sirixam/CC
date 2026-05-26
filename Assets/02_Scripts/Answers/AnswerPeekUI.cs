@@ -2,7 +2,7 @@ using PrimeTween;
 using UnityEngine;
 using UnityEngine.UI;
 
-public enum EPeekState { PartialInfo, FullInfo }
+public enum EPeekState { PartialInfo, FullInfo, RepeatedInfo }
 public enum EDiagonalDirectionHint { Precise, Random, Both }
 
 public class AnswerPeekUI : MonoBehaviour
@@ -72,6 +72,7 @@ public class AnswerPeekUI : MonoBehaviour
     public void SetState(EPeekState state)
     {
         if (_state == state) return;
+        if (_state == EPeekState.RepeatedInfo) return;
         _state = state;
         ApplyState();
     }
@@ -82,6 +83,7 @@ public class AnswerPeekUI : MonoBehaviour
         _answerCloudIcon.color = _state == EPeekState.FullInfo
             ? ChangeCloudColor(AnswerPeek)
             : new Color32(255, 255, 255, 255);
+        _answerTypeIcon.enabled = _state != EPeekState.RepeatedInfo;
     }
 
     public void UpdateProgress(bool setup)
@@ -123,9 +125,16 @@ public class AnswerPeekUI : MonoBehaviour
             _completedStamp.gameObject.SetActive(false);
 
         _answerTypeRoot.SetActive(true);
+        _answerTypeIcon.enabled = true;
+        _state = EPeekState.FullInfo;
         SetDirectionHint(null);
 
         AnswerPeek = null;
+    }
+
+    public void SetAnswerTypeIconEnabled(bool value)
+    {
+        _answerTypeIcon.enabled = value;
     }
 
     // Shows arrow pointing from this student toward correctWorldPos (XZ→XY mapping).

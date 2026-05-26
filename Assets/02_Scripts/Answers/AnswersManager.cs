@@ -481,15 +481,31 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
 
         Sprite answerTypeIcon = GetAnswerTypeIcon(answerID);
         peekUI.Setup(peek, characterIcon, archetypeIcon, answerTypeIcon);
-        peekUI.SetState(answerController.IsThinking ? EPeekState.PartialInfo : EPeekState.FullInfo); //
+        peekUI.SetState(answerController.IsThinking ? EPeekState.PartialInfo : EPeekState.FullInfo);
         if (HaveAllPlayersAnsweredFully(answerID, out float minCorrectness) && minCorrectness >= AnswerDefinition.PERFECT_CORRECTNESS)
         {
             peekUI.SetCompleted(ShouldMarkAsCompleted(answerID));
         }
+
+        float npcCorrectness = answerController.GetCorrectness(answerID);
+        bool anyPlayerCanAnswer = false;
+        foreach (var playerDesk in _playerDesks)
+        {
+            if (playerDesk.CanStartAnswering(answerID, npcCorrectness, answerController.ActorID, null, out _))
+            {
+                anyPlayerCanAnswer = true;
+                break;
+            }
+        }
+        if (!anyPlayerCanAnswer)
+            peekUI.SetState(EPeekState.RepeatedInfo);
+
         peekUI.Show();
 
         if (_isShaking)
+        {
             peekUI.PlayShake();
+        }
     }
 
     public AnswerDefinition GetNewStudentAnswer(AnswerDefinition lastAnswerDef)
