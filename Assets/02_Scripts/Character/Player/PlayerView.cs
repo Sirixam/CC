@@ -24,8 +24,7 @@ public class PlayerView : MonoBehaviour, IStunView, IChairView
     [SerializeField] private LobThrowPreviewComponent _lobThrowPreview;
     [SerializeField] private DynamicLobThrowPreviewComponent _dynamicLobThrowPreview;
     [SerializeField] private PlaneThrowPreviewComponent _planeThrowPreview;
-
-
+    [SerializeField] private ParticleSystem _hitVFXPrefab;
 
     public void ShowLobThrowPreview() => _lobThrowPreview.Show();
     public void HideLobThrowPreview() => _lobThrowPreview.Hide();
@@ -293,6 +292,18 @@ public class PlayerView : MonoBehaviour, IStunView, IChairView
             _caughtSymbolsVFX.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         }
     }
+
+    public void OnSlapped(Vector3 selfPosition, Vector3 slapperPosition)
+    {
+        if (_hitVFXPrefab != null)
+        {
+            Vector3 direction = (slapperPosition - selfPosition).normalized;
+            Quaternion rotation = direction != Vector3.zero ? Quaternion.LookRotation(direction) : Quaternion.identity;
+            ParticleSystem vfx = Instantiate(_hitVFXPrefab, selfPosition + direction * 0.2f + Vector3.up, rotation, null);
+            Destroy(vfx.gameObject, vfx.main.duration + vfx.main.startLifetime.constantMax);
+        }
+    }
+
     public void PlayCaughtSymbols()
     {
         if (_caughtSymbolsVFX != null)

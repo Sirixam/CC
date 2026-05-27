@@ -12,7 +12,6 @@ public class HandSlapMotion : MonoBehaviour
     [SerializeField] private float _returnDuration = 0.18f;
 
     [Header("Hit")]
-    [SerializeField] private ParticleSystem _hitVFXPrefab;
     [SerializeField] private AudioDefinition _hitSFX;
 
     private enum State { Idle, Slapping, Returning }
@@ -37,11 +36,6 @@ public class HandSlapMotion : MonoBehaviour
                 _handRoot.localScale = Vector3.Lerp(_baseScale, _baseScale * _slapScale, slapT);
                 if (slapT >= 1f)
                 {
-                    if (_hitVFXPrefab != null)
-                    {
-                        ParticleSystem vfx = Instantiate(_hitVFXPrefab, _handRoot.position, _handRoot.rotation);
-                        Destroy(vfx.gameObject, vfx.main.duration + vfx.main.startLifetime.constantMax);
-                    }
                     _hitSFX?.Play();
                     _timer = 0f;
                     _state = State.Returning;

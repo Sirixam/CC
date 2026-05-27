@@ -876,9 +876,8 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
                 {
                     Vector3 forceDirection = (_physics.Position - _cheatHelper.AnswerPosition).normalized;
                     _physics.StartExternalForce(forceDirection * _caughtCheatingForce);
-                    GameContext.StudentManager
-                        .GetStudentView(_cheatHelper.TargetAnswerController)
-                        ?.OnHandSlapped(_physics.Position);
+                    GameContext.StudentManager.GetStudentView(_cheatHelper.TargetAnswerController)?.OnHandSlapped(_physics.Position);
+                    _view.OnSlapped(_physics.Position, _cheatHelper.AnswerPosition);
                 }
                 StopCheating(); // Trigger after external force
                 return;

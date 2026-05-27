@@ -967,6 +967,7 @@ MonoBehaviour:
   _lobThrowPreview: {fileID: 217028058308693965}
   _dynamicLobThrowPreview: {fileID: 3277012209309858069}
   _planeThrowPreview: {fileID: 6195248030650779610}
+  _hitVFXPrefab: {fileID: 265766274217486953, guid: a8b04a9166d52a04a99e12b626c91fe1, type: 3}
   _startStunTweenSettings:
     startFromCurrent: 0
     startValue: 0
@@ -1879,6 +1880,9 @@ MonoBehaviour:
   _safeColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   _dangerColor: {r: 1, g: 0, b: 0, a: 1}
   _colorProperty: _BaseColor
+  _warnFadeMinAlpha: 0.2
+  _warnFadeHalfPeriod: 0.4
+  _warnFadeCycles: 3
 --- !u!33 &368862458362584757
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -2958,8 +2962,11 @@ MonoBehaviour:
   _dominantHand: 2
   _leftHand: {fileID: 4988431026961828864}
   _rightHand: {fileID: 1743866435256264382}
-  _slapController: {fileID: 0}
   _handMoveSpeed: 3
+  _leftSlapMotion: {fileID: 0}
+  _rightSlapMotion: {fileID: 0}
+  _frontSlapMotion: {fileID: 0}
+  _slapFrontHalfAngle: 45
 --- !u!1 &7191703743985449773
 GameObject:
   m_ObjectHideFlags: 0
