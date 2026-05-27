@@ -200,8 +200,24 @@ MonoBehaviour:
   _collider: {fileID: 0}
   _teacherView: {fileID: 8804500871166394160}
   _detectionDwellTime: 0.3
+  _hideFovWhilePassive: 0
   _timeToStandRange: {x: 5, y: 5}
   _timeToSitRange: {x: 10, y: 10}
+  _sitFOVDistance: 15
+  _timeToMaxDistance: 0.5
+  _canSitUndistracted: 0
+  _sitLookAroundData:
+    Steps:
+    - Angle: 45
+      Direction: 0
+      RotateDuration: 0.8
+      HoldDuration: 0.2
+    - Angle: 45
+      Direction: 1
+      RotateDuration: 0.8
+      HoldDuration: 0.2
+    ReturnToOriginalRotation: 1
+    ReturnRotateDuration: 0.5
   _seatRouteID: TeacherSeat
 --- !u!114 &8804500871166394160
 MonoBehaviour:
@@ -450,6 +466,9 @@ MonoBehaviour:
   _safeColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   _dangerColor: {r: 1, g: 0, b: 0, a: 1}
   _colorProperty: _BaseColor
+  _warnFadeMinAlpha: 0.2
+  _warnFadeHalfPeriod: 0.4
+  _warnFadeCycles: 3
 --- !u!33 &6965761521721660108
 MeshFilter:
   m_ObjectHideFlags: 0

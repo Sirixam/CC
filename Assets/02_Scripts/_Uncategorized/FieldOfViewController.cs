@@ -193,12 +193,8 @@ public class FieldOfViewController : MonoBehaviour
         _meshRenderer.transform.localScale = Vector3.zero;
 
         // Grow to full size over duration
-        _scaleTween = Tween.Scale(
-            _meshRenderer.transform,
-            _showTweenSettings.endValue,
-            duration,
-            Ease.Linear
-        ).OnUpdate(_meshRenderer.transform, (target, tween) =>
+        _scaleTween = Tween.Scale(_meshRenderer.transform, _showTweenSettings.endValue, duration, Ease.Linear)
+            .OnUpdate(_meshRenderer.transform, (target, tween) =>
         {
             // Calculate progress (0 to 1)
             float progress = target.localScale.x / _showTweenSettings.endValue.x;

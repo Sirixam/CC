@@ -47,6 +47,11 @@ public static class LookAroundEvent
         actor.StartCoroutine(LookAroundRoutine(actor, data));
     }
 
+    public static IEnumerator GetRoutine(ILookAroundActor actor, Data data)
+    {
+        return LookAroundRoutine(actor, data);
+    }
+
     private static IEnumerator LookAroundRoutine(ILookAroundActor actor, Data data)
     {
         Transform pivot = actor.Pivot;

@@ -9,7 +9,8 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
     public enum EState
     {
         GoToSeat,
-        Sit,
+        SitUndistracted,
+        SitDistracted,
         Patrol,
     }
 
@@ -31,6 +32,10 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
     [Header("Configurations")]
     [SerializeField] private Vector2 _timeToStandRange = new Vector2(5, 5);
     [SerializeField] private Vector2 _timeToSitRange = new Vector2(10, 10);
+    [SerializeField] private float _sitFOVDistance = 15f;
+    [SerializeField] private float _timeToMaxDistance = 0.5f;
+    [SerializeField] private bool _canSitUndistracted = true;
+    [SerializeField] private LookAroundEvent.Data _sitLookAroundData;
     [SerializeField] private string _seatRouteID = "TeacherSeat";
 
     string IActor.ID => IActor.GetStudentNpcID(0); // TODO: Support multiple teachers
@@ -51,6 +56,7 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
     private Vector3 _initialPosition;
     private Quaternion _initialRotation;
     private float _detectionCooldown;
+    private float _defaultFOVDistance;
     public void PlayAngryVFX() => _teacherView.PlayAngryVFX();
     public void StopAngryVFX() => _teacherView.StopAngryVFX();
 
@@ -59,6 +65,7 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
     {
         _initialPosition = transform.position;
         _initialRotation = transform.rotation;
+        _defaultFOVDistance = _fieldOfViewController.GetMaxDistance();
 
         _audioHelper = new TeacherAudioHelper(_audioData);
         _fieldOfViewController.HideInstant();
@@ -80,7 +87,7 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
 
     private void Start()
     {
-        _state = EState.Sit;
+        _state = EState.SitDistracted;
         _isActive = false;
     }
 
@@ -117,7 +124,7 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
         _remainingTime -= Time.deltaTime;
         if (_remainingTime <= 0)
         {
-            if (_state == EState.Sit)
+            if (_state == EState.SitDistracted)
             {
                 if (!_isInPassivePhase)
                 {
@@ -157,10 +164,32 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
 
     void ISitActor.ExecuteSit()
     {
-        _state = EState.Sit;
-        _fieldOfViewController.Hide();
-        _remainingTime = UnityEngine.Random.Range(_timeToStandRange.x, _timeToStandRange.y);
         transform.rotation = Quaternion.LookRotation(Vector3.forward);
+
+        if (_canSitUndistracted)
+        {
+            _state = EState.SitUndistracted;
+            _fieldOfViewController.SetMaxDistance(_sitFOVDistance);
+            _fieldOfViewController.ShowGradual(_timeToMaxDistance);
+            StartCoroutine(SitUndistactedRoutine());
+        }
+        else
+        {
+            ExecuteSitDistracted();
+        }
+    }
+
+    private IEnumerator SitUndistactedRoutine()
+    {
+        yield return StartCoroutine(LookAroundEvent.GetRoutine(this, _sitLookAroundData));
+        ExecuteSitDistracted();
+    }
+
+    private void ExecuteSitDistracted()
+    {
+        _state = EState.SitDistracted;
+        _remainingTime = UnityEngine.Random.Range(_timeToStandRange.x, _timeToStandRange.y);
+        _fieldOfViewController.Hide();
 
         if (_isInPassivePhase)
             _teacherView.ShowNewspaper();
@@ -174,7 +203,8 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
             _navMeshAgent.isStopped = false;
         }
 
-        _fieldOfViewController.Show();
+        _fieldOfViewController.SetMaxDistance(_defaultFOVDistance);
+        _fieldOfViewController.ShowGradual(_timeToMaxDistance);
         _remainingTime = UnityEngine.Random.Range(_timeToSitRange.x, _timeToSitRange.y);
     }
 
@@ -252,7 +282,7 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
         transform.rotation = _initialRotation;
 
         // Reset state machine
-        _state = EState.Sit;
+        _state = EState.SitDistracted;
         _goToSeatOnArrive = false;
         _isInPassivePhase = false;
 
@@ -291,7 +321,7 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
     public void StartPatrolling()
     {
         _isActive = true;
-        _state = EState.Sit;
+        _state = EState.SitDistracted;
         _remainingTime = 1f;
     }
 
@@ -304,7 +334,7 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
         }
         StopAllCoroutines();
 
-        if (_state == EState.Sit)
+        if (_state == EState.SitUndistracted || _state == EState.SitDistracted)
             _teacherView.ShowNewspaper();
         else if (_state == EState.Patrol)
             GoToSeat();
@@ -316,7 +346,7 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
         _teacherView.HideNewspaper();
         if (!_isActive) return;
 
-        if (_state == EState.Sit)
+        if (_state == EState.SitUndistracted || _state == EState.SitDistracted)
         {
             Stand();
             _state = EState.Patrol;
