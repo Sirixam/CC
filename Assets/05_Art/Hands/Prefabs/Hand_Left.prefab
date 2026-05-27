@@ -320,6 +320,7 @@ MonoBehaviour:
   _openController: {fileID: 2580294189128990520}
   _slapOffset: {x: 0, y: 0.1, z: 0.35}
   _slapRotation: {x: 0, y: 0, z: 0}
+  _slapScale: 1
   _slapDuration: 0.1
   _returnDuration: 0.4
 --- !u!1 &914044531976162097
@@ -965,6 +966,7 @@ MonoBehaviour:
   _openController: {fileID: 2580294189128990520}
   _slapOffset: {x: -0.5, y: 0.2, z: -0.1}
   _slapRotation: {x: 30, y: 30, z: 0}
+  _slapScale: 2
   _slapDuration: 0.1
   _returnDuration: 0.4
 --- !u!1 &6097432271762460034

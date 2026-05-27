@@ -1208,6 +1208,18 @@ PrefabInstance:
       propertyPath: _instantPinchOnStart
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5966173213354905228, guid: 930b7a19d446f4b4c9c810e37e84e625, type: 3}
+      propertyPath: _slapOffset.x
+      value: -0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 5966173213354905228, guid: 930b7a19d446f4b4c9c810e37e84e625, type: 3}
+      propertyPath: _slapOffset.z
+      value: -0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5966173213354905228, guid: 930b7a19d446f4b4c9c810e37e84e625, type: 3}
+      propertyPath: _slapRotation.x
+      value: 45
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1556,6 +1568,18 @@ PrefabInstance:
     - target: {fileID: 5352594445115601037, guid: 991d76f36a7b16d46b31506da2880e0e, type: 3}
       propertyPath: _instantPinchOnStart
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5966173213354905228, guid: 991d76f36a7b16d46b31506da2880e0e, type: 3}
+      propertyPath: _slapOffset.x
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 5966173213354905228, guid: 991d76f36a7b16d46b31506da2880e0e, type: 3}
+      propertyPath: _slapOffset.z
+      value: -0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5966173213354905228, guid: 991d76f36a7b16d46b31506da2880e0e, type: 3}
+      propertyPath: _slapRotation.x
+      value: -45
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

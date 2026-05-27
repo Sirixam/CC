@@ -7,13 +7,19 @@ public class HandSlapMotion : MonoBehaviour
     [SerializeField] private HandOpenController _openController;
     [SerializeField] private Vector3 _slapOffset = new Vector3(0.08f, 0.04f, -0.02f);
     [SerializeField] private Vector3 _slapRotation;
+    [SerializeField] private float _slapScale = 1f;
     [SerializeField] private float _slapDuration = 0.07f;
     [SerializeField] private float _returnDuration = 0.18f;
+
+    [Header("Hit")]
+    [SerializeField] private ParticleSystem _hitVFXPrefab;
+    [SerializeField] private AudioDefinition _hitSFX;
 
     private enum State { Idle, Slapping, Returning }
 
     private State _state;
     private Vector3 _basePos;
+    private Vector3 _baseScale;
     private Quaternion _baseRot;
     private Quaternion _targetRot;
     private float _timer;
@@ -28,7 +34,19 @@ public class HandSlapMotion : MonoBehaviour
                 float slapT = Mathf.Clamp01(_timer / _slapDuration);
                 _handRoot.localPosition = Vector3.Lerp(_basePos, _basePos + _slapOffset, slapT);
                 _handRoot.localRotation = Quaternion.Slerp(_baseRot, _targetRot, slapT);
-                if (slapT >= 1f) { _timer = 0f; _state = State.Returning; _openController?.Relax(); }
+                _handRoot.localScale = Vector3.Lerp(_baseScale, _baseScale * _slapScale, slapT);
+                if (slapT >= 1f)
+                {
+                    if (_hitVFXPrefab != null)
+                    {
+                        ParticleSystem vfx = Instantiate(_hitVFXPrefab, _handRoot.position, _handRoot.rotation);
+                        Destroy(vfx.gameObject, vfx.main.duration + vfx.main.startLifetime.constantMax);
+                    }
+                    _hitSFX?.Play();
+                    _timer = 0f;
+                    _state = State.Returning;
+                    _openController?.Relax();
+                }
                 break;
 
             case State.Returning:
@@ -36,10 +54,12 @@ public class HandSlapMotion : MonoBehaviour
                 float returnT = Mathf.Clamp01(_timer / _returnDuration);
                 _handRoot.localPosition = Vector3.Lerp(_basePos + _slapOffset, _basePos, returnT);
                 _handRoot.localRotation = Quaternion.Slerp(_targetRot, _baseRot, returnT);
+                _handRoot.localScale = Vector3.Lerp(_baseScale * _slapScale, _baseScale, returnT);
                 if (returnT >= 1f)
                 {
                     _handRoot.localPosition = _basePos;
                     _handRoot.localRotation = _baseRot;
+                    _handRoot.localScale = _baseScale;
                     _state = State.Idle;
                     _onComplete?.Invoke();
                     _onComplete = null;
@@ -61,6 +81,7 @@ public class HandSlapMotion : MonoBehaviour
         _onComplete = null;
         _handRoot.localPosition = _basePos;
         _handRoot.localRotation = _baseRot;
+        _handRoot.localScale = _baseScale;
         _openController?.Relax();
     }
 
@@ -68,6 +89,7 @@ public class HandSlapMotion : MonoBehaviour
     private void Play()
     {
         _basePos = _handRoot.localPosition;
+        _baseScale = _handRoot.localScale;
         _baseRot = _handRoot.localRotation;
         _targetRot = _baseRot * Quaternion.Euler(_slapRotation);
         _timer = 0f;
