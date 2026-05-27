@@ -54,6 +54,16 @@ public class HandSlapMotion : MonoBehaviour
         Play();
     }
 
+    public void Cancel()
+    {
+        if (_state == State.Idle) return;
+        _state = State.Idle;
+        _onComplete = null;
+        _handRoot.localPosition = _basePos;
+        _handRoot.localRotation = _baseRot;
+        _openController?.Relax();
+    }
+
     [Button("Play")]
     private void Play()
     {

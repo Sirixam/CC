@@ -18,6 +18,7 @@ public class DistractionHelper
             public bool Rotate;
             public bool ShowFOV;
             public float FOVGrowDuration; // 0 = instant, > 0 = gradual
+            public float EndingWarningDuration;
         }
 
         public float DistractionReductionDelay;
@@ -97,7 +98,20 @@ public class DistractionHelper
                 _lookHelper.SetLookInput(lookDirection);
             }
 
-            await UniTask.WaitForSeconds(levelData.DistractionDuration - levelData.DistractionRotationDelay);
+            float remaining = levelData.DistractionDuration - levelData.DistractionRotationDelay;
+            float warningDuration = levelData.EndingWarningDuration;
+            float preWarning = remaining - warningDuration;
+
+            if (levelData.ShowFOV && warningDuration > 0 && preWarning > 0)
+            {
+                await UniTask.WaitForSeconds(preWarning);
+                _fovController.StartEndingWarning();
+                await UniTask.WaitForSeconds(warningDuration);
+            }
+            else
+            {
+                await UniTask.WaitForSeconds(remaining);
+            }
         }
         finally
         {
@@ -108,6 +122,10 @@ public class DistractionHelper
             if (levelData.ShowFOV)
             {
                 _fovController.Hide();
+            }
+            else if (levelData.EndingWarningDuration > 0)
+            {
+                _fovController.StopEndingWarning(snap: true);
             }
             if (levelData.Rotate)
             {

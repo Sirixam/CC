@@ -337,6 +337,16 @@ public class StudentManager : MonoBehaviour
         return answer;
     }
 
+    public StudentView GetStudentView(AnswerController answerController)
+    {
+        foreach (var student in _students)
+        {
+            if (student.AnswerController == answerController)
+                return student.View;
+        }
+        return null;
+    }
+
     public void ResetForNewGame()
     {
         _availableCorrectAnswers = null;

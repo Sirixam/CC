@@ -3,17 +3,25 @@ using UnityEngine;
 [DefaultExecutionOrder(-10)]
 public class HandAnimator : MonoBehaviour
 {
-    public enum State { Hidden, Writing, Validating, Crafting }
+    public enum State { Hidden, Writing, Validating, Crafting, Slapping }
 
     [SerializeField] private EDominantHand _dominantHand;
     [SerializeField] private HandView _leftHand;
     [SerializeField] private HandView _rightHand;
-    [SerializeField] private HandSlapController _slapController;
     [SerializeField] private float _handMoveSpeed = 3f;
+
+    [Header("Slap")]
+    [SerializeField] private HandSlapMotion _leftSlapMotion;
+    [SerializeField] private HandSlapMotion _rightSlapMotion;
+    [SerializeField] private HandSlapMotion _frontSlapMotion;
+    [SerializeField, Range(0f, 90f)] private float _slapFrontHalfAngle = 45f;
 
     public State CurrentState { get; private set; }
 
     private bool _isLefty;
+    private bool IsOneShot => CurrentState == State.Slapping;
+    private State _deferredState;
+    private HandSlapMotion _activeSlapMotion;
 
     private void Awake()
     {
@@ -22,7 +30,6 @@ public class HandAnimator : MonoBehaviour
 
         _leftHand.SetIsLefty(true);
         _rightHand.SetIsLefty(false);
-        _slapController?.Initialize(_isLefty, _leftHand, _rightHand);
         SetHidden();
     }
 
@@ -33,7 +40,65 @@ public class HandAnimator : MonoBehaviour
         _rightHand.MoveTowardTarget(_handMoveSpeed);
     }
 
+    // --- Public state setters ---
+
     public void SetHidden()
+    {
+        if (IsOneShot) { _deferredState = State.Hidden; return; }
+        ApplyHidden();
+    }
+
+    public void SetWriting()
+    {
+        if (IsOneShot) { _deferredState = State.Writing; return; }
+        ApplyWriting();
+    }
+
+    public void SetValidating()
+    {
+        if (IsOneShot) { _deferredState = State.Validating; return; }
+        ApplyValidating();
+    }
+
+    public void SetCrafting()
+    {
+        if (IsOneShot) { _deferredState = State.Crafting; return; }
+        ApplyCrafting();
+    }
+
+    // --- One-shot ---
+
+    [Button("Play Slap")]
+    public void PlaySlap() => PlaySlap(transform.position + transform.forward);
+
+    public void PlaySlap(Vector3 targetWorldPos)
+    {
+        if (!IsOneShot)
+            _deferredState = CurrentState;
+        else
+            _activeSlapMotion?.Cancel();
+
+        CurrentState = State.Slapping;
+
+        (HandSlapMotion motion, HandView hand) = SelectSlap(targetWorldPos);
+        _activeSlapMotion = motion;
+
+        hand.WritingLoopController.enabled = false;
+        hand.CrumplingController.enabled = false;
+        hand.PinchController.Release();
+        hand.HidePencil();
+        hand.Show();
+
+        motion.Play(() =>
+        {
+            _activeSlapMotion = null;
+            ApplyState(_deferredState);
+        });
+    }
+
+    // --- Private apply methods (bypass one-shot guard) ---
+
+    private void ApplyHidden()
     {
         CurrentState = State.Hidden;
         _leftHand.WritingLoopController.enabled = false;
@@ -48,7 +113,7 @@ public class HandAnimator : MonoBehaviour
         _rightHand.Hide();
     }
 
-    public void SetWriting()
+    private void ApplyWriting()
     {
         CurrentState = State.Writing;
 
@@ -67,7 +132,7 @@ public class HandAnimator : MonoBehaviour
         dominant.WritingLoopController.enabled = true;
     }
 
-    public void SetValidating()
+    private void ApplyValidating()
     {
         CurrentState = State.Validating;
         _leftHand.WritingLoopController.enabled = false;
@@ -82,37 +147,7 @@ public class HandAnimator : MonoBehaviour
         _rightHand.Show();
     }
 
-    [Button("Play Slap")]
-    public void PlaySlap() => PlaySlap(transform.position + transform.forward);
-
-    public void PlaySlap(Vector3 targetWorldPos)
-    {
-        if (_slapController == null)
-        {
-            Debug.LogError("Slap controller is not assigned: " + name, gameObject);
-            return;
-        }
-
-        HandView hand = _slapController.Play(transform, targetWorldPos, ReapplyCurrentState);
-        hand.WritingLoopController.enabled = false;
-        hand.CrumplingController.enabled = false;
-        hand.PinchController.Release();
-        hand.HidePencil();
-        hand.Show();
-    }
-
-    private void ReapplyCurrentState()
-    {
-        switch (CurrentState)
-        {
-            case State.Hidden: SetHidden(); break;
-            case State.Writing: SetWriting(); break;
-            case State.Validating: SetValidating(); break;
-            case State.Crafting: SetCrafting(); break;
-        }
-    }
-
-    public void SetCrafting()
+    private void ApplyCrafting()
     {
         CurrentState = State.Crafting;
         _leftHand.WritingLoopController.enabled = false;
@@ -125,5 +160,37 @@ public class HandAnimator : MonoBehaviour
         _rightHand.CrumplingController.enabled = true;
         _leftHand.Show();
         _rightHand.Show();
+    }
+
+    private void ApplyState(State state)
+    {
+        switch (state)
+        {
+            case State.Hidden:     ApplyHidden();     break;
+            case State.Writing:    ApplyWriting();    break;
+            case State.Validating: ApplyValidating(); break;
+            case State.Crafting:   ApplyCrafting();   break;
+        }
+    }
+
+    private (HandSlapMotion, HandView) SelectSlap(Vector3 targetWorldPos)
+    {
+        Vector3 dir = targetWorldPos - transform.position;
+        dir.y = 0f;
+        if (dir.sqrMagnitude < 0.001f)
+            return (_frontSlapMotion, _isLefty ? _leftHand : _rightHand);
+        dir.Normalize();
+
+        Vector3 forward = transform.forward; forward.y = 0f;
+        if (forward.sqrMagnitude > 0.001f) forward.Normalize();
+
+        float angle = Mathf.Acos(Mathf.Clamp(Vector3.Dot(dir, forward), -1f, 1f)) * Mathf.Rad2Deg;
+        if (angle <= _slapFrontHalfAngle)
+            return (_frontSlapMotion, _isLefty ? _leftHand : _rightHand);
+
+        Vector3 right = transform.right; right.y = 0f;
+        return Vector3.Dot(dir, right) >= 0f
+            ? (_rightSlapMotion, _rightHand)
+            : (_leftSlapMotion, _leftHand);
     }
 }

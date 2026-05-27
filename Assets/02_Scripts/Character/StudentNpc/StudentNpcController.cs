@@ -32,6 +32,7 @@ public class StudentNpcController : MonoBehaviour
     public bool IsDetecting { get; private set; }
     private ChairController _chairController;
     public AnswerController AnswerController { get; private set; }
+    public StudentView View => _studentView;
     public Sprite CharacterIcon => _icon;
     public Sprite ArchetypeIcon => _archetypeIcon;
 

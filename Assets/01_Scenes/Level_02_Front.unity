@@ -11076,6 +11076,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _itemsManager: {fileID: 1039779047}
   _answersManager: {fileID: 844122163}
+  _studentManager: {fileID: 1850831638}
 --- !u!4 &1209904725 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2593120795642583367, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}

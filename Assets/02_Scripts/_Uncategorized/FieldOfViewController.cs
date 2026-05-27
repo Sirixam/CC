@@ -12,7 +12,7 @@ public class FieldOfViewController : MonoBehaviour
     [SerializeField] private float _maxDistance = 5f;
     [SerializeField] private float _fieldOfView = 90f;
     [SerializeField] private float _fieldOfViewWidth = 0.5f;
-    [SerializeField] [Range(0f, 1f)] private float _widthScale = 1f;
+    [SerializeField][Range(0f, 1f)] private float _widthScale = 1f;
     [SerializeField] private float _visualThickness = 0.01f;
     [SerializeField] private float _physicsThickness = 0.1f;
 
@@ -21,10 +21,17 @@ public class FieldOfViewController : MonoBehaviour
     [SerializeField] private Color _dangerColor = Color.red;
     [SerializeField] private string _colorProperty = "_BaseColor";
 
+    [Header("Ending Warning")]
+    [SerializeField, Range(0f, 1f)] private float _warnFadeMinAlpha = 0.2f;
+    [Tooltip("Duration of one fade in or out. Full cycle is twice this value.")]
+    [SerializeField] private float _warnFadeHalfPeriod = 0.4f;
+    [SerializeField] private int _warnFadeCycles = 3;
+
     private Tween _scaleTween;
     private Vector3 _meshColliderOriginalPosition;
     private bool _isOriginalPositionInitialized;
     private Tween _gradualTween;
+    private Sequence _warnSequence;
     private Material _materialInstance;
 
     private void Awake()
@@ -57,6 +64,7 @@ public class FieldOfViewController : MonoBehaviour
         }
         _scaleTween.Stop();
         _gradualTween.Stop();
+        StopEndingWarning(snap: true);
         _meshRenderer.transform.localScale = _hideTweenSettings.endValue;
         OnHidden();
     }
@@ -65,6 +73,7 @@ public class FieldOfViewController : MonoBehaviour
     {
         _scaleTween.Stop();
         _gradualTween.Stop();
+        StopEndingWarning(snap: true);
         _scaleTween = Tween.Scale(_meshRenderer.transform, _hideTweenSettings).OnComplete(OnHidden);
     }
 
@@ -72,6 +81,51 @@ public class FieldOfViewController : MonoBehaviour
     {
         _meshRenderer.enabled = false;
         _meshCollider.transform.localPosition = new Vector3(0, -1000, 0);
+    }
+
+    [Button("Start Ending Warning")]
+    public void StartEndingWarning()
+    {
+        _warnSequence.Stop();
+        EnsureMaterialInstance();
+        Color fullColor = _materialInstance.GetColor(_colorProperty);
+        Color fadeColor = new Color(fullColor.r, fullColor.g, fullColor.b, _warnFadeMinAlpha);
+        _warnSequence = Sequence.Create(cycles: _warnFadeCycles)
+            .Chain(Tween.Custom(fullColor, fadeColor, _warnFadeHalfPeriod, c => _materialInstance.SetColor(_colorProperty, c), Ease.InOutSine))
+            .Chain(Tween.Custom(fadeColor, fullColor, _warnFadeHalfPeriod, c => _materialInstance.SetColor(_colorProperty, c), Ease.InOutSine));
+    }
+
+    [Button("Stop Ending Warning")]
+    public void StopEndingWarning()
+    {
+        StopEndingWarning(false);
+    }
+
+    //[Button("TEST: Set Warn Color")]
+    //private void TEST_SetColor()
+    //{
+    //    Color fullColor = _materialInstance.GetColor(_colorProperty);
+    //    Color fadeColor = new Color(fullColor.r, fullColor.g, fullColor.b, _warnFadeMinAlpha);
+    //    _materialInstance.SetColor(_colorProperty, fadeColor);
+    //}
+
+    public void StopEndingWarning(bool snap)
+    {
+        _warnSequence.Stop();
+        if (_materialInstance == null) return;
+        Color c = _materialInstance.GetColor(_colorProperty);
+        Color restored = new Color(c.r, c.g, c.b, 1f);
+        if (snap)
+            _materialInstance.SetColor(_colorProperty, restored);
+        else
+            Tween.Custom(c, restored, _warnFadeHalfPeriod, col => _materialInstance.SetColor(_colorProperty, col), Ease.OutSine);
+    }
+
+    private void EnsureMaterialInstance()
+    {
+        if (_materialInstance != null) return;
+        _materialInstance = new Material(_meshRenderer.material);
+        _meshRenderer.material = _materialInstance;
     }
 
     [Button("Update Mesh")]
@@ -129,13 +183,7 @@ public class FieldOfViewController : MonoBehaviour
         _meshRenderer.enabled = true;
         _meshCollider.transform.localPosition = _meshColliderOriginalPosition;
 
-        // Create instance to avoid modifying shared material
-        if (_materialInstance == null)
-        {
-            _materialInstance = new Material(_meshRenderer.material);
-            _meshRenderer.material = _materialInstance;
-        }
-
+        EnsureMaterialInstance();
         _materialInstance.SetColor(_colorProperty, _safeColor);
 
         _scaleTween.Stop();

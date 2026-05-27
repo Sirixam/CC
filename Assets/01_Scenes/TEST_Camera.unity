@@ -781,13 +781,12 @@ MonoBehaviour:
   _answerManager: {fileID: 844122163}
   _studentManager: {fileID: 1850831638}
   _teacherManager: {fileID: 1593247447}
-  _defeatFeedback: {fileID: 894644630}
-  _victoryUI: {fileID: 6653537252228672641}
+  _resultScreen: {fileID: 0}
   _timeUI: {fileID: 1208151559}
   _roundTimeUI: {fileID: 963148649}
   _livesUI: {fileID: 1481233729}
   _helpUI: {fileID: 2134544375}
-  _timesUpFeedback: {fileID: 1375291033}
+  _seatedGroupUIs: []
   _restartButtons:
   - {fileID: 6653537252228672640}
   - {fileID: 1569357606090220057}
@@ -797,6 +796,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 935b485b7e347e4488ba37a14cc3d716, type: 2}
   _globalDefinition: {fileID: 11400000, guid: 2b0875648e78a8e45b08a646836071ca, type: 2}
   _maxTimeInSeconds: 180
+  _caughtDoorPoint: {fileID: 0}
+  _confiscationSlots: []
   _eventSystem: {fileID: 366332586}
   _playerInputManager: {fileID: 1683781321}
   _audioData:
@@ -806,7 +807,12 @@ MonoBehaviour:
     PhaseChangeCheat: {fileID: 11400000, guid: 57389d543e1e57847bddb98530a76d05, type: 2}
     BeepFinal: {fileID: 11400000, guid: 52e1806cc8be9b44bb45256ea63ca107, type: 2}
     BeepNotFinal: {fileID: 11400000, guid: 8dff2025996c6864aa64f45b098dc4a0, type: 2}
+    BackgroundMusic: {fileID: 0}
+    MusicVolume: 0.5
   _testDefinition: {fileID: 11400000, guid: f0dce2a82100aaf47a1245b7ec539ec4, type: 2}
+  _testRouteOnDetected: 
+  _testRouteDelay: 1
+  _restartKey: 32
 --- !u!1 &160446707
 GameObject:
   m_ObjectHideFlags: 0
@@ -16888,6 +16894,8 @@ MonoBehaviour:
   _answerPeekUI: {fileID: 6370691539431799937, guid: 1a334793d560a9e4299bf607329e66d3, type: 3}
   _peekUIParent: {fileID: 1993191926}
   _maxPeekUIs: 5
+  _requireRePeekForFullInfo: 1
+  _showFullInfoWhileWriting: 1
   _globalDefinition: {fileID: 11400000, guid: 2b0875648e78a8e45b08a646836071ca, type: 2}
 --- !u!1001 &846620542
 PrefabInstance:
@@ -22136,11 +22144,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f1107de062e953747a87d956cc6647dd, type: 3}
---- !u!1 &894644630 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5285073074281670424, guid: c5a1c29691eacbe4a9b6d6c9f3be6b91, type: 3}
-  m_PrefabInstance: {fileID: 23258996}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &894644631 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6767172372137064172, guid: c5a1c29691eacbe4a9b6d6c9f3be6b91, type: 3}
@@ -28562,6 +28565,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _itemsManager: {fileID: 1039779047}
   _answersManager: {fileID: 844122163}
+  _studentManager: {fileID: 1850831638}
 --- !u!1001 &1208151558
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -29069,11 +29073,6 @@ Transform:
   - {fileID: 2024150788}
   m_Father: {fileID: 1196874856}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1375291033 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7779042745393812245, guid: 4bd57964c129d7a4ebd0f5a4e52de4bb, type: 3}
-  m_PrefabInstance: {fileID: 1569357606090220056}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &1375291036 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5007184829732938439, guid: 4bd57964c129d7a4ebd0f5a4e52de4bb, type: 3}
@@ -41523,7 +41522,19 @@ MonoBehaviour:
   - {fileID: 931442537}
   - {fileID: 2024150791}
   _globalDefinition: {fileID: 11400000, guid: 2b0875648e78a8e45b08a646836071ca, type: 2}
+  _simulateStudentsIndividually: 0
   _halfCorrectChance: 0.5
+  _peekPhaseDuration: 20
+  _cheatPhaseDuration: 20
+  _answeringDurationRange: {x: 5, y: 10}
+  _thinkingDurationCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _normalizeStudentAxis: 1
+  _dynamicAnsweringDuration: 0
 --- !u!114 &1870520444 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3401357592815470036, guid: f1107de062e953747a87d956cc6647dd, type: 3}
@@ -52440,17 +52451,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6a29203a3b428e44fa99a3856981ec12, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &6653537252228672641 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6531805367608663843, guid: a02930eec20a20447885a6a47299aece, type: 3}
-  m_PrefabInstance: {fileID: 6653537252228672639}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f1b9fd73b6d9014bbf4934f4a59feab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &6658183741260169084
