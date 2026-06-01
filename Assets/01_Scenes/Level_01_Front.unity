@@ -174,6 +174,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4033543171620099089, guid: b7353345d7d708a499a61b29968196fe, type: 3}
+      propertyPath: _distractionData.Levels.Array.data[0].DistractionDuration
+      value: 4
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5240,6 +5244,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4033543171620099089, guid: c6c83b7c810880d4ebff8c441c54b59c, type: 3}
+      propertyPath: _distractionData.Levels.Array.data[0].DistractionDuration
+      value: 4
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5685,6 +5693,10 @@ PrefabInstance:
     - target: {fileID: 1676485484969750706, guid: e6e90ba0c41129541a6f4f3af1ab36bc, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4033543171620099089, guid: e6e90ba0c41129541a6f4f3af1ab36bc, type: 3}
+      propertyPath: _distractionData.Levels.Array.data[0].DistractionDuration
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -7942,6 +7954,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4033543171620099089, guid: 171bfb983186171488c72ad5a23b5566, type: 3}
+      propertyPath: _distractionData.Levels.Array.data[0].DistractionDuration
+      value: 4
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -8511,6 +8527,10 @@ PrefabInstance:
     - target: {fileID: 1676485484969750706, guid: d03af2b2226fefb4d9830aefe5578a70, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4033543171620099089, guid: d03af2b2226fefb4d9830aefe5578a70, type: 3}
+      propertyPath: _distractionData.Levels.Array.data[0].DistractionDuration
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -10696,6 +10716,10 @@ PrefabInstance:
     - target: {fileID: 1676485484969750706, guid: 4b91b5c25395b704eaa66a75d91500d7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4033543171620099089, guid: 4b91b5c25395b704eaa66a75d91500d7, type: 3}
+      propertyPath: _distractionData.Levels.Array.data[0].DistractionDuration
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -15658,6 +15682,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4033543171620099089, guid: a849e4a1d123be746a39aa79bbd2695b, type: 3}
+      propertyPath: _distractionData.Levels.Array.data[0].DistractionDuration
+      value: 4
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -16204,6 +16232,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4033543171620099089, guid: edb4ef56f56456d4b9e57fb901ee30c3, type: 3}
+      propertyPath: _distractionData.Levels.Array.data[0].DistractionDuration
+      value: 4
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -16312,6 +16344,10 @@ PrefabInstance:
     - target: {fileID: 1676485484969750706, guid: 6fcdd231844e1414db2d88fa160ce535, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4033543171620099089, guid: 6fcdd231844e1414db2d88fa160ce535, type: 3}
+      propertyPath: _distractionData.Levels.Array.data[0].DistractionDuration
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -16548,7 +16584,7 @@ MonoBehaviour:
   _simulateStudentsIndividually: 1
   _halfCorrectChance: 0.5
   _peekPhaseDuration: 5
-  _cheatPhaseDuration: 15
+  _cheatPhaseDuration: 45
   _answeringDurationRange: {x: 5, y: 5}
   _thinkingDurationCurve:
     serializedVersion: 2
@@ -17821,6 +17857,10 @@ PrefabInstance:
     - target: {fileID: 1676485484969750706, guid: 9f062071986bb8442a8623e7dd578f61, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4033543171620099089, guid: 9f062071986bb8442a8623e7dd578f61, type: 3}
+      propertyPath: _distractionData.Levels.Array.data[0].DistractionDuration
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
