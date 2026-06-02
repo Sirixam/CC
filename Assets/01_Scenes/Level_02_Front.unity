@@ -4236,7 +4236,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2994896442341047896, guid: 0ad07dedf987bb2439d07df5bc57dc3a, type: 3}
       propertyPath: _canSitUndistracted
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2994896442341047896, guid: 0ad07dedf987bb2439d07df5bc57dc3a, type: 3}
       propertyPath: _detectionDwellTime
