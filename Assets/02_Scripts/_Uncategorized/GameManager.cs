@@ -9,6 +9,7 @@ using UnityEngine.InputSystem.UI;
 using System.Collections;
 using _02_Scripts._Uncategorized;
 using _02_Scripts.Utils;
+using UnityEngine.SceneManagement;
 
 
 public class GameManager : MonoBehaviour
@@ -26,6 +27,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private SeatedGroupInputUI[] _seatedGroupUIs;
     [SerializeField] private ButtonListener[] _restartButtons;
     [SerializeField] private PlayerAppearanceSO[] _playerAppearances;
+
+    [Header("Level Navigation")]
+    [SerializeField] private string[] _levelScenes;
 
     [Header("Configurations")]
     [SerializeField] private GlobalDefinition _globalDefinition;
@@ -70,6 +74,7 @@ public class GameManager : MonoBehaviour
         InitializeHelpers();
         InjectTestDefinitionsIfNeeded();
         _gameStartBlocked = GameContext.TutorialManager != null && GameContext.TutorialManager.BlockGameStart;
+        _resultScreen?.SetupNavigation(LoadNextLevel, LoadPreviousLevel);
     }
 
     private void Update()
@@ -159,6 +164,24 @@ public class GameManager : MonoBehaviour
         {
             StartGame();
         }
+    }
+
+    private int CurrentLevelIndex => System.Array.IndexOf(_levelScenes, SceneManager.GetActiveScene().name);
+    public bool HasNextLevel => CurrentLevelIndex >= 0 && CurrentLevelIndex < _levelScenes.Length - 1;
+    public bool HasPreviousLevel => CurrentLevelIndex > 0;
+
+    public void LoadNextLevel()
+    {
+        int idx = CurrentLevelIndex;
+        if (idx >= 0 && idx < _levelScenes.Length - 1)
+            SceneManager.LoadScene(_levelScenes[idx + 1]);
+    }
+
+    public void LoadPreviousLevel()
+    {
+        int idx = CurrentLevelIndex;
+        if (idx > 0)
+            SceneManager.LoadScene(_levelScenes[idx - 1]);
     }
 
     public void AllowGameStart()
