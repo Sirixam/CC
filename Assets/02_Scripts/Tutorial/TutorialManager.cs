@@ -14,6 +14,8 @@ public class TutorialManager : MonoBehaviour
     [SerializeField] private EShowBehavior _showBehavior;
     [SerializeField] private UnityEvent _onShow;
 
+    public bool BlockGameStart => GetComponent<TutorialInputAdvancer>().BlockGameStart;
+
     private void Start()
     {
         if (ShouldShow())

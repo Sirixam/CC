@@ -7,10 +7,11 @@ public class GameInitializer : MonoBehaviour
     [SerializeField] private ItemsManager _itemsManager;
     [SerializeField] private AnswersManager _answersManager;
     [SerializeField] private StudentManager _studentManager;
+    [SerializeField] private TutorialManager _tutorialManager;
 
     private void Awake()
     {
-        GameContext.Initialize(_itemsManager, _answersManager, _studentManager);
+        GameContext.Initialize(_itemsManager, _answersManager, _studentManager, _tutorialManager);
     }
 }
 

@@ -34,6 +34,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private ConfiscationSlot[] _confiscationSlots;
     // [SerializeField] private float _maxRoundTimeInSeconds = 30;
 
+    private bool _gameStartBlocked;
     private TimeHelper _timeHelper;
     private RoundTimeHelper _roundTimeHelper;
     private CancellationTokenSource _gameCancellationSource;
@@ -68,6 +69,7 @@ public class GameManager : MonoBehaviour
         InitializeRestartButtons();
         InitializeHelpers();
         InjectTestDefinitionsIfNeeded();
+        _gameStartBlocked = GameContext.TutorialManager != null && GameContext.TutorialManager.BlockGameStart;
     }
 
     private void Update()
@@ -153,10 +155,17 @@ public class GameManager : MonoBehaviour
             _playerFlashEffects[playerController] = flashEffect;
         }
 
-        if (_players.Count >= _globalDefinition.RequiredPlayerCount)
+        if (_players.Count >= _globalDefinition.RequiredPlayerCount && !_gameStartBlocked)
         {
             StartGame();
         }
+    }
+
+    public void AllowGameStart()
+    {
+        _gameStartBlocked = false;
+        if (!GameplayActive && _players.Count >= _globalDefinition.RequiredPlayerCount)
+            StartGame();
     }
 
     private void StartGame()

@@ -5,15 +5,17 @@ public static class GameContext
     public static ItemsManager ItemsManager { get; private set; }
     public static AnswersManager AnswersManager { get; private set; }
     public static StudentManager StudentManager { get; private set; }
+    public static TutorialManager TutorialManager { get; private set; }
 
     public static bool HasAnswersManager => AnswersManager != null;
     public static bool HasItemsManager => ItemsManager != null;
 
-    public static void Initialize(ItemsManager itemsManager, AnswersManager answersManager, StudentManager studentManager)
+    public static void Initialize(ItemsManager itemsManager, AnswersManager answersManager, StudentManager studentManager, TutorialManager tutorialManager)
     {
         ItemsManager = itemsManager;
         AnswersManager = answersManager;
         StudentManager = studentManager;
+        TutorialManager = tutorialManager;
 
         // Validations
         if (ItemsManager == null)

@@ -3516,6 +3516,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 147876398}
+        m_TargetAssemblyTypeName: GameManager, Game
+        m_MethodName: AllowGameStart
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   _onNext: []
 --- !u!4 &489530939 stripped
 Transform:
@@ -11033,6 +11045,7 @@ MonoBehaviour:
   _itemsManager: {fileID: 1039779047}
   _answersManager: {fileID: 844122163}
   _studentManager: {fileID: 1850831638}
+  _tutorialManager: {fileID: 489048304}
 --- !u!4 &1209904725 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2593120795642583367, guid: 1b7a59becc3ff714dba6f896723e8d8e, type: 3}

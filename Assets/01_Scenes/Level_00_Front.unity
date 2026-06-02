@@ -10359,6 +10359,7 @@ MonoBehaviour:
   _itemsManager: {fileID: 1039779047}
   _answersManager: {fileID: 844122163}
   _studentManager: {fileID: 1850831638}
+  _tutorialManager: {fileID: 1981907681}
 --- !u!4 &1212505956 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4673116164797152, guid: 5b97ca6353ad429419598d36d1a55e6d, type: 3}
@@ -16166,6 +16167,18 @@ MonoBehaviour:
       - m_Target: {fileID: 1006131319}
         m_TargetAssemblyTypeName: TutorialCanvasTransition, Game
         m_MethodName: Hide
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 147876398}
+        m_TargetAssemblyTypeName: GameManager, Game
+        m_MethodName: AllowGameStart
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

@@ -13,6 +13,9 @@ public class TutorialInputAdvancer : MonoBehaviour
     private float _activationTime;
     private int _nextIndex;
 
+    public bool BlockGameStart => _onNext.Length > 0;
+
+
     public void Activate()
     {
         _active = true;
