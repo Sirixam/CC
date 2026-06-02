@@ -24,7 +24,7 @@ MonoBehaviour:
   AnswerSheetMode: 1
   PendingActionTimeout: 1000
   LightBulbAnticipation: 2
-  DiagonalDirectionHint: 2
+  DiagonalDirectionHint: 1
   PlayerTag: Player
   DistractionTag: Distraction
   ItemLayer: 7
