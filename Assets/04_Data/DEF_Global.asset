@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CraftedPaperBallType: 2
   RequiredPlayerCount: 1
-  CanUseAnyPlayerChair: 1
+  CanUseAnyPlayerChair: 0
   PersistAnswerProgress: 0
   ShowAnswerSheetOnSit: 1
   CanThrowWhileSeated: 0
