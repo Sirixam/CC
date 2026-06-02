@@ -19,6 +19,7 @@ public class AnswerController : MonoBehaviour, IInteractionFilter
     [SerializeField] private TestPageView _testPageView;
 
     private int _cheatBlockCount;
+    private bool _cheatEarnedWhileValidating;
     private EState _state;
     private string[] _activeAnswerContributorIDs = new string[0];
     private bool HasAnswerSheet => AnswerSheet != null;
@@ -42,7 +43,7 @@ public class AnswerController : MonoBehaviour, IInteractionFilter
     public bool IsAnswering => _state == EState.Answering;
     public bool IsValidating => _state == EState.Validating;
     public bool CanStartPeeking => IsThinking || IsAnswering || IsValidating;
-    public bool CanStartCheating => IsValidating && !IsCheatBlocked;
+    public bool CanStartCheating => !IsCheatBlocked && (IsValidating || _cheatEarnedWhileValidating);
     public float ThinkingPercent => 1f - _thinkingRemainingTime / _thinkingDuration;
     public float AnsweringPercent => 1f - _answeringRemainingTime / _answeringDuration;
     public float ValidatingPercent => 1f - _validatingRemainingTime / _validatingDuration;
@@ -333,10 +334,18 @@ public class AnswerController : MonoBehaviour, IInteractionFilter
     public void BlockCheat()
     {
         _cheatBlockCount++;
+        if (_cheatBlockCount > 0)
+        {
+            _cheatEarnedWhileValidating = false;
+        }
     }
 
     public void UnblockCheat()
     {
         _cheatBlockCount--;
+        if (_cheatBlockCount <= 0 && IsValidating)
+        {
+            _cheatEarnedWhileValidating = true;
+        }
     }
 }
