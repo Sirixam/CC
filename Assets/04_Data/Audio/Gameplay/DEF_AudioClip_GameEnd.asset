@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: DEF_AudioClip_GameEnd
   m_EditorClassIdentifier: 
   _clips:
-  - {fileID: 8300000, guid: 56444d0b9d393874582f27c840b2c83e, type: 3}
-  _volume: 0.1
+  - {fileID: 8300000, guid: 22fab1dcd2d52aa44bd94ad9abd75464, type: 3}
+  _volume: 0.5
   _pitch: 1
   _loop: 0
   _preventOverlap: 1
