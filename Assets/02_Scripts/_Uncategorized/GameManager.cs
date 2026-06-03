@@ -319,15 +319,22 @@ public class GameManager : MonoBehaviour
         switch (phaseIndex)
         {
             case 0: // Thinking → Cheat/Validating: teacher starts patrolling
-                _audioHelper.OnPhaseChangeAnswer();
                 _teacherManager?.EnterPatrolPhase();
                 break;
+
+            case 1:
+                break;
+
+            case 2:
+                _audioHelper.OnRoundEnd();
+                break;
+
         }
     }
 
     private void HandleLoopRestarted()
     {
-        _audioHelper.OnPhaseChangeThink();
+        //_audioHelper.OnPhaseChangeThink();
         _studentManager.RestartStimulation();
         _answerManager.StopAllPeekCardShakes();
         _answerManager.CleanActivePeeks();
@@ -335,12 +342,14 @@ public class GameManager : MonoBehaviour
     }
     private void HandleCountdownBeep(int phaseIndex, int secondsLeft)
     {
+        /*
         if (secondsLeft == 1)
             _audioHelper.BeepFinal();
         else
             _audioHelper.BeepNotFinal();
+        */
 
-        // ✅ shake all peek cards when 3 seconds remain in the phase
+        // shake all peek cards when 3 seconds remain in the phase
         if (secondsLeft == 3 && phaseIndex == 1)
             _answerManager.ShakeAllPeekCards();
     }

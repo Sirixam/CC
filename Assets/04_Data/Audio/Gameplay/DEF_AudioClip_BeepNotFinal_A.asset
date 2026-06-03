@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: DEF_AudioClip_BeepNotFinal_A
   m_EditorClassIdentifier: 
   _clips:
-  - {fileID: 8300000, guid: a5d52b697797fbd4c9dcebff502ef2cb, type: 3}
-  - {fileID: 8300000, guid: 6386e97a3013a3f45878547d933dd252, type: 3}
+  - {fileID: 0}
+  - {fileID: 0}
   _volume: 1
   _pitch: 1
   _loop: 0
+  _preventOverlap: 0

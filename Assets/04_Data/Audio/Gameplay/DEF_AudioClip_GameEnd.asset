@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: DEF_AudioClip_GameEnd
   m_EditorClassIdentifier: 
   _clips:
-  - {fileID: 8300000, guid: 54a8d1691c3388346acbf42cfcc29be7, type: 3}
+  - {fileID: 8300000, guid: 56444d0b9d393874582f27c840b2c83e, type: 3}
   _volume: 0.1
   _pitch: 1
   _loop: 0

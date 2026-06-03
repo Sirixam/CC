@@ -10,10 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7d3719bfb8ba1ff4993b5e2c1f57f5fa, type: 3}
-  m_Name: DEF_AudioClip_PhaseChange_C
+  m_Name: DEF_AudioClip_RoundEnd
   m_EditorClassIdentifier: 
   _clips:
-  - {fileID: 8300000, guid: c32c96a3f04356e45b7bfde0c97f0dd2, type: 3}
-  _volume: 0.5
+  - {fileID: 8300000, guid: db45aa8ff4cac634b96ec36c334234a7, type: 3}
+  _volume: 1
   _pitch: 1
   _loop: 0
+  _preventOverlap: 0

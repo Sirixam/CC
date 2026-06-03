@@ -7,11 +7,7 @@ public class GameAudioHelper
     public class Data
     {
         public AudioDefinition GameEnd;
-        public AudioDefinition PhaseChangeThink;
-        public AudioDefinition PhaseChangeAnswer;
-        public AudioDefinition PhaseChangeCheat;
-        public AudioDefinition BeepFinal;
-        public AudioDefinition BeepNotFinal;
+        public AudioDefinition RoundEnd;
         public AudioClip BackgroundMusic;
         [Range(0f, 1f)] public float MusicVolume = 0.5f;
     }
@@ -29,28 +25,9 @@ public class GameAudioHelper
         _data.GameEnd.Play();
     }
 
-    public void OnPhaseChangeThink()
+    public void OnRoundEnd()
     {
-        _data.PhaseChangeThink.Play();
-    }
-
-    public void OnPhaseChangeAnswer()
-    {
-        _data.PhaseChangeAnswer.Play();
-    }
-
-    public void OnPhaseChangeCheat()
-    {
-        _data.PhaseChangeCheat.Play();
-    }
-
-    public void BeepFinal()
-    {
-        _data.BeepFinal.Play();
-    }
-    public void BeepNotFinal()
-    {
-        _data.BeepNotFinal.Play();
+        _data.RoundEnd.Play();
     }
 
     public void PlayMusic()
