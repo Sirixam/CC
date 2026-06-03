@@ -6116,12 +6116,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerAnswersDefinitions:
-  - {fileID: 11400000, guid: 688d70872986a7848a8364babff9f90d, type: 2}
+  - {fileID: 11400000, guid: 10ba460d609457d4ca4ec3d141deee58, type: 2}
   - {fileID: 11400000, guid: 9f67efe7b42baa2448cdc123a36988cb, type: 2}
   - {fileID: 11400000, guid: 506ce7810c85be34aaa2ecd4571f5faf, type: 2}
   - {fileID: 11400000, guid: 7d9e8d81f2c6b3b4ab63797a91605dc6, type: 2}
   _npcAnswersDefinitions:
-  - {fileID: 11400000, guid: 688d70872986a7848a8364babff9f90d, type: 2}
+  - {fileID: 11400000, guid: 10ba460d609457d4ca4ec3d141deee58, type: 2}
   - {fileID: 11400000, guid: 9f67efe7b42baa2448cdc123a36988cb, type: 2}
   - {fileID: 11400000, guid: 506ce7810c85be34aaa2ecd4571f5faf, type: 2}
   - {fileID: 11400000, guid: 7d9e8d81f2c6b3b4ab63797a91605dc6, type: 2}

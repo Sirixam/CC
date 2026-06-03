@@ -5428,10 +5428,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerAnswersDefinitions:
-  - {fileID: 11400000, guid: 688d70872986a7848a8364babff9f90d, type: 2}
+  - {fileID: 11400000, guid: 10ba460d609457d4ca4ec3d141deee58, type: 2}
   - {fileID: 11400000, guid: 9f67efe7b42baa2448cdc123a36988cb, type: 2}
   _npcAnswersDefinitions:
-  - {fileID: 11400000, guid: 688d70872986a7848a8364babff9f90d, type: 2}
+  - {fileID: 11400000, guid: 10ba460d609457d4ca4ec3d141deee58, type: 2}
   - {fileID: 11400000, guid: 9f67efe7b42baa2448cdc123a36988cb, type: 2}
   _playerDesks:
   - {fileID: 511216279}

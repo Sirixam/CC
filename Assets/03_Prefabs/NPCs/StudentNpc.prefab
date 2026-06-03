@@ -1209,6 +1209,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5966173213354905228, guid: 930b7a19d446f4b4c9c810e37e84e625, type: 3}
+      propertyPath: _hitSFX
+      value: 
+      objectReference: {fileID: 11400000, guid: d76834a5aba354841ad0e584af9fc446, type: 2}
+    - target: {fileID: 5966173213354905228, guid: 930b7a19d446f4b4c9c810e37e84e625, type: 3}
       propertyPath: _slapOffset.x
       value: -0.8
       objectReference: {fileID: 0}
