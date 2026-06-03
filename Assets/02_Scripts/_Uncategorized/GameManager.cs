@@ -321,20 +321,12 @@ public class GameManager : MonoBehaviour
             case 0: // Thinking → Cheat/Validating: teacher starts patrolling
                 _teacherManager?.EnterPatrolPhase();
                 break;
-
-            case 1:
-                break;
-
-            case 2:
-                _audioHelper.OnRoundEnd();
-                break;
-
         }
     }
 
     private void HandleLoopRestarted()
     {
-        //_audioHelper.OnPhaseChangeThink();
+        _audioHelper.OnRoundEnd();
         _studentManager.RestartStimulation();
         _answerManager.StopAllPeekCardShakes();
         _answerManager.CleanActivePeeks();
