@@ -993,7 +993,6 @@ MonoBehaviour:
   _answerManager: {fileID: 844122163}
   _studentManager: {fileID: 1850831638}
   _teacherManager: {fileID: 1593247447}
-  animator: {fileID: 0}
   _resultScreen: {fileID: 1569357606090220058}
   _timeUI: {fileID: 888788780}
   _roundTimeUI: {fileID: 397366156}
