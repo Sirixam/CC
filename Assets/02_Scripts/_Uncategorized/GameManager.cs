@@ -18,9 +18,8 @@ public class GameManager : MonoBehaviour
     public AnswersManager AnswerManager => _answerManager;
     [SerializeField] private StudentManager _studentManager;
     [SerializeField] private TeacherManager _teacherManager;
-
     [SerializeField] private ResultScreenUI _resultScreen;
-    [SerializeField] private TimeUI _timeUI;
+    [SerializeField] private TimeUIBell _timeUI;
     [SerializeField] private RoundTimeUI _roundTimeUI;
     [SerializeField] private LivesUI _livesUI;
     [SerializeField] private HelpUI _helpUI;
@@ -368,6 +367,8 @@ public class GameManager : MonoBehaviour
     }
     private async void OnRoundTimesUp()
     {
+        //animator.SetTrigger("BellRing");
+        //Debug.Log("I'M HERE");
         //await UniTask.Yield();
         //StartRoundTimer();
     }
@@ -697,6 +698,16 @@ public class GameManager : MonoBehaviour
         {
             _helpUI.Hide();
         }
+    }
+
+    public RoundTimeHelper GetRoundTimeHelper()
+    {
+        return _roundTimeHelper;
+    }
+
+    public TimeHelper GetTimeHelper()
+    {
+        return _timeHelper;
     }
 
     private void InitializeRestartButtons()

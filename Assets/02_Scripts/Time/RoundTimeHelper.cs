@@ -15,8 +15,6 @@ public class RoundTimeHelper
     public event Action<int, int> OnCountdownBeep;
     public event Action OnLoopRestarted;
 
-
-
     private int _currentMilestoneIndex;
     private bool _isPaused;
     public bool IsRunning { get; private set; }
@@ -45,6 +43,7 @@ public class RoundTimeHelper
 
     public void Setup(float peekPhaseDuration, float answeringDuration, float validatingDuration)
     {
+        
         _p1 = peekPhaseDuration;
         _p2 = answeringDuration;
         _p3 = validatingDuration;
@@ -58,12 +57,15 @@ public class RoundTimeHelper
         _currentPhaseIndex = 0;
         _lastBeepSecond = -1;
 
-        _roundTimeUI.Setup(_roundRemainingTime, _p1, _p2, _p3);
+        //roundTimeUI.Setup(_roundRemainingTime, _p1, _p2, _p3);
+        
     }
 
     // NEW: extracted so we can call it on loop restart too
+
     private void ResetCycle()
     {
+        
         _roundRemainingTime = _totalRoundDuration; // 
 
         _phaseThresholds.Clear();
@@ -130,6 +132,7 @@ public class RoundTimeHelper
     // and fires a beep event once per second during the countdown window
     private void CheckCountdownBeep()
     {
+        /*
         float phaseEndTime = _currentPhaseIndex < _phaseThresholds.Count
             ? _phaseThresholds[_currentPhaseIndex]
             : 0f;
@@ -146,7 +149,7 @@ public class RoundTimeHelper
                 _lastBeepSecond = secondsLeft;
                 OnCountdownBeep?.Invoke(_currentPhaseIndex, secondsLeft);
             }
-        }
+        }*/
     }
 
     public void Pause()

@@ -41,17 +41,6 @@ public class LivesUI : MonoBehaviour
     {
         RectTransform _target = _lives[lifeIndex].rectTransform;
 
-        /*
-        _shrinkTween.Stop();
-        _shrinkTween = Sequence.Create()
-            .Chain(Tween.Scale(target, new Vector3(1f, 1f, 1f), 0.5f, Ease.OutQuad))
-            .Chain(Tween.Scale(target, Vector3.zero, 1f, Ease.InBack)
-            .OnComplete(() =>
-            {
-                target.localScale = Vector3.one; // reset for next game
-                _lives[lifeIndex].sprite = _lostLife;
-                onComplete?.Invoke();
-            })); */
         _originalPivot = _target.pivot;
 
         // Pivot at top-right — that's the corner being pulled

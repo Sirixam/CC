@@ -20,6 +20,8 @@ public class RoundTimeUI : MonoBehaviour
     [Header("Dividers")]
     [SerializeField] private RectTransform _divider1;
     [SerializeField] private RectTransform _divider2;
+    
+
 
     private float _maxRoundTimeInSeconds;
     private float _phase1Duration;
@@ -40,6 +42,7 @@ public class RoundTimeUI : MonoBehaviour
 
     private void BuildPhaseArcs()
     {
+        /*
         float total = _phase1Duration + _phase2Duration + _phase3Duration;
 
         SetupArc(_phase1Arc, _phase1Duration / total, 0f, _phase1Color);
@@ -50,11 +53,13 @@ public class RoundTimeUI : MonoBehaviour
         _phase3Arc.gameObject.SetActive(false);
         
         BuildDividers(_phase1Duration + _phase2Duration + _phase3Duration);
+        */
 
     }
 
     private void SetupArc(Image arc, float fraction, float startFraction, Color color)
     {
+        /*
         arc.type = Image.Type.Filled;
         arc.fillMethod = Image.FillMethod.Radial360;
         arc.fillClockwise = true;
@@ -62,27 +67,30 @@ public class RoundTimeUI : MonoBehaviour
         arc.fillAmount = fraction;
         arc.color = color;
         arc.rectTransform.localRotation = Quaternion.Euler(0f, 0f, -startFraction * 360f);
+        */
     }
 
     public void SetRoundRemainingTime(float seconds)
-    {
+    {   /*
         float percent = Mathf.Clamp01((_maxRoundTimeInSeconds - seconds) / _maxRoundTimeInSeconds);
-        _fill.fillAmount = percent;
+        _fill.fillAmount = percent;*/
     }
 
     public void ResetFill()
     {
-        _fill.fillAmount = 0f;
+        //_fill.fillAmount = 0f;
     }
 
     private void BuildDividers(float total)
     {
+        /*
         float angle1 = 0f; // start of Phase1 = top
         float angle2 = (_phase1Duration / total) * 360f;
         float angle3 = ((_phase1Duration + _phase2Duration) / total) * 360f;
 
         _divider1.localRotation = Quaternion.Euler(0f, 0f, -angle1);
         _divider2.localRotation = Quaternion.Euler(0f, 0f, -angle2);
+        */
     }
     
 }

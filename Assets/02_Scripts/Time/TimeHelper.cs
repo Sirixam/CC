@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class TimeHelper
 {
-    private TimeUI _timeUI;
+    private TimeUIBell _timeUI;
 
     private bool _isPaused;
     public bool IsRunning { get; private set; }
@@ -13,7 +13,7 @@ public class TimeHelper
 
     public Action OnTimesUp;
 
-    public TimeHelper(TimeUI timeUI)
+    public TimeHelper(TimeUIBell timeUI)
     {
         _timeUI = timeUI;
     }
