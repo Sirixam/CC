@@ -1199,7 +1199,7 @@ MonoBehaviour:
   _helpUI: {fileID: 2134544375}
   _seatedGroupUIs: []
   _restartButtons:
-  - {fileID: 0}
+  - {fileID: 1011305565}
   _playerAppearances:
   - {fileID: 11400000, guid: 24cbb670adb57b1488484bc3daa0942d, type: 2}
   - {fileID: 11400000, guid: 935b485b7e347e4488ba37a14cc3d716, type: 2}
@@ -6278,6 +6278,7 @@ MonoBehaviour:
   _maxPeekUIs: 5
   _requireRePeekForFullInfo: 1
   _showFullInfoWhileWriting: 0
+  _hintStudentRange: {x: 1, y: 3}
   _globalDefinition: {fileID: 11400000, guid: 2b0875648e78a8e45b08a646836071ca, type: 2}
 --- !u!1001 &848438150
 PrefabInstance:
@@ -8603,19 +8604,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3425674219450127169, guid: 872a3ba75a7414b4b8a7dd44dfacd82d, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3425674219450127169, guid: 872a3ba75a7414b4b8a7dd44dfacd82d, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3425674219450127169, guid: 872a3ba75a7414b4b8a7dd44dfacd82d, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 3425674219450127169, guid: 872a3ba75a7414b4b8a7dd44dfacd82d, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -50
       objectReference: {fileID: 0}
     - target: {fileID: 5007184829732938439, guid: 872a3ba75a7414b4b8a7dd44dfacd82d, type: 3}
       propertyPath: m_Pivot.x
@@ -8733,6 +8734,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ExamResultScreenUI
       objectReference: {fileID: 0}
+    - target: {fileID: 7779042745393812245, guid: 872a3ba75a7414b4b8a7dd44dfacd82d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8900680887009448895, guid: 872a3ba75a7414b4b8a7dd44dfacd82d, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -8759,6 +8764,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5007184829732938439, guid: 872a3ba75a7414b4b8a7dd44dfacd82d, type: 3}
   m_PrefabInstance: {fileID: 1011305563}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1011305565 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4775587349222026573, guid: 872a3ba75a7414b4b8a7dd44dfacd82d, type: 3}
+  m_PrefabInstance: {fileID: 1011305563}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a29203a3b428e44fa99a3856981ec12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1011305566 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5809925746394037268, guid: 872a3ba75a7414b4b8a7dd44dfacd82d, type: 3}
