@@ -24,7 +24,15 @@ namespace _02_Scripts.UI
        [SerializeField] private GradeDisplayUI _gradeDisplay;
        [SerializeField] private TMP_Text _avgGradeResult;
        
-        public void SetupNavigation(Action onNext, Action onPrev)
+
+       public void Awake()
+       {
+           var defs = GameManager.Instance?.AnswerManager?.PlayerAnswerDefinitions;
+         //  if (defs != null)
+               //_examResultScreen.BuildHeader(defs);
+       }
+
+       public void SetupNavigation(Action onNext, Action onPrev)
         {
             if (_nextLevelButton != null)
                 _nextLevelButton.OnClickEvent = onNext;
@@ -67,7 +75,7 @@ namespace _02_Scripts.UI
 
         public void ShowGrades()
         {
-            _gradeDisplay.ShowGrades();
+          //  _examResultScreen.ShowResults();
         }
         
         // public void UpdateAnswerSheets()

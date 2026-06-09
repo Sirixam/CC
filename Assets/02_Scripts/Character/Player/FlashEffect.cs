@@ -137,7 +137,7 @@ public class FlashEffect : MonoBehaviour
         Debug.Log("ContinuousFlashRoutine started");
         while (_isContinuousFlashing)
         {
-            Debug.Log("Flash ON");
+           // Debug.Log("Flash ON");
             SetAllColors(_flashColor);
             yield return new WaitForSeconds(_flashDuration);
             RestoreAllColors();

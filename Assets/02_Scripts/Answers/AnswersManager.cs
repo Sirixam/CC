@@ -262,7 +262,8 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
     private Queue<AnswerPeekUI> _activePeekUIs = new();
 
     [SerializeField] private GlobalDefinition _globalDefinition;
-
+    public AnswerDefinition[] PlayerAnswerDefinitions => _playerAnswersDefinitions;
+    
     private TestDefinition _testDefinition;
     public AnswerSheet[] PlayerAnswerSheets { get; private set; }
     private Dictionary<string, AnswerSheet> _actorId2AnswerSheet;

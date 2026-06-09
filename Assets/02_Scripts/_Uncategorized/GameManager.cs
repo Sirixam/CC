@@ -2,12 +2,10 @@ using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using System.Threading;
 using _02_Scripts.Tools;
-using _02_Scripts.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
 using System.Collections;
-using _02_Scripts._Uncategorized;
 using _02_Scripts.Utils;
 using UnityEngine.SceneManagement;
 
@@ -18,7 +16,7 @@ public class GameManager : MonoBehaviour
     public AnswersManager AnswerManager => _answerManager;
     [SerializeField] private StudentManager _studentManager;
     [SerializeField] private TeacherManager _teacherManager;
-    [SerializeField] private ResultScreenUI _resultScreen;
+    [SerializeField] private ExamResultScreenUI _examResultScreen;
     [SerializeField] private TimeUIBell _timeUI;
     [SerializeField] private RoundTimeUI _roundTimeUI;
     [SerializeField] private LivesUI _livesUI;
@@ -73,7 +71,7 @@ public class GameManager : MonoBehaviour
         InitializeHelpers();
         InjectTestDefinitionsIfNeeded();
         _gameStartBlocked = GameContext.TutorialManager != null && GameContext.TutorialManager.BlockGameStart;
-        _resultScreen?.SetupNavigation(LoadNextLevel, LoadPreviousLevel);
+        _examResultScreen?.SetupNavigation(LoadNextLevel, LoadPreviousLevel);
     }
 
     private void Update()
@@ -322,18 +320,18 @@ public class GameManager : MonoBehaviour
 
         GradingHelper.CalculateAndPrintGrades(Players, _answerManager);
 
-        _resultScreen.ShowGrades();
-        _resultScreen.Show(ResultType.Victory, GradingHelper.GetAverageGrade(_players, _answerManager));
-        ShowEndMenu(_resultScreen.gameObject);
+        _examResultScreen.ShowGrades();
+        _examResultScreen.Show();
+        ShowEndMenu(_examResultScreen.gameObject);
     }
 
     private void OnTimesUp()
     {
         GradingHelper.CalculateAndPrintGrades(Players, _answerManager);
 
-        _resultScreen.ShowGrades();
-        _resultScreen.Show(ResultType.TimesUp, GradingHelper.GetAverageGrade(_players, _answerManager));
-        ShowEndMenu(_resultScreen.gameObject);
+        _examResultScreen.ShowGrades();
+        _examResultScreen.Show();
+        ShowEndMenu(_examResultScreen.gameObject);
         StopRoundTimer();
     }
     private async void OnRoundTimesUp()
@@ -516,9 +514,9 @@ public class GameManager : MonoBehaviour
                 player.gameObject.SetActive(false);
             });
         }
-        _resultScreen.ShowGrades();
-        _resultScreen.Show(ResultType.Defeat, GradingHelper.GetAverageGrade(_players, _answerManager));
-        ShowEndMenu(_resultScreen.gameObject);
+        _examResultScreen.ShowGrades();
+        _examResultScreen.Show();
+        ShowEndMenu(_examResultScreen.gameObject);
     }
     private void SetLives(int value)
     {
@@ -650,9 +648,9 @@ public class GameManager : MonoBehaviour
     private void InitializeUIState()
     {
 
-        if (_resultScreen != null)
+        if (_examResultScreen != null)
         {
-            _resultScreen.gameObject.SetActive(false);
+            _examResultScreen.gameObject.SetActive(false);
         }
         if (_timeUI != null)
         {

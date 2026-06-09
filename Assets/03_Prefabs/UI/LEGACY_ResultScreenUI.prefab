@@ -1485,7 +1485,7 @@ GameObject:
   - component: {fileID: 5304434983552682012}
   - component: {fileID: 8750921020528016227}
   m_Layer: 5
-  m_Name: ResultScreenUI
+  m_Name: LEGACY_ResultScreenUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
