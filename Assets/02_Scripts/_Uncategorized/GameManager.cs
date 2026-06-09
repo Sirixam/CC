@@ -440,7 +440,7 @@ public class GameManager : MonoBehaviour
 
         _playerLives--;
 
-        _livesUI.playLostLifeAnimation(_playerLives, () =>
+        _livesUI.PlayLostLifeAnimation(_playerLives, () =>
         {
             SetLives(_playerLives);
             _isProcessingLifeLoss = false;

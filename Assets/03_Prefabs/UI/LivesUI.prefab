@@ -465,6 +465,8 @@ MonoBehaviour:
   _defaultColor: {r: 1, g: 1, b: 1, a: 1}
   _emptyColor: {r: 0, g: 0, b: 0, a: 1}
   _lostLife: {fileID: 21300000, guid: 57a0cd1703bbdab4d94dac98e18b00cf, type: 3}
+  _lostLifeDelay: 0.5
+  _lastLifeDelay: 1
   _peelDuration: 0.6
   _fallDuration: 0.4
   _fallDistance: 100

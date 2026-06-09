@@ -12,6 +12,8 @@ public class LivesUI : MonoBehaviour
     [SerializeField] private Sprite _lostLife;
 
     [Header("Peel Settings")]
+    [SerializeField] private float _lostLifeDelay = 0.3f;
+    [SerializeField] private float _lastLifeDelay = 0.8f;
     [SerializeField] private float _peelDuration = 0.6f;
     [SerializeField] private float _fallDuration = 0.4f;
     [SerializeField] private float _fallDistance = 600f;
@@ -37,7 +39,7 @@ public class LivesUI : MonoBehaviour
         }
     }
 
-    public void playLostLifeAnimation(int lifeIndex, Action onComplete)
+    public void PlayLostLifeAnimation(int lifeIndex, Action onComplete)
     {
         RectTransform _target = _lives[lifeIndex].rectTransform;
 
@@ -53,7 +55,9 @@ public class LivesUI : MonoBehaviour
         // Peel rotation: rotate around diagonal axis
         Quaternion peelTarget = Quaternion.AngleAxis(_peelAngle, FoldAxis);
 
+        float delay = lifeIndex == 0 ? _lastLifeDelay : _lostLifeDelay;
         Sequence.Create()
+            .ChainDelay(delay)
             // Phase 1: Peel — diagonal curl from top-right corner
             .Chain(Tween.Rotation(_target, peelTarget, _peelDuration, Ease.InSine))
 
