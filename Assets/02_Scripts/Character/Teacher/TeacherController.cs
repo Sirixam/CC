@@ -75,8 +75,11 @@ public class TeacherController : MonoBehaviour, IActor, ILookAroundActor, ISitAc
 
     private void OnDestroy()
     {
+        StopAllCoroutines();
         _detectionTriggerListener.OnEnter -= OnDetectionTriggerEnter;
         _detectionTriggerListener.OnExit -= OnDetectionTriggerExit;
+        if (_navigationHelper != null)
+            _navigationHelper.OnArriveAtDestination -= OnArriveAtDestination;
     }
 
     public void Inject(NavigationManager navigationManager)

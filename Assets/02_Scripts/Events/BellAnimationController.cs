@@ -28,9 +28,9 @@ public class BellAnimationController: MonoBehaviour {
     private void OnDestroy()
     {
         if (_roundTimeHelper != null)
-        {
             _roundTimeHelper.OnRoundTimesUp -= playBellAnimation;
-        }
+        if (_timeHelper != null)
+            _timeHelper.OnTimesUp -= playLongBellAnimation;
     }
     public void playBellAnimation()
     {

@@ -173,6 +173,7 @@ public class PlayerController : MonoBehaviour, IInteractionActor, IThrowActor
 
     private void OnDisable()
     {
+        StopAllCoroutines();
         _inputHandler.ActionEvent -= OnActionRequested;
         _inputHandler.DirectionalActionEvent -= OnDirectionalActionRequested;
         _inputHandler.PreHoldActionEvent -= OnPreHoldActionDetected;

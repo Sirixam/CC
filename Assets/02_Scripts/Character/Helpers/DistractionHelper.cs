@@ -52,6 +52,13 @@ public class DistractionHelper
         _audioHelper = audioHelper;
     }
 
+    public void Cancel()
+    {
+        _cancellationTokenSource?.Cancel();
+        _cancellationTokenSource?.Dispose();
+        _cancellationTokenSource = null;
+    }
+
     public void InjectTestDefinition(TestDefinition testDefinition)
     {
         _testDefinition = testDefinition;

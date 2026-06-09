@@ -73,8 +73,11 @@ public class StudentNpcController : MonoBehaviour
 
     private void OnDestroy()
     {
-        _chairController.OnCollisionEnterEvent = OnCollisionEnter;
+        _chairController.OnCollisionEnterEvent -= OnCollisionEnter;
         _fieldOfViewTriggerListener.OnEnter -= OnDetectionTriggerEnter;
+        _distractionHelper.OnDistractionStarted -= OnDistractionStarted;
+        _distractionHelper.OnDistractionEnded -= OnDistractionEnded;
+        _distractionHelper.Cancel();
     }
 
     private void Update()

@@ -21,13 +21,22 @@ public class ChairController : MonoBehaviour, IInteractionFilter
 
     public Action<Collision> OnCollisionEnterEvent;
 
+    private CollisionComponent _answerCollisionComponent;
+
     private void Awake()
     {
         AnswerController = transform.parent.GetComponentInChildren<AnswerController>();
         if (!AnswerController.IsPlayer)
         {
-            AnswerController.GetComponent<CollisionComponent>().OnCollisionEnterEvent += OnCollisionEnterAnswer; // [AKP] Include desks from students to propagate distraction.
+            _answerCollisionComponent = AnswerController.GetComponent<CollisionComponent>();
+            _answerCollisionComponent.OnCollisionEnterEvent += OnCollisionEnterAnswer; // [AKP] Include desks from students to propagate distraction.
         }
+    }
+
+    private void OnDestroy()
+    {
+        if (_answerCollisionComponent != null)
+            _answerCollisionComponent.OnCollisionEnterEvent -= OnCollisionEnterAnswer;
     }
 
     private void Start()

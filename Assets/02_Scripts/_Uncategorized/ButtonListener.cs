@@ -13,6 +13,11 @@ public class ButtonListener : MonoBehaviour
         _button.onClick.AddListener(BtnListener);
     }
 
+    private void OnDestroy()
+    {
+        _button.onClick.RemoveListener(BtnListener);
+    }
+
     public void BtnListener()
     {
         OnClickEvent?.Invoke();

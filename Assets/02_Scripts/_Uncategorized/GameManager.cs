@@ -116,6 +116,15 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void OnDestroy()
+    {
+        StopAllCoroutines();
+        _gameCancellationSource?.Cancel();
+        _gameCancellationSource?.Dispose();
+        _roundCancellationSource?.Cancel();
+        _roundCancellationSource?.Dispose();
+    }
+
     // Triggere externallyd when a player joins the game
     public void OnPlayerJoined(PlayerInput playerInput)
     {
@@ -234,54 +243,14 @@ public class GameManager : MonoBehaviour
     {
         GameplayActive = false;
         _gameCancellationSource?.Cancel();
+        _gameCancellationSource?.Dispose();
         _gameCancellationSource = null;
         _timeHelper.Stop();
     }
 
     private void RestartGame()
     {
-        StopGame();
-        StopRoundTimer();
-
-        _answerManager.StopAllPeekCardShakes();
-        _answerManager.CleanActivePeeks();
-        _answerManager.ResetProgress();
-
-        if (_teacherManager != null)
-            _teacherManager.ResetTeachers();
-        if (_resultScreen != null)
-            _resultScreen.Hide();
-        if (_studentManager != null)
-            _studentManager.ResetForNewGame();
-
-        // Store device pairings BEFORE reactivating
-        var playerDevices = new List<InputDevice[]>();
-        foreach (var player in _players)
-        {
-            var devices = player.InputHandler.PlayerInput.devices.ToArray();
-            playerDevices.Add(devices);
-        }
-
-        foreach (var player in _players)
-        {
-            player.gameObject.SetActive(true);
-            player.InputHandler.Unblock();
-            player.ResetPlayerState();
-            player.View.ResetVisuals();
-            player.TeleportToInitialChair();
-            player.ResetPlayerView();
-        }
-
-        // Restore device pairings
-        for (int i = 0; i < _players.Count; i++)
-        {
-            if (i < _playerDevicePairings.Count && _playerDevicePairings[i].Length > 0)
-            {
-                _players[i].InputHandler.PlayerInput.SwitchCurrentControlScheme(_playerDevicePairings[i]);
-            }
-        }
-
-        StartGame();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     private void StartTimer()
@@ -297,8 +266,9 @@ public class GameManager : MonoBehaviour
     private void StartRoundTimer()
     {
         _roundCancellationSource?.Cancel();
+        _roundCancellationSource?.Dispose();
         _roundCancellationSource = new CancellationTokenSource();
-        _roundTimeHelper.IsLooping = true; // 👈 ensure this is set
+        _roundTimeHelper.IsLooping = true;
         _roundTimeHelper.Setup(_studentManager.PeekPhaseDuration, answeringDuration: 0, _studentManager.CheatPhaseDuration);
 
         if (_roundTimeUI != null)
@@ -310,6 +280,7 @@ public class GameManager : MonoBehaviour
     private void StopRoundTimer()
     {
         _roundCancellationSource?.Cancel();
+        _roundCancellationSource?.Dispose();
         _roundCancellationSource = null;
         _roundTimeHelper.Stop();
     }
@@ -641,6 +612,7 @@ public class GameManager : MonoBehaviour
         DisablePlayerJoining(); // STOP NEW PLAYERS
 
         _gameCancellationSource?.Cancel();
+        _gameCancellationSource?.Dispose();
         _gameCancellationSource = null;
         _audioHelper.OnGameEnd();
 

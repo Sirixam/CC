@@ -51,13 +51,16 @@ public class StudentManager : MonoBehaviour
     public Action<PlayerController> OnPlayerDetected;
     public Action<IItemController> OnItemDetected;
 
+    private void OnPlayerDetectedForward(PlayerController player) => OnPlayerDetected?.Invoke(player);
+    private void OnItemDetectedForward(IItemController item) => OnItemDetected?.Invoke(item);
+
     private void Start()
     {
         for (int i = 0; i < _students.Length; i++)
         {
             string actorID = IActor.GetStudentNpcID(i);
-            _students[i].OnPlayerDetected += OnPlayerDetected.Invoke;
-            _students[i].OnItemDetected += OnItemDetected.Invoke;
+            _students[i].OnPlayerDetected += OnPlayerDetectedForward;
+            _students[i].OnItemDetected += OnItemDetectedForward;
             _answerManager.AddStudentNpc(new AnswersManager.StudentNpcInput
             {
                 ActorID = actorID,
@@ -65,6 +68,18 @@ public class StudentManager : MonoBehaviour
                 CharacterIcon = _students[i].CharacterIcon,
                 ArchetypeIcon = _students[i].ArchetypeIcon
             });
+        }
+    }
+
+    private void OnDestroy()
+    {
+        _simulationCancellationSource?.Cancel();
+        _simulationCancellationSource?.Dispose();
+        foreach (var student in _students)
+        {
+            if (student == null) continue;
+            student.OnPlayerDetected -= OnPlayerDetectedForward;
+            student.OnItemDetected -= OnItemDetectedForward;
         }
     }
 
