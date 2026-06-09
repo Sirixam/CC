@@ -60,7 +60,9 @@ public class ExamResultScreenUI : MonoBehaviour
         {
             Image icon = Instantiate(_answerIconPrefab, _iconHeaderContainer);
             icon.sprite = def.Icon;
-            icon.color = def.Color;
+            icon.color = Color.black;
+            
+            icon.enabled = true;
         }
     }
 

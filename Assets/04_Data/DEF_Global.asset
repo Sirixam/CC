@@ -19,7 +19,7 @@ MonoBehaviour:
   ShowAnswerSheetOnSit: 1
   CanThrowWhileSeated: 0
   MinCorrectnessToEarlyVictoryFlow: 1
-  PlayerLives: 3
+  PlayerLives: 1
   CaughtMode: 1
   AnswerSheetMode: 1
   PendingActionTimeout: 1000

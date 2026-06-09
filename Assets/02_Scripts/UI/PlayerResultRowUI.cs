@@ -32,29 +32,58 @@ public class PlayerResultRowUI : MonoBehaviour
         {
             Image cell = Instantiate(_answerCellPrefab, _answerCellsContainer);
 
-            // Find the background and icon child images by name
-            Image background = cell.transform.Find("AnswerCellBackground")?.GetComponent<Image>();
             Image icon = cell.transform.Find("AnswerImage")?.GetComponent<Image>();
+            Debug.Log($"Icon found: {icon}");
+            Debug.Log($"Icon activeSelf: {icon?.gameObject.activeSelf}");
+            Debug.Log($"Icon activeInHierarchy: {icon?.gameObject.activeInHierarchy}");
+            
+            Transform t = icon.transform;
+            while (t != null)
+            {
+                Debug.Log($"{t.name} | activeSelf={t.gameObject.activeSelf} activeInHierarchy={t.gameObject.activeInHierarchy}");
+                t = t.parent;
+            }
+            cell.enabled = true;
+
+            if (icon != null)
+                icon.enabled = true;
 
             if (!answer.IsAnswerFull)
             {
-                if (background != null) background.color = _emptyColor;
-                if (icon != null) icon.gameObject.SetActive(false);
+                icon.color = _emptyColor;
+
+                if (icon != null)
+                    icon.gameObject.SetActive(false);
             }
             else if (answer.Correctness >= 1f)
             {
-                if (background != null) background.color = _correctColor;
-                if (icon != null) { icon.gameObject.SetActive(true); icon.sprite = _correctSprite; }
+                icon.color = _correctColor;
+
+                if (icon != null)
+                {
+                    icon.gameObject.SetActive(true);
+                    icon.sprite = _correctSprite;
+                }
             }
             else if (answer.Correctness > 0f)
             {
-                if (background != null) background.color = _halfCorrectColor;
-                if (icon != null) { icon.gameObject.SetActive(true); icon.sprite = _halfCorrectSprite; }
+                icon.color = _halfCorrectColor;
+
+                if (icon != null)
+                {
+                    icon.gameObject.SetActive(true);
+                    icon.sprite = _halfCorrectSprite;
+                }
             }
             else
             {
-                if (background != null) background.color = _incorrectColor;
-                if (icon != null) { icon.gameObject.SetActive(true); icon.sprite = _incorrectSprite; }
+                icon.color = _incorrectColor;
+
+                if (icon != null)
+                {
+                    icon.gameObject.SetActive(true);
+                    icon.sprite = _incorrectSprite;
+                }
             }
         }
     }
