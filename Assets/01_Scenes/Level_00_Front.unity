@@ -5430,6 +5430,7 @@ MonoBehaviour:
   _maxPeekUIs: 5
   _requireRePeekForFullInfo: 1
   _showFullInfoWhileWriting: 0
+  _hintStudentRange: {x: 1000, y: 1000}
   _globalDefinition: {fileID: 11400000, guid: 2b0875648e78a8e45b08a646836071ca, type: 2}
 --- !u!1001 &848438150
 PrefabInstance:
