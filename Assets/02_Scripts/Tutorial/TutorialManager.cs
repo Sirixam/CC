@@ -8,6 +8,7 @@ public class TutorialManager : MonoBehaviour
         Always,
         OncePerSession,
         Once,
+        Twice,
     }
 
     [SerializeField] private string _tutorialID;
@@ -29,6 +30,7 @@ public class TutorialManager : MonoBehaviour
             EShowBehavior.Always => true,
             EShowBehavior.OncePerSession => !TutorialSession.WasShown(_tutorialID),
             EShowBehavior.Once => true, // save check not yet implemented; always shows
+            EShowBehavior.Twice => TutorialSession.GetShownCount(_tutorialID) < 2,
             _ => false,
         };
     }
@@ -42,6 +44,9 @@ public class TutorialManager : MonoBehaviour
                 break;
             case EShowBehavior.Once:
                 Debug.Log("SAVE SYSTEM NOT IMPLEMENTED");
+                break;
+            case EShowBehavior.Twice:
+                TutorialSession.IncrementShownCount(_tutorialID);
                 break;
         }
 

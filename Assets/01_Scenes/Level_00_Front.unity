@@ -16131,7 +16131,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _tutorialID: AdditionalInfo
-  _showBehavior: 0
+  _showBehavior: 3
   _onShow:
     m_PersistentCalls:
       m_Calls:
