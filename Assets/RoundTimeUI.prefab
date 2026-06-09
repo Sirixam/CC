@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6545543278875886115}
   - component: {fileID: 7126694503832914497}
   - component: {fileID: 3924894744457502485}
+  - component: {fileID: 1064217528463462392}
   - component: {fileID: 8232295732446648582}
   m_Layer: 5
   m_Name: RoundTimeUI
@@ -72,6 +73,19 @@ MonoBehaviour:
   _phase3Color: {r: 0, g: 0, b: 1, a: 1}
   _divider1: {fileID: 0}
   _divider2: {fileID: 0}
+--- !u!114 &1064217528463462392
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3972394521393286416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e1fefce4f0e9ea42a59f18fdb9e60f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  roundTimeUI: {fileID: 3924894744457502485}
 --- !u!95 &8232295732446648582
 Animator:
   serializedVersion: 5
@@ -193,13 +207,13 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5025610673552934899}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: -0.16504757, w: 0.9862857}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6545543278875886115}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -19}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -147.22353, y: -60.7052}
@@ -329,7 +343,6 @@ GameObject:
   - component: {fileID: 1709707714369929958}
   - component: {fileID: 2684155646609165495}
   - component: {fileID: 1896648562574367375}
-  - component: {fileID: 609993233250105226}
   m_Layer: 5
   m_Name: Arm
   m_TagString: Untagged
@@ -394,20 +407,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &609993233250105226
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9009476131890900511}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0e1fefce4f0e9ea42a59f18fdb9e60f2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gameManager: {fileID: 0}
-  roundTimeUI: {fileID: 3924894744457502485}
 --- !u!1001 &2539430044531030518
 PrefabInstance:
   m_ObjectHideFlags: 0
