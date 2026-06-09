@@ -231,6 +231,7 @@ public class GameManager : MonoBehaviour
             player.SetAnsweringDuration(_studentManager.AverageAnsweringDuration);
         }
         _studentManager.StartStimulation(_gameCancellationSource.Token);
+        _answerManager.SelectHintStudents();
 
         EnableGameplayInput();
         _audioHelper.PlayMusic();
@@ -296,6 +297,7 @@ public class GameManager : MonoBehaviour
     {
         _audioHelper.OnRoundEnd();
         _studentManager.RestartStimulation();
+        _answerManager.SelectHintStudents();
         _answerManager.StopAllPeekCardShakes();
         _answerManager.CleanActivePeeks();
         _teacherManager?.EnterPassivePhase();

@@ -259,7 +259,10 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
     [Tooltip("If true, a card stays at PartialInfo until the player peeks again — state is never auto-upgraded to FullInfo.")]
     [SerializeField] private bool _requireRePeekForFullInfo = true;
     [SerializeField] private bool _showFullInfoWhileWriting = true;
+    [Tooltip("Random range for how many wrong-answer students can show the direction hint each round (inclusive).")]
+    [SerializeField] private Vector2Int _hintStudentRange = new Vector2Int(1, 3);
     private Queue<AnswerPeekUI> _activePeekUIs = new();
+    private HashSet<string> _hintEligibleActorIDs = new();
 
     [SerializeField] private GlobalDefinition _globalDefinition;
     public AnswerDefinition[] PlayerAnswerDefinitions => _playerAnswersDefinitions;
@@ -348,7 +351,8 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
                 answerPeekUI.SetState(GetPeekState(peek.AnswerController));
             }
 
-            if (answerPeekUI.State == EPeekState.FullInfo && peek.AnswerController.GetCorrectness(peek.AnswerID) == 0f)
+            if (answerPeekUI.State == EPeekState.FullInfo && peek.AnswerController.GetCorrectness(peek.AnswerID) == 0f
+                && _hintEligibleActorIDs.Contains(peek.ActorID))
             {
                 AnswerController target = FindNearestSmartController(peek.AnswerController);
                 answerPeekUI.SetDirectionHint(target != null ? target.transform.position : (Vector3?)null, _globalDefinition.DiagonalDirectionHint);
@@ -397,6 +401,32 @@ public class AnswersManager : MonoBehaviour, IAnswerIconProvider
         }
 #endif
         return _npcAnswersDefinitions;
+    }
+
+    public void SelectHintStudents()
+    {
+        _hintEligibleActorIDs.Clear();
+
+        var wrongAnswerActors = new List<string>();
+        foreach (var controller in _answerControllers)
+        {
+            if (controller.IsPlayer) continue;
+            if (string.IsNullOrEmpty(controller.ActiveAnswerID)) continue;
+            if (controller.GetCorrectness(controller.ActiveAnswerID) == 0f)
+                wrongAnswerActors.Add(controller.ActorID);
+        }
+
+        int count = UnityEngine.Random.Range(_hintStudentRange.x, _hintStudentRange.y + 1);
+        count = Mathf.Min(count, wrongAnswerActors.Count);
+
+        for (int i = wrongAnswerActors.Count - 1; i > 0; i--)
+        {
+            int j = UnityEngine.Random.Range(0, i + 1);
+            (wrongAnswerActors[i], wrongAnswerActors[j]) = (wrongAnswerActors[j], wrongAnswerActors[i]);
+        }
+
+        for (int i = 0; i < count; i++)
+            _hintEligibleActorIDs.Add(wrongAnswerActors[i]);
     }
 
     public void CleanActivePeeks()
