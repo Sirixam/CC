@@ -125,6 +125,12 @@ public class CraftHelper
             return;
         }
 
+        OnPickUpCraftedItem(itemInstance);
+        OnFinishedCrafting?.Invoke();
+    }
+
+    private void OnPickUpCraftedItem(GameObject itemInstance)
+    {
         _actorView.OnPickUp(itemInstance.transform);
         if (itemInstance.TryGetComponent(out IInteractionOwner interactionOwner))
         {
@@ -135,16 +141,15 @@ public class CraftHelper
         {
             pickUpInteractionOwner.OnPickedUp(_actor.ID);
         }
-        OnFinishedCrafting?.Invoke();
     }
 
     public PaperBallController CraftAnswer(string answerID, float correctness, string contributorActorID)
     {
         PaperBallController answerInstance = _craftService.InstantiateAnswer(PickUpPosition, Quaternion.identity, parent: null);
         answerInstance.SetAnswer(answerID, correctness, contributorActorID);
-        _actorView.OnPickUp(answerInstance.transform);
         _interactionHelper.AddInteraction(answerInstance.InteractionController);
         _interactionHelper.StartInteraction(answerInstance.InteractionController);
+        OnPickUpCraftedItem(answerInstance.gameObject);
         return answerInstance;
     }
 
